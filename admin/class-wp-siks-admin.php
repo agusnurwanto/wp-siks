@@ -20,6 +20,9 @@
  * @subpackage Wp_Siks/admin
  * @author     Agus Nurwanto <agusnurwantomuslim@gmail.com>
  */
+use Carbon_Fields\Container;
+use Carbon_Fields\Field;
+
 class Wp_Siks_Admin {
 
 	/**
@@ -100,6 +103,34 @@ class Wp_Siks_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp-siks-admin.js', array( 'jquery' ), $this->version, false );
+
+	}
+
+	public function crb_attach_siks_options(){
+		global $wpdb;
+
+		$cek_bansos = $this->functions->generatePage(array(
+			'nama_page' => 'Cek Bantuan Sosial', 
+			'content' => '[cek_bansos]',
+        	'show_header' => 1,
+        	'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
+		$basic_options_container = Container::make( 'theme_options', __( 'SIKS Options' ) )
+			->set_page_menu_position( 4 )
+	        ->add_fields( array(
+				Field::make( 'html', 'crb_siks_halaman_terkait' )
+		        	->set_html( '
+					<h5>HALAMAN TERKAIT</h5>
+	            	<ul>
+	            		<li><a target="_blank" href="'.$cek_bansos['url'].'">'.$cek_bansos['title'].'</a></li>
+	            	</ul>
+		        	' ),
+	            Field::make( 'text', 'crb_apikey_siks', 'API KEY' )
+	            	->set_default_value($this->functions->generateRandomString())
+	            	->set_help_text('Wajib diisi. API KEY digunakan untuk integrasi data.')
+	        ) );
 
 	}
 

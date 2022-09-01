@@ -52,7 +52,7 @@ class Pbb_Desa_Functions
     			return;
     		}
     		
-    		$key_db = md5(get_option( '_crb_apikey_simda_bmd' ));
+    		$key_db = md5(get_option( '_crb_apikey_siks' ));
     		$key = explode($key_db, $key);
     		$valid = 0;
     		if(
@@ -108,7 +108,7 @@ class Pbb_Desa_Functions
 	function gen_key($key_db = false, $options = array()){
 		$now = time()*1000;
 		if(empty($key_db)){
-			$key_db = md5(get_option( '_crb_apikey_simda_bmd' ));
+			$key_db = md5(get_option( '_crb_apikey_siks' ));
 		}
 		$tambahan_url = '';
 		if(!empty($options['custom_url'])){
@@ -124,7 +124,7 @@ class Pbb_Desa_Functions
 
 	public function decode_key($value){
 		$key = base64_decode($value);
-		$key_db = md5(get_option( '_crb_apikey_simda_bmd' ));
+		$key_db = md5(get_option( '_crb_apikey_siks' ));
 		$key = explode($key_db, $key);
 		$get = array();
 		if(!empty($key[2])){
@@ -286,38 +286,6 @@ class Pbb_Desa_Functions
         }
         return $res;
     }
-
-	public function data_status_bayar($option = array('type' => false)){
-		$data = array(
-    		'' => 'Pilih Status Pembayaran',
-    		'0' => 'Belum Bayar',
-    		'1' => 'Diterima Petugas Pajak',
-    		'2' => 'Diterima Bendahara Desa',
-    		'3' => 'Diterima Kecamatan',
-    		'4' => 'Lunas'
-    	);
-		if($option['type'] == 'html'){
-			$html = '';
-			foreach ($data as $k => $v) {
-				$html .= '<option value="'.$k.'">'.$v.'</option>';
-			}
-			return $html;
-		}else if($option['type'] == 'html_color'){
-			$new_data = array();
-			foreach ($data as $k => $v) {
-				if($k >= 1 && $k <=3){
-					$new_data[$k] = '<span style="color: orange; font-weight: bold;">'.$v.'</span>';
-				}else if($k == 4){
-					$new_data[$k] = '<span style="color: green; font-weight: bold;">'.$v.'</span>';
-				}else{
-					$new_data[$k] = '<span style="color: red; font-weight: bold;">'.$v.'</span>';
-				}
-			}
-			return $new_data;
-		}else{
-			return $data;
-		}
-	}
 
 	function isInteger($input){
 	    return(ctype_digit(strval($input)));

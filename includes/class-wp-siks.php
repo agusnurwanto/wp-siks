@@ -164,6 +164,7 @@ class Wp_Siks {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		$this->loader->add_action('carbon_fields_register_fields', $plugin_admin, 'crb_attach_siks_options');
 	}
 
 	/**
@@ -179,6 +180,7 @@ class Wp_Siks {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 
 	}
 
