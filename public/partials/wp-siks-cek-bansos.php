@@ -1,3 +1,6 @@
+<?php
+    $api_key = get_option( '_crb_apikey_siks' );
+?>
 <h1 class="text-center">Cek Bantuan Sosial</h1>
 <form style="width: 500px; margin: auto;" class="text-center">
   <div class="form-group">
@@ -19,6 +22,17 @@
                 return alert('NIK harus diisi!');
             }
             jQuery('#wrap-loading').show();
+            jQuery.ajax({
+                url: ajax.url,
+                type: 'post',
+                data: {
+                    action: 'get_data_bansos',
+                    api_key: '<?php echo $api_key; ?>'
+                },
+                success: function(res){
+                    jQuery('#wrap-loading').hide();
+                }
+            });
         });
     });
 </script>

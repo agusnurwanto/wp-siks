@@ -180,6 +180,8 @@ class Wp_Siks {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action('wp_ajax_get_data_bansos',  $plugin_public, 'get_data_bansos');
+		$this->loader->add_action('wp_ajax_nopriv_get_data_bansos',  $plugin_public, 'get_data_bansos');
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 
 	}
