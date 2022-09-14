@@ -1,5 +1,5 @@
 <?php
-class Pbb_Desa_Functions
+class Siks_Functions
 {
 
 	/**
@@ -52,7 +52,7 @@ class Pbb_Desa_Functions
     			return;
     		}
     		
-    		$key_db = md5(get_option( '_crb_apikey_siks' ));
+    		$key_db = md5(get_option( SIKS_APIKEY ));
     		$key = explode($key_db, $key);
     		$valid = 0;
     		if(
@@ -108,7 +108,7 @@ class Pbb_Desa_Functions
 	function gen_key($key_db = false, $options = array()){
 		$now = time()*1000;
 		if(empty($key_db)){
-			$key_db = md5(get_option( '_crb_apikey_siks' ));
+			$key_db = md5(get_option( SIKS_APIKEY ));
 		}
 		$tambahan_url = '';
 		if(!empty($options['custom_url'])){
@@ -124,7 +124,7 @@ class Pbb_Desa_Functions
 
 	public function decode_key($value){
 		$key = base64_decode($value);
-		$key_db = md5(get_option( '_crb_apikey_siks' ));
+		$key_db = md5(get_option( SIKS_APIKEY ));
 		$key = explode($key_db, $key);
 		$get = array();
 		if(!empty($key[2])){
@@ -290,4 +290,50 @@ class Pbb_Desa_Functions
 	function isInteger($input){
 	    return(ctype_digit(strval($input)));
 	}
+
+	function curl_post($options){
+        $curl = curl_init();
+        set_time_limit(0);
+        $req = http_build_query($options['data']);
+        $url = $options['url'];
+        if(empty($url)){
+        	return false;
+        }
+        $opsi_curl = array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $req,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_CONNECTTIMEOUT => 0,
+            CURLOPT_TIMEOUT => 10000
+        );
+
+        if(!empty($options['cookie'])){
+        	$opsi_curl[CURLOPT_HTTPHEADER] = array("Cookie: ".$options['cookie']);
+        }
+
+        curl_setopt_array($curl, $opsi_curl);
+
+        $response = curl_exec($curl);
+        // die($response);
+        $err = curl_error($curl);
+        curl_close($curl);
+
+        if ($err) {
+        	$msg = "cURL Error #:".$err." (".$url.")";
+        	if($options['debug'] == 1){
+            	die($msg);
+        	}else{
+        		return $msg;
+        	}
+        } else {
+        	return $response;
+        }
+    }
 }

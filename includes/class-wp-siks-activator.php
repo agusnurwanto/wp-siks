@@ -30,7 +30,9 @@ class Wp_Siks_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-
+        if(!wp_next_scheduled('siks_conjob')){
+            wp_schedule_event( time(), 'custom_min', 'siks_conjob' );
+        }
 	}
 
 }

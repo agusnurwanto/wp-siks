@@ -129,7 +129,13 @@ class Wp_Siks_Admin {
 		        	' ),
 	            Field::make( 'text', 'crb_apikey_siks', 'API KEY' )
 	            	->set_default_value($this->functions->generateRandomString())
-	            	->set_help_text('Wajib diisi. API KEY digunakan untuk integrasi data.')
+	            	->set_help_text('Wajib diisi. API KEY digunakan untuk integrasi data.'),
+	            Field::make( 'text', 'crb_siks_cookie', 'SIKS cookie' )
+	            	->set_help_text('Nilai cookie setelah berhasil login ke aplikasi <a href="https://siks.kemensos.go.id/" target="_blank">siks.kemensos.go.id</a>.'),
+	            Field::make( 'text', 'crb_siks_prop', 'ID Provinsi' )
+	            	->set_help_text('Bisa dilihat di <a href="https://cekbansos.kemensos.go.id/" target="_blank">cekbansos.kemensos.go.id</a>.'),
+	            Field::make( 'text', 'crb_siks_kab', 'ID Kabupaten' )
+	            	->set_help_text('Bisa dilihat di <a href="https://cekbansos.kemensos.go.id/" target="_blank">cekbansos.kemensos.go.id</a>.')
 	        ) );
 
 	}

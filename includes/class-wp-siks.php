@@ -125,9 +125,9 @@ class Wp_Siks {
 		$this->loader = new Wp_Siks_Loader();
 
 		// Functions tambahan
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pbb-desa-functions.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wp-siks-functions.php';
 
-		$this->functions = new Pbb_Desa_Functions( $this->plugin_name, $this->version );
+		$this->functions = new Siks_Functions( $this->plugin_name, $this->version );
 
 		$this->loader->add_action('template_redirect', $this->functions, 'allow_access_private_post', 0);
 
@@ -182,7 +182,15 @@ class Wp_Siks {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action('wp_ajax_get_data_bansos',  $plugin_public, 'get_data_bansos');
 		$this->loader->add_action('wp_ajax_nopriv_get_data_bansos',  $plugin_public, 'get_data_bansos');
+		$this->loader->add_action('wp_ajax_refresh_token',  $plugin_public, 'refresh_token');
+		$this->loader->add_action('wp_ajax_nopriv_refresh_token',  $plugin_public, 'refresh_token');
+
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
+
+		// untuk menjalankan conjob refresh session
+		$this->loader->add_action('siks_conjob',  $plugin_public, 'refresh_token');
+		// untuk menambahkan custom waktu cronjob. secara default paling sedikit adalah per 1 jam
+		$this->loader->add_filter('cron_schedules',  $plugin_public, 'my_cron_schedules');
 
 	}
 
