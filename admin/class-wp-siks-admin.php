@@ -135,7 +135,11 @@ class Wp_Siks_Admin {
 	            Field::make( 'text', 'crb_siks_prop', 'ID Provinsi' )
 	            	->set_help_text('Bisa dilihat di <a href="https://cekbansos.kemensos.go.id/" target="_blank">cekbansos.kemensos.go.id</a>.'),
 	            Field::make( 'text', 'crb_siks_kab', 'ID Kabupaten' )
-	            	->set_help_text('Bisa dilihat di <a href="https://cekbansos.kemensos.go.id/" target="_blank">cekbansos.kemensos.go.id</a>.')
+	            	->set_help_text('Bisa dilihat di <a href="https://cekbansos.kemensos.go.id/" target="_blank">cekbansos.kemensos.go.id</a>.'),
+	            Field::make( 'text', 'crb_siks_captcha_public', 'Recaptcha public key' )
+	            	->set_help_text('Bisa dilihat di <a href="https://www.google.com/recaptcha/admin/site/" target="_blank">https://www.google.com/recaptcha/admin/site/</a>.'),
+	            Field::make( 'text', 'crb_siks_captcha_private', 'Recaptcha private key' )
+	            	->set_help_text('Bisa dilihat di <a href="https://www.google.com/recaptcha/admin/site/" target="_blank">https://www.google.com/recaptcha/admin/site/</a>.')
 	        ) );
 
 	}

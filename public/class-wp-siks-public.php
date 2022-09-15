@@ -119,6 +119,23 @@ class Wp_Siks_Public {
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-cek-bansos.php';
 	}
 
+	public function get_data_bansos_lama(){
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil get data bansos!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+
+		}else{
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
+
 	public function get_data_bansos(){
 		global $wpdb;
 		$ret = array(
@@ -126,7 +143,22 @@ class Wp_Siks_Public {
 			'message'	=> 'Berhasil get data bansos!'
 		);
 		if (!empty($_POST)) {
-			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+			if(isset($_POST['g-recaptcha-response'])){
+	          	$captcha=$_POST['g-recaptcha-response'];
+	        }
+	        if(!$captcha){
+	        	$ret['status'] = 'error';
+	        }
+	        $secretKey = get_option('_crb_siks_captcha_private');
+	        $ip = $_SERVER['REMOTE_ADDR'];
+	        // post request to server
+	        $url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secretKey) .  '&response=' . urlencode($captcha);
+	        $response = file_get_contents($url);
+	        $responseKeys = json_decode($response,true);
+	        if(empty($responseKeys["success"])) {
+	        	$ret['status'] = 'error';
+	        	$ret['message'] = 'Harap selesaikan validasi captcha dulu!';
+	        }else {
 				if(!empty($_POST['nik'])){
 					$data = $this->functions->curl_post(array(
 						'url' => 'https://siks.kemensos.go.id/dinsoskab/view_data_new/ajax_bansos',
@@ -267,17 +299,28 @@ class Wp_Siks_Public {
 						'cookie' => get_option('_crb_siks_cookie')
 					));
 					$data_asli = json_decode($data);
-					$ret['data_asli'] = $data_asli;
-					$ret['data'] = $data_asli->data;
+					if(empty($data_asli)){
+						$ret['status'] = 'error';
+						$ret['message'] = 'Tidak bisa terhubung ke server. Coba lagi nanti!';
+					}else{
+						$login = false;
+						if(is_user_logged_in()){
+						    $current_user = wp_get_current_user();
+						    if($this->functions->user_has_role($current_user->ID, 'administrator')){
+						        $login = true;
+						    }
+						}
+						if($login == false){
+							$ret['data'] = $data_asli->data;
+						}else{
+							$ret['data_asli'] = $data_asli;
+							$ret['data'] = $data_asli->data;
+						}
+					}
 				}else{
 					$ret['status'] = 'error';
 					$ret['message'] = 'NIK tidak boleh kosong!';
 				}
-			}else{
-				$ret = array(
-					'status' => 'error',
-					'message'	=> 'Api Key tidak sesuai!'
-				);
 			}
 		}else{
 			$ret = array(
@@ -306,7 +349,7 @@ class Wp_Siks_Public {
 	public function my_cron_schedules($schedules){
 	    if(!isset($schedules["custom_min"])){
 	        $schedules["custom_min"] = array(
-	            'interval' => 1*60,
+	            'interval' => 0.5*60,
 	            'display' => __('Once every 1 minutes'));
 	    }
 	    if(!isset($schedules["5min"])){

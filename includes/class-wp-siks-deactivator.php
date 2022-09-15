@@ -30,7 +30,7 @@ class Wp_Siks_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+        wp_clear_scheduled_hook( 'siks_conjob' );
 	}
 
 }
