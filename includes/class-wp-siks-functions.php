@@ -314,8 +314,8 @@ class Siks_Functions
             CURLOPT_TIMEOUT => 10000
         );
 
-        if(!empty($options['cookie'])){
-        	$opsi_curl[CURLOPT_HTTPHEADER] = array("Cookie: ".$options['cookie']);
+        if(!empty($options['header'])){
+        	$opsi_curl[CURLOPT_HTTPHEADER] = $options['header'];
         }
 
         curl_setopt_array($curl, $opsi_curl);

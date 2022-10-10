@@ -132,6 +132,10 @@ class Wp_Siks_Admin {
 	            	->set_help_text('Wajib diisi. API KEY digunakan untuk integrasi data.'),
 	            Field::make( 'text', 'crb_siks_cookie', 'SIKS cookie' )
 	            	->set_help_text('Nilai cookie setelah berhasil login ke aplikasi <a href="https://siks.kemensos.go.id/" target="_blank">siks.kemensos.go.id</a>.'),
+	            Field::make( 'text', 'crb_siks_param_encrypt', 'SIKS param encrypt' )
+	            	->set_help_text('Nilai parameter yang dikirim ke server SIKS untuk menjaga session cookie tetap hidup.'),
+	            Field::make( 'text', 'crb_siks_key', 'SIKS key encrypt' )
+	            	->set_help_text('Nilai kunci yang dipakai untuk mengencrypt data yang akan dikirim ke server SIKS. Bisa dilihat di <a href="https://siks.kemensos.go.id/static/js/main.4d679ac9.js" target="_blank">https://siks.kemensos.go.id/static/js/main.4d679ac9.js</a>.'),
 	            Field::make( 'text', 'crb_siks_prop', 'ID Provinsi' )
 	            	->set_help_text('Bisa dilihat di <a href="https://cekbansos.kemensos.go.id/" target="_blank">cekbansos.kemensos.go.id</a>.'),
 	            Field::make( 'text', 'crb_siks_kab', 'ID Kabupaten' )

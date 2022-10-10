@@ -101,6 +101,7 @@ class Wp_Siks_Public {
 		 * class.
 		 */
 
+		wp_enqueue_script($this->plugin_name . 'crypto-js', plugin_dir_url(__FILE__) . 'js/crypto-js.min.js', array('jquery'), $this->version, false);
 		wp_enqueue_script($this->plugin_name . 'bootstrap', plugin_dir_url(__FILE__) . 'js/bootstrap.bundle.min.js', array('jquery'), $this->version, false);
 		wp_enqueue_script($this->plugin_name . 'datatables', plugin_dir_url(__FILE__) . 'js/jquery.dataTables.min.js', array('jquery'), $this->version, false);
 		wp_enqueue_script($this->plugin_name . 'chart', plugin_dir_url(__FILE__) . 'js/chart.min.js', array('jquery'), $this->version, false);
@@ -159,10 +160,11 @@ class Wp_Siks_Public {
 	        	$ret['status'] = 'error';
 	        	$ret['message'] = 'Harap selesaikan validasi captcha dulu!';
 	        }else {
-				if(!empty($_POST['nik'])){
+				if(!empty($_POST['nik']) || !empty($_POST['data'])){
+					/*
 					$data = $this->functions->curl_post(array(
 						'url' => 'https://siks.kemensos.go.id/dinsoskab/view_data_new/ajax_bansos',
-						'data' => array(
+						'data' =>array(
 							'draw' => 1,
 							'columns[0][data]' => 'counter',
 							'columns[0][name]' => '',
@@ -296,9 +298,21 @@ class Wp_Siks_Public {
 							'rutilahu' => false,
 							'filter_gis' => 0
 						),
-						'cookie' => get_option('_crb_siks_cookie')
+						'header' => array("Cookie: ".get_option('_crb_siks_cookie'))
 					));
 					$data_asli = json_decode($data);
+					*/
+
+					$param_encrypt = $_POST['data'];
+					$options = array(
+						'url' => 'https://api.kemensos.go.id/viewbnba/bnba-list',
+						'data' => array('data'=> $param_encrypt),
+						'header' => array(
+							'Authorization: '.get_option('_crb_siks_cookie')
+						)
+					);
+					$data = $this->functions->curl_post($options);
+					$data_asli = str_replace('"', '', $data);
 					if(empty($data_asli)){
 						$ret['status'] = 'error';
 						$ret['message'] = 'Tidak bisa terhubung ke server. Coba lagi nanti!';
@@ -311,10 +325,10 @@ class Wp_Siks_Public {
 						    }
 						}
 						if($login == false){
-							$ret['data'] = $data_asli->data;
+							$ret['data'] = $data_asli;
 						}else{
-							$ret['data_asli'] = $data_asli;
-							$ret['data'] = $data_asli->data;
+							$ret['options'] = $options;
+							$ret['data'] = $data_asli;
 						}
 					}
 				}else{
@@ -332,6 +346,25 @@ class Wp_Siks_Public {
 	}
 
 	public function refresh_token(){
+		$param_encrypt = get_option('_crb_siks_param_encrypt');
+		$data = $this->functions->curl_post(array(
+			'url' => 'https://api.kemensos.go.id/viewbnba/bnba-list',
+			'data' => array('data'=> $param_encrypt),
+			'header' => array(
+				'Authorization: '.get_option('_crb_siks_cookie')
+			)
+		));
+		$last_cookie = get_option('siks_last_cookie');
+		$no = get_option('siks_cronjob');
+		if(empty($no) || $current_cookie != $last_cookie){
+			$no = 0;
+			update_option('siks_last_cookie', $current_cookie);
+		}
+		$no++;
+		update_option('siks_cronjob', $no);
+	}
+
+	public function refresh_token_lama(){
 		$current_cookie = get_option('_crb_siks_cookie');
 		$opts = array('https' => array('header'=> 'Cookie: '.$current_cookie));
 		$context = stream_context_create($opts);
