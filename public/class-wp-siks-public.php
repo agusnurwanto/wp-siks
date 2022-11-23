@@ -346,12 +346,13 @@ class Wp_Siks_Public {
 	}
 
 	public function refresh_token(){
+		$current_cookie = get_option('_crb_siks_cookie');
 		$param_encrypt = get_option('_crb_siks_param_encrypt');
 		$data = $this->functions->curl_post(array(
 			'url' => 'https://api.kemensos.go.id/viewbnba/bnba-list',
 			'data' => array('data'=> $param_encrypt),
 			'header' => array(
-				'Authorization: '.get_option('_crb_siks_cookie')
+				'Authorization: '.$current_cookie
 			)
 		));
 		$last_cookie = get_option('siks_last_cookie');
