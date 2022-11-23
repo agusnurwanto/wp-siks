@@ -8,7 +8,7 @@ if(is_user_logged_in()){
     }
 }
 ?>
-<h1 class="text-center">Cek Bantuan Sosial</h1>
+<h1 class="text-center">Cek Data Terpadu Kesejahteraan Sosial (DTKS)</h1>
 <form style="width: 500px; margin: auto;" class="text-center">
 <div class="form-group">
     <div class="g-recaptcha" data-sitekey="<?php echo get_option('_crb_siks_captcha_public'); ?>" style="margin: 10px auto; width: 300px;"></div>
@@ -129,14 +129,10 @@ if(is_user_logged_in()){
                                 +'<td>'+b.Alamat+'</td>'
                                 +'<td>'+b.FIRST_SK+'</td>'
                                 +'<td>'+b.padankan_at+'</td>'
-                                +'<td>'+b.BPNT+'</td>'
-                                +'<td>'+b.BST+'</td>'
                                 +'<td>'+b.PKH+'</td>'
                                 +'<td>'+b.PBI+'</td>'
-                                +'<td>'+b.BNPT_PPKM+'</td>'
                                 +'<td>'+b.BLT+'</td>'
                                 +'<td>'+b.BLT_BBM+'</td>'
-                                +'<td>'+b.RUTILAHU+'</td>'
                                 +'<td>'+b.keterangan_meninggal+'</td>'
                                 +'<td>'+b.keterangan_disabilitas+'</td>'
                             +'</tr>';
@@ -152,14 +148,10 @@ if(is_user_logged_in()){
                                     +'<th class="text-center">Alamat</th>'
                                     +'<th class="text-center">Masuk SK DTKS Pertama</th>'
                                     +'<th class="text-center">Terakhir Padan Capil</th>'
-                                    +'<th class="text-center">BPNT</th>'
-                                    +'<th class="text-center">BST</th>'
                                     +'<th class="text-center">PKH</th>'
                                     +'<th class="text-center">PBI</th>'
-                                    +'<th class="text-center">BPNT PPKM</th>'
                                     +'<th class="text-center">BLT</th>'
                                     +'<th class="text-center">BLT BBM</th>'
-                                    +'<th class="text-center">RUTILAHU</th>'
                                     +'<th class="text-center">Keterangan Meninggal</th>'
                                     +'<th class="text-center">Keterangan Disabilitas</th>'
                                 +'</tr>'

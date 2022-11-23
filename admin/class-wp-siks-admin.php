@@ -110,7 +110,7 @@ class Wp_Siks_Admin {
 		global $wpdb;
 
 		$cek_bansos = $this->functions->generatePage(array(
-			'nama_page' => 'Cek Bantuan Sosial', 
+			'nama_page' => 'Cek Data Terpadu Kesejahteraan Sosial (DTKS)', 
 			'content' => '[cek_bansos]',
         	'show_header' => 1,
         	'no_key' => 1,
@@ -123,10 +123,10 @@ class Wp_Siks_Admin {
 				Field::make( 'html', 'crb_siks_halaman_terkait' )
 		        	->set_html( '
 					<h5>HALAMAN TERKAIT</h5>
-	            	<ul>
+	            	<ol>
 	            		<li><a target="_blank" href="'.$cek_bansos['url'].'">'.$cek_bansos['title'].'</a></li>
-	            		<li>Untuk melakukan refresh session login. Gunakan cronjob dengan interval per 5 menit untuk mengakses <b>'.site_url().'/wp-admin/admin-ajax.php?action=refresh_token</b></li>
-	            	</ul>
+	            		<li>Untuk melakukan refresh session login. Gunakan cronjob dengan interval per 5 menit mengakses <b>'.site_url().'/wp-admin/admin-ajax.php?action=refresh_token</b>. Saat ini cronjob sudah dilakukan sebanyak <b>'.get_option('siks_cronjob').'</b> kali.</li>
+	            	</ol>
 		        	' ),
 	            Field::make( 'text', 'crb_apikey_siks', 'API KEY' )
 	            	->set_default_value($this->functions->generateRandomString())

@@ -362,6 +362,7 @@ class Wp_Siks_Public {
 		}
 		$no++;
 		update_option('siks_cronjob', $no);
+		die('Sukses run ke '.$no);
 	}
 
 	public function refresh_token_lama(){
