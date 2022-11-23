@@ -125,13 +125,14 @@ class Wp_Siks_Admin {
 					<h5>HALAMAN TERKAIT</h5>
 	            	<ul>
 	            		<li><a target="_blank" href="'.$cek_bansos['url'].'">'.$cek_bansos['title'].'</a></li>
+	            		<li>Untuk melakukan refresh session login. Gunakan cronjob dengan interval per 5 menit untuk mengakses <b>'.site_url().'/wp-admin/admin-ajax.php?action=refresh_token</b></li>
 	            	</ul>
 		        	' ),
 	            Field::make( 'text', 'crb_apikey_siks', 'API KEY' )
 	            	->set_default_value($this->functions->generateRandomString())
 	            	->set_help_text('Wajib diisi. API KEY digunakan untuk integrasi data.'),
-	            Field::make( 'text', 'crb_siks_cookie', 'SIKS cookie' )
-	            	->set_help_text('Nilai cookie setelah berhasil login ke aplikasi <a href="https://siks.kemensos.go.id/" target="_blank">siks.kemensos.go.id</a>.'),
+	            Field::make( 'text', 'crb_siks_cookie', 'SIKS authorization' )
+	            	->set_help_text('Nilai authorization setelah berhasil login ke aplikasi <a href="https://siks.kemensos.go.id/" target="_blank">siks.kemensos.go.id</a>.'),
 	            Field::make( 'text', 'crb_siks_param_encrypt', 'SIKS param encrypt' )
 	            	->set_help_text('Nilai parameter yang dikirim ke server SIKS untuk menjaga session cookie tetap hidup.'),
 	            Field::make( 'text', 'crb_siks_key', 'SIKS key encrypt' )

@@ -41,6 +41,7 @@ if(is_user_logged_in()){
 </div>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script type="text/javascript">
+    window.key = '<?php echo get_option('_crb_siks_key'); ?>';
     jQuery('document').ready(function(){
         jQuery('#cari').on('click', function(e){
             e.preventDefault();
@@ -55,7 +56,6 @@ if(is_user_logged_in()){
             jQuery('#wrap-loading').show();
             jQuery('#pesan').html('');
             var param_encrypt = false;
-            window.key = '<?php echo get_option('_crb_siks_key'); ?>';
             var data = {
                 "no_prop" : "<?php echo get_option('_crb_siks_prop'); ?>",
                 "no_kab" : "<?php echo get_option('_crb_siks_kab'); ?>",
@@ -97,7 +97,9 @@ if(is_user_logged_in()){
                 });
             }).then(function(res){
                 grecaptcha.reset();
+            <?php if($login == true): ?>
                 console.log(res);
+            <?php endif; ?>
                 if(param_encrypt){
                     var new_data= JSON.parse(de(res.data));
                 <?php if($login == true): ?>
