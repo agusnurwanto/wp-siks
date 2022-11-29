@@ -144,7 +144,15 @@ class Wp_Siks_Admin {
 	            Field::make( 'text', 'crb_siks_captcha_public', 'Recaptcha public key' )
 	            	->set_help_text('Bisa dilihat di <a href="https://www.google.com/recaptcha/admin/site/" target="_blank">https://www.google.com/recaptcha/admin/site/</a>.'),
 	            Field::make( 'text', 'crb_siks_captcha_private', 'Recaptcha private key' )
-	            	->set_help_text('Bisa dilihat di <a href="https://www.google.com/recaptcha/admin/site/" target="_blank">https://www.google.com/recaptcha/admin/site/</a>.')
+	            	->set_help_text('Bisa dilihat di <a href="https://www.google.com/recaptcha/admin/site/" target="_blank">https://www.google.com/recaptcha/admin/site/</a>.'),
+	            Field::make( 'text', 'crb_siks_pusher_cluster', 'PUSHER APP CLUSTER' )
+	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.'),
+	            Field::make( 'text', 'crb_siks_pusher_id', 'PUSHER APP ID' )
+	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.'),
+	            Field::make( 'text', 'crb_siks_pusher_key', 'PUSHER APP KEY' )
+	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.'),
+	            Field::make( 'text', 'crb_siks_pusher_secret', 'PUSHER APP SECRET' )
+	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.')
 	        ) );
 
 	}

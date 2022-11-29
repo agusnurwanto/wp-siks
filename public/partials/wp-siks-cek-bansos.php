@@ -10,18 +10,25 @@ if(is_user_logged_in()){
 ?>
 <h1 class="text-center">Cek Data Terpadu Kesejahteraan Sosial (DTKS)</h1>
 <form style="width: 500px; margin: auto;" class="text-center">
-<div class="form-group">
-    <div class="g-recaptcha" data-sitekey="<?php echo get_option('_crb_siks_captcha_public'); ?>" style="margin: 10px auto; width: 300px;"></div>
-</div>
-  <div class="form-group">
-    <label for="nik">Masukan NIK</label>
-    <div class="input-group">
-        <input type="number" class="form-control" id="nik" placeholder="xxxxxxxxxxx">
-        <div class="input-group-append">
-            <span class="btn btn-primary" type="button" id="cari" style="display: flex; align-items: center;">Cari Data</span>
+    <div class="form-group">
+        <div class="g-recaptcha" data-sitekey="<?php echo get_option('_crb_siks_captcha_public'); ?>" style="margin: 10px auto; width: 300px;"></div>
+    </div>
+    <div class="form-group" style="display:none;">
+        <img id="captcha-img" src="" style="margin: 10px auto;"><br>
+        <label for="nik">Masukan Nilai Captcha</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="captcha" placeholder="xxxx">
         </div>
     </div>
-  </div>
+    <div class="form-group">
+        <label for="nik">Masukan NIK</label>
+        <div class="input-group">
+            <input type="number" class="form-control" id="nik" placeholder="xxxxxxxxxxx">
+            <div class="input-group-append">
+                <span class="btn btn-primary" type="button" id="cari" style="display: flex; align-items: center;">Cari Data</span>
+            </div>
+        </div>
+    </div>
 </form>
 <div style="padding: 10px; margin: auto; overflow: auto;" id="pesan">
 
@@ -83,6 +90,7 @@ if(is_user_logged_in()){
                     var data = {
                         action: 'get_data_bansos',
                         data: param_encrypt,
+                        captcha: jQuery('#captcha').val(),
                         'g-recaptcha-response': captcha
                     };
                 }
@@ -97,9 +105,16 @@ if(is_user_logged_in()){
                 });
             }).then(function(res){
                 grecaptcha.reset();
+                jQuery('#captcha').val('');
+                jQuery('#captcha-img').closest('.form-group').hide();
             <?php if($login == true): ?>
                 console.log(res);
             <?php endif; ?>
+                if(res.status == 'error'){
+                    jQuery('#wrap-loading').hide();
+                    return alert(res.message);
+                }
+
                 if(param_encrypt){
                     var new_data= JSON.parse(de(res.data));
                 <?php if($login == true): ?>
@@ -108,13 +123,41 @@ if(is_user_logged_in()){
                     if(!new_data.success){
                         alert("Maaf ada kendala server dengan kode 111. Harap hubungi Admin!");
                         console.log(new_data.message);
-                        return jQuery('#wrap-loading').hide();
+                        jQuery.ajax({
+                            url: ajax.url,
+                            type: 'post',
+                            dataType: "json",
+                            data: {
+                                action: 'send_message',
+                                api_key: '<?php echo $api_key; ?>'
+                            },
+                            success: function(res){
+                                console.log(res);
+                                setTimeout(function(){
+                                    jQuery.ajax({
+                                        url: ajax.url,
+                                        type: 'post',
+                                        dataType: "json",
+                                        data: {
+                                            action: 'get_captcha',
+                                            api_key: '<?php echo $api_key; ?>'
+                                        },
+                                        success: function(res){
+                                            console.log(res);
+                                            jQuery('#captcha-img').attr('src', res.captcha);
+                                            jQuery('#captcha-img').closest('.form-group').show();
+                                            jQuery('#wrap-loading').hide();
+                                        }
+                                    });
+                                }, 20000);
+                            }
+                        });
+                        return;
                     }
                     res.data = new_data.data.data;
                 }
-                if(res.status == 'error'){
-                    alert(res.message);
-                }else if(res.data.length == 0){
+
+                if(res.data.length == 0){
                     alert('Data dengan nomor NIK '+nik+' tidak ditemukan!');
                 }else{
                     var data_all = '';

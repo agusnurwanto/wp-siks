@@ -186,6 +186,12 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_nopriv_refresh_token',  $plugin_public, 'refresh_token');
 		$this->loader->add_action('wp_ajax_set_token',  $plugin_public, 'set_token');
 		$this->loader->add_action('wp_ajax_nopriv_set_token',  $plugin_public, 'set_token');
+		$this->loader->add_action('wp_ajax_send_message',  $plugin_public, 'send_message');
+		$this->loader->add_action('wp_ajax_nopriv_send_message',  $plugin_public, 'send_message');
+		$this->loader->add_action('wp_ajax_set_captcha',  $plugin_public, 'set_captcha');
+		$this->loader->add_action('wp_ajax_nopriv_set_captcha',  $plugin_public, 'set_captcha');
+		$this->loader->add_action('wp_ajax_get_captcha',  $plugin_public, 'get_captcha');
+		$this->loader->add_action('wp_ajax_nopriv_get_captcha',  $plugin_public, 'get_captcha');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 

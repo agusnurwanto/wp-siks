@@ -303,6 +303,12 @@ class Wp_Siks_Public {
 					$data_asli = json_decode($data);
 					*/
 
+					if(!empty($_POST['captcha'])){
+						$this->send_message(true, 'login_captcha');
+						update_option('siks_captcha_decrypt', $_POST['captcha']);
+						sleep(20);
+					}
+
 					$param_encrypt = $_POST['data'];
 					$options = array(
 						'url' => 'https://api.kemensos.go.id/viewbnba/bnba-list',
@@ -313,16 +319,21 @@ class Wp_Siks_Public {
 					);
 					$data = $this->functions->curl_post($options);
 					$data_asli = str_replace('"', '', $data);
+
+					$login = false;
+					if(is_user_logged_in()){
+					    $current_user = wp_get_current_user();
+					    if($this->functions->user_has_role($current_user->ID, 'administrator')){
+					        $login = true;
+					    }
+					}
 					if(empty($data_asli)){
 						$ret['status'] = 'error';
 						$ret['message'] = 'Tidak bisa terhubung ke server. Coba lagi nanti!';
 					}else{
-						$login = false;
-						if(is_user_logged_in()){
-						    $current_user = wp_get_current_user();
-						    if($this->functions->user_has_role($current_user->ID, 'administrator')){
-						        $login = true;
-						    }
+						if(strpos('cURL Error', $data_asli) == -1){
+							$ret['status'] = 'error';
+							$ret['message'] = 'Tidak bisa terhubung ke server. Coba lagi nanti!';
 						}
 						if($login == false){
 							$ret['data'] = $data_asli;
@@ -366,7 +377,6 @@ class Wp_Siks_Public {
 				'Authorization: '.$current_cookie
 			)
 		));
-		$data = $this->functions->curl_post($options);
 		$data_asli = str_replace('"', '', $data);
 		if(!empty($data_asli)){
 			if(empty($no)){
@@ -409,6 +419,84 @@ class Wp_Siks_Public {
 		);
 		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
 			update_option('_crb_siks_cookie', $_POST['token']);
+		}else{
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
+
+	public function send_message($ret=false, $message=false){
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil send message!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+		  	$pusher_cluster = get_option('_crb_siks_pusher_cluster');
+		  	$pusher_id = get_option('_crb_siks_pusher_id');
+		  	$pusher_key = get_option('_crb_siks_pusher_key');
+		  	$pusher_secret = get_option('_crb_siks_pusher_secret');
+			$options = array(
+			    'cluster' => $pusher_cluster,
+			    'useTLS' => true
+		  	);
+		  	$pusher = new Pusher\Pusher(
+			    $pusher_key,
+			    $pusher_secret,
+			    $pusher_id,
+			    $options
+		  	);
+
+		  	if(empty($message)){
+		  		$data['action'] = 'require_login';
+		  	}else{
+		  		$data['action'] = $message;
+		  		$data['captcha'] = get_option('siks_captcha_decrypt');
+		  	}
+		  	$pusher->trigger('my-channel', 'my-event', $data);
+		}else{
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		if(!empty($ret)){
+			return $ret;
+		}else{
+			die(json_encode($ret));
+		}
+	}
+
+	public function set_captcha(){
+		global $wpdb;
+		$ret = array(
+			'action'	=> $_POST['action'],
+			'status'	=> 'success',
+			'message'	=> 'Berhasil set captcha!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+		  	update_option('siks_captcha', str_replace("'", "", $wpdb->prepare('%s', $_POST['captcha'])));
+		  	update_option('siks_captcha_decrypt', '');
+		}else{
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
+
+	public function get_captcha(){
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil get captcha!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+		  	$ret['captcha'] = get_option('siks_captcha');
 		}else{
 			$ret = array(
 				'status' => 'error',
