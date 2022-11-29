@@ -346,7 +346,18 @@ class Wp_Siks_Public {
 	}
 
 	public function refresh_token(){
+		$no_error = get_option('siks_cronjob_error');
+		$no = get_option('siks_cronjob');
 		$current_cookie = get_option('_crb_siks_cookie');
+		$last_cookie = get_option('siks_last_cookie');
+		if($current_cookie != $last_cookie){
+			$no = 0;
+			$no_error = 0;
+			update_option('siks_last_cookie', $current_cookie);
+		}
+		if($no_error == 10){
+			die('Maksimal error get data ke server. RUN sukses ke '.$no.' dan RUN error ke '.$no_error);
+		}
 		$param_encrypt = get_option('_crb_siks_param_encrypt');
 		$data = $this->functions->curl_post(array(
 			'url' => 'https://api.kemensos.go.id/viewbnba/bnba-list',
@@ -355,15 +366,24 @@ class Wp_Siks_Public {
 				'Authorization: '.$current_cookie
 			)
 		));
-		$last_cookie = get_option('siks_last_cookie');
-		$no = get_option('siks_cronjob');
-		if(empty($no) || $current_cookie != $last_cookie){
-			$no = 0;
-			update_option('siks_last_cookie', $current_cookie);
+		$data = $this->functions->curl_post($options);
+		$data_asli = str_replace('"', '', $data);
+		if(!empty($data_asli)){
+			if(empty($no)){
+				$no = 0;
+			}
+			$no++;
+			update_option('siks_cronjob', $no);
+			update_option('siks_cronjob_error', 0);
+			die('Sukses run ke '.$no);
+		}else{
+			if(empty($no_error)){
+				$no_error = 0;
+			}
+			$no_error++;
+			update_option('siks_cronjob_error', $no_error);
+			die('Error get data ke server. RUN sukses ke '.$no.' dan RUN error ke '.$no_error);
 		}
-		$no++;
-		update_option('siks_cronjob', $no);
-		die('Sukses run ke '.$no);
 	}
 
 	public function refresh_token_lama(){
@@ -379,6 +399,23 @@ class Wp_Siks_Public {
 		}
 		$no++;
 		update_option('siks_cronjob', $no);
+	}
+
+	public function set_token(){
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil set token!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+			update_option('_crb_siks_cookie', $_POST['token']);
+		}else{
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
 	}
 
 	public function my_cron_schedules($schedules){

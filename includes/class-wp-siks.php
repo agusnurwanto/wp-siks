@@ -184,6 +184,8 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_nopriv_get_data_bansos',  $plugin_public, 'get_data_bansos');
 		$this->loader->add_action('wp_ajax_refresh_token',  $plugin_public, 'refresh_token');
 		$this->loader->add_action('wp_ajax_nopriv_refresh_token',  $plugin_public, 'refresh_token');
+		$this->loader->add_action('wp_ajax_set_token',  $plugin_public, 'set_token');
+		$this->loader->add_action('wp_ajax_nopriv_set_token',  $plugin_public, 'set_token');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 
