@@ -165,6 +165,7 @@ if(is_user_logged_in()){
                     if(!new_data.success){
                         alert("Maaf ada kendala server dengan kode 111. Harap hubungi Admin!");
                         console.log(new_data.message);
+                    <?php if(get_option('crb_siks_auto_login') == '1'): ?>
                         jQuery.ajax({
                             url: ajax.url,
                             type: 'post',
@@ -194,6 +195,9 @@ if(is_user_logged_in()){
                                 }, 10000);
                             }
                         });
+                    <?php else: ?>
+                        jQuery('#wrap-loading').hide();
+                    <?php endif; ?>
                         return;
                     }
                     res.data = new_data.data.data;
@@ -214,6 +218,7 @@ if(is_user_logged_in()){
                                 +'<td>'+b.Alamat+'</td>'
                                 +'<td>'+b.FIRST_SK+'</td>'
                                 +'<td>'+b.padankan_at+'</td>'
+                                +'<td>'+b.BPNT+'</td>'
                                 +'<td>'+b.PKH+'</td>'
                                 +'<td>'+b.PBI+'</td>'
                                 +'<td>'+b.BLT+'</td>'
@@ -233,6 +238,7 @@ if(is_user_logged_in()){
                                     +'<th class="text-center">Alamat</th>'
                                     +'<th class="text-center">Masuk SK DTKS Pertama</th>'
                                     +'<th class="text-center">Terakhir Padan Capil</th>'
+                                    +'<th class="text-center">BPNT</th>'
                                     +'<th class="text-center">PKH</th>'
                                     +'<th class="text-center">PBI</th>'
                                     +'<th class="text-center">BLT</th>'

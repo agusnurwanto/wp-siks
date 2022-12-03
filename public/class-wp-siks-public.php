@@ -462,7 +462,14 @@ class Wp_Siks_Public {
 			    $options
 		  	);
 
-		  	if(empty($message)){
+		  	$data = array();
+		  	if(!empty($_POST['action_pusher'])){
+		  		if($_POST['action_pusher'] == 'send_otp'){
+		  			$data['otp'] = $_POST['otp'];
+		  			$data['pesan'] = $_POST['pesan'];
+		  		}
+		  		$data['action'] = $_POST['action_pusher'];
+		  	}else if(empty($message)){
 		  		$data['action'] = 'require_login';
 		  	}else{
 		  		$data['action'] = $message;

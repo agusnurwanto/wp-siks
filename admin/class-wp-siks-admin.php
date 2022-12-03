@@ -147,6 +147,17 @@ class Wp_Siks_Admin {
 	            	->set_help_text('Bisa dilihat di <a href="https://www.google.com/recaptcha/admin/site/" target="_blank">https://www.google.com/recaptcha/admin/site/</a>.'),
 	            Field::make( 'text', 'crb_siks_pusher_cluster', 'PUSHER APP CLUSTER' )
 	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.'),
+	            Field::make( 'text', 'crb_siks_bot_tg', 'Telegram bot API' )
+	            	->set_help_text('Bot Father <a href="Bot Father https://t.me/BotFather" target="_blank">https://t.me/BotFather</a>. Referensi: https://www.ruangdeveloper.com/blog/membuat-bot-telegram-sederhana-menggunakan-php/'),
+	            Field::make( 'text', 'crb_siks_akun_tg', 'ID akun telegram' )
+	            	->set_help_text('ID telegram admin yang akan dikirim notifikasi. Bisa lebih dari satu dengan dipisah tanda koma (,).'),
+	            Field::make( 'radio', 'crb_siks_auto_login', 'Auto Login' )
+	            	->add_options( array(
+				        '1' => __( 'Ya' ),
+				        '2' => __( 'Tidak' )
+				    ) )
+	            	->set_default_value('2')
+	            	->set_help_text('Auto login ketika session habis.'),
 	            Field::make( 'text', 'crb_siks_pusher_id', 'PUSHER APP ID' )
 	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.'),
 	            Field::make( 'text', 'crb_siks_pusher_key', 'PUSHER APP KEY' )
