@@ -8,17 +8,36 @@ if(is_user_logged_in()){
     }
 }
 ?>
+<div class="modal fade" id="modal-captcha" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="text-center">
+                    <div class="form-group">
+                        <img id="captcha-img" src="" style="margin: 10px auto;"><br>
+                        <label for="nik">Masukan Nilai Captcha</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="captcha" placeholder="xxxx">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="proses-captcha">Proses</button>
+            </div>
+        </div>
+    </div>
+</div>
 <h1 class="text-center">Cek Data Terpadu Kesejahteraan Sosial (DTKS)</h1>
 <form style="width: 500px; margin: auto;" class="text-center">
     <div class="form-group">
         <div class="g-recaptcha" data-sitekey="<?php echo get_option('_crb_siks_captcha_public'); ?>" style="margin: 10px auto; width: 300px;"></div>
-    </div>
-    <div class="form-group" style="display:none;">
-        <img id="captcha-img" src="" style="margin: 10px auto;"><br>
-        <label for="nik">Masukan Nilai Captcha</label>
-        <div class="input-group">
-            <input type="text" class="form-control" id="captcha" placeholder="xxxx">
-        </div>
     </div>
     <div class="form-group">
         <label for="nik">Masukan NIK</label>
@@ -50,6 +69,32 @@ if(is_user_logged_in()){
 <script type="text/javascript">
     window.key = '<?php echo get_option('_crb_siks_key'); ?>';
     jQuery('document').ready(function(){
+        jQuery('#proses-captcha').on('click', function(e){
+            e.preventDefault();
+            var captcha = jQuery('#captcha').val();
+            if(captcha == ''){
+                return alert('Captcha harus diisi!');
+            }
+            jQuery('#wrap-loading').show();
+            jQuery.ajax({
+                url: ajax.url,
+                type: 'post',
+                dataType: "json",
+                data: {
+                    action: 'proses_captcha',
+                    captcha: captcha,
+                    api_key: '<?php echo $api_key; ?>'
+                },
+                success: function(res){
+                    console.log(res);
+                    setTimeout(function(){
+                        jQuery('#modal-captcha').modal('hide');
+                        jQuery('#wrap-loading').hide();
+                        alert('Harap ulangi lagi!');
+                    }, 5000);
+                }
+            });
+        });
         jQuery('#cari').on('click', function(e){
             e.preventDefault();
             var captcha = jQuery('textarea[name="g-recaptcha-response"]').val();
@@ -90,7 +135,6 @@ if(is_user_logged_in()){
                     var data = {
                         action: 'get_data_bansos',
                         data: param_encrypt,
-                        captcha: jQuery('#captcha').val(),
                         'g-recaptcha-response': captcha
                     };
                 }
@@ -105,8 +149,6 @@ if(is_user_logged_in()){
                 });
             }).then(function(res){
                 grecaptcha.reset();
-                jQuery('#captcha').val('');
-                jQuery('#captcha-img').closest('.form-group').hide();
             <?php if($login == true): ?>
                 console.log(res);
             <?php endif; ?>
@@ -145,11 +187,11 @@ if(is_user_logged_in()){
                                         success: function(res){
                                             console.log(res);
                                             jQuery('#captcha-img').attr('src', res.captcha);
-                                            jQuery('#captcha-img').closest('.form-group').show();
+                                            jQuery('#modal-captcha').modal('show');
                                             jQuery('#wrap-loading').hide();
                                         }
                                     });
-                                }, 20000);
+                                }, 10000);
                             }
                         });
                         return;

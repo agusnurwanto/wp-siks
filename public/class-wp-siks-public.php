@@ -303,12 +303,6 @@ class Wp_Siks_Public {
 					$data_asli = json_decode($data);
 					*/
 
-					if(!empty($_POST['captcha'])){
-						$this->send_message(true, 'login_captcha');
-						update_option('siks_captcha_decrypt', $_POST['captcha']);
-						sleep(20);
-					}
-
 					$param_encrypt = $_POST['data'];
 					$options = array(
 						'url' => 'https://api.kemensos.go.id/viewbnba/bnba-list',
@@ -331,7 +325,7 @@ class Wp_Siks_Public {
 						$ret['status'] = 'error';
 						$ret['message'] = 'Tidak bisa terhubung ke server. Coba lagi nanti!';
 					}else{
-						if(strpos('cURL Error', $data_asli) == -1){
+						if(strpos('cURL Error', $data_asli) === true){
 							$ret['status'] = 'error';
 							$ret['message'] = 'Tidak bisa terhubung ke server. Coba lagi nanti!';
 						}
@@ -411,6 +405,24 @@ class Wp_Siks_Public {
 		update_option('siks_cronjob', $no);
 	}
 
+	public function proses_captcha(){
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil memproses captcha!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+			update_option('siks_captcha_decrypt', $_POST['captcha']);
+			$this->send_message(true, 'login_captcha');
+		}else{
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
+
 	public function set_token(){
 		global $wpdb;
 		$ret = array(
@@ -455,6 +467,7 @@ class Wp_Siks_Public {
 		  	}else{
 		  		$data['action'] = $message;
 		  		$data['captcha'] = get_option('siks_captcha_decrypt');
+		  		$data['key'] = get_option('siks_captcha_key');
 		  	}
 		  	$pusher->trigger('my-channel', 'my-event', $data);
 		}else{
@@ -479,6 +492,7 @@ class Wp_Siks_Public {
 		);
 		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
 		  	update_option('siks_captcha', str_replace("'", "", $wpdb->prepare('%s', $_POST['captcha'])));
+		  	update_option('siks_captcha_key', str_replace("'", "", $wpdb->prepare('%s', $_POST['key'])));
 		  	update_option('siks_captcha_decrypt', '');
 		}else{
 			$ret = array(

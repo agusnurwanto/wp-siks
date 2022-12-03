@@ -192,6 +192,8 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_nopriv_set_captcha',  $plugin_public, 'set_captcha');
 		$this->loader->add_action('wp_ajax_get_captcha',  $plugin_public, 'get_captcha');
 		$this->loader->add_action('wp_ajax_nopriv_get_captcha',  $plugin_public, 'get_captcha');
+		$this->loader->add_action('wp_ajax_proses_captcha',  $plugin_public, 'proses_captcha');
+		$this->loader->add_action('wp_ajax_nopriv_proses_captcha',  $plugin_public, 'proses_captcha');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 
