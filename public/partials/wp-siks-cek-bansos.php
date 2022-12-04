@@ -165,7 +165,7 @@ if(is_user_logged_in()){
                     if(!new_data.success){
                         alert("Maaf ada kendala server dengan kode 111. Harap hubungi Admin!");
                         console.log(new_data.message);
-                    <?php if(get_option('crb_siks_auto_login') == '1'): ?>
+                    <?php if(get_option('_crb_siks_auto_login') == '1'): ?>
                         jQuery.ajax({
                             url: ajax.url,
                             type: 'post',
@@ -187,8 +187,10 @@ if(is_user_logged_in()){
                                         },
                                         success: function(res){
                                             console.log(res);
-                                            jQuery('#captcha-img').attr('src', res.captcha);
-                                            jQuery('#modal-captcha').modal('show');
+                                            if(res.captcha != ''){
+                                                jQuery('#captcha-img').attr('src', res.captcha);
+                                                jQuery('#modal-captcha').modal('show');
+                                            }
                                             jQuery('#wrap-loading').hide();
                                         }
                                     });

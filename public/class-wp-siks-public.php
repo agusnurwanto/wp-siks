@@ -360,7 +360,7 @@ class Wp_Siks_Public {
 			$no_error = 0;
 			update_option('siks_last_cookie', $current_cookie);
 		}
-		if($no_error == 10){
+		if($no_error >= 10){
 			die('Maksimal error get data ke server. RUN sukses ke '.$no.' dan RUN error ke '.$no_error);
 		}
 		$param_encrypt = get_option('_crb_siks_param_encrypt');
@@ -431,6 +431,10 @@ class Wp_Siks_Public {
 		);
 		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
 			update_option('_crb_siks_cookie', $_POST['token']);
+			// update cronjob error jadi 0 agar cronjob berjalan lagi dan get captcha tidak dilanjutkan
+		  	update_option('siks_cronjob_error', 0);
+			$message = "Berhasil update SIKS authorization / token / login session!";
+		  	$ret['tg'] = $this->functions->send_tg(array('message' => $message));
 		}else{
 			$ret = array(
 				'status' => 'error',
@@ -470,6 +474,8 @@ class Wp_Siks_Public {
 		  		}
 		  		$data['action'] = $_POST['action_pusher'];
 		  	}else if(empty($message)){
+		  		// update cronjob error jadi 10 agar cronjob tidak aktif dan penanda kalau harus get token
+		  		update_option('siks_cronjob_error', 10);
 		  		$data['action'] = 'require_login';
 		  	}else{
 		  		$data['action'] = $message;
@@ -501,6 +507,8 @@ class Wp_Siks_Public {
 		  	update_option('siks_captcha', str_replace("'", "", $wpdb->prepare('%s', $_POST['captcha'])));
 		  	update_option('siks_captcha_key', str_replace("'", "", $wpdb->prepare('%s', $_POST['key'])));
 		  	update_option('siks_captcha_decrypt', '');
+		  	$message = "Set captcha login SIKS!";
+		  	$this->functions->send_tg(array('message' => $message));
 		}else{
 			$ret = array(
 				'status' => 'error',
@@ -518,6 +526,11 @@ class Wp_Siks_Public {
 		);
 		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
 		  	$ret['captcha'] = get_option('siks_captcha');
+		  	$error = get_option('siks_cronjob_error');
+		  	// cek jika cronjob error sama dengan 0 maka get captcha tidak dilanjutkan
+		  	if($error == 0){
+		  		$ret['captcha'] = '';
+		  	}
 		}else{
 			$ret = array(
 				'status' => 'error',

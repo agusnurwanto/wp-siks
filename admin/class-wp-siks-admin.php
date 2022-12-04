@@ -148,9 +148,9 @@ class Wp_Siks_Admin {
 	            Field::make( 'text', 'crb_siks_pusher_cluster', 'PUSHER APP CLUSTER' )
 	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.'),
 	            Field::make( 'text', 'crb_siks_bot_tg', 'Telegram bot API' )
-	            	->set_help_text('Bot Father <a href="Bot Father https://t.me/BotFather" target="_blank">https://t.me/BotFather</a>. Referensi: https://www.ruangdeveloper.com/blog/membuat-bot-telegram-sederhana-menggunakan-php/'),
+	            	->set_help_text('Bot Father <a href="Bot Father https://t.me/BotFather" target="_blank">https://t.me/BotFather</a> (tambahkan kata <b>bot</b> di depan token bot). Referensi: https://www.ruangdeveloper.com/blog/membuat-bot-telegram-sederhana-menggunakan-php/'),
 	            Field::make( 'text', 'crb_siks_akun_tg', 'ID akun telegram' )
-	            	->set_help_text('ID telegram admin yang akan dikirim notifikasi. Bisa lebih dari satu dengan dipisah tanda koma (,).'),
+	            	->set_help_text('ID telegram admin yang akan dikirim notifikasi. Bisa lebih dari satu dengan dipisah tanda koma (,). Untuk mendapatkan ID akun bisa melakuan chat dengan akun <a href="https://t.me/SIKSotpBot" target="_blank">https://t.me/SIKSotpBot</a>.'),
 	            Field::make( 'radio', 'crb_siks_auto_login', 'Auto Login' )
 	            	->add_options( array(
 				        '1' => __( 'Ya' ),
