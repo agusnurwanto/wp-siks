@@ -540,6 +540,99 @@ class Wp_Siks_Public {
 		die(json_encode($ret));
 	}
 
+	public function get_data_dtks(){
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil get captcha!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+		  	// get data dtks dari db dan kirim ke WP-SATSET
+		}else{
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
+
+	public function singkronisasi_dtks(){
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil backup data DTKS!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+		  	$data = json_decode(stripslashes(html_entity_decode($_POST['data'])), true);
+		  	foreach($data as $orang){
+		  		$cek_id = $wpdb->get_var($wpdb->prepare("
+					SELECT
+						id
+					FROM data_dtks
+					WHERE Nama = %s
+						AND verifyid = %s
+				", $orang['Nama'], $orang['verifyid']));
+
+				$opsi = array(
+					'Alamat' => $orang['Alamat'],
+					'BLT' => $orang['BLT'],
+					'BLT_BBM' => $orang['BLT_BBM'],
+					'BNPT_PPKM' => $orang['BNPT_PPKM'],
+					'BPNT' => $orang['BPNT'],
+					'BST' => $orang['BST'],
+					'FIRST_SK' => $orang['FIRST_SK'],
+					'NIK' => $orang['NIK'],
+					'NOKK' => $orang['NOKK'],
+					'Nama' => $orang['Nama'],
+					'PBI' => $orang['PBI'],
+					'PKH' => $orang['PKH'],
+					'RUTILAHU' => $orang['RUTILAHU'],
+					'SEMBAKO_ADAPTIF' => $orang['SEMBAKO_ADAPTIF'],
+					'checkBtnHamil' => $orang['checkBtnHamil'],
+					'checkBtnVerifMeninggal' => $orang['checkBtnVerifMeninggal'],
+					'counter' => $orang['counter'],
+					'deleted_label' => $orang['deleted_label'],
+					'idsemesta' => $orang['idsemesta'],
+					'isAktifHamil' => $orang['isAktifHamil'],
+					'is_btn_dapodik' => $orang['is_btn_dapodik'],
+					'is_btn_hidupkan' => $orang['is_btn_hidupkan'],
+					'is_btn_padankan' => $orang['is_btn_padankan'],
+					'is_nonaktif' => $orang['is_nonaktif'],
+					'keterangan_disabilitas' => json_encode($orang['keterangan_disabilitas']),
+					'keterangan_meninggal' => $orang['keterangan_meninggal'],
+					'masih_hidup_label' => $orang['masih_hidup_label'],
+					'padankan_at' => $orang['padankan_at'],
+					'periode_blt' => $orang['periode_blt'],
+					'periode_blt_bbm' => $orang['periode_blt_bbm'],
+					'periode_bpnt' => $orang['periode_bpnt'],
+					'periode_bpnt_ppkm' => $orang['periode_bpnt_ppkm'],
+					'periode_bst' => $orang['periode_bst'],
+					'periode_pbi' => $orang['periode_pbi'],
+					'periode_pkh' => $orang['periode_pkh'],
+					'periode_rutilahu' => $orang['periode_rutilahu'],
+					'periode_sembako_adaptif' => $orang['periode_sembako_adaptif'],
+					'verifyid' => $orang['verifyid'],
+					'update_at' => date('Y-m-d H:i:s'),
+					'active' => 1
+				);
+				if(empty($cek_id)){
+					$wpdb->insert('data_dtks', $opsi);
+				}else{
+					$wpdb->update('data_dtks', $opsi, array(
+						'id' => $cek_id
+					));
+				}
+		  	}
+		}else{
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
+
 	public function my_cron_schedules($schedules){
 	    if(!isset($schedules["custom_min"])){
 	        $schedules["custom_min"] = array(
