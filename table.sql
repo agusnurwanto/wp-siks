@@ -1,5 +1,9 @@
 CREATE TABLE `data_dtks` (
     `id` int(11) NOT NULL auto_increment,
+    `kecamatan` TEXT DEFAULT NULL,
+    `desa_kelurahan` TEXT DEFAULT NULL,
+    `id_kec` VARCHAR(30) DEFAULT NULL,
+    `id_desa` VARCHAR(30) DEFAULT NULL,
     `Alamat` TEXT DEFAULT NULL,
     `BLT` TEXT DEFAULT NULL,
     `BLT_BBM` TEXT DEFAULT NULL,

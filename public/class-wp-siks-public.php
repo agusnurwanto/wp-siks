@@ -565,7 +565,12 @@ class Wp_Siks_Public {
 		);
 		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
 		  	$data = json_decode(stripslashes(html_entity_decode($_POST['data'])), true);
-		  	foreach($data as $orang){
+		  	if($data['page'] == 0){
+		  		$wpdb->update("data_dtks", array('active' => 0), array(
+		  			'id_desa' => $data['meta']['id_desa']
+		  		));
+		  	}
+		  	foreach($data['data'] as $orang){
 		  		$cek_id = $wpdb->get_var($wpdb->prepare("
 					SELECT
 						id
@@ -575,6 +580,10 @@ class Wp_Siks_Public {
 				", $orang['Nama'], $orang['verifyid']));
 
 				$opsi = array(
+					'kecamatan' => $data['meta']['kecamatan'],
+					'desa_kelurahan' => $data['meta']['desa_kelurahan'],
+					'id_kec' => $data['meta']['id_kec'],
+					'id_desa' => $data['meta']['id_desa'],
 					'Alamat' => $orang['Alamat'],
 					'BLT' => $orang['BLT'],
 					'BLT_BBM' => $orang['BLT_BBM'],
