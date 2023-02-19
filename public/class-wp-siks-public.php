@@ -547,7 +547,14 @@ class Wp_Siks_Public {
 			'message'	=> 'Berhasil get captcha!'
 		);
 		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
-		  	// get data dtks dari db dan kirim ke WP-SATSET
+		  	$data = $wpdb->get_results($wpdb->prepare("
+				SELECT
+					*
+				FROM data_dtks
+				WHERE kecamatan=%s
+					AND desa_kelurahan=%s
+			", $_POST['kecamatan'], $_POST['desa']));
+			$ret['data'] = $data;
 		}else{
 			$ret = array(
 				'status' => 'error',
