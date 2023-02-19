@@ -33,6 +33,10 @@ class Wp_Siks_Activator {
         if(!wp_next_scheduled('siks_conjob')){
             wp_schedule_event( time(), 'custom_min', 'siks_conjob' );
         }
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        $path = SIKS_PLUGIN_PATH.'/tabel.sql';
+        $sql = file_get_contents($path);
+        dbDelta($sql);
 	}
 
 }
