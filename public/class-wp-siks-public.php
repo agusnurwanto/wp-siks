@@ -560,6 +560,7 @@ class Wp_Siks_Public {
 	public function singkronisasi_dtks(){
 		global $wpdb;
 		$ret = array(
+			'action'	=> 'singkronisasi_dtks',
 			'status'	=> 'success',
 			'message'	=> 'Berhasil backup data DTKS!'
 		);
@@ -575,9 +576,10 @@ class Wp_Siks_Public {
 					SELECT
 						id
 					FROM data_dtks
-					WHERE Nama = %s
+					WHERE id_desa = %s
+						AND Nama = %s
 						AND verifyid = %s
-				", $orang['Nama'], $orang['verifyid']));
+				", $data['meta']['id_desa'], $orang['Nama'], $orang['verifyid']));
 
 				$opsi = array(
 					'kecamatan' => $data['meta']['kecamatan'],

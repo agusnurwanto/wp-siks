@@ -44,5 +44,6 @@ CREATE TABLE `data_dtks` (
     `verifyid` TEXT DEFAULT NULL,
     `active` tinyint(4) DEFAULT NULL,
     `update_at` datetime NOT NULL,
-    PRIMARY KEY  (id)
+    PRIMARY KEY  (id),
+    INDEX(`id_desa`)
 );
