@@ -16,8 +16,7 @@ function sql_migrate_siks(){
 		url: ajaxurl,
       	type: "post",
       	data: {
-      		"action": "sql_migrate_siks",
-      		"api_key": wpsipd.api_key
+      		"action": "sql_migrate_siks"
       	},
       	dataType: "json",
       	success: function(data){

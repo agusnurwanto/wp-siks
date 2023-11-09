@@ -126,7 +126,7 @@ class Wp_Siks_Admin {
 	            	<ol>
 	            		<li><a target="_blank" href="'.$cek_bansos['url'].'">'.$cek_bansos['title'].'</a></li>
 	            		<li>Untuk melakukan refresh session login. Gunakan cronjob dengan interval per 5 menit mengakses <b>'.site_url().'/wp-admin/admin-ajax.php?action=refresh_token</b>. Saat ini cronjob sudah dilakukan sebanyak <b>'.get_option('siks_cronjob').'</b> kali.</li>
-	            		<li><button class="button button-primary" onclick="sql_migrate_siks(); return false;">SQL Migrate</button> (Tombol untuk memperbaiki struktur database WP-SIKS)</li>
+	            		<li><span class="button button-primary" onclick="sql_migrate_siks(); return false;">SQL Migrate</span> (Tombol untuk memperbaiki struktur database WP-SIKS)</li>
 	            	</ol>
 		        	' ),
 	            Field::make( 'text', 'crb_apikey_siks', 'API KEY' )
