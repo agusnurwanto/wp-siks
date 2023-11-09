@@ -41,6 +41,7 @@ CREATE TABLE `data_dtks` (
     `keterangan_meninggal` TEXT DEFAULT NULL,
     `masih_hidup_label` TEXT DEFAULT NULL,
     `padankan_at` TEXT DEFAULT NULL,
+    `pendampingShow` TEXT DEFAULT NULL,
     `periode_blt` TEXT DEFAULT NULL,
     `periode_blt_bbm` TEXT DEFAULT NULL,
     `periode_bpnt` TEXT DEFAULT NULL,
