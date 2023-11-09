@@ -589,10 +589,15 @@ class Wp_Siks_Public {
 				", $data['meta']['id_desa'], $orang['Nama'], $orang['verifyid']));
 
 				$opsi = array(
+					'provinsi' => $data['meta']['provinsi'], // baru
+					'kabupaten' => $data['meta']['kabupaten'], // baru
 					'kecamatan' => $data['meta']['kecamatan'],
 					'desa_kelurahan' => $data['meta']['desa_kelurahan'],
+					'prop_capil' => $data['meta']['prop_capil'], // baru
+					'kab_capil' => $data['meta']['kab_capil'], // baru
 					'id_kec' => $data['meta']['id_kec'],
 					'id_desa' => $data['meta']['id_desa'],
+					'ATENSI' => $orang['ATENSI'], // baru
 					'Alamat' => $orang['Alamat'],
 					'BLT' => $orang['BLT'],
 					'BLT_BBM' => $orang['BLT_BBM'],
@@ -604,9 +609,13 @@ class Wp_Siks_Public {
 					'NOKK' => $orang['NOKK'],
 					'Nama' => $orang['Nama'],
 					'PBI' => $orang['PBI'],
+					'PENA' => $orang['PENA'], // baru
+					'PERMAKANAN' => $orang['PERMAKANAN'], // baru
 					'PKH' => $orang['PKH'],
 					'RUTILAHU' => $orang['RUTILAHU'],
 					'SEMBAKO_ADAPTIF' => $orang['SEMBAKO_ADAPTIF'],
+					'YAPI' => $orang['YAPI'], // baru
+					'aktorLabel' => $orang['aktorLabel'], // baru
 					'checkBtnHamil' => $orang['checkBtnHamil'],
 					'checkBtnVerifMeninggal' => $orang['checkBtnVerifMeninggal'],
 					'counter' => $orang['counter'],
@@ -621,15 +630,19 @@ class Wp_Siks_Public {
 					'keterangan_meninggal' => $orang['keterangan_meninggal'],
 					'masih_hidup_label' => $orang['masih_hidup_label'],
 					'padankan_at' => $orang['padankan_at'],
+					'pendampingShow' => $orang['pendampingShow'],
 					'periode_blt' => $orang['periode_blt'],
 					'periode_blt_bbm' => $orang['periode_blt_bbm'],
 					'periode_bpnt' => $orang['periode_bpnt'],
 					'periode_bpnt_ppkm' => $orang['periode_bpnt_ppkm'],
 					'periode_bst' => $orang['periode_bst'],
 					'periode_pbi' => $orang['periode_pbi'],
+					'periode_pena' => $orang['periode_pena'], // baru
+					'periode_permakanan' => $orang['periode_permakanan'], // baru
 					'periode_pkh' => $orang['periode_pkh'],
 					'periode_rutilahu' => $orang['periode_rutilahu'],
 					'periode_sembako_adaptif' => $orang['periode_sembako_adaptif'],
+					'periode_yapi' => $orang['periode_yapi'], // baru
 					'verifyid' => $orang['verifyid'],
 					'update_at' => date('Y-m-d H:i:s'),
 					'active' => 1

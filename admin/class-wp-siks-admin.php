@@ -126,6 +126,7 @@ class Wp_Siks_Admin {
 	            	<ol>
 	            		<li><a target="_blank" href="'.$cek_bansos['url'].'">'.$cek_bansos['title'].'</a></li>
 	            		<li>Untuk melakukan refresh session login. Gunakan cronjob dengan interval per 5 menit mengakses <b>'.site_url().'/wp-admin/admin-ajax.php?action=refresh_token</b>. Saat ini cronjob sudah dilakukan sebanyak <b>'.get_option('siks_cronjob').'</b> kali.</li>
+	            		<li><button class="button button-primary" onclick="sql_migrate_siks(); return false;">SQL Migrate</button> (Tombol untuk memperbaiki struktur database WP-SIKS)</li>
 	            	</ol>
 		        	' ),
 	            Field::make( 'text', 'crb_apikey_siks', 'API KEY' )
@@ -165,7 +166,50 @@ class Wp_Siks_Admin {
 	            Field::make( 'text', 'crb_siks_pusher_secret', 'PUSHER APP SECRET' )
 	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.')
 	        ) );
+	}
 
+	function sql_migrate_siks(){
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil menjalankan SQL migrate!'
+		);
+		$file = 'table.sql';
+		$ret['value'] = $file.' (tgl: '.date('Y-m-d H:i:s').')';
+		$path = SIKS_PLUGIN_PATH.'/'.$file;
+		if(file_exists($path)){
+			$sql = file_get_contents($path);
+			$ret['sql'] = $sql;
+			if($file == 'table.sql'){
+				require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+				$wpdb->hide_errors();
+				$rows_affected = dbDelta($sql);
+				if(empty($rows_affected)){
+					$ret['status'] = 'error';
+					$ret['message'] = $wpdb->last_error;
+				}else{
+					$ret['message'] = implode(' | ', $rows_affected);
+				}
+			}else{
+				$wpdb->hide_errors();
+				$res = $wpdb->query($sql);
+				if(empty($res)){
+					$ret['status'] = 'error';
+					$ret['message'] = $wpdb->last_error;
+				}else{
+					$ret['message'] = $res;
+				}
+			}
+			if($ret['status'] == 'success'){
+				$ret['version'] = $this->version;
+				update_option('_last_update_sql_migrate_siks', $ret['value']);
+				update_option('_wp_sipd_db_version_siks', $this->version);
+			}
+		}else{
+			$ret['status'] = 'error';
+			$ret['message'] = 'File '.$path.' tidak ditemukan!';
+		}
+		die(json_encode($ret));
 	}
 
 }
