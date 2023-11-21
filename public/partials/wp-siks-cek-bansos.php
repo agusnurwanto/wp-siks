@@ -7,6 +7,7 @@ if(is_user_logged_in()){
         $login = true;
     }
 }
+$auto_login = get_option('_crb_siks_auto_login');
 ?>
 <div class="modal fade" id="modal-captcha" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -107,7 +108,7 @@ if(is_user_logged_in()){
             }
             jQuery('#wrap-loading').show();
             jQuery('#pesan').html('');
-            var param_encrypt = false;
+            var param_encrypt_asli = '<?php echo $auto_login; ?>';
             var data = {
                 "no_prop" : "<?php echo get_option('_crb_siks_prop'); ?>",
                 "no_kab" : "<?php echo get_option('_crb_siks_kab'); ?>",
@@ -123,9 +124,11 @@ if(is_user_logged_in()){
                 "psnoka" : "",
                 "nama" : ""
             };
-            param_encrypt = en(JSON.stringify(data));
+            if(param_encrypt_asli == 1){
+                var param_encrypt = en(JSON.stringify(data));
+            }
             new Promise(function(resolve, reduce){
-                if(!param_encrypt){
+                if(param_encrypt_asli != 1){
                     var data = {
                         action: 'get_data_bansos',
                         nik: nik,
@@ -157,7 +160,7 @@ if(is_user_logged_in()){
                     return alert(res.message);
                 }
 
-                if(param_encrypt){
+                if(param_encrypt_asli == 1){
                     var new_data= JSON.parse(de(res.data));
                 <?php if($login == true): ?>
                     console.log('new_data', new_data);
@@ -214,26 +217,28 @@ if(is_user_logged_in()){
                         data_all += ''
                             +'<tr>'
                                 +'<td class="text-center">'+(i+1)+'</td>'
-                                +'<td>'+b.NOKK+'</td>'
-                                +'<td>'+b.NIK+'</td>'
-                                +'<td>'+b.Nama+'</td>'
-                                +'<td>'+b.Alamat+'</td>'
-                                +'<td>'+b.FIRST_SK+'</td>'
-                                +'<td>'+b.padankan_at+'</td>'
-                                +'<td>'+b.BPNT+'</td>'
-                                +'<td>'+b.PKH+'</td>'
-                                +'<td>'+b.PBI+'</td>'
-                                +'<td>'+b.BLT+'</td>'
-                                +'<td>'+b.BLT_BBM+'</td>'
-                                +'<td>'+b.keterangan_meninggal+'</td>'
-                                +'<td>'+b.keterangan_disabilitas+'</td>'
+                                +'<td class="text-center">'+b.update_at+'</td>'
+                                +'<td class="text-center">'+b.NOKK+'</td>'
+                                +'<td class="text-center">'+b.NIK+'</td>'
+                                +'<td class="text-center">'+b.Nama+'</td>'
+                                +'<td class="text-center">'+b.Alamat+'</td>'
+                                +'<td class="text-center">'+b.FIRST_SK+'</td>'
+                                +'<td class="text-center">'+b.padankan_at+'</td>'
+                                +'<td class="text-center">'+b.BPNT+'</td>'
+                                +'<td class="text-center">'+b.PKH+'</td>'
+                                +'<td class="text-center">'+b.PBI+'</td>'
+                                +'<td class="text-center">'+b.BLT+'</td>'
+                                +'<td class="text-center">'+b.BLT_BBM+'</td>'
+                                +'<td class="text-center">'+b.keterangan_meninggal+'</td>'
+                                +'<td class="text-center">'+b.keterangan_disabilitas+'</td>'
                             +'</tr>';
                     });
                     var pesan = ''
-                        +'<table class="table table-bordered">'
+                        +'<table class="table table-bordered" style="width: 3000px;">'
                             +'<thead>'
                                 +'<tr>'
                                     +'<th class="text-center" style="width: 20px;">No</th>'
+                                    +'<th class="text-center">Waktu Update Data</th>'
                                     +'<th class="text-center">No KK</th>'
                                     +'<th class="text-center">NIK</th>'
                                     +'<th class="text-center">Nama</th>'
@@ -258,29 +263,31 @@ if(is_user_logged_in()){
                         data_all += ''
                             +'<tr>'
                                 +'<td class="text-center">'+(i+1)+'</td>'
-                                +'<td>'+b.NOKK+'</td>'
-                                +'<td>'+b.NIK+'</td>'
-                                +'<td>'+b.Nama+'</td>'
-                                +'<td>'+b.Alamat+'</td>'
-                                +'<td>'+b.FIRST_SK+'</td>'
-                                +'<td>'+b.padankan_at+'</td>'
-                                +'<td>'+b.BPNT+'</td>'
-                                +'<td>'+b.BST+'</td>'
-                                +'<td>'+b.PKH+'</td>'
-                                +'<td>'+b.PBI+'</td>'
-                                +'<td>'+b.BNPT_PPKM+'</td>'
-                                +'<td>'+b.BLT+'</td>'
-                                +'<td>'+b.BLT_BBM+'</td>'
-                                +'<td>'+b.RUTILAHU+'</td>'
-                                +'<td>'+b.keterangan_meninggal+'</td>'
-                                +'<td>'+b.keterangan_disabilitas+'</td>'
+                                +'<td class="text-center">'+b.update_at+'</td>'
+                                +'<td class="text-center">'+b.NOKK+'</td>'
+                                +'<td class="text-center">'+b.NIK+'</td>'
+                                +'<td class="text-center">'+b.Nama+'</td>'
+                                +'<td class="text-center">'+b.Alamat+'</td>'
+                                +'<td class="text-center">'+b.FIRST_SK+'</td>'
+                                +'<td class="text-center">'+b.padankan_at+'</td>'
+                                +'<td class="text-center">'+b.BPNT+'</td>'
+                                +'<td class="text-center">'+b.BST+'</td>'
+                                +'<td class="text-center">'+b.PKH+'</td>'
+                                +'<td class="text-center">'+b.PBI+'</td>'
+                                +'<td class="text-center">'+b.BNPT_PPKM+'</td>'
+                                +'<td class="text-center">'+b.BLT+'</td>'
+                                +'<td class="text-center">'+b.BLT_BBM+'</td>'
+                                +'<td class="text-center">'+b.RUTILAHU+'</td>'
+                                +'<td class="text-center">'+b.keterangan_meninggal+'</td>'
+                                +'<td class="text-center">'+b.keterangan_disabilitas+'</td>'
                             +'</tr>';
                     });
                     var pesan = ''
-                        +'<table class="table table-bordered">'
+                        +'<table class="table table-bordered" style="width: 3000px;">'
                             +'<thead>'
                                 +'<tr>'
                                     +'<th class="text-center" style="width: 20px;">No</th>'
+                                    +'<th class="text-center">Waktu Update Data</th>'
                                     +'<th class="text-center">No KK</th>'
                                     +'<th class="text-center">NIK</th>'
                                     +'<th class="text-center">Nama</th>'

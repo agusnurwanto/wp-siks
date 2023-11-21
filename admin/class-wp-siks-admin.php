@@ -132,6 +132,17 @@ class Wp_Siks_Admin {
 	            Field::make( 'text', 'crb_apikey_siks', 'API KEY' )
 	            	->set_default_value($this->functions->generateRandomString())
 	            	->set_help_text('Wajib diisi. API KEY digunakan untuk integrasi data.'),
+	            Field::make( 'text', 'crb_siks_captcha_public', 'Recaptcha public key' )
+	            	->set_help_text('Bisa dilihat di <a href="https://www.google.com/recaptcha/admin/site/" target="_blank">https://www.google.com/recaptcha/admin/site/</a>.'),
+	            Field::make( 'text', 'crb_siks_captcha_private', 'Recaptcha private key' )
+	            	->set_help_text('Bisa dilihat di <a href="https://www.google.com/recaptcha/admin/site/" target="_blank">https://www.google.com/recaptcha/admin/site/</a>.'),
+	            Field::make( 'radio', 'crb_siks_auto_login', 'Auto Login' )
+	            	->add_options( array(
+				        '1' => __( 'Ya' ),
+				        '2' => __( 'Tidak' )
+				    ) )
+	            	->set_default_value('2')
+	            	->set_help_text('Auto login ketika session habis.'),
 	            Field::make( 'text', 'crb_siks_cookie', 'SIKS authorization' )
 	            	->set_help_text('Nilai authorization setelah berhasil login ke aplikasi <a href="https://siks.kemensos.go.id/" target="_blank">siks.kemensos.go.id</a>.'),
 	            Field::make( 'text', 'crb_siks_param_encrypt', 'SIKS param encrypt' )
@@ -142,23 +153,12 @@ class Wp_Siks_Admin {
 	            	->set_help_text('Bisa dilihat di <a href="https://cekbansos.kemensos.go.id/" target="_blank">cekbansos.kemensos.go.id</a>.'),
 	            Field::make( 'text', 'crb_siks_kab', 'ID Kabupaten' )
 	            	->set_help_text('Bisa dilihat di <a href="https://cekbansos.kemensos.go.id/" target="_blank">cekbansos.kemensos.go.id</a>.'),
-	            Field::make( 'text', 'crb_siks_captcha_public', 'Recaptcha public key' )
-	            	->set_help_text('Bisa dilihat di <a href="https://www.google.com/recaptcha/admin/site/" target="_blank">https://www.google.com/recaptcha/admin/site/</a>.'),
-	            Field::make( 'text', 'crb_siks_captcha_private', 'Recaptcha private key' )
-	            	->set_help_text('Bisa dilihat di <a href="https://www.google.com/recaptcha/admin/site/" target="_blank">https://www.google.com/recaptcha/admin/site/</a>.'),
 	            Field::make( 'text', 'crb_siks_pusher_cluster', 'PUSHER APP CLUSTER' )
 	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.'),
 	            Field::make( 'text', 'crb_siks_bot_tg', 'Telegram bot API' )
 	            	->set_help_text('Bot Father <a href="Bot Father https://t.me/BotFather" target="_blank">https://t.me/BotFather</a> (tambahkan kata <b>bot</b> di depan token bot). Referensi: https://www.ruangdeveloper.com/blog/membuat-bot-telegram-sederhana-menggunakan-php/'),
 	            Field::make( 'text', 'crb_siks_akun_tg', 'ID akun telegram' )
 	            	->set_help_text('ID telegram admin yang akan dikirim notifikasi. Bisa lebih dari satu dengan dipisah tanda koma (,). Untuk mendapatkan ID akun bisa melakuan chat dengan akun <a href="https://t.me/SIKSotpBot" target="_blank">https://t.me/SIKSotpBot</a>.'),
-	            Field::make( 'radio', 'crb_siks_auto_login', 'Auto Login' )
-	            	->add_options( array(
-				        '1' => __( 'Ya' ),
-				        '2' => __( 'Tidak' )
-				    ) )
-	            	->set_default_value('2')
-	            	->set_help_text('Auto login ketika session habis.'),
 	            Field::make( 'text', 'crb_siks_pusher_id', 'PUSHER APP ID' )
 	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.'),
 	            Field::make( 'text', 'crb_siks_pusher_key', 'PUSHER APP KEY' )
