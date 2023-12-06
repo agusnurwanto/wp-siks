@@ -117,6 +117,61 @@ class Wp_Siks_Admin {
 			'post_status' => 'publish'
 		));
 
+		$peta_batas_desa = $this->functions->generatePage(array(
+			'nama_page' => 'Peta Batas Desa', 
+			'content' => '[peta_satset_desa]',
+        	'show_header' => 1,
+        	'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
+		$peta_batas_kecamatan = $this->functions->generatePage(array(
+			'nama_page' => 'Peta Batas Kecamatan', 
+			'content' => '[peta_satset_kecamatan]',
+        	'show_header' => 1,
+        	'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
+		$data_dtks = $this->functions->generatePage(array(
+			'nama_page' => 'Data DTKS', 
+			'content' => '[data_dtks]',
+        	'show_header' => 1,
+        	'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
+		$data_batas_desa = $this->functions->generatePage(array(
+			'nama_page' => 'Data Desa', 
+			'content' => '[data_batas_desa]',
+        	'show_header' => 1,
+        	'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
+		$data_batas_kecamatan = $this->functions->generatePage(array(
+			'nama_page' => 'Data Kecamatan', 
+			'content' => '[data_batas_kecamatan]',
+        	'show_header' => 1,
+        	'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
+		$management_data_batas_desa = $this->functions->generatePage(array(
+			'nama_page' => 'Management Data Desa',
+			'content' => '[management_data_batas_desa_satset]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'private'
+		));
+		$management_data_batas_kecamatan = $this->functions->generatePage(array(
+			'nama_page' => 'Management Data Kecamatan',
+			'content' => '[management_data_batas_kecamatan_satset]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'private'
+		));
+
 		$basic_options_container = Container::make( 'theme_options', __( 'SIKS Options' ) )
 			->set_page_menu_position( 4 )
 	        ->add_fields( array(
@@ -127,6 +182,9 @@ class Wp_Siks_Admin {
 	            		<li><a target="_blank" href="'.$cek_bansos['url'].'">'.$cek_bansos['title'].'</a></li>
 	            		<li>Untuk melakukan refresh session login. Gunakan cronjob dengan interval per 5 menit mengakses <b>'.site_url().'/wp-admin/admin-ajax.php?action=refresh_token</b>. Saat ini cronjob sudah dilakukan sebanyak <b>'.get_option('siks_cronjob').'</b> kali.</li>
 	            		<li><span class="button button-primary" onclick="sql_migrate_siks(); return false;">SQL Migrate</span> (Tombol untuk memperbaiki struktur database WP-SIKS)</li>
+	            		<li><a target="_blank" href="'.$peta_batas_desa['url'].'">'.$peta_batas_desa['title'].'</a></li>
+	            		<li><a target="_blank" href="'.$peta_batas_kecamatan['url'].'">'.$peta_batas_kecamatan['title'].'</a></li>
+	            		<li><a target="_blank" href="'.$data_dtks['url'].'">'.$data_dtks['title'].'</a></li>
 	            	</ol>
 		        	' ),
 	            Field::make( 'text', 'crb_apikey_siks', 'API KEY' )
@@ -165,6 +223,39 @@ class Wp_Siks_Admin {
 	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.'),
 	            Field::make( 'text', 'crb_siks_pusher_secret', 'PUSHER APP SECRET' )
 	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.')
+	        ) );
+
+		Container::make( 'theme_options', __( 'Data DTKS' ) )
+			->set_page_parent( $basic_options_container )
+			->add_fields( array(
+		        Field::make( 'text', 'crb_dtks_satset_server', 'Alamat server WP-SIKS' )
+		        	->set_default_value(site_url().'/wp-admin/admin-ajax.php'),
+		        Field::make( 'text', 'crb_dtks_satset_api_key', 'API KEY WP-SIKS' ),
+		        Field::make( 'html', 'crb_dtks_save_button' )
+	            	->set_html( '<div id="pilih-desa"></div><div style="text-align: center; margin: 10px;"><a onclick="get_data_dtks(); return false" href="javascript:void(0);" class="button button-primary">Singkronisasi Data</a></div>' )
+	        ) );
+
+	    Container::make( 'theme_options', __( 'Data Desa' ) )
+			->set_page_parent( $basic_options_container )
+			->add_fields( array(
+			Field::make( 'html', 'crb_satset_halaman_terkait_desa' )
+		        	->set_html( '
+					<h5>HALAMAN TERKAIT</h5>
+	            	<ol>
+	            		<li><a target="_blank" href="'.$management_data_batas_desa['url'].'">'.$management_data_batas_desa['title'].'</a></li>
+	            	</ol>
+		        	' )
+	        ) );
+	    Container::make( 'theme_options', __( 'Data Kecamatan' ) )
+			->set_page_parent( $basic_options_container )
+			->add_fields( array(
+			Field::make( 'html', 'crb_satset_halaman_terkait_kecamatan' )
+		        	->set_html( '
+					<h5>HALAMAN TERKAIT</h5>
+	            	<ol>
+	            		<li><a target="_blank" href="'.$management_data_batas_kecamatan['url'].'">'.$management_data_batas_kecamatan['title'].'</a></li>
+	            	</ol>
+		        	' )
 	        ) );
 	}
 
