@@ -120,6 +120,27 @@ class Wp_Siks_Public {
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-cek-bansos.php';
 	}
 
+	public function peta_siks_desa(){
+		if(!empty($_GET) && !empty($_GET['post'])){
+			return '';
+		}
+		echo 'SIKS Desa';
+	}
+
+	public function peta_siks_kecamatan(){
+		if(!empty($_GET) && !empty($_GET['post'])){
+			return '';
+		}
+		echo 'SIKS Kacamatan';
+	}
+
+	public function data_dtks_siks(){
+		if(!empty($_GET) && !empty($_GET['post'])){
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-dtks.php';
+	}
+
 	public function get_data_bansos_lama(){
 		global $wpdb;
 		$ret = array(
@@ -575,6 +596,163 @@ class Wp_Siks_Public {
 	            'display' => __('Once every 30 minutes'));
 	    }
 	    return $schedules;
+	}
+
+	public function get_center(){
+		$center_map_default = get_option('_crb_google_map_center_siks');
+		$ret = array(
+			'lat' => 0,
+			'lng' => 0
+		);
+		if(!empty($center_map_default)){
+			$center_map_default = explode(',', $center_map_default);
+			$ret['lat'] = $center_map_default[0];
+			$ret['lng'] = $center_map_default[1];
+		}
+		return $ret;
+	}
+
+	function get_polygon($options = array( 'type' => 'desa' )){
+		global $wpdb;
+
+		$default_color = get_option('_crb_warna_p3ke_siks');
+		$prov = get_option('_crb_siks_prop');
+		$where = " provinsi='$prov'";
+		$kab = get_option('_crb_siks_kab');
+		if($options['type'] == 'desa'){
+			if(!empty($kab)){
+				$where .= " and kab_kot='$kab'";
+			}
+			$data = $wpdb->get_results("
+				SELECT 
+					* 
+				FROM data_batas_desa_siks 
+				WHERE $where
+				ORDER BY provinsi, kab_kot, kecamatan, desa
+			", ARRAY_A);
+		}else if($options['type'] == 'kecamatan'){
+			if(!empty($kab)){
+				$where .= " and kabkot='$kab'";
+			}
+			$data = $wpdb->get_results("
+				SELECT 
+					* 
+				FROM data_batas_kecamatan_siks 
+				WHERE $where
+				ORDER BY provinsi, kabkot, kecamatan
+			", ARRAY_A);
+		}
+		$new_data = array();
+		foreach($data as $val){
+			$coordinate = json_decode($val['polygon'], true);
+			if(!empty($coordinate)){
+				unset($val['polygon']);
+				$new_data[] = array(
+					'coor' => $coordinate,
+					'data' => $val,
+					'html' => json_encode($val),
+					'color' => $default_color
+				);
+			}
+		}
+
+		// SELECT * FROM data_batas_desa WHERE provinsi='JAWA TIMUR' and kab_kot='MAGETAN' and desa IN ('KAUMAN','PATIHAN', 'ALASTUWO') order by desa;
+		return $new_data;
+	}
+
+	function get_dtks(){
+		global $wpdb;
+		$prov = get_option('_crb_siks_prop');
+		$where = " provinsi='$prov'";
+		$kab = get_option('_crb_siks_kab');
+		if(!empty($kab)){
+			$where .= " and kabkot='$kab'";
+		}
+		$data = $wpdb->get_results("
+			SELECT 
+				provinsi, 
+				kabkot, 
+				kecamatan, 
+				desa,
+				BLT, 
+				BLT_BBM, 
+				BPNT, 
+				PKH, 
+				PBI,
+				COUNT(BLT) as jml
+			FROM data_dtks 
+			WHERE $where
+				AND is_nonaktif is null
+				AND active=1
+			GROUP BY provinsi, kabkot, kecamatan, desa, BLT, BLT_BBM, BPNT, PKH, PBI
+			ORDER BY provinsi, kabkot, kecamatan
+		", ARRAY_A);
+
+		return $data;
+	}
+
+	function getSearchLocation($data = array()){
+		$text = '';
+		if(!empty($data['desa'])){
+			$text .= ' '.$data['desa'];
+		}
+		if(!empty($data['kecamatan'])){
+			if(
+				empty($data['desa'])
+				|| (
+					!empty($data['desa']) 
+					&& $data['kecamatan'] != $data['desa']
+				)
+			){
+				$text .= ' '.$data['kecamatan'];
+			}
+		}
+		if(!empty($data['kab_kot'])){
+			if(
+				empty($data['kecamatan'])
+				|| (
+					!empty($data['kecamatan']) 
+					&& $data['kab_kot'] != $data['kecamatan']
+				)
+			){
+				$text .= ' '.$data['kab_kot'];
+			}
+		}
+		if(!empty($data['kabkot'])){
+			if(
+				empty($data['kecamatan'])
+				|| (
+					!empty($data['kecamatan']) 
+					&& $data['kabkot'] != $data['kecamatan']
+				)
+			){
+				$text .= ' '.$data['kabkot'];
+			}
+		}
+		if(!empty($data['provinsi'])){
+			$text .= ' '.$data['provinsi'];
+		}
+		return $text;
+	}
+
+	public function getNamaDaerah($value=''){
+		$prov = get_option('_crb_siks_prop');
+		$ret = "Provinsi $prov";
+		$kab = get_option('_crb_siks_kab');
+		if(!empty($kab)){
+			$ret = "Kabupaten $kab<br>$ret";
+		}
+		return $ret;
+	}
+
+	public function number_format($number){
+		return number_format($number, 0,",",".");
+	}
+
+	function get_siks_map_url(){
+		$api_googlemap = get_option( '_crb_google_api_siks' );
+		$api_googlemap = "https://maps.googleapis.com/maps/api/js?key=$api_googlemap&callback=initMap&libraries=places&libraries=drawing";
+		return $api_googlemap;
 	}
 
 }

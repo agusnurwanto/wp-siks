@@ -119,7 +119,7 @@ class Wp_Siks_Admin {
 
 		$peta_batas_desa = $this->functions->generatePage(array(
 			'nama_page' => 'Peta Batas Desa', 
-			'content' => '[peta_satset_desa]',
+			'content' => '[peta_desa_siks]',
         	'show_header' => 1,
         	'no_key' => 1,
 			'post_status' => 'publish'
@@ -127,49 +127,18 @@ class Wp_Siks_Admin {
 
 		$peta_batas_kecamatan = $this->functions->generatePage(array(
 			'nama_page' => 'Peta Batas Kecamatan', 
-			'content' => '[peta_satset_kecamatan]',
+			'content' => '[peta_kecamatan_siks]',
         	'show_header' => 1,
         	'no_key' => 1,
 			'post_status' => 'publish'
 		));
 
 		$data_dtks = $this->functions->generatePage(array(
-			'nama_page' => 'Data DTKS', 
-			'content' => '[data_dtks]',
+			'nama_page' => 'Data DTKS SIKS', 
+			'content' => '[data_dtks_siks]',
         	'show_header' => 1,
         	'no_key' => 1,
 			'post_status' => 'publish'
-		));
-
-		$data_batas_desa = $this->functions->generatePage(array(
-			'nama_page' => 'Data Desa', 
-			'content' => '[data_batas_desa]',
-        	'show_header' => 1,
-        	'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
-		$data_batas_kecamatan = $this->functions->generatePage(array(
-			'nama_page' => 'Data Kecamatan', 
-			'content' => '[data_batas_kecamatan]',
-        	'show_header' => 1,
-        	'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
-		$management_data_batas_desa = $this->functions->generatePage(array(
-			'nama_page' => 'Management Data Desa',
-			'content' => '[management_data_batas_desa_satset]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'private'
-		));
-		$management_data_batas_kecamatan = $this->functions->generatePage(array(
-			'nama_page' => 'Management Data Kecamatan',
-			'content' => '[management_data_batas_kecamatan_satset]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'private'
 		));
 
 		$basic_options_container = Container::make( 'theme_options', __( 'SIKS Options' ) )
@@ -207,9 +176,9 @@ class Wp_Siks_Admin {
 	            	->set_help_text('Nilai parameter yang dikirim ke server SIKS untuk menjaga session cookie tetap hidup.'),
 	            Field::make( 'text', 'crb_siks_key', 'SIKS key encrypt' )
 	            	->set_help_text('Nilai kunci yang dipakai untuk mengencrypt data yang akan dikirim ke server SIKS. Bisa dilihat di <a href="https://siks.kemensos.go.id/static/js/main.4d679ac9.js" target="_blank">https://siks.kemensos.go.id/static/js/main.4d679ac9.js</a>.'),
-	            Field::make( 'text', 'crb_siks_prop', 'ID Provinsi' )
+	            Field::make( 'text', 'crb_siks_prop', 'Nama Provinsi' )
 	            	->set_help_text('Bisa dilihat di <a href="https://cekbansos.kemensos.go.id/" target="_blank">cekbansos.kemensos.go.id</a>.'),
-	            Field::make( 'text', 'crb_siks_kab', 'ID Kabupaten' )
+	            Field::make( 'text', 'crb_siks_kab', 'Nama Kabupaten/Kota' )
 	            	->set_help_text('Bisa dilihat di <a href="https://cekbansos.kemensos.go.id/" target="_blank">cekbansos.kemensos.go.id</a>.'),
 	            Field::make( 'text', 'crb_siks_pusher_cluster', 'PUSHER APP CLUSTER' )
 	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.'),
@@ -225,37 +194,37 @@ class Wp_Siks_Admin {
 	            	->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.')
 	        ) );
 
-		Container::make( 'theme_options', __( 'Data DTKS' ) )
+		Container::make( 'theme_options', __( 'Google Maps' ) )
 			->set_page_parent( $basic_options_container )
 			->add_fields( array(
-		        Field::make( 'text', 'crb_dtks_satset_server', 'Alamat server WP-SIKS' )
-		        	->set_default_value(site_url().'/wp-admin/admin-ajax.php'),
-		        Field::make( 'text', 'crb_dtks_satset_api_key', 'API KEY WP-SIKS' ),
-		        Field::make( 'html', 'crb_dtks_save_button' )
-	            	->set_html( '<div id="pilih-desa"></div><div style="text-align: center; margin: 10px;"><a onclick="get_data_dtks(); return false" href="javascript:void(0);" class="button button-primary">Singkronisasi Data</a></div>' )
-	        ) );
-
-	    Container::make( 'theme_options', __( 'Data Desa' ) )
-			->set_page_parent( $basic_options_container )
-			->add_fields( array(
-			Field::make( 'html', 'crb_satset_halaman_terkait_desa' )
-		        	->set_html( '
-					<h5>HALAMAN TERKAIT</h5>
-	            	<ol>
-	            		<li><a target="_blank" href="'.$management_data_batas_desa['url'].'">'.$management_data_batas_desa['title'].'</a></li>
-	            	</ol>
-		        	' )
-	        ) );
-	    Container::make( 'theme_options', __( 'Data Kecamatan' ) )
-			->set_page_parent( $basic_options_container )
-			->add_fields( array(
-			Field::make( 'html', 'crb_satset_halaman_terkait_kecamatan' )
-		        	->set_html( '
-					<h5>HALAMAN TERKAIT</h5>
-	            	<ol>
-	            		<li><a target="_blank" href="'.$management_data_batas_kecamatan['url'].'">'.$management_data_batas_kecamatan['title'].'</a></li>
-	            	</ol>
-		        	' )
+	        	Field::make( 'map', 'crb_google_map_center_siks', 'Lokasi default Google Maps' ),
+	        	Field::make( 'text', 'crb_google_map_id', 'ID google map' )
+	        		->set_default_value('118b4b0052053d3a')
+	        		->set_help_text('Referensi untuk untuk membuat ID Google Maps <a href="https://youtu.be/tAR63GBwk90" target="blank">https://youtu.be/tAR63GBwk90</a>'),
+	        	Field::make( 'text', 'crb_google_api_siks', 'Google Maps APIKEY' )
+	        		->set_default_value('AIzaSyDBrDSUIMFDIleLOFUUXf1wFVum9ae3lJ0')
+	        		->set_help_text('Referensi untuk menampilkan google map <a href="https://developers.google.com/maps/documentation/javascript/examples/map-simple" target="blank">https://developers.google.com/maps/documentation/javascript/examples/map-simple</a>. Referensi untuk manajemen layer di Google Maps <a href="https://youtu.be/tAR63GBwk90" target="blank">https://youtu.be/tAR63GBwk90</a>'),
+	        	Field::make( 'color', 'crb_warna_p3ke_siks', 'Warna garis P3KE' )
+	        		->set_default_value('#00cc00'),
+	        	Field::make( 'image', 'crb_icon_p3ke_siks', 'Icon keluarga P3KE' )
+	        		->set_value_type('url')
+        			->set_default_value(SIKS_PLUGIN_URL.'public/images/lokasi.png'),
+	        	Field::make( 'color', 'crb_warna_stanting_siks', 'Warna garis stanting' )
+	        		->set_default_value('#CC0003'),
+	        	Field::make( 'image', 'crb_icon_stanting_siks', 'Icon anak stanting' )
+	        		->set_value_type('url')
+        			->set_default_value(SIKS_PLUGIN_URL.'public/images/lokasi.png'),
+	        	Field::make( 'color', 'crb_warna_dtks_siks', 'Warna garis DTKS' )
+	        		->set_default_value('#005ACC'),
+	        	Field::make( 'image', 'crb_icon_dtks_siks', 'Icon dtks' )
+	        		->set_value_type('url')
+        			->set_default_value(SIKS_PLUGIN_URL.'public/images/lokasi.png'),
+	        	Field::make( 'image', 'crb_icon_desa_siks', 'Icon desa' )
+	        		->set_value_type('url')
+        			->set_default_value(SIKS_PLUGIN_URL.'public/images/lokasi.png'),
+	        	Field::make( 'image', 'crb_icon_kecamatan_siks', 'Icon kecamatan' )
+	        		->set_value_type('url')
+        			->set_default_value(SIKS_PLUGIN_URL.'public/images/lokasi.png')
 	        ) );
 	}
 

@@ -201,6 +201,9 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_nopriv_singkronisasi_dtks',  $plugin_public, 'singkronisasi_dtks');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
+		add_shortcode('peta_desa_siks', array($plugin_public, 'peta_siks_desa'));
+		add_shortcode('peta_kecamatan_siks', array($plugin_public, 'peta_siks_kecamatan'));
+		add_shortcode('data_dtks_siks', array($plugin_public, 'data_dtks_siks'));
 
 		// untuk menjalankan conjob refresh session
 		$this->loader->add_action('siks_conjob',  $plugin_public, 'refresh_token');
