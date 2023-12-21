@@ -99,3 +99,28 @@ CREATE TABLE `data_batas_kecamatan_siks` (
     `update_at` datetime DEFAULT current_timestamp,
     PRIMARY KEY  (id)
 );
+
+CREATE TABLE `data_lansia_siks` (
+    `id` int(11) NOT NULL auto_increment,
+    `nama` TEXT DEFAULT NULL,
+    `alamat` TEXT DEFAULT NULL,
+    `desa` TEXT DEFAULT NULL,
+    `kecamatan` TEXT DEFAULT NULL,
+    `nik` TEXT DEFAULT NULL,
+    `tanggal_lahir` TEXT DEFAULT NULL,
+    `usia` int(11) DEFAULT NULL,
+    `dokumen_kependudukan` TEXT DEFAULT NULL,
+    `status_tempat_tinggal` TEXT DEFAULT NULL,
+    `status_pemenuhan_kebutuhan` TEXT DEFAULT NULL,
+    `status_kehidupan_rumah_tangga` TEXT DEFAULT NULL,
+    `status_dtks` TEXT DEFAULT NULL,
+    `status_kepersertaan_program_bansos` TEXT DEFAULT NULL,
+    `rekomendasi_pendata_lama` TEXT DEFAULT NULL,
+    `keterangan_lainnya_lama` TEXT DEFAULT NULL,
+    `rekomendasi_pendata` text DEFAULT NULL,
+    `keterangan_lainnya` text DEFAULT NULL,
+    `tahun_anggaran` int(4) DEFAULT NULL,
+    `active` tinyint(4) DEFAULT 1,
+    `update_at` datetime DEFAULT current_timestamp,
+    PRIMARY KEY (id)
+);

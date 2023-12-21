@@ -3,6 +3,11 @@ $center = $this->get_center();
 $maps_all = $this->get_polygon();
 $dtks_all = $this->get_dtks();
 
+// print_r(get_option('_crb_google_map_center_satset'));die();
+// print_r(get_option('_crb_google_api_siks'));die();
+// print_r(get_option('_crb_google_api_satset'));die();
+// print_r(get_option('_crb_google_map_id'));die();
+
 $dtks_all_desa = array();
 foreach($dtks_all as $data){
     $index = $data['provinsi'].'.'.$data['kabkot'].'.'.$data['kecamatan'].'.'.$data['desa'];
