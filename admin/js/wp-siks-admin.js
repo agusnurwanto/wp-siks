@@ -67,74 +67,86 @@ function filePickedSiks(oEvent) {
 }
 
 function import_excel_lansia(){
-    var data = jQuery('#data-excel').val();
-    if(!data){
-        return alert('Excel Data can not empty!');
+    import_excel('import_excel_lansia', 'Success import data Lansia dari excel!');
+}
+
+function import_excel_disabilitas(action = '', message = ''){
+    import_excel('import_excel_disabilitas', 'Success import data Disabilitas dari excel!');
+}
+
+function import_excel(action = '', message = ''){
+    if(action == ''){
+        alert('Action tidak diketahui!');
     }else{
-        var update_active = prompt("Apakah anda mau menonaktifkan data sebelumnya? ketik 1 jika iya dan kosongkan saja jika tidak.");
+        var data = jQuery('#data-excel').val();
+        if(!data){
+            return alert('Excel Data can not empty!');
+        }else{
+            var update_active = prompt("Apakah anda mau menonaktifkan data sebelumnya? ketik 1 jika iya dan kosongkan saja jika tidak.");
 
-        if(update_active == null){
-            return false;
-        }
-
-        data = JSON.parse(data);
-        jQuery('#wrap-loading').show();
-
-        var data_all = [];
-        var data_sementara = [];
-        var max = 100;
-        data.map(function(b, i){
-            data_sementara.push(b);
-            if(data_sementara.length%max == 0){
-                data_all.push(data_sementara);
-                data_sementara = [];
+            if(update_active == null){
+                return false;
             }
-        });
-        if(data_sementara.length > 0){
-            data_all.push(data_sementara);
-        }
-        var page = 0;
-        var last = data_all.length - 1;
-        data_all.reduce(function(sequence, nextData){
-            return sequence.then(function(current_data){
-                return new Promise(function(resolve_reduce, reject_reduce){
-                    page++;
-                    relayAjax({
-                        url: ajaxurl,
-                        type: 'post',
-                        data: {
-                            action: 'import_excel_lansia',
-                            data: current_data,
-                            page: page,
-                            update_active: update_active
-                        },
-                        success: function(res){
-                            resolve_reduce(nextData);
-                        },
-                        error: function(e){
-                            console.log('Error import excel', e);
-                        }
+
+            data = JSON.parse(data);
+            jQuery('#wrap-loading').show();
+
+            var data_all = [];
+            var data_sementara = [];
+            var max = 100;
+            data.map(function(b, i){
+                data_sementara.push(b);
+                if(data_sementara.length%max == 0){
+                    data_all.push(data_sementara);
+                    data_sementara = [];
+                }
+            });
+            if(data_sementara.length > 0){
+                data_all.push(data_sementara);
+            }
+            var page = 0;
+            var last = data_all.length - 1;
+            data_all.reduce(function(sequence, nextData){
+                return sequence.then(function(current_data){
+                    return new Promise(function(resolve_reduce, reject_reduce){
+                        page++;
+                        relayAjax({
+                            url: ajaxurl,
+                            type: 'post',
+                            data: {
+                                action: action,
+                                data: current_data,
+                                page: page,
+                                update_active: update_active
+                            },
+                            success: function(res){
+                                resolve_reduce(nextData);
+                            },
+                            error: function(e){
+                                console.log('Error import excel', e);
+                            }
+                        });
+                    })
+                    .catch(function(e){
+                        console.log(e);
+                        return Promise.resolve(nextData);
                     });
                 })
                 .catch(function(e){
                     console.log(e);
                     return Promise.resolve(nextData);
                 });
+            }, Promise.resolve(data_all[last]))
+            .then(function(data_last){
+                jQuery('#wrap-loading').hide();
+                alert(message);
             })
             .catch(function(e){
                 console.log(e);
-                return Promise.resolve(nextData);
+                jQuery('#wrap-loading').hide();
+                alert('Error!');
             });
-        }, Promise.resolve(data_all[last]))
-        .then(function(data_last){
-            jQuery('#wrap-loading').hide();
-            alert('Success import data Lansia dari excel!');
-        })
-        .catch(function(e){
-            console.log(e);
-            jQuery('#wrap-loading').hide();
-            alert('Error!');
-        });
+        }
     }
 }
 

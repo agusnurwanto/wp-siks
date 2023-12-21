@@ -151,6 +151,14 @@ class Wp_Siks_Admin {
 			'post_status' => 'private'
 		));
 
+		$management_data_disabilitas = $this->functions->generatePage(array(
+			'nama_page' => 'Management Data Disabilitas',
+			'content' => '[management_data_disabilitas]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'private'
+		));
+
 		$basic_options_container = Container::make( 'theme_options', __( 'SIKS Options' ) )
 			->set_page_menu_position( 4 )
 	        ->add_fields( array(
@@ -257,11 +265,41 @@ class Wp_Siks_Admin {
 	            	->set_html( '<h3>Import EXCEL data Lansia</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
 	            		Contoh format file excel untuk <b>Lansia</b> bisa <a target="_blank" href="'.SIKS_PLUGIN_URL. 'excel/contoh_lansia.xlsx">download di sini</a>.<br>
 	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
+	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
 	            		Sheet file excel yang akan diimport harus diberi nama <b>data</b>. Untuk kolom nilai angka ditulis tanpa tanda titik.<br>' ),
 	            Field::make( 'html', 'crb_lansia_siks' )
 	            	->set_html( 'Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>' ),
 		        Field::make( 'html', 'crb_lansia_save_button' )
 	            	->set_html( '<a onclick="import_excel_lansia(); return false" href="javascript:void(0);" class="button button-primary">Import Lansia</a>' )
+	        ) );
+
+	    Container::make( 'theme_options', __( 'Data Disabilitas' ) )
+			->set_page_parent( $basic_options_container )
+			->add_fields( array(
+		    	Field::make( 'html', 'crb_disabilitas_hide_sidebar' )
+		        	->set_html( '
+		        		<style>
+		        			.postbox-container { display: none; }
+		        			#poststuff #post-body.columns-2 { margin: 0 !important; }
+		        		</style>
+		        	' ), 
+				Field::make( 'html', 'crb_siks_halaman_terkait_disabilitas' )
+		        	->set_html( '
+					<h5>HALAMAN TERKAIT</h5>
+	            	<ol>
+	            		<li><a target="_blank" href="'.$management_data_disabilitas['url'].'">'.$management_data_disabilitas['title'].'</a></li>
+	            	</ol>
+		        	' ),
+		        Field::make( 'html', 'crb_disabilitas_upload_html' )
+	            	->set_html( '<h3>Import EXCEL data Disabilitas</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
+	            		Contoh format file excel untuk <b>Disabilitas</b> bisa <a target="_blank" href="'.SIKS_PLUGIN_URL. 'excel/contoh_disabilitas.xlsx">download di sini</a>.<br>
+	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
+	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
+	            		Sheet file excel yang akan diimport harus diberi nama <b>data</b>. Untuk kolom nilai angka ditulis tanpa tanda titik.<br>' ),
+	            Field::make( 'html', 'crb_lansia_siks' )
+	            	->set_html( 'Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>' ),
+		        Field::make( 'html', 'crb_lansia_save_button' )
+	            	->set_html( '<a onclick="import_excel_disabilitas(); return false" href="javascript:void(0);" class="button button-primary">Import Disabilitas</a>' )
 	        ) );
 	}
 
@@ -359,7 +397,154 @@ class Wp_Siks_Admin {
 				    'keterangan_lainnya_lama' => $newData['keterangan_lainnya_lama'],
 				    'rekomendasi_pendata' => $newData['rekomendasi_pendata'],
 				    'keterangan_lainnya' => $newData['keterangan_lainnya'],
-				    'tahun_anggaran' => $newData['tahun'],
+				    'tahun_anggaran' => $newData['tahun_anggaran'],
+				    'active' => 1,
+				    'update_at' => current_time('mysql')
+				);
+
+				$wpdb->last_error = "";
+
+				$cek_id = $wpdb->get_var($wpdb->prepare("
+					SELECT 
+						id 
+					FROM $table_data 
+					WHERE tahun_anggaran=%d
+						AND nik=%s"
+					, $newData['tahun_anggaran'], $newData['nik']));
+
+				if(empty($cek_id)){
+					$wpdb->insert($table_data, $data_db);
+					$ret['data']['insert']++;
+				}else{
+					$wpdb->update($table_data, $data_db, array(
+						"id" => $cek_id
+					));
+					$ret['data']['update']++;
+				}
+
+				if(!empty($wpdb->last_error)){
+					$ret['data']['error'][] = array($wpdb->last_error, $data_db);
+				};
+			}
+		} else {
+			$ret['status'] = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+		die(json_encode($ret));
+	}
+
+	function import_excel_disabilitas(){
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil import excel!'
+		);
+
+		if (!empty($_POST)) {
+			
+			$table_data = 'data_disabilitas_siks';
+
+			if(
+				!empty($_POST['update_active']) 
+				&& $_POST['page'] == 1
+			){
+				$wpdb->query($wpdb->prepare("UPDATE $table_data SET active=0, update_at='".date('Y-m-d H:i:s')."'"));
+			}
+			
+			$ret['data'] = array(
+				'insert' => 0, 
+				'update' => 0,
+				'error' => array()
+			);
+
+			foreach ($_POST['data'] as $k => $data) {
+				
+				$newData = array();
+				
+				foreach($data as $kk => $vv){
+					$newData[trim(preg_replace('/\s+/', ' ', $kk))] = trim(preg_replace('/\s+/', ' ', $vv));
+				}
+
+				$data_db = array(
+					'nama' => $newData['nama'],
+				    'gender' => $newData['gender'],
+				    'tempat_lahir' => $newData['tempat_lahir'],
+				    'tanggal_lahir' => $newData['tanggal_lahir'],
+				    'status' => $newData['status'],
+				    'dokumen_kewarganegaraan' => $newData['dokumen_kewarganegaraan'],
+				    'nik' => $newData['nik'],
+				    'nomor_kk' => $newData['nomor_kk'],
+				    'rt' => $newData['rt'],
+				    'rw' => $newData['rw'],
+				    'desa' => $newData['desa'],
+				    'kecamatan' => $newData['kecamatan'],
+				    'no_hp' => $newData['no_hp'],
+				    'pendidikan_terakhir' => $newData['pendidikan_terakhir'],
+				    'nama_sekolah' => $newData['nama_sekolah'],
+				    'keterangan_lulus' => $newData['keterangan_lulus'],
+				    'jenis_disabilitas' => $newData['jenis_disabilitas'],
+				    'keterangan_disabilitas' => $newData['keterangan_disabilitas'],
+				    'sebab_disabilitas' => $newData['sebab_disabilitas'],
+				    'diagnosa_medis' => $newData['diagnosa_medis'],
+				    'penyakit_lain' => $newData['penyakit_lain'],
+				    'tempat_pengobatan' => $newData['tempat_pengobatan'],
+				    'perawat' => $newData['perawat'],
+				    'aktivitas' => $newData['aktivitas'],
+				    'aktivitas_bantuan' => $newData['aktivitas_bantuan'],
+				    'perlu_bantu' => $newData['perlu_bantu'],
+				    'alat_bantu' => $newData['alat_bantu'],
+				    'alat_yang_dimiliki' => $newData['alat_yang_dimiliki'],
+				    'kondisi_alat' => $newData['kondisi_alat'],
+				    'jaminan_kesehatan' => $newData['jaminan_kesehatan'],
+				    'cara_menggunakan_jamkes' => $newData['cara_menggunakan_jamkes'],
+				    'jaminan_sosial' => $newData['jaminan_sosial'],
+				    'pekerjaan' => $newData['pekerjaan'],
+				    'lokasi_bekerja' => $newData['lokasi_bekerja'],
+				    'alasan_tidak_bekerja' => $newData['alasan_tidak_bekerja'],
+				    'pendapatan_bulan' => $newData['pendapatan_bulan'],
+				    'pengeluaran_bulan' => $newData['pengeluaran_bulan'],
+				    'pendapatan_lain' => $newData['pendapatan_lain'],
+				    'minat_kerja' => $newData['minat_kerja'],
+				    'keterampilan' => $newData['keterampilan'],
+				    'pelatihan_yang_diikuti' => $newData['pelatihan_yang_diikuti'],
+				    'pelatihan_yang_diminat' => $newData['pelatihan_yang_diminat'],
+				    'status_rumah' => $newData['status_rumah'],
+				    'lantai' => $newData['lantai'],
+				    'kamar_mandi' => $newData['kamar_mandi'],
+				    'wc' => $newData['wc'],
+				    'akses_ke_lingkungan' => $newData['akses_ke_lingkungan'],
+				    'dinding' => $newData['dinding'],
+				    'sarana_air' => $newData['sarana_air'],
+				    'penerangan' => $newData['penerangan'],
+				    'desa_paud' => $newData['desa_paud'],
+				    'tk_di_desa' => $newData['tk_di_desa'],
+				    'kecamatan_slb' => $newData['kecamatan_slb'],
+				    'sd_menerima_abk' => $newData['sd_menerima_abk'],
+				    'smp_menerima_abk' => $newData['smp_menerima_abk'],
+				    'jumlah_posyandu' => $newData['jumlah_posyandu'],
+				    'kader_posyandu' => $newData['kader_posyandu'],
+				    'layanan_kesehatan' => $newData['layanan_kesehatan'],
+				    'sosialitas_ke_tetangga' => $newData['sosialitas_ke_tetangga'],
+				    'keterlibatan_berorganisasi' => $newData['keterlibatan_berorganisasi'],
+				    'kegiatan_kemasyarakatan' => $newData['kegiatan_kemasyarakatan'],
+				    'keterlibatan_musrembang' => $newData['keterlibatan_musrembang'],
+				    'alat_bantu_bantuan' => $newData['alat_bantu_bantuan'],
+				    'asal_alat_bantu' => $newData['asal_alat_bantu'],
+				    'tahun_pemberian' => $newData['tahun_pemberian'],
+				    'bantuan_uep'   => $newData['bantuan_uep'],
+				    'asal_uep'   => $newData['asal_uep'],
+				    'tahun'   => $newData['tahun'],
+				    'lainnya'  => $newData['lainnya'],
+				    'rehabilitas'   => $newData['rehabilitas'],
+				    'lokasi_rehabilitas'   => $newData['lokasi_rehabilitas'],
+				    'tahun_rehabilitas'   => $newData['tahun_rehabilitas'],
+				    'keahlian_khusus'  => $newData['keahlian_khusus'],
+				    'prestasi'   => $newData['prestasi'],
+				    'nama_perawat_wali'   => $newData['nama_perawat_wali'],
+				    'hubungan_dengan_pd'   => $newData['hubungan_dengan_pd'],
+				    'nomor_hp'   => $newData['nomor_hp'],
+				    'kelayakan'   => $newData['kelayakan'],
+				    'tahun_anggaran' => $newData['tahun_anggaran'],
 				    'active' => 1,
 				    'update_at' => current_time('mysql')
 				);
