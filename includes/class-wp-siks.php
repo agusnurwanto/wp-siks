@@ -206,6 +206,8 @@ class Wp_Siks {
 		add_shortcode('peta_desa_siks', array($plugin_public, 'peta_siks_desa'));
 		add_shortcode('peta_kecamatan_siks', array($plugin_public, 'peta_siks_kecamatan'));
 		add_shortcode('data_dtks_siks', array($plugin_public, 'data_dtks_siks'));
+		add_shortcode('management_data_lansia', array($plugin_public, 'management_data_lansia'));
+		add_shortcode('management_data_disabilitas', array($plugin_public, 'management_data_disabilitas'));
 
 		// untuk menjalankan conjob refresh session
 		$this->loader->add_action('siks_conjob',  $plugin_public, 'refresh_token');
