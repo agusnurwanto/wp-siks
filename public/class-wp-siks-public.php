@@ -673,7 +673,7 @@ class Wp_Siks_Public {
 				provinsi, 
 				kabkot, 
 				kecamatan, 
-				desa,
+				desa_kelurahan,
 				BLT, 
 				BLT_BBM, 
 				BPNT, 
@@ -682,9 +682,12 @@ class Wp_Siks_Public {
 				COUNT(BLT) as jml
 			FROM data_dtks 
 			WHERE $where
-				AND is_nonaktif is null
+				AND (
+					is_nonaktif is null
+					OR is_nonaktif = ''
+				)
 				AND active=1
-			GROUP BY provinsi, kabkot, kecamatan, desa, BLT, BLT_BBM, BPNT, PKH, PBI
+			GROUP BY provinsi, kabkot, kecamatan, desa_kelurahan, BLT, BLT_BBM, BPNT, PKH, PBI
 			ORDER BY provinsi, kabkot, kecamatan
 		", ARRAY_A);
 

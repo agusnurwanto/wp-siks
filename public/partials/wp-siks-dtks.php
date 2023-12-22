@@ -10,7 +10,7 @@ $dtks_all = $this->get_dtks();
 
 $dtks_all_desa = array();
 foreach($dtks_all as $data){
-    $index = $data['provinsi'].'.'.$data['kabkot'].'.'.$data['kecamatan'].'.'.$data['desa'];
+    $index = strtolower($data['provinsi']).'.'.strtolower($data['kabkot']).'.'.strtolower($data['kecamatan']).'.'.strtolower($data['desa_kelurahan']);
     if(empty($dtks_all_desa[$index])){
         $dtks_all_desa[$index] = array();
     }
@@ -20,7 +20,7 @@ foreach($dtks_all as $data){
 $total_all = 0;
 $body =  '';
 foreach($maps_all as $i => $desa){
-    $index = $desa['data']['provinsi'].'.'.$desa['data']['kab_kot'].'.'.$desa['data']['kecamatan'].'.'.$desa['data']['desa'];
+    $index = strtolower($desa['data']['provinsi']).'.'.strtolower($desa['data']['kab_kot']).'.'.strtolower($desa['data']['kecamatan']).'.'.strtolower($desa['data']['desa']);
     $total_dtks = 0;
     $total_blt = array();
     $total_blt_bbm = array();
