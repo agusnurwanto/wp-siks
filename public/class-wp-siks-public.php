@@ -758,4 +758,8 @@ class Wp_Siks_Public {
 		return $api_googlemap;
 	}
 
+	public function crb_get_gmaps_api_key_siks($value=''){
+		return get_option('_crb_google_api_siks');
+	}
+
 }

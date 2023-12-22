@@ -211,6 +211,7 @@ class Wp_Siks {
 		$this->loader->add_action('siks_conjob',  $plugin_public, 'refresh_token');
 		// untuk menambahkan custom waktu cronjob. secara default paling sedikit adalah per 1 jam
 		$this->loader->add_filter('cron_schedules',  $plugin_public, 'my_cron_schedules');
+		$this->loader->add_filter('carbon_fields_map_field_api_key',  $plugin_public, 'crb_get_gmaps_api_key_siks');
 
 	}
 
