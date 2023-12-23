@@ -201,6 +201,7 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_nopriv_proses_captcha',  $plugin_public, 'proses_captcha');
 		$this->loader->add_action('wp_ajax_singkronisasi_dtks',  $plugin_public, 'singkronisasi_dtks');
 		$this->loader->add_action('wp_ajax_nopriv_singkronisasi_dtks',  $plugin_public, 'singkronisasi_dtks');
+		$this->loader->add_action('wp_ajax_get_data_lansia',  $plugin_public, 'get_data_lansia');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 		add_shortcode('peta_desa_siks', array($plugin_public, 'peta_siks_desa'));
