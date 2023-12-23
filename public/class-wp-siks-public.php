@@ -754,7 +754,7 @@ class Wp_Siks_Public {
 
 	function get_siks_map_url(){
 		$api_googlemap = get_option( '_crb_google_api_siks' );
-		$api_googlemap = "https://maps.googleapis.com/maps/api/js?key=$api_googlemap&callback=initMap&libraries=places&libraries=drawing";
+		$api_googlemap = "https://maps.googleapis.com/maps/api/js?key=$api_googlemap&callback=initMapSiks&libraries=places&libraries=drawing";
 		return $api_googlemap;
 	}
 
