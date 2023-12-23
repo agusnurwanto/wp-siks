@@ -20,7 +20,8 @@
  * @subpackage Wp_Siks/public
  * @author     Agus Nurwanto <agusnurwantomuslim@gmail.com>
  */
-class Wp_Siks_Public {
+class Wp_Siks_Public
+{
 
 	/**
 	 * The ID of this plugin.
@@ -49,12 +50,12 @@ class Wp_Siks_Public {
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version, $functions ) {
+	public function __construct($plugin_name, $version, $functions)
+	{
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->functions = $functions;
-
 	}
 
 	/**
@@ -62,7 +63,8 @@ class Wp_Siks_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function enqueue_styles()
+	{
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -78,8 +80,7 @@ class Wp_Siks_Public {
 
 		wp_enqueue_style($this->plugin_name . 'bootstrap', plugin_dir_url(__FILE__) . 'css/bootstrap.min.css', array(), $this->version, 'all');
 		wp_enqueue_style($this->plugin_name . 'datatables', plugin_dir_url(__FILE__) . 'css/jquery.dataTables.min.css', array(), $this->version, 'all');
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/wp-siks-public.css', array(), $this->version, 'all' );
-
+		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/wp-siks-public.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -87,7 +88,8 @@ class Wp_Siks_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts()
+	{
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -105,51 +107,72 @@ class Wp_Siks_Public {
 		wp_enqueue_script($this->plugin_name . 'bootstrap', plugin_dir_url(__FILE__) . 'js/bootstrap.bundle.min.js', array('jquery'), $this->version, false);
 		wp_enqueue_script($this->plugin_name . 'datatables', plugin_dir_url(__FILE__) . 'js/jquery.dataTables.min.js', array('jquery'), $this->version, false);
 		wp_enqueue_script($this->plugin_name . 'chart', plugin_dir_url(__FILE__) . 'js/chart.min.js', array('jquery'), $this->version, false);
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp-siks-public.js', array( 'jquery' ), $this->version, false );
-		wp_localize_script( $this->plugin_name, 'ajax', array(
-		    'url' => admin_url( 'admin-ajax.php' )
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/wp-siks-public.js', array('jquery'), $this->version, false);
+		wp_localize_script($this->plugin_name, 'ajax', array(
+			'url' => admin_url('admin-ajax.php')
 		));
-
 	}
 
-	public function cek_bansos(){
+	public function cek_bansos()
+	{
 		// untuk disable render shortcode di halaman edit page/post
-		if(!empty($_GET) && !empty($_GET['post'])){
+		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
 		}
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-cek-bansos.php';
 	}
 
-	public function peta_siks_desa(){
-		if(!empty($_GET) && !empty($_GET['post'])){
+	public function management_data_lansia()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-lansia.php';
+	}
+
+	public function management_data_disabilitas()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-disabilitas.php';
+	}
+
+	public function peta_siks_desa()
+	{
+		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
 		}
 		echo 'SIKS Desa';
 	}
 
-	public function peta_siks_kecamatan(){
-		if(!empty($_GET) && !empty($_GET['post'])){
+	public function peta_siks_kecamatan()
+	{
+		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
 		}
 		echo 'SIKS Kacamatan';
 	}
 
-	public function data_dtks_siks(){
-		if(!empty($_GET) && !empty($_GET['post'])){
+	public function data_dtks_siks()
+	{
+		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
 		}
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-dtks.php';
 	}
 
-	public function get_data_bansos_lama(){
+	public function get_data_bansos_lama()
+	{
 		global $wpdb;
 		$ret = array(
 			'status'	=> 'success',
 			'message'	=> 'Berhasil get data bansos!'
 		);
-		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
-
-		}else{
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+		} else {
 			$ret = array(
 				'status' => 'error',
 				'message'	=> 'Format tidak sesuai!'
@@ -158,66 +181,67 @@ class Wp_Siks_Public {
 		die(json_encode($ret));
 	}
 
-	public function get_data_bansos(){
+	public function get_data_bansos()
+	{
 		global $wpdb;
 		$ret = array(
 			'status'	=> 'success',
 			'message'	=> 'Berhasil get data bansos!'
 		);
 		if (!empty($_POST)) {
-			if(isset($_POST['g-recaptcha-response'])){
-	          	$captcha=$_POST['g-recaptcha-response'];
-	        }
-	        if(!$captcha){
-	        	$ret['status'] = 'error';
-	        }
-	        $secretKey = get_option('_crb_siks_captcha_private');
-	        $ip = $_SERVER['REMOTE_ADDR'];
-	        // post request to server
-	        $url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secretKey) .  '&response=' . urlencode($captcha);
-	        $response = file_get_contents($url);
-	        $responseKeys = json_decode($response,true);
-	        if(empty($responseKeys["success"])) {
-	        	$ret['status'] = 'error';
-	        	$ret['message'] = 'Harap selesaikan validasi captcha dulu!';
-	        }else {
-				if(!empty($_POST['nik']) || !empty($_POST['data'])){
+			if (isset($_POST['g-recaptcha-response'])) {
+				$captcha = $_POST['g-recaptcha-response'];
+			}
+			if (!$captcha) {
+				$ret['status'] = 'error';
+			}
+			$secretKey = get_option('_crb_siks_captcha_private');
+			$ip = $_SERVER['REMOTE_ADDR'];
+			// post request to server
+			$url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secretKey) .  '&response=' . urlencode($captcha);
+			$response = file_get_contents($url);
+			$responseKeys = json_decode($response, true);
+			if (empty($responseKeys["success"])) {
+				$ret['status'] = 'error';
+				$ret['message'] = 'Harap selesaikan validasi captcha dulu!';
+			} else {
+				if (!empty($_POST['nik']) || !empty($_POST['data'])) {
 					$auto_login = get_option('_crb_siks_auto_login');
 					$login = false;
-					if(is_user_logged_in()){
-					    $current_user = wp_get_current_user();
-					    if($this->functions->user_has_role($current_user->ID, 'administrator')){
-					        $login = true;
-					    }
+					if (is_user_logged_in()) {
+						$current_user = wp_get_current_user();
+						if ($this->functions->user_has_role($current_user->ID, 'administrator')) {
+							$login = true;
+						}
 					}
-					
-					if($auto_login == 1){
+
+					if ($auto_login == 1) {
 						$param_encrypt = $_POST['data'];
 						$options = array(
 							'url' => 'https://api.kemensos.go.id/viewbnba/bnba-list',
-							'data' => array('data'=> $param_encrypt),
+							'data' => array('data' => $param_encrypt),
 							'header' => array(
-								'Authorization: '.get_option('_crb_siks_cookie')
+								'Authorization: ' . get_option('_crb_siks_cookie')
 							)
 						);
 						$data = $this->functions->curl_post($options);
 						$data_asli = str_replace('"', '', $data);
-						if(empty($data_asli)){
+						if (empty($data_asli)) {
 							$ret['status'] = 'error';
 							$ret['message'] = 'Tidak bisa terhubung ke server. Coba lagi nanti!';
-						}else{
-							if(strpos('cURL Error', $data_asli) === true){
+						} else {
+							if (strpos('cURL Error', $data_asli) === true) {
 								$ret['status'] = 'error';
 								$ret['message'] = 'Tidak bisa terhubung ke server. Coba lagi nanti!';
 							}
-							if($login == false){
+							if ($login == false) {
 								$ret['data'] = $data_asli;
-							}else{
+							} else {
 								$ret['options'] = $options;
 								$ret['data'] = $data_asli;
 							}
 						}
-					}else{
+					} else {
 						$select = array(
 							'update_at',
 							'NOKK',
@@ -234,7 +258,7 @@ class Wp_Siks_Public {
 							'keterangan_meninggal',
 							'keterangan_disabilitas'
 						);
-						if($login == true){
+						if ($login == true) {
 							$select[] = 'BST';
 							$select[] = 'BNPT_PPKM';
 							$select[] = 'RUTILAHU';
@@ -247,16 +271,16 @@ class Wp_Siks_Public {
 							WHERE NIK=%s
 						", $_POST['nik']), ARRAY_A);
 						$ret['data'] = $data;
-						if($login == true){
+						if ($login == true) {
 							$ret['sql'] = $wpdb->last_query;
 						}
 					}
-				}else{
+				} else {
 					$ret['status'] = 'error';
 					$ret['message'] = 'NIK tidak boleh kosong!';
 				}
 			}
-		}else{
+		} else {
 			$ret = array(
 				'status' => 'error',
 				'message'	=> 'Format tidak sesuai!'
@@ -265,54 +289,56 @@ class Wp_Siks_Public {
 		die(json_encode($ret));
 	}
 
-	public function refresh_token(){
+	public function refresh_token()
+	{
 		$no_error = get_option('siks_cronjob_error');
 		$no = get_option('siks_cronjob');
 		$current_cookie = get_option('_crb_siks_cookie');
 		$last_cookie = get_option('siks_last_cookie');
-		if($current_cookie != $last_cookie){
+		if ($current_cookie != $last_cookie) {
 			$no = 0;
 			$no_error = 0;
 			update_option('siks_last_cookie', $current_cookie);
 		}
-		if($no_error >= 10){
-			die('Maksimal error get data ke server. RUN sukses ke '.$no.' dan RUN error ke '.$no_error);
+		if ($no_error >= 10) {
+			die('Maksimal error get data ke server. RUN sukses ke ' . $no . ' dan RUN error ke ' . $no_error);
 		}
 		$param_encrypt = get_option('_crb_siks_param_encrypt');
 		$data = $this->functions->curl_post(array(
 			'url' => 'https://api.kemensos.go.id/viewbnba/bnba-list',
-			'data' => array('data'=> $param_encrypt),
+			'data' => array('data' => $param_encrypt),
 			'header' => array(
-				'Authorization: '.$current_cookie
+				'Authorization: ' . $current_cookie
 			)
 		));
 		$data_asli = str_replace('"', '', $data);
-		if(!empty($data_asli)){
-			if(empty($no)){
+		if (!empty($data_asli)) {
+			if (empty($no)) {
 				$no = 0;
 			}
 			$no++;
 			update_option('siks_cronjob', $no);
 			update_option('siks_cronjob_error', 0);
-			die('Sukses run ke '.$no);
-		}else{
-			if(empty($no_error)){
+			die('Sukses run ke ' . $no);
+		} else {
+			if (empty($no_error)) {
 				$no_error = 0;
 			}
 			$no_error++;
 			update_option('siks_cronjob_error', $no_error);
-			die('Error get data ke server. RUN sukses ke '.$no.' dan RUN error ke '.$no_error);
+			die('Error get data ke server. RUN sukses ke ' . $no . ' dan RUN error ke ' . $no_error);
 		}
 	}
 
-	public function refresh_token_lama(){
+	public function refresh_token_lama()
+	{
 		$current_cookie = get_option('_crb_siks_cookie');
-		$opts = array('https' => array('header'=> 'Cookie: '.$current_cookie));
+		$opts = array('https' => array('header' => 'Cookie: ' . $current_cookie));
 		$context = stream_context_create($opts);
 		file_get_contents('https://siks.kemensos.go.id/kemsos/beranda/landing', false, $context);
 		$last_cookie = get_option('siks_last_cookie');
 		$no = get_option('siks_cronjob');
-		if(empty($no) || $current_cookie != $last_cookie){
+		if (empty($no) || $current_cookie != $last_cookie) {
 			$no = 0;
 			update_option('siks_last_cookie', $current_cookie);
 		}
@@ -320,16 +346,17 @@ class Wp_Siks_Public {
 		update_option('siks_cronjob', $no);
 	}
 
-	public function proses_captcha(){
+	public function proses_captcha()
+	{
 		global $wpdb;
 		$ret = array(
 			'status'	=> 'success',
 			'message'	=> 'Berhasil memproses captcha!'
 		);
-		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 			update_option('siks_captcha_decrypt', $_POST['captcha']);
 			$this->send_message(true, 'login_captcha');
-		}else{
+		} else {
 			$ret = array(
 				'status' => 'error',
 				'message'	=> 'Format tidak sesuai!'
@@ -338,19 +365,20 @@ class Wp_Siks_Public {
 		die(json_encode($ret));
 	}
 
-	public function set_token(){
+	public function set_token()
+	{
 		global $wpdb;
 		$ret = array(
 			'status'	=> 'success',
 			'message'	=> 'Berhasil set token!'
 		);
-		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 			update_option('_crb_siks_cookie', $_POST['token']);
 			// update cronjob error jadi 0 agar cronjob berjalan lagi dan get captcha tidak dilanjutkan
-		  	update_option('siks_cronjob_error', 0);
+			update_option('siks_cronjob_error', 0);
 			$message = "Berhasil update SIKS authorization / token / login session!";
-		  	$ret['tg'] = $this->functions->send_tg(array('message' => $message));
-		}else{
+			$ret['tg'] = $this->functions->send_tg(array('message' => $message));
+		} else {
 			$ret = array(
 				'status' => 'error',
 				'message'	=> 'Format tidak sesuai!'
@@ -359,72 +387,74 @@ class Wp_Siks_Public {
 		die(json_encode($ret));
 	}
 
-	public function send_message($ret=false, $message=false){
+	public function send_message($ret = false, $message = false)
+	{
 		global $wpdb;
 		$ret = array(
 			'status'	=> 'success',
 			'message'	=> 'Berhasil send message!'
 		);
-		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
-		  	$pusher_cluster = get_option('_crb_siks_pusher_cluster');
-		  	$pusher_id = get_option('_crb_siks_pusher_id');
-		  	$pusher_key = get_option('_crb_siks_pusher_key');
-		  	$pusher_secret = get_option('_crb_siks_pusher_secret');
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			$pusher_cluster = get_option('_crb_siks_pusher_cluster');
+			$pusher_id = get_option('_crb_siks_pusher_id');
+			$pusher_key = get_option('_crb_siks_pusher_key');
+			$pusher_secret = get_option('_crb_siks_pusher_secret');
 			$options = array(
-			    'cluster' => $pusher_cluster,
-			    'useTLS' => true
-		  	);
-		  	$pusher = new Pusher\Pusher(
-			    $pusher_key,
-			    $pusher_secret,
-			    $pusher_id,
-			    $options
-		  	);
+				'cluster' => $pusher_cluster,
+				'useTLS' => true
+			);
+			$pusher = new Pusher\Pusher(
+				$pusher_key,
+				$pusher_secret,
+				$pusher_id,
+				$options
+			);
 
-		  	$data = array();
-		  	if(!empty($_POST['action_pusher'])){
-		  		if($_POST['action_pusher'] == 'send_otp'){
-		  			$data['otp'] = $_POST['otp'];
-		  			$data['pesan'] = $_POST['pesan'];
-		  		}
-		  		$data['action'] = $_POST['action_pusher'];
-		  	}else if(empty($message)){
-		  		// update cronjob error jadi 10 agar cronjob tidak aktif dan penanda kalau harus get token
-		  		update_option('siks_cronjob_error', 10);
-		  		$data['action'] = 'require_login';
-		  	}else{
-		  		$data['action'] = $message;
-		  		$data['captcha'] = get_option('siks_captcha_decrypt');
-		  		$data['key'] = get_option('siks_captcha_key');
-		  	}
-		  	$pusher->trigger('my-channel', 'my-event', $data);
-		}else{
+			$data = array();
+			if (!empty($_POST['action_pusher'])) {
+				if ($_POST['action_pusher'] == 'send_otp') {
+					$data['otp'] = $_POST['otp'];
+					$data['pesan'] = $_POST['pesan'];
+				}
+				$data['action'] = $_POST['action_pusher'];
+			} else if (empty($message)) {
+				// update cronjob error jadi 10 agar cronjob tidak aktif dan penanda kalau harus get token
+				update_option('siks_cronjob_error', 10);
+				$data['action'] = 'require_login';
+			} else {
+				$data['action'] = $message;
+				$data['captcha'] = get_option('siks_captcha_decrypt');
+				$data['key'] = get_option('siks_captcha_key');
+			}
+			$pusher->trigger('my-channel', 'my-event', $data);
+		} else {
 			$ret = array(
 				'status' => 'error',
 				'message'	=> 'Format tidak sesuai!'
 			);
 		}
-		if(!empty($ret)){
+		if (!empty($ret)) {
 			return $ret;
-		}else{
+		} else {
 			die(json_encode($ret));
 		}
 	}
 
-	public function set_captcha(){
+	public function set_captcha()
+	{
 		global $wpdb;
 		$ret = array(
 			'action'	=> $_POST['action'],
 			'status'	=> 'success',
 			'message'	=> 'Berhasil set captcha!'
 		);
-		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
-		  	update_option('siks_captcha', str_replace("'", "", $wpdb->prepare('%s', $_POST['captcha'])));
-		  	update_option('siks_captcha_key', str_replace("'", "", $wpdb->prepare('%s', $_POST['key'])));
-		  	update_option('siks_captcha_decrypt', '');
-		  	$message = "Set captcha login SIKS!";
-		  	$this->functions->send_tg(array('message' => $message));
-		}else{
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			update_option('siks_captcha', str_replace("'", "", $wpdb->prepare('%s', $_POST['captcha'])));
+			update_option('siks_captcha_key', str_replace("'", "", $wpdb->prepare('%s', $_POST['key'])));
+			update_option('siks_captcha_decrypt', '');
+			$message = "Set captcha login SIKS!";
+			$this->functions->send_tg(array('message' => $message));
+		} else {
 			$ret = array(
 				'status' => 'error',
 				'message'	=> 'Format tidak sesuai!'
@@ -433,20 +463,21 @@ class Wp_Siks_Public {
 		die(json_encode($ret));
 	}
 
-	public function get_captcha(){
+	public function get_captcha()
+	{
 		global $wpdb;
 		$ret = array(
 			'status'	=> 'success',
 			'message'	=> 'Berhasil get captcha!'
 		);
-		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
-		  	$ret['captcha'] = get_option('siks_captcha');
-		  	$error = get_option('siks_cronjob_error');
-		  	// cek jika cronjob error sama dengan 0 maka get captcha tidak dilanjutkan
-		  	if($error == 0){
-		  		$ret['captcha'] = '';
-		  	}
-		}else{
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			$ret['captcha'] = get_option('siks_captcha');
+			$error = get_option('siks_cronjob_error');
+			// cek jika cronjob error sama dengan 0 maka get captcha tidak dilanjutkan
+			if ($error == 0) {
+				$ret['captcha'] = '';
+			}
+		} else {
 			$ret = array(
 				'status' => 'error',
 				'message'	=> 'Format tidak sesuai!'
@@ -455,14 +486,15 @@ class Wp_Siks_Public {
 		die(json_encode($ret));
 	}
 
-	public function get_data_dtks(){
+	public function get_data_dtks()
+	{
 		global $wpdb;
 		$ret = array(
 			'status'	=> 'success',
 			'message'	=> 'Berhasil get captcha!'
 		);
-		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
-		  	$data = $wpdb->get_results($wpdb->prepare("
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			$data = $wpdb->get_results($wpdb->prepare("
 				SELECT
 					*
 				FROM data_dtks
@@ -470,7 +502,7 @@ class Wp_Siks_Public {
 					AND desa_kelurahan=%s
 			", $_POST['kecamatan'], $_POST['desa']));
 			$ret['data'] = $data;
-		}else{
+		} else {
 			$ret = array(
 				'status' => 'error',
 				'message'	=> 'Format tidak sesuai!'
@@ -479,22 +511,23 @@ class Wp_Siks_Public {
 		die(json_encode($ret));
 	}
 
-	public function singkronisasi_dtks(){
+	public function singkronisasi_dtks()
+	{
 		global $wpdb;
 		$ret = array(
 			'action'	=> 'singkronisasi_dtks',
 			'status'	=> 'success',
 			'message'	=> 'Berhasil backup data DTKS!'
 		);
-		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
-		  	$data = json_decode(stripslashes(html_entity_decode($_POST['data'])), true);
-		  	if($data['page'] == 0){
-		  		$wpdb->update("data_dtks", array('active' => 0), array(
-		  			'id_desa' => $data['meta']['id_desa']
-		  		));
-		  	}
-		  	foreach($data['data'] as $orang){
-		  		$cek_id = $wpdb->get_var($wpdb->prepare("
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			$data = json_decode(stripslashes(html_entity_decode($_POST['data'])), true);
+			if ($data['page'] == 0) {
+				$wpdb->update("data_dtks", array('active' => 0), array(
+					'id_desa' => $data['meta']['id_desa']
+				));
+			}
+			foreach ($data['data'] as $orang) {
+				$cek_id = $wpdb->get_var($wpdb->prepare("
 					SELECT
 						id
 					FROM data_dtks
@@ -562,15 +595,15 @@ class Wp_Siks_Public {
 					'update_at' => date('Y-m-d H:i:s'),
 					'active' => 1
 				);
-				if(empty($cek_id)){
+				if (empty($cek_id)) {
 					$wpdb->insert('data_dtks', $opsi);
-				}else{
+				} else {
 					$wpdb->update('data_dtks', $opsi, array(
 						'id' => $cek_id
 					));
 				}
-		  	}
-		}else{
+			}
+		} else {
 			$ret = array(
 				'status' => 'error',
 				'message'	=> 'Format tidak sesuai!'
@@ -579,32 +612,37 @@ class Wp_Siks_Public {
 		die(json_encode($ret));
 	}
 
-	public function my_cron_schedules($schedules){
-	    if(!isset($schedules["custom_min"])){
-	        $schedules["custom_min"] = array(
-	            'interval' => 0.5*60,
-	            'display' => __('Once every 1 minutes'));
-	    }
-	    if(!isset($schedules["5min"])){
-	        $schedules["5min"] = array(
-	            'interval' => 5*60,
-	            'display' => __('Once every 5 minutes'));
-	    }
-	    if(!isset($schedules["30min"])){
-	        $schedules["30min"] = array(
-	            'interval' => 30*60,
-	            'display' => __('Once every 30 minutes'));
-	    }
-	    return $schedules;
+	public function my_cron_schedules($schedules)
+	{
+		if (!isset($schedules["custom_min"])) {
+			$schedules["custom_min"] = array(
+				'interval' => 0.5 * 60,
+				'display' => __('Once every 1 minutes')
+			);
+		}
+		if (!isset($schedules["5min"])) {
+			$schedules["5min"] = array(
+				'interval' => 5 * 60,
+				'display' => __('Once every 5 minutes')
+			);
+		}
+		if (!isset($schedules["30min"])) {
+			$schedules["30min"] = array(
+				'interval' => 30 * 60,
+				'display' => __('Once every 30 minutes')
+			);
+		}
+		return $schedules;
 	}
 
-	public function get_center(){
+	public function get_center()
+	{
 		$center_map_default = get_option('_crb_google_map_center_siks');
 		$ret = array(
 			'lat' => 0,
 			'lng' => 0
 		);
-		if(!empty($center_map_default)){
+		if (!empty($center_map_default)) {
 			$center_map_default = explode(',', $center_map_default);
 			$ret['lat'] = $center_map_default[0];
 			$ret['lng'] = $center_map_default[1];
@@ -612,15 +650,16 @@ class Wp_Siks_Public {
 		return $ret;
 	}
 
-	function get_polygon($options = array( 'type' => 'desa' )){
+	function get_polygon($options = array('type' => 'desa'))
+	{
 		global $wpdb;
 
 		$default_color = get_option('_crb_warna_p3ke_siks');
 		$prov = get_option('_crb_siks_prop');
 		$where = " provinsi='$prov'";
 		$kab = get_option('_crb_siks_kab');
-		if($options['type'] == 'desa'){
-			if(!empty($kab)){
+		if ($options['type'] == 'desa') {
+			if (!empty($kab)) {
 				$where .= " and kab_kot='$kab'";
 			}
 			$data = $wpdb->get_results("
@@ -630,8 +669,8 @@ class Wp_Siks_Public {
 				WHERE $where
 				ORDER BY provinsi, kab_kot, kecamatan, desa
 			", ARRAY_A);
-		}else if($options['type'] == 'kecamatan'){
-			if(!empty($kab)){
+		} else if ($options['type'] == 'kecamatan') {
+			if (!empty($kab)) {
 				$where .= " and kabkot='$kab'";
 			}
 			$data = $wpdb->get_results("
@@ -643,9 +682,9 @@ class Wp_Siks_Public {
 			", ARRAY_A);
 		}
 		$new_data = array();
-		foreach($data as $val){
+		foreach ($data as $val) {
 			$coordinate = json_decode($val['polygon'], true);
-			if(!empty($coordinate)){
+			if (!empty($coordinate)) {
 				unset($val['polygon']);
 				$new_data[] = array(
 					'coor' => $coordinate,
@@ -660,12 +699,13 @@ class Wp_Siks_Public {
 		return $new_data;
 	}
 
-	function get_dtks(){
+	function get_dtks()
+	{
 		global $wpdb;
 		$prov = get_option('_crb_siks_prop');
 		$where = " provinsi='$prov'";
 		$kab = get_option('_crb_siks_kab');
-		if(!empty($kab)){
+		if (!empty($kab)) {
 			$where .= " and kabkot='$kab'";
 		}
 		$data = $wpdb->get_results("
@@ -694,62 +734,65 @@ class Wp_Siks_Public {
 		return $data;
 	}
 
-	function getSearchLocation($data = array()){
+	function getSearchLocation($data = array())
+	{
 		$text = '';
-		if(!empty($data['desa'])){
-			$text .= ' '.$data['desa'];
+		if (!empty($data['desa'])) {
+			$text .= ' ' . $data['desa'];
 		}
-		if(!empty($data['kecamatan'])){
-			if(
+		if (!empty($data['kecamatan'])) {
+			if (
 				empty($data['desa'])
 				|| (
-					!empty($data['desa']) 
+					!empty($data['desa'])
 					&& $data['kecamatan'] != $data['desa']
 				)
-			){
-				$text .= ' '.$data['kecamatan'];
+			) {
+				$text .= ' ' . $data['kecamatan'];
 			}
 		}
-		if(!empty($data['kab_kot'])){
-			if(
+		if (!empty($data['kab_kot'])) {
+			if (
 				empty($data['kecamatan'])
 				|| (
-					!empty($data['kecamatan']) 
+					!empty($data['kecamatan'])
 					&& $data['kab_kot'] != $data['kecamatan']
 				)
-			){
-				$text .= ' '.$data['kab_kot'];
+			) {
+				$text .= ' ' . $data['kab_kot'];
 			}
 		}
-		if(!empty($data['kabkot'])){
-			if(
+		if (!empty($data['kabkot'])) {
+			if (
 				empty($data['kecamatan'])
 				|| (
-					!empty($data['kecamatan']) 
+					!empty($data['kecamatan'])
 					&& $data['kabkot'] != $data['kecamatan']
 				)
-			){
-				$text .= ' '.$data['kabkot'];
+			) {
+				$text .= ' ' . $data['kabkot'];
 			}
 		}
-		if(!empty($data['provinsi'])){
-			$text .= ' '.$data['provinsi'];
+		if (!empty($data['provinsi'])) {
+			$text .= ' ' . $data['provinsi'];
 		}
 		return $text;
 	}
 
-	public function getNamaDaerah($value=''){
+	public function getNamaDaerah($value = '')
+	{
 		$prov = get_option('_crb_siks_prop');
 		$ret = "Provinsi $prov";
 		$kab = get_option('_crb_siks_kab');
-		if(!empty($kab)){
+		if (!empty($kab)) {
 			$ret = "Kabupaten $kab<br>$ret";
 		}
 		return $ret;
 	}
 
-	public function number_format($number){
-		return number_format($number, 0,",",".");
+	public function number_format($number)
+	{
+		return number_format($number, 0, ",", ".");
 	}
 
 	function get_siks_map_url(){
@@ -758,8 +801,82 @@ class Wp_Siks_Public {
 		return $api_googlemap;
 	}
 
-	public function crb_get_gmaps_api_key_siks($value=''){
+	public function crb_get_gmaps_api_key_siks($value = '')
+	{
 		return get_option('_crb_google_api_siks');
 	}
 
+	function get_data_lansia()
+	{
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil get data lansia!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			$params = $columns = $totalRecords = $data = array();
+			$params = $_REQUEST;
+			$columns = array(
+				0 => 'nama',
+				1 => 'alamat',
+				2 => 'desa',
+				3 => 'kecamatan',
+				4 => 'nik',
+				5 => 'tanggal_lahir',
+				6 => 'usia',
+				7 => 'tahun_anggaran'
+			);
+			$where = $sqlTot = $sqlRec = "";
+
+			// check search value exist
+			if (!empty($params['search']['value'])) {
+				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+				$where .= " AND (nama LIKE " . $search_value;
+				$where .= " OR alamat LIKE " . $search_value . ")";
+			}
+
+			// getting total number records without any search
+			$sql_tot = "SELECT count(id) as jml FROM `data_lansia_siks`";
+			$sql = "SELECT " . implode(', ', $columns) . " FROM `data_lansia_siks`";
+			$where_first = " WHERE 1=1 AND active = 1";
+			$sqlTot .= $sql_tot . $where_first;
+			$sqlRec .= $sql . $where_first;
+			if (isset($where) && $where != '') {
+				$sqlTot .= $where;
+				$sqlRec .= $where;
+			}
+
+			$limit = '';
+			if ($params['length'] != -1) {
+				$limit = "  LIMIT " . $wpdb->prepare('%d', $params['start']) . " ," . $wpdb->prepare('%d', $params['length']);
+			}
+			$sqlRec .= " ORDER BY update_at DESC" . $limit;
+
+			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
+			$totalRecords = $queryTot[0]['jml'];
+			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
+
+			foreach ($queryRecords as $recKey => $recVal) {
+				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
+				$btn .= '<a style="margin-left: 10px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+				$queryRecords[$recKey]['aksi'] = $btn;
+			}
+
+			$json_data = array(
+				"draw"            => intval($params['draw']),
+				"recordsTotal"    => intval($totalRecords),
+				"recordsFiltered" => intval($totalRecords),
+				"data"            => $queryRecords,
+				"sql"             => $sqlRec
+			);
+
+			die(json_encode($json_data));
+		} else {
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
 }
