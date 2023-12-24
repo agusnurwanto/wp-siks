@@ -10,7 +10,7 @@ $dtks_all = $this->get_dtks();
 
 $dtks_all_desa = array();
 foreach($dtks_all as $data){
-    $index = $data['provinsi'].'.'.$data['kabkot'].'.'.$data['kecamatan'].'.'.$data['desa'];
+    $index = strtolower($data['provinsi']).'.'.strtolower($data['kabkot']).'.'.strtolower($data['kecamatan']).'.'.strtolower($data['desa_kelurahan']);
     if(empty($dtks_all_desa[$index])){
         $dtks_all_desa[$index] = array();
     }
@@ -20,7 +20,7 @@ foreach($dtks_all as $data){
 $total_all = 0;
 $body =  '';
 foreach($maps_all as $i => $desa){
-    $index = $desa['data']['provinsi'].'.'.$desa['data']['kab_kot'].'.'.$desa['data']['kecamatan'].'.'.$desa['data']['desa'];
+    $index = strtolower($desa['data']['provinsi']).'.'.strtolower($desa['data']['kab_kot']).'.'.strtolower($desa['data']['kecamatan']).'.'.strtolower($desa['data']['desa']);
     $total_dtks = 0;
     $total_blt = array();
     $total_blt_bbm = array();
@@ -85,6 +85,25 @@ foreach($maps_all as $i => $desa){
         $maps_all[$i]['color'] = '#ff0000';
     }
     $maps_all[$i]['index'] = $i;
+
+    $html = '
+        <table>
+            <tr>
+                <td><b>Total DTKS</b></td>
+                <td><b>'.$this->number_format($total_dtks).' Orang</b></td>
+            </tr>
+    ';
+    foreach($desa['data'] as $k => $v){
+        $html .= '
+            <tr>
+                <td><b>'.$k.'</b></td>
+                <td>'.$v.'</td>
+            </tr>
+        ';
+    }
+    $html .= '</table>';
+    $maps_all[$i]['html'] = $html;
+
     $search = $this->getSearchLocation($desa['data']);
     $body .= "
         <tr>
@@ -107,7 +126,7 @@ foreach($maps_all as $i => $desa){
 ?>
 <h1 class="text-center">Peta Sebaran DTKS (Data Terpadu Kesejahteraan Sosial)<br><?php echo $this->getNamaDaerah(); ?></h1>
 <div style="width: 95%; margin: 0 auto; min-height: 90vh; padding-bottom: 75px;">
-    <div id="map-canvas" style="width: 100%; height: 400px;"></div>
+    <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
     <h3 style="margin-top: 20px;">Keterangan</h3>
     <ol>
         <li>Warna hijau berarti jumlah DTKS antara 0 sampai 1500 orang</li>
@@ -145,8 +164,8 @@ foreach($maps_all as $i => $desa){
     </div>
 </div>
 <script type="text/javascript">
-    window.maps_all = <?php echo json_encode($maps_all); ?>;
-    window.maps_center = <?php echo json_encode($center); ?>;
+    window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
+    window.maps_center_siks = <?php echo json_encode($center); ?>;
     jQuery('#table-data').dataTable({
         lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
         order: [[5, 'desc']]

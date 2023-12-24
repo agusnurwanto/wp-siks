@@ -201,16 +201,20 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_nopriv_proses_captcha',  $plugin_public, 'proses_captcha');
 		$this->loader->add_action('wp_ajax_singkronisasi_dtks',  $plugin_public, 'singkronisasi_dtks');
 		$this->loader->add_action('wp_ajax_nopriv_singkronisasi_dtks',  $plugin_public, 'singkronisasi_dtks');
+		$this->loader->add_action('wp_ajax_get_data_lansia',  $plugin_public, 'get_data_lansia');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 		add_shortcode('peta_desa_siks', array($plugin_public, 'peta_siks_desa'));
 		add_shortcode('peta_kecamatan_siks', array($plugin_public, 'peta_siks_kecamatan'));
 		add_shortcode('data_dtks_siks', array($plugin_public, 'data_dtks_siks'));
+		add_shortcode('management_data_lansia', array($plugin_public, 'management_data_lansia'));
+		add_shortcode('management_data_disabilitas', array($plugin_public, 'management_data_disabilitas'));
 
 		// untuk menjalankan conjob refresh session
 		$this->loader->add_action('siks_conjob',  $plugin_public, 'refresh_token');
 		// untuk menambahkan custom waktu cronjob. secara default paling sedikit adalah per 1 jam
 		$this->loader->add_filter('cron_schedules',  $plugin_public, 'my_cron_schedules');
+		$this->loader->add_filter('carbon_fields_map_field_api_key',  $plugin_public, 'crb_get_gmaps_api_key_siks');
 
 	}
 

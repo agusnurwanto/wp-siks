@@ -1,7 +1,7 @@
 CREATE TABLE `data_dtks` (
     `id` int(11) NOT NULL auto_increment,
     `provinsi` TEXT DEFAULT NULL,
-    `kabupaten` TEXT DEFAULT NULL,
+    `kabkot` TEXT DEFAULT NULL,
     `kecamatan` TEXT DEFAULT NULL,
     `desa_kelurahan` TEXT DEFAULT NULL,
     `prop_capil` VARCHAR(30) DEFAULT NULL,
