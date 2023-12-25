@@ -806,7 +806,235 @@ class Wp_Siks_Public
 		return get_option('_crb_google_api_siks');
 	}
 
-	function get_data_lansia()
+    public function get_data_lansia_by_id(){
+        global $wpdb;
+        $ret = array(
+            'status' => 'success',
+            'message' => 'Berhasil get data!',
+            'data' => array()
+        );
+        if(!empty($_POST)){
+            if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+                $ret['data'] = $wpdb->get_row($wpdb->prepare('
+                    SELECT 
+                        *
+                    FROM data_lansia_siks
+                    WHERE id=%d
+                ', $_POST['id']), ARRAY_A);
+            }else{
+                $ret['status']  = 'error';
+                $ret['message'] = 'Api key tidak ditemukan!';
+            }
+        }else{
+            $ret['status']  = 'error';
+            $ret['message'] = 'Format Salah!';
+        }
+
+        die(json_encode($ret));
+    }
+
+public function hapus_data_lansia_by_id(){
+	global $wpdb;
+	$ret = array(
+		'status' => 'success',
+		'message' => 'Berhasil hapus data!',
+		'data' => array()
+	);
+	if(!empty($_POST)){
+		if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			$ret['data'] = $wpdb->update('data_lansia_siks', array('active' => 0), array(
+				'id' => $_POST['id']
+			));
+		}else{
+			$ret['status']	= 'error';
+			$ret['message']	= 'Api key tidak ditemukan!';
+		}
+	}else{
+		$ret['status']	= 'error';
+		$ret['message']	= 'Format Salah!';
+	}
+
+	die(json_encode($ret));
+}
+
+    public function tambah_data_lansia(){
+        global $wpdb;
+        $ret = array(
+            'status' => 'success',
+            'message' => 'Berhasil simpan data!',
+            'data' => array()
+        );
+        if(!empty($_POST)){
+            if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+                if($ret['status'] != 'error' && !empty($_POST['nama'])){
+                    $nama = $_POST['nama'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Nama tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['alamat'])){
+                    $alamat = $_POST['alamat'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Alamat tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['tanggal_lahir'])){
+                    $tanggal_lahir = $_POST['tanggal_lahir'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Tanggal Lahir tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['kecamatan'])){
+                    $kecamatan = $_POST['kecamatan'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Kecamatan tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['desa'])){
+                    $desa = $_POST['desa'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Desa tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['usia'])){
+                    $usia = $_POST['usia'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Usia tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['nik'])){
+                    $nik = $_POST['nik'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data NIK tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['dokumen_kependudukan'])){
+                    $dokumen_kependudukan = $_POST['dokumen_kependudukan'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Dokumen Kependudukan tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['status_tempat_tinggal'])){
+                    $status_tempat_tinggal = $_POST['status_tempat_tinggal'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Status Tempat Tinggal tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['status_pemenuhan_kebutuhan'])){
+                    $status_pemenuhan_kebutuhan = $_POST['status_pemenuhan_kebutuhan'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Status Pemenuhan Kebutuhan tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['status_kehidupan_rumah_tangga'])){
+                    $status_kehidupan_rumah_tangga = $_POST['status_kehidupan_rumah_tangga'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Status Pemenuhan Kebutuhan tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['status_dtks'])){
+                    $status_dtks = $_POST['status_dtks'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Status DTKS tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['status_kepersertaan_program_bansos'])){
+                    $status_kepersertaan_program_bansos = $_POST['status_kepersertaan_program_bansos'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Status Kepersertaan Program Bansos tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['rekomendasi_pendata_lama'])){
+                    $rekomendasi_pendata_lama = $_POST['rekomendasi_pendata_lama'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Rekomendasi Pendeta Lama tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['keterangan_lainnya_lama'])){
+                    $keterangan_lainnya_lama = $_POST['keterangan_lainnya_lama'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Keterangan Lainnya Lama tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['rekomendasi_pendata'])){
+                    $rekomendasi_pendata = $_POST['rekomendasi_pendata'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Rekomendasi Pendeta tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['keterangan_lainnya'])){
+                    $keterangan_lainnya = $_POST['keterangan_lainnya'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Keterangan Lainnya tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error' && !empty($_POST['tahun_anggaran'])){
+                    $tahun_anggaran = $_POST['tahun_anggaran'];
+                // }else{
+                //  $ret['status'] = 'error';
+                //  $ret['message'] = 'Data Keterangan Lainnya Lama tidak boleh kosong!';
+                }
+                if($ret['status'] != 'error'){
+                    $data = array(
+                        'nama' => $nama,
+                        'alamat' => $alamat,
+                        'desa' => $desa,
+                        'kecamatan' => $kecamatan,
+                        'nik' => $nik,
+                        'tanggal_lahir' => $tanggal_lahir,
+                        'usia' => $usia,
+                        'dokumen_kependudukan' => $dokumen_kependudukan,
+                        'status_tempat_tinggal' => $status_tempat_tinggal,
+                        'status_pemenuhan_kebutuhan' => $status_pemenuhan_kebutuhan,
+                        'status_kehidupan_rumah_tangga' => $status_kehidupan_rumah_tangga,
+                        'status_dtks' => $status_dtks,
+                        'status_kepersertaan_program_bansos' => $status_kepersertaan_program_bansos,
+                        'rekomendasi_pendata_lama' => $rekomendasi_pendata_lama,
+                        'keterangan_lainnya_lama' => $keterangan_lainnya_lama,
+                        'rekomendasi_pendata' => $rekomendasi_pendata,
+                        'keterangan_lainnya' => $keterangan_lainnya,
+                        'tahun_anggaran' => $tahun_anggaran,
+                        'active' => 1,
+                        'update_at' => current_time('mysql')
+                    );
+                    if(!empty($_POST['id_data'])){
+                        $wpdb->update('data_lansia_siks', $data, array(
+                            'id' => $_POST['id_data']
+                        ));
+                        $ret['message'] = 'Berhasil update data!';
+                    }else{
+                        $cek_id = $wpdb->get_row($wpdb->prepare('
+                            SELECT
+                                id,
+                                active
+                            FROM data_lansia_siks
+			                WHERE id=%d
+			            ', $_POST['id']), ARRAY_A);
+                        // print_r($cek_id); die($wpdb->last_query);
+                        if(empty($cek_id)){
+                            $wpdb->insert('data_lansia_siks', $data);
+                        }else{
+                            if($cek_id['active'] == 0){
+                                $wpdb->update('data_lansia_siks', $data, array(
+                                    'id' => $cek_id['id']
+                                ));
+                            }
+                        }
+                    }
+                }
+            }else{
+                $ret['status']  = 'error';
+                $ret['message'] = 'Api key tidak ditemukan!';
+            }
+        }else{
+            $ret['status']  = 'error';
+            $ret['message'] = 'Format Salah!';
+        }
+
+        die(json_encode($ret));
+    }
+
+	function get_datatable_lansia()
 	{
 		global $wpdb;
 		$ret = array(
@@ -824,15 +1052,26 @@ class Wp_Siks_Public
 				4 => 'nik',
 				5 => 'tanggal_lahir',
 				6 => 'usia',
-				7 => 'tahun_anggaran'
+                7 => 'dokumen_kependudukan',
+                8 => 'status_tempat_tinggal',
+                9 => 'status_pemenuhan_kebutuhan',
+               10 => 'status_kehidupan_rumah_tangga',
+               11 => 'status_dtks',
+               12 => 'status_kepersertaan_program_bansos',
+               13 => 'rekomendasi_pendata_lama',
+               14 => 'keterangan_lainnya_lama',
+               15 => 'rekomendasi_pendata',
+               16 => 'keterangan_lainnya',
+			   17 => 'tahun_anggaran',
+			   18 => 'id'
 			);
 			$where = $sqlTot = $sqlRec = "";
 
 			// check search value exist
 			if (!empty($params['search']['value'])) {
 				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-				$where .= " AND (nama LIKE " . $search_value;
-				$where .= " OR alamat LIKE " . $search_value . ")";
+                $where .=" AND ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";    
+                $where .=" OR nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
 			}
 
 			// getting total number records without any search
