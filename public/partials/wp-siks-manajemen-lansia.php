@@ -55,6 +55,7 @@ $url = admin_url('admin-ajax.php');
                 </button>
             </div>
             <div class="modal-body">
+                <input type='hidden' id='id_data' name="id_data" placeholder=''>
                 <div class="form-group">
                     <label>Nama</label>
                     <input type="text" class="form-control" id="nama">
@@ -316,23 +317,23 @@ function edit_data(_id){
 }
 
 function tambah_data_lansia() {
-    jQuery('#nama').val('').show()
-    jQuery('#alamat').val('').show()
-    jQuery('#desa').val('').show()
-    jQuery('#kecamatan').val('').show()
-    jQuery('#nik').val('').show()
-    jQuery('#tanggal_lahir').val('').show()
-    jQuery('#usia').val('').show()
-    jQuery('#dokumen_kependudukan').val('');
-    jQuery('#status_tempat_tinggal').val('');
-    jQuery('#status_pemenuhan_kebutuhan').val('');
-    jQuery('#status_kehidupan_rumah_tangga').val('');
-    jQuery('#status_kepersertaan_program_bansos').val('');
-    jQuery('#status_dtks').val('');
-    jQuery('#rekomendasi_pendata_lama').val('');
-    jQuery('#keterangan_lainnya_lama').val('');
-    jQuery('#rekomendasi_pendata').val('');
-    jQuery('#keterangan_lainnya').val('');
+    jQuery('#nama').val('').show();
+    jQuery('#alamat').val('').show();
+    jQuery('#desa').val('').show();
+    jQuery('#kecamatan').val('').show();
+    jQuery('#nik').val('').show();
+    jQuery('#tanggal_lahir').val('').show();
+    jQuery('#usia').val('').show();
+    jQuery('#dokumen_kependudukan').val('').show();
+    jQuery('#status_tempat_tinggal').val('').show();
+    jQuery('#status_pemenuhan_kebutuhan').val('').show();
+    jQuery('#status_kehidupan_rumah_tangga').val('').show();
+    jQuery('#status_kepersertaan_program_bansos').val('').show();
+    jQuery('#status_dtks').val('').show();
+    jQuery('#rekomendasi_pendata_lama').val('').show();
+    jQuery('#keterangan_lainnya_lama').val('').show();
+    jQuery('#rekomendasi_pendata').val('').show();
+    jQuery('#keterangan_lainnya').val('').show();
     jQuery('#tahun_anggaran').val('').show()
     jQuery('#modalTambahDataLansia').modal('show');
 }
@@ -369,7 +370,7 @@ function submitDataLansia(){
     }
     var dokumen_kependudukan = jQuery('#dokumen_kependudukan').val();
     if(dokumen_kependudukan == ''){
-        return alert('Data okumen Kependudukan tidak boleh kosong!');
+        return alert('Data Dokumen Kependudukan tidak boleh kosong!');
     }
     var status_tempat_tinggal = jQuery('#status_tempat_tinggal').val();
     if(status_tempat_tinggal == ''){
@@ -409,7 +410,7 @@ function submitDataLansia(){
     }
     var tahun_anggaran = jQuery('#tahun_anggaran').val();
     if(tahun_anggaran == ''){
-        return alert('Data Usia tidak boleh kosong!');
+        return alert('Data Tahun Anggaran tidak boleh kosong!');
     }
 
     jQuery('#wrap-loading').show();
@@ -445,7 +446,6 @@ function submitDataLansia(){
             jQuery('#modalTambahDataLansia').modal('hide');
             if(res.status == 'success'){
                 get_data_lansia();
-            }else{
                 jQuery('#wrap-loading').hide();
             }
         }

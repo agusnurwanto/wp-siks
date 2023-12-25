@@ -806,6 +806,570 @@ class Wp_Siks_Public
 		return get_option('_crb_google_api_siks');
 	}
 
+	public function get_data_disabilitas_by_id(){
+        global $wpdb;
+        $ret = array(
+            'status' => 'success',
+            'message' => 'Berhasil get data!',
+            'data' => array()
+        );
+        if(!empty($_POST)){
+            if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+                $ret['data'] = $wpdb->get_row($wpdb->prepare('
+                    SELECT 
+                        *
+                    FROM data_disabilitas_siks
+                    WHERE id=%d
+                ', $_POST['id']), ARRAY_A);
+            }else{
+                $ret['status']  = 'error';
+                $ret['message'] = 'Api key tidak ditemukan!';
+            }
+        }else{
+            $ret['status']  = 'error';
+            $ret['message'] = 'Format Salah!';
+        }
+
+        die(json_encode($ret));
+    }
+
+public function hapus_data_disabilitas_by_id(){
+	global $wpdb;
+	$ret = array(
+		'status' => 'success',
+		'message' => 'Berhasil hapus data!',
+		'data' => array()
+	);
+	if(!empty($_POST)){
+		if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			$ret['data'] = $wpdb->update('data_disabilitas_siks', array('active' => 0), array(
+				'id' => $_POST['id']
+			));
+		}else{
+			$ret['status']	= 'error';
+			$ret['message']	= 'Api key tidak ditemukan!';
+		}
+	}else{
+		$ret['status']	= 'error';
+		$ret['message']	= 'Format Salah!';
+	}
+
+	die(json_encode($ret));
+}
+
+    public function tambah_data_disabilitas(){
+        global $wpdb;
+        $ret = array(
+            'status' => 'success',
+            'message' => 'Berhasil simpan data!',
+            'data' => array()
+        );
+        if(!empty($_POST)){
+            if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {                
+            	if($ret['status'] != 'error' && !empty($_POST['nama'])){
+                    $nama = $_POST['nama'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['gender'])){
+                    $gender = $_POST['gender'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['tempat_lahir'])){
+                    $tempat_lahir = $_POST['tempat_lahir'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['tanggal_lahir'])){
+                    $tanggal_lahir = $_POST['tanggal_lahir'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['status'])){
+                    $status = $_POST['status'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['dokumen_kewarganegaraan'])){
+                    $dokumen_kewarganegaraan = $_POST['dokumen_kewarganegaraan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['nik'])){
+                    $nik = $_POST['nik'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['nomor_kk'])){
+                    $nomor_kk = $_POST['nomor_kk'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['rt'])){
+                    $rt = $_POST['rt'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['rw'])){
+                    $rw = $_POST['rw'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['desa'])){
+                    $desa = $_POST['desa'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['kecamatan'])){
+                    $kecamatan = $_POST['kecamatan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['no_hp'])){
+                    $no_hp = $_POST['no_hp'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['pendidikan_terakhir'])){
+                    $pendidikan_terakhir = $_POST['pendidikan_terakhir'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['nama_sekolah'])){
+                    $nama_sekolah = $_POST['nama_sekolah'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['keterangan_lulus'])){
+                    $keterangan_lulus = $_POST['keterangan_lulus'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['jenis_disabilitas'])){
+                    $jenis_disabilitas = $_POST['jenis_disabilitas'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['keterangan_disabilitas'])){
+                    $keterangan_disabilitas = $_POST['keterangan_disabilitas'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['sebab_disabilitas'])){
+                    $sebab_disabilitas = $_POST['sebab_disabilitas'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['diagnosa_medis'])){
+                    $diagnosa_medis = $_POST['diagnosa_medis'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['penyakit_lain'])){
+                    $penyakit_lain = $_POST['penyakit_lain'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['tempat_pengobatan'])){
+                    $tempat_pengobatan = $_POST['tempat_pengobatan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['perawat'])){
+                    $perawat = $_POST['perawat'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['aktivitas'])){
+                    $aktivitas = $_POST['aktivitas'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['aktivitas_bantuan'])){
+                    $aktivitas_bantuan = $_POST['aktivitas_bantuan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['perlu_bantu'])){
+                    $perlu_bantu = $_POST['perlu_bantu'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['alat_bantu'])){
+                    $alat_bantu = $_POST['alat_bantu'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['alat_yang_dimiliki'])){
+                    $alat_yang_dimiliki = $_POST['alat_yang_dimiliki'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['kondisi_alat'])){
+                    $kondisi_alat = $_POST['kondisi_alat'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['jaminan_kesehatan'])){
+                    $jaminan_kesehatan = $_POST['jaminan_kesehatan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['cara_menggunakan_jamkes'])){
+                    $cara_menggunakan_jamkes = $_POST['cara_menggunakan_jamkes'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['jaminan_sosial'])){
+                    $jaminan_sosial = $_POST['jaminan_sosial'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['pekerjaan'])){
+                    $pekerjaan = $_POST['pekerjaan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['lokasi_bekerja'])){
+                    $lokasi_bekerja = $_POST['lokasi_bekerja'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['alasan_tidak_bekerja'])){
+                    $alasan_tidak_bekerja = $_POST['alasan_tidak_bekerja'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['pendapatan_bulan'])){
+                    $pendapatan_bulan = $_POST['pendapatan_bulan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['pengeluaran_bulan'])){
+                    $pengeluaran_bulan = $_POST['pengeluaran_bulan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['pendapatan_lain'])){
+                    $pendapatan_lain = $_POST['pendapatan_lain'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['minat_kerja'])){
+                    $minat_kerja = $_POST['minat_kerja'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['keterampilan'])){
+                    $keterampilan = $_POST['keterampilan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['pelatihan_yang_diikuti'])){
+                    $pelatihan_yang_diikuti = $_POST['pelatihan_yang_diikuti'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['pelatihan_yang_diminat'])){
+                    $pelatihan_yang_diminat = $_POST['pelatihan_yang_diminat'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['status_rumah'])){
+                    $status_rumah = $_POST['status_rumah'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['lantai'])){
+                    $lantai = $_POST['lantai'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['kamar_mandi'])){
+                    $kamar_mandi = $_POST['kamar_mandi'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['wc'])){
+                    $wc = $_POST['wc'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['akses_ke_lingkungan'])){
+                    $akses_ke_lingkungan = $_POST['akses_ke_lingkungan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['dinding'])){
+                    $dinding = $_POST['dinding'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['sarana_air'])){
+                    $sarana_air = $_POST['sarana_air'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['penerangan'])){
+                    $penerangan = $_POST['penerangan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['desa_paud'])){
+                    $desa_paud = $_POST['desa_paud'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['tk_di_desa'])){
+                    $tk_di_desa = $_POST['tk_di_desa'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['kecamatan_slb'])){
+                    $kecamatan_slb = $_POST['kecamatan_slb'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['sd_menerima_abk'])){
+                    $sd_menerima_abk = $_POST['sd_menerima_abk'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['smp_menerima_abk'])){
+                    $smp_menerima_abk = $_POST['smp_menerima_abk'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['jumlah_posyandu'])){
+                    $jumlah_posyandu = $_POST['jumlah_posyandu'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['kader_posyandu'])){
+                    $kader_posyandu = $_POST['kader_posyandu'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['layanan_kesehatan'])){
+                    $layanan_kesehatan = $_POST['layanan_kesehatan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['sosialitas_ke_tetangga'])){
+                    $sosialitas_ke_tetangga = $_POST['sosialitas_ke_tetangga'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['keterlibatan_berorganisasi'])){
+                    $keterlibatan_berorganisasi = $_POST['keterlibatan_berorganisasi'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['kegiatan_kemasyarakatan'])){
+                    $kegiatan_kemasyarakatan = $_POST['kegiatan_kemasyarakatan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['keterlibatan_musrembang'])){
+                    $keterlibatan_musrembang = $_POST['keterlibatan_musrembang'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['alat_bantu_bantuan'])){
+                    $alat_bantu_bantuan = $_POST['alat_bantu_bantuan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['asal_alat_bantu'])){
+                    $asal_alat_bantu = $_POST['asal_alat_bantu'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['tahun_pemberian'])){
+                    $tahun_pemberian = $_POST['tahun_pemberian'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['bantuan_uep'])){
+                    $bantuan_uep = $_POST['bantuan_uep'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['asal_uep'])){
+                    $asal_uep = $_POST['asal_uep'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['tahun'])){
+                    $tahun = $_POST['tahun'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['lainnya'])){
+                    $lainnya = $_POST['lainnya'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['rehabilitas'])){
+                    $rehabilitas = $_POST['rehabilitas'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['lokasi_rehabilitas'])){
+                    $lokasi_rehabilitas = $_POST['lokasi_rehabilitas'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['tahun_rehabilitas'])){
+                    $tahun_rehabilitas = $_POST['tahun_rehabilitas'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['keahlian_khusus'])){
+                    $keahlian_khusus = $_POST['keahlian_khusus'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['prestasi'])){
+                    $prestasi = $_POST['prestasi'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['nama_perawat_wali'])){
+                    $nama_perawat_wali = $_POST['nama_perawat_wali'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['hubungan_dengan_pd'])){
+                    $hubungan_dengan_pd = $_POST['hubungan_dengan_pd'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['nomor_hp'])){
+                    $nomor_hp = $_POST['nomor_hp'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['kelayakan'])){
+                    $kelayakan = $_POST['kelayakan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['tahun_anggaran'])){
+                    $tahun_anggaran = $_POST['tahun_anggaran'];
+                }
+                if($ret['status'] != 'error'){
+                    $data = array(
+	                    'nama' => $nama,
+						'gender' => $gender,
+						'tempat_lahir' => $tempat_lahir,
+						'tanggal_lahir' => $tanggal_lahir,
+						'status' => $status,
+						'dokumen_kewarganegaraan' => $dokumen_kewarganegaraan,
+						'nik' => $nik,
+						'nomor_kk' => $nomor_kk,
+						'rt' => $rt,
+						'rw' => $rw,
+						'desa' => $desa,
+						'kecamatan' => $kecamatan,
+						'no_hp' => $no_hp,
+						'pendidikan_terakhir' => $pendidikan_terakhir,
+						'nama_sekolah' => $nama_sekolah,
+						'keterangan_lulus' => $keterangan_lulus,
+						'jenis_disabilitas' => $jenis_disabilitas,
+						'keterangan_disabilitas' => $keterangan_disabilitas,
+						'sebab_disabilitas' => $sebab_disabilitas,
+						'diagnosa_medis' => $diagnosa_medis,
+						'penyakit_lain' => $penyakit_lain,
+						'tempat_pengobatan' => $tempat_pengobatan,
+						'perawat' => $perawat,
+						'aktivitas' => $aktivitas,
+						'aktivitas_bantuan' => $aktivitas_bantuan,
+						'perlu_bantu' => $perlu_bantu,
+						'alat_bantu' => $alat_bantu,
+						'alat_yang_dimiliki' => $alat_yang_dimiliki,
+						'kondisi_alat' => $kondisi_alat,
+						'jaminan_kesehatan' => $jaminan_kesehatan,
+						'cara_menggunakan_jamkes' => $cara_menggunakan_jamkes,
+						'jaminan_sosial' => $jaminan_sosial,
+						'pekerjaan' => $pekerjaan,
+						'lokasi_bekerja' => $lokasi_bekerja,
+						'alasan_tidak_bekerja' => $alasan_tidak_bekerja,
+						'pendapatan_bulan' => $pendapatan_bulan,
+						'pengeluaran_bulan' => $pengeluaran_bulan,
+						'pendapatan_lain' => $pendapatan_lain,
+						'minat_kerja' => $minat_kerja,
+						'keterampilan' => $keterampilan,
+						'pelatihan_yang_diikuti' => $pelatihan_yang_diikuti,
+						'pelatihan_yang_diminat' => $pelatihan_yang_diminat,
+						'status_rumah' => $status_rumah,
+						'lantai' => $lantai,
+						'kamar_mandi' => $kamar_mandi,
+						'wc' => $wc,
+						'akses_ke_lingkungan' => $akses_ke_lingkungan,
+						'dinding' => $dinding,
+						'sarana_air' => $sarana_air,
+						'penerangan' => $penerangan,
+						'desa_paud' => $desa_paud,
+						'tk_di_desa' => $tk_di_desa,
+						'kecamatan_slb' => $kecamatan_slb,
+						'sd_menerima_abk' => $sd_menerima_abk,
+						'smp_menerima_abk' => $smp_menerima_abk,
+						'jumlah_posyandu' => $jumlah_posyandu,
+						'kader_posyandu' => $kader_posyandu,
+						'layanan_kesehatan' => $layanan_kesehatan,
+						'sosialitas_ke_tetangga' => $sosialitas_ke_tetangga,
+						'keterlibatan_berorganisasi' => $keterlibatan_berorganisasi,
+						'kegiatan_kemasyarakatan' => $kegiatan_kemasyarakatan,
+						'keterlibatan_musrembang' => $keterlibatan_musrembang,
+						'alat_bantu_bantuan' => $alat_bantu_bantuan,
+						'asal_alat_bantu' => $asal_alat_bantu,
+						'tahun_pemberian' => $tahun_pemberian,
+						'bantuan_uep' => $bantuan_uep,
+						'asal_uep' => $asal_uep,
+						'tahun' => $tahun,
+						'lainnya' => $lainnya,
+						'rehabilitas' => $rehabilitas,
+						'lokasi_rehabilitas' => $lokasi_rehabilitas,
+						'tahun_rehabilitas' => $tahun_rehabilitas,
+						'keahlian_khusus' => $keahlian_khusus,
+						'prestasi' => $prestasi,
+						'nama_perawat_wali' => $nama_perawat_wali,
+						'hubungan_dengan_pd' => $hubungan_dengan_pd,
+						'nomor_hp' => $nomor_hp,
+						'kelayakan' => $kelayakan,
+						'tahun_anggaran' => $tahun_anggaran,
+                        'active' => 1,
+                        'update_at' => current_time('mysql')
+                    );
+                    if(!empty($_POST['id_data'])){
+                        $wpdb->update('data_disabilitas_siks', $data, array(
+                            'id' => $_POST['id_data']
+                        ));
+                        $ret['message'] = 'Berhasil update data!';
+                    }else{
+                        $cek_id = $wpdb->get_row($wpdb->prepare('
+                            SELECT
+                                id,
+                                active
+                            FROM data_disabilitas_siks
+			                WHERE id=%d
+			            ', $_POST['id']), ARRAY_A);
+                        // print_r($cek_id); die($wpdb->last_query);
+                        if(empty($cek_id)){
+                            $wpdb->insert('data_disabilitas_siks', $data);
+                        }else{
+                            if($cek_id['active'] == 0){
+                                $wpdb->update('data_disabilitas_siks', $data, array(
+                                    'id' => $cek_id['id']
+                                ));
+                            }
+                        }
+                    }
+                }
+            }else{
+                $ret['status']  = 'error';
+                $ret['message'] = 'Api key tidak ditemukan!';
+            }
+        }else{
+            $ret['status']  = 'error';
+            $ret['message'] = 'Format Salah!';
+        }
+
+        die(json_encode($ret));
+    }
+
+	function get_datatable_disabilitas()
+	{
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil get data disabilitas!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			$params = $columns = $totalRecords = $data = array();
+			$params = $_REQUEST;
+			$columns = array(
+				0 => 'nama',
+				1 => 'gender',
+				2 => 'tempat_lahir',
+				3 => 'tanggal_lahir',
+				4 => 'status',
+				5 => 'dokumen_kewarganegaraan',
+				6 => 'nik',
+				7 => 'nomor_kk',
+				8 => 'rt',
+				9 => 'rw',
+				10 => 'desa',
+				11 => 'kecamatan',
+				12 => 'no_hp',
+				13 => 'pendidikan_terakhir',
+				14 => 'nama_sekolah',
+				15 => 'keterangan_lulus',
+				16 => 'jenis_disabilitas',
+				17 => 'keterangan_disabilitas',
+				18 => 'sebab_disabilitas',
+				19 => 'diagnosa_medis',
+				20 => 'penyakit_lain',
+				21 => 'tempat_pengobatan',
+				22 => 'perawat',
+				23 => 'aktivitas',
+				24 => 'aktivitas_bantuan',
+				25 => 'perlu_bantu',
+				26 => 'alat_bantu',
+				27 => 'alat_yang_dimiliki',
+				28 => 'kondisi_alat',
+				29 => 'jaminan_kesehatan',
+				30 => 'cara_menggunakan_jamkes',
+				31 => 'jaminan_sosial',
+				32 => 'pekerjaan',
+				33 => 'lokasi_bekerja',
+				34 => 'alasan_tidak_bekerja',
+				35 => 'pendapatan_bulan',
+				36 => 'pengeluaran_bulan',
+				37 => 'pendapatan_lain',
+				38 => 'minat_kerja',
+				39 => 'keterampilan',
+				40 => 'pelatihan_yang_diikuti',
+				41 => 'pelatihan_yang_diminat',
+				42 => 'status_rumah',
+				43 => 'lantai',
+				44 => 'kamar_mandi',
+				45 => 'wc',
+				46 => 'akses_ke_lingkungan',
+				47 => 'dinding',
+				48 => 'sarana_air',
+				49 => 'penerangan',
+				50 => 'desa_paud',
+				51 => 'tk_di_desa',
+				52 => 'kecamatan_slb',
+				53 => 'sd_menerima_abk',
+				54 => 'smp_menerima_abk',
+				55 => 'jumlah_posyandu',
+				56 => 'kader_posyandu',
+				57 => 'layanan_kesehatan',
+				58 => 'sosialitas_ke_tetangga',
+				59 => 'keterlibatan_berorganisasi',
+				60 => 'kegiatan_kemasyarakatan',
+				61 => 'keterlibatan_musrembang',
+				62 => 'alat_bantu_bantuan',
+				63 => 'asal_alat_bantu',
+				64 => 'tahun_pemberian',
+				65 => 'bantuan_uep',
+				66 => 'asal_uep',
+				67 => 'tahun',
+				68 => 'lainnya',
+				69 => 'rehabilitas',
+				70 => 'lokasi_rehabilitas',
+				71 => 'tahun_rehabilitas',
+				72 => 'keahlian_khusus',
+				73 => 'prestasi',
+				74 => 'nama_perawat_wali',
+				75 => 'hubungan_dengan_pd',
+				76 => 'nomor_hp',
+				77 => 'kelayakan',
+				78 => 'tahun_anggaran',
+			   	79 => 'id'
+			);
+			$where = $sqlTot = $sqlRec = "";
+
+			// check search value exist
+			if (!empty($params['search']['value'])) {
+				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+                $where .=" AND ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";    
+                $where .=" OR nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+			}
+
+			// getting total number records without any search
+			$sql_tot = "SELECT count(id) as jml FROM `data_disabilitas_siks`";
+			$sql = "SELECT " . implode(', ', $columns) . " FROM `data_disabilitas_siks`";
+			$where_first = " WHERE 1=1 AND active = 1";
+			$sqlTot .= $sql_tot . $where_first;
+			$sqlRec .= $sql . $where_first;
+			if (isset($where) && $where != '') {
+				$sqlTot .= $where;
+				$sqlRec .= $where;
+			}
+
+			$limit = '';
+			if ($params['length'] != -1) {
+				$limit = "  LIMIT " . $wpdb->prepare('%d', $params['start']) . " ," . $wpdb->prepare('%d', $params['length']);
+			}
+			$sqlRec .= " ORDER BY update_at DESC" . $limit;
+
+			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
+			$totalRecords = $queryTot[0]['jml'];
+			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
+
+			foreach ($queryRecords as $recKey => $recVal) {
+				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
+				$btn .= '<a class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+				$queryRecords[$recKey]['aksi'] = $btn;
+			}
+
+			$json_data = array(
+				"draw"            => intval($params['draw']),
+				"recordsTotal"    => intval($totalRecords),
+				"recordsFiltered" => intval($totalRecords),
+				"data"            => $queryRecords,
+				"sql"             => $sqlRec
+			);
+
+			die(json_encode($json_data));
+		} else {
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
+
     public function get_data_lansia_by_id(){
         global $wpdb;
         $ret = array(
