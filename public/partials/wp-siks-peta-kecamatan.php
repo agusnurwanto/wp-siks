@@ -14,7 +14,7 @@ foreach ($maps_all as $i => $desa) {
             <td class='text-center'>" . $desa['data']['provinsi'] . "</td>
             <td class='text-center'>" . $desa['data']['kabkot'] . "</td>
             <td class='text-center'>" . $desa['data']['kecamatan'] . "</td>
-            <td class='text-center'><a style='margin-bottom: 5px;' onclick='cari_alamat(\"" . $search . "\"); return false;' href='#' class='btn btn-danger'>Map</a></td>
+            <td class='text-center'><a style='margin-bottom: 5px;' onclick='cari_alamat_siks(\"" . $search . "\"); return false;' href='#' class='btn btn-danger'>Map</a></td>
         </tr>
     ";
 }
@@ -39,7 +39,7 @@ foreach ($maps_all as $i => $desa) {
         </table>
 </div>
 <script type="text/javascript">
-    window.maps_all = <?php echo json_encode($maps_all); ?>;
-    window.maps_center = <?php echo json_encode($center); ?>;
+    window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
+    window.maps_center_siks = <?php echo json_encode($center); ?>;
 </script>
-<script async defer src="<?php echo $this->get_map_url(); ?>"></script>
+<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
