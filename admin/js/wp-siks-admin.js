@@ -1,3 +1,31 @@
+function relayAjax(options, retries=20, delay=5000, timeout=9000000){
+    options.timeout = timeout;
+    options.cache = false;
+    jQuery.ajax(options)
+    .fail(function(jqXHR, exception){
+        // console.log('jqXHR, exception', jqXHR, exception);
+        if(
+            jqXHR.status != '0' 
+            && jqXHR.status != '503'
+            && jqXHR.status != '500'
+        ){
+            if(jqXHR.responseJSON){
+                options.success(jqXHR.responseJSON);
+            }else{
+                options.success(jqXHR.responseText);
+            }
+        }else if (retries > 0) {
+            console.log('Koneksi error. Coba lagi '+retries, options);
+            var new_delay = Math.random() * (delay/1000);
+            setTimeout(function(){ 
+                relayAjax(options, --retries, delay, timeout);
+            }, new_delay * 1000);
+        } else {
+            alert('Capek. Sudah dicoba berkali-kali error terus. Maaf, berhenti mencoba.');
+        }
+    });
+}
+
 function sql_migrate_siks(){
 	jQuery('#wrap-loading').show();
 	jQuery.ajax({
