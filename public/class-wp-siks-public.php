@@ -140,20 +140,20 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-disabilitas.php';
 	}
 
-	public function peta_siks_desa()
+	public function peta_desa_siks()
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
 		}
-		echo 'SIKS Desa';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-peta-desa.php';
 	}
 
-	public function peta_siks_kecamatan()
+	public function peta_kecamatan_siks()
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
 		}
-		echo 'SIKS Kacamatan';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-peta-desa.php';
 	}
 
 	public function data_dtks_siks()

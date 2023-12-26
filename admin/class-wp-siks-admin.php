@@ -121,7 +121,7 @@ class Wp_Siks_Admin {
 			'post_status' => 'publish'
 		));
 
-		$peta_batas_desa = $this->functions->generatePage(array(
+		$peta_desa_siks = $this->functions->generatePage(array(
 			'nama_page' => 'Peta Batas Desa', 
 			'content' => '[peta_desa_siks]',
         	'show_header' => 1,
@@ -129,7 +129,7 @@ class Wp_Siks_Admin {
 			'post_status' => 'publish'
 		));
 
-		$peta_batas_kecamatan = $this->functions->generatePage(array(
+		$peta_kecamatan_siks = $this->functions->generatePage(array(
 			'nama_page' => 'Peta Batas Kecamatan', 
 			'content' => '[peta_kecamatan_siks]',
         	'show_header' => 1,
@@ -171,8 +171,8 @@ class Wp_Siks_Admin {
 	            		<li><a target="_blank" href="'.$cek_bansos['url'].'">'.$cek_bansos['title'].'</a></li>
 	            		<li>Untuk melakukan refresh session login. Gunakan cronjob dengan interval per 5 menit mengakses <b>'.site_url().'/wp-admin/admin-ajax.php?action=refresh_token</b>. Saat ini cronjob sudah dilakukan sebanyak <b>'.get_option('siks_cronjob').'</b> kali.</li>
 	            		<li><span class="button button-primary" onclick="sql_migrate_siks(); return false;">SQL Migrate</span> (Tombol untuk memperbaiki struktur database WP-SIKS)</li>
-	            		<li><a target="_blank" href="'.$peta_batas_desa['url'].'">'.$peta_batas_desa['title'].'</a></li>
-	            		<li><a target="_blank" href="'.$peta_batas_kecamatan['url'].'">'.$peta_batas_kecamatan['title'].'</a></li>
+	            		<li><a target="_blank" href="'.$peta_desa_siks['url'].'">'.$peta_desa_siks['title'].'</a></li>
+	            		<li><a target="_blank" href="'.$peta_kecamatan_siks['url'].'">'.$peta_kecamatan_siks['title'].'</a></li>
 	            		<li><a target="_blank" href="'.$data_dtks['url'].'">'.$data_dtks['title'].'</a></li>
 	            	</ol>' ),
 	            Field::make( 'text', 'crb_apikey_siks', 'API KEY' )

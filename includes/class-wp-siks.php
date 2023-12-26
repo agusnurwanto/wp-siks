@@ -211,8 +211,8 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_hapus_data_disabilitas_by_id', $plugin_public, 'hapus_data_disabilitas_by_id');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
-		add_shortcode('peta_desa_siks', array($plugin_public, 'peta_siks_desa'));
-		add_shortcode('peta_kecamatan_siks', array($plugin_public, 'peta_siks_kecamatan'));
+		add_shortcode('peta_desa_siks', array($plugin_public, 'peta_desa_siks'));
+		add_shortcode('peta_kecamatan_siks', array($plugin_public, 'peta_kecamatan_siks'));
 		add_shortcode('data_dtks_siks', array($plugin_public, 'data_dtks_siks'));
 		add_shortcode('management_data_lansia', array($plugin_public, 'management_data_lansia'));
 		add_shortcode('management_data_disabilitas', array($plugin_public, 'management_data_disabilitas'));
