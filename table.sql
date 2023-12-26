@@ -102,6 +102,8 @@ CREATE TABLE `data_batas_kecamatan_siks` (
 
 CREATE TABLE `data_lansia_siks` (
     `id` int(11) NOT NULL auto_increment,
+    `provinsi` TEXT DEFAULT NULL,
+    `kabkot` TEXT DEFAULT NULL,
     `nama` TEXT DEFAULT NULL,
     `alamat` TEXT DEFAULT NULL,
     `desa` TEXT DEFAULT NULL,
@@ -127,6 +129,8 @@ CREATE TABLE `data_lansia_siks` (
 
 CREATE TABLE `data_disabilitas_siks` (
     `id` int(11) NOT NULL auto_increment,
+    `provinsi` TEXT DEFAULT NULL,
+    `kabkot` TEXT DEFAULT NULL,
     `nama` TEXT DEFAULT NULL,
     `gender` TEXT DEFAULT NULL,
     `tempat_lahir` TEXT DEFAULT NULL,

@@ -145,6 +145,22 @@ class Wp_Siks_Admin {
 			'post_status' => 'publish'
 		));
 
+		$data_lansia = $this->functions->generatePage(array(
+			'nama_page' => 'Data Lansia SIKS', 
+			'content' => '[data_lansia_siks]',
+        	'show_header' => 1,
+        	'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
+		$data_disabilitas = $this->functions->generatePage(array(
+			'nama_page' => 'Data Disabilitas SIKS', 
+			'content' => '[data_disabilitas_siks]',
+        	'show_header' => 1,
+        	'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
 		$management_data_lansia = $this->functions->generatePage(array(
 			'nama_page' => 'Management Data Lansia',
 			'content' => '[management_data_lansia]',
@@ -174,6 +190,8 @@ class Wp_Siks_Admin {
 	            		<li><a target="_blank" href="'.$peta_desa_siks['url'].'">'.$peta_desa_siks['title'].'</a></li>
 	            		<li><a target="_blank" href="'.$peta_kecamatan_siks['url'].'">'.$peta_kecamatan_siks['title'].'</a></li>
 	            		<li><a target="_blank" href="'.$data_dtks['url'].'">'.$data_dtks['title'].'</a></li>
+	            		<li><a target="_blank" href="'.$data_lansia['url'].'">'.$data_lansia['title'].'</a></li>
+	            		<li><a target="_blank" href="'.$data_disabilitas['url'].'">'.$data_disabilitas['title'].'</a></li>
 	            	</ol>' ),
 	            Field::make( 'text', 'crb_apikey_siks', 'API KEY' )
 	            	->set_default_value($this->functions->generateRandomString())
