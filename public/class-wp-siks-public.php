@@ -140,6 +140,14 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-disabilitas.php';
 	}
 
+	public function peta_data_terpadu_siks()
+	{
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-peta-data-terpadu-siks.php';
+	}
+
 	public function peta_desa_siks()
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
