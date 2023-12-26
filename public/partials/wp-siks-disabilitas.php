@@ -22,11 +22,11 @@ foreach($maps_all as $i => $desa){
             $total_disabilitas += $orang['jml'];
         }
     }
-    if($total_disabilitas <= 100){
+    if($total_disabilitas <= 15){
         $maps_all[$i]['color'] = '#0cbf00';
-    }else if($total_disabilitas <= 500){
+    }else if($total_disabilitas <= 40){
         $maps_all[$i]['color'] = '#fff70a';
-    }else if($total_disabilitas > 500){
+    }else if($total_disabilitas > 40){
         $maps_all[$i]['color'] = '#ff0000';
     }
     $maps_all[$i]['index'] = $i;
@@ -69,9 +69,9 @@ foreach($maps_all as $i => $desa){
     <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
     <h3 style="margin-top: 20px;">Keterangan</h3>
     <ol>
-        <li>Warna hijau berarti jumlah Disabilitas antara 0 sampai 100 orang</li>
-        <li>Warna kuning berarti jumlah Disabilitas antara 101 sampai 500 orang</li>
-        <li>Warna merah berarti jumlah Disabilitas diatas 500 orang</li>
+        <li>Warna hijau berarti jumlah Disabilitas antara 0 sampai 15 orang</li>
+        <li>Warna kuning berarti jumlah Disabilitas antara 16 sampai 40 orang</li>
+        <li>Warna merah berarti jumlah Disabilitas diatas 40 orang</li>
     </ol>
     <h2 class="text-center">Tabel Data Disabilitas<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
     <div style="width: 100%; overflow: auto; height: 100vh;">
