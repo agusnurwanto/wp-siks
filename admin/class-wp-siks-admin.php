@@ -122,7 +122,7 @@ class Wp_Siks_Admin {
 		));
 
 		$peta_desa_siks = $this->functions->generatePage(array(
-			'nama_page' => 'Peta Batas Desa', 
+			'nama_page' => 'Peta Batas Desa SIKS', 
 			'content' => '[peta_desa_siks]',
         	'show_header' => 1,
         	'no_key' => 1,
@@ -130,7 +130,7 @@ class Wp_Siks_Admin {
 		));
 
 		$peta_kecamatan_siks = $this->functions->generatePage(array(
-			'nama_page' => 'Peta Batas Kecamatan', 
+			'nama_page' => 'Peta Batas Kecamatan SIKS', 
 			'content' => '[peta_kecamatan_siks]',
         	'show_header' => 1,
         	'no_key' => 1,

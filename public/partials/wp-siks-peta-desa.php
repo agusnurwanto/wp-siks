@@ -6,6 +6,7 @@ $body =  '';
 foreach($maps_all as $i => $desa){
     $search = $this->getSearchLocation($desa['data']);
     $maps_all[$i]['index'] = $i;
+    $maps_all[$i]['color'] = '#0cbf00';
     $body .= "
         <tr>
             <td class='text-center'>".$desa['data']['id2012']."</td>
@@ -21,7 +22,7 @@ foreach($maps_all as $i => $desa){
 ?>
 <h1 class="text-center">Peta Batas Desa/Kelurahan<br><?php echo $this->getNamaDaerah(); ?></h1>
 <div style="width: 95%; margin: 0 auto; min-height: 90vh; padding-bottom: 75px;">
-    <div id="map-canvas" style="width: 100%; height: 400px;"></div>
+    <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
     <h2 class="text-center">Tabel Data</h1>
     <table class="table table-bordered">
         <thead>
