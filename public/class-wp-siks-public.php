@@ -188,6 +188,14 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-disabilitas.php';
 	}
 
+	public function data_bunda_kasih_siks()
+	{
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-bunda-kasih.php';
+	}
+
 	public function get_data_bansos_lama()
 	{
 		global $wpdb;
@@ -1755,6 +1763,33 @@ class Wp_Siks_Public
 				desa,
 				count(id) as jml
 			FROM data_disabilitas_siks 
+			WHERE $where
+				AND active=1
+			GROUP BY provinsi, kabkot, kecamatan, desa
+			ORDER BY  provinsi, kabkot, kecamatan, desa
+		", ARRAY_A);
+		// print_r($data); die($wpdb->last_query);
+
+		return $data;
+	}
+
+	function get_bunda_kasih()
+	{
+		global $wpdb;
+		$prov = get_option('_crb_siks_prop');
+		$where = " provinsi='$prov'";
+		$kab = get_option('_crb_siks_kab');
+		if (!empty($kab)) {
+			$where .= " and kabkot='$kab'";
+		}
+		$data = $wpdb->get_results("
+			SELECT  
+				provinsi,
+				kabkot,
+				kecamatan,
+				desa,
+				count(id) as jml
+			FROM data_bunda_kasih_siks 
 			WHERE $where
 				AND active=1
 			GROUP BY provinsi, kabkot, kecamatan, desa
