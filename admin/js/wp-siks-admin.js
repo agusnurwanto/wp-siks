@@ -102,6 +102,10 @@ function import_excel_disabilitas(action = '', message = ''){
     import_excel('import_excel_disabilitas', 'Success import data Disabilitas dari excel!');
 }
 
+function import_excel_bunda_kasih(action = '', message = ''){
+    import_excel('import_excel_bunda_kasih', 'Success import data Bunda Kasih dari excel!');
+}
+
 function import_excel(action = '', message = ''){
     if(action == ''){
         alert('Action tidak diketahui!');

@@ -214,3 +214,19 @@ CREATE TABLE `data_disabilitas_siks` (
     `update_at` datetime DEFAULT current_timestamp,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE `data_bunda_kasih_siks` (
+    `id` int(11) NOT NULL auto_increment,
+    `provinsi` TEXT DEFAULT NULL,
+    `kabkot` TEXT DEFAULT NULL,
+    `nama` TEXT DEFAULT NULL,
+    `nik` TEXT DEFAULT NULL,
+    `kk` TEXT DEFAULT NULL,
+    `rt_rw` TEXT DEFAULT NULL,
+    `desa` TEXT DEFAULT NULL,
+    `kecamatan` TEXT DEFAULT NULL,
+    `tahun_anggaran`  int(4) DEFAULT NULL,
+    `active` tinyint(4) DEFAULT 1,
+    `update_at` datetime DEFAULT current_timestamp,
+    PRIMARY KEY (id)
+);

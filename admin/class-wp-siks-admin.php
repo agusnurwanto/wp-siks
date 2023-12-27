@@ -169,6 +169,14 @@ class Wp_Siks_Admin {
 			'post_status' => 'publish'
 		));
 
+		$data_bunda_kasih = $this->functions->generatePage(array(
+			'nama_page' => 'Data Bunda Kasih SIKS', 
+			'content' => '[data_bunda_kasih_siks]',
+        	'show_header' => 1,
+        	'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
 		$management_data_lansia = $this->functions->generatePage(array(
 			'nama_page' => 'Management Data Lansia',
 			'content' => '[management_data_lansia]',
@@ -180,6 +188,14 @@ class Wp_Siks_Admin {
 		$management_data_disabilitas = $this->functions->generatePage(array(
 			'nama_page' => 'Management Data Disabilitas',
 			'content' => '[management_data_disabilitas]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'private'
+		));
+
+		$management_data_bunda_kasih = $this->functions->generatePage(array(
+			'nama_page' => 'Management Data Bunda Kasih',
+			'content' => '[management_data_bunda_kasih]',
 			'show_header' => 1,
 			'no_key' => 1,
 			'post_status' => 'private'
@@ -201,6 +217,7 @@ class Wp_Siks_Admin {
 	            		<li><a target="_blank" href="'.$data_dtks['url'].'">'.$data_dtks['title'].'</a></li>
 	            		<li><a target="_blank" href="'.$data_lansia['url'].'">'.$data_lansia['title'].'</a></li>
 	            		<li><a target="_blank" href="'.$data_disabilitas['url'].'">'.$data_disabilitas['title'].'</a></li>
+	            		<li><a target="_blank" href="'.$data_bunda_kasih['url'].'">'.$data_bunda_kasih['title'].'</a></li>
 	            	</ol>' ),
 	            Field::make( 'text', 'crb_apikey_siks', 'API KEY' )
 	            	->set_default_value($this->functions->generateRandomString())
@@ -322,10 +339,39 @@ class Wp_Siks_Admin {
 	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
 	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
 	            		Sheet file excel yang akan diimport harus diberi nama <b>data</b>. Untuk kolom nilai angka ditulis tanpa tanda titik.<br>' ),
-	            Field::make( 'html', 'crb_lansia_siks' )
+	            Field::make( 'html', 'crb_disabilitas_siks' )
 	            	->set_html( 'Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>' ),
 		        Field::make( 'html', 'crb_lansia_save_button' )
 	            	->set_html( '<a onclick="import_excel_disabilitas(); return false" href="javascript:void(0);" class="button button-primary">Import Disabilitas</a>' )
+	        ) );
+
+	    Container::make( 'theme_options', __( 'Data Bunda Kasih' ) )
+			->set_page_parent( $basic_options_container )
+			->add_fields( array(
+		    	Field::make( 'html', 'crb_bunda_kasih_hide_sidebar' )
+		        	->set_html( '
+		        		<style>
+		        			.postbox-container { display: none; }
+		        			#poststuff #post-body.columns-2 { margin: 0 !important; }
+		        		</style>
+		        	' ), 
+				Field::make( 'html', 'crb_siks_halaman_terkait_bunda_kasih' )
+		        	->set_html( '
+					<h5>HALAMAN TERKAIT</h5>
+	            	<ol>
+	            		<li><a target="_blank" href="'.$management_data_bunda_kasih['url'].'">'.$management_data_bunda_kasih['title'].'</a></li>
+	            	</ol>
+		        	' ),
+		        Field::make( 'html', 'crb_bunda_kasih_upload_html' )
+	            	->set_html( '<h3>Import EXCEL data Bunda Kasih</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
+	            		Contoh format file excel untuk <b>Bunda Kasih</b> bisa <a target="_blank" href="'.SIKS_PLUGIN_URL. 'excel/contoh_bunda_kasih.xlsx">download di sini</a>.<br>
+	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
+	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
+	            		Sheet file excel yang akan diimport harus diberi nama <b>data</b>. Untuk kolom nilai angka ditulis tanpa tanda titik.<br>' ),
+	            Field::make( 'html', 'crb_bunda_kasih_siks' )
+	            	->set_html( 'Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>' ),
+		        Field::make( 'html', 'crb_lansia_save_button' )
+	            	->set_html( '<a onclick="import_excel_bunda_kasih(); return false" href="javascript:void(0);" class="button button-primary">Import Bunda Kasih</a>' )
 	        ) );
 	}
 
@@ -410,6 +456,8 @@ class Wp_Siks_Admin {
 				    'alamat' => $newData['alamat'],
 				    'desa' => $newData['desa'],
 				    'kecamatan' => $newData['kecamatan'],
+				    'kabupaten' => $newData['kabupaten'],
+				    'provinsi' => $newData['provinsi'],
 				    'nik' => $newData['nik'],
 				    'tanggal_lahir' => $newData['tanggal_lahir'],
 				    'usia' => $newData['usia'],
@@ -504,6 +552,8 @@ class Wp_Siks_Admin {
 				    'rw' => $newData['rw'],
 				    'desa' => $newData['desa'],
 				    'kecamatan' => $newData['kecamatan'],
+				    'kabupaten' => $newData['kabupaten'],
+				    'provinsi' => $newData['provinsi'],
 				    'no_hp' => $newData['no_hp'],
 				    'pendidikan_terakhir' => $newData['pendidikan_terakhir'],
 				    'nama_sekolah' => $newData['nama_sekolah'],
@@ -570,6 +620,83 @@ class Wp_Siks_Admin {
 				    'hubungan_dengan_pd'   => $newData['hubungan_dengan_pd'],
 				    'nomor_hp'   => $newData['nomor_hp'],
 				    'kelayakan'   => $newData['kelayakan'],
+				    'tahun_anggaran' => $newData['tahun_anggaran'],
+				    'active' => 1,
+				    'update_at' => current_time('mysql')
+				);
+
+				$wpdb->last_error = "";
+
+				$cek_id = $wpdb->get_var($wpdb->prepare("
+					SELECT 
+						id 
+					FROM $table_data 
+					WHERE tahun_anggaran=%d
+						AND nik=%s"
+					, $newData['tahun_anggaran'], $newData['nik']));
+
+				if(empty($cek_id)){
+					$wpdb->insert($table_data, $data_db);
+					$ret['data']['insert']++;
+				}else{
+					$wpdb->update($table_data, $data_db, array(
+						"id" => $cek_id
+					));
+					$ret['data']['update']++;
+				}
+
+				if(!empty($wpdb->last_error)){
+					$ret['data']['error'][] = array($wpdb->last_error, $data_db);
+				};
+			}
+		} else {
+			$ret['status'] = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+		die(json_encode($ret));
+	}
+
+	function import_excel_bunda_kasih(){
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil import excel!'
+		);
+
+		if (!empty($_POST)) {
+			
+			$table_data = 'data_bunda_kasih_siks';
+
+			if(
+				!empty($_POST['update_active']) 
+				&& $_POST['page'] == 1
+			){
+				$wpdb->query($wpdb->prepare("UPDATE $table_data SET active=0, update_at='".date('Y-m-d H:i:s')."'"));
+			}
+			
+			$ret['data'] = array(
+				'insert' => 0, 
+				'update' => 0,
+				'error' => array()
+			);
+
+			foreach ($_POST['data'] as $k => $data) {
+				
+				$newData = array();
+				
+				foreach($data as $kk => $vv){
+					$newData[trim(preg_replace('/\s+/', ' ', $kk))] = trim(preg_replace('/\s+/', ' ', $vv));
+				}
+
+				$data_db = array(
+					'nama' => $newData['nama'],
+				    'nik' => $newData['nik'],
+				    'kk' => $newData['kk'],
+				    'rt_rw' => $newData['rt_rw'],
+				    'desa' => $newData['desa_kelurahan'],
+				    'kecamatan' => $newData['kecamatan'],
+				    'kabkot' => $newData['kabupaten'],
+				    'provinsi' => $newData['provinsi'],
 				    'tahun_anggaran' => $newData['tahun_anggaran'],
 				    'active' => 1,
 				    'update_at' => current_time('mysql')

@@ -819,7 +819,8 @@ class Wp_Siks_Public
 		return number_format($number, 0, ",", ".");
 	}
 
-	function get_siks_map_url(){
+	function get_siks_map_url()
+	{
 		$api_googlemap = get_option( '_crb_google_api_siks' );
 		$api_googlemap = "https://maps.googleapis.com/maps/api/js?key=$api_googlemap&callback=initMapSiks&libraries=places&libraries=drawing";
 		return $api_googlemap;
@@ -830,7 +831,8 @@ class Wp_Siks_Public
 		return get_option('_crb_google_api_siks');
 	}
 
-	public function get_data_disabilitas_by_id(){
+	public function get_data_disabilitas_by_id()
+	{
         global $wpdb;
         $ret = array(
             'status' => 'success',
@@ -857,29 +859,30 @@ class Wp_Siks_Public
         die(json_encode($ret));
     }
 
-public function hapus_data_disabilitas_by_id(){
-	global $wpdb;
-	$ret = array(
-		'status' => 'success',
-		'message' => 'Berhasil hapus data!',
-		'data' => array()
-	);
-	if(!empty($_POST)){
-		if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
-			$ret['data'] = $wpdb->update('data_disabilitas_siks', array('active' => 0), array(
-				'id' => $_POST['id']
-			));
+	public function hapus_data_disabilitas_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil hapus data!',
+			'data' => array()
+		);
+		if(!empty($_POST)){
+			if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->update('data_disabilitas_siks', array('active' => 0), array(
+					'id' => $_POST['id']
+				));
+			}else{
+				$ret['status']	= 'error';
+				$ret['message']	= 'Api key tidak ditemukan!';
+			}
 		}else{
 			$ret['status']	= 'error';
-			$ret['message']	= 'Api key tidak ditemukan!';
+			$ret['message']	= 'Format Salah!';
 		}
-	}else{
-		$ret['status']	= 'error';
-		$ret['message']	= 'Format Salah!';
-	}
 
-	die(json_encode($ret));
-}
+		die(json_encode($ret));
+	}
 
     public function tambah_data_disabilitas(){
         global $wpdb;
@@ -1394,7 +1397,8 @@ public function hapus_data_disabilitas_by_id(){
 		die(json_encode($ret));
 	}
 
-    public function get_data_lansia_by_id(){
+    public function get_data_lansia_by_id()
+    {
         global $wpdb;
         $ret = array(
             'status' => 'success',
@@ -1421,29 +1425,30 @@ public function hapus_data_disabilitas_by_id(){
         die(json_encode($ret));
     }
 
-public function hapus_data_lansia_by_id(){
-	global $wpdb;
-	$ret = array(
-		'status' => 'success',
-		'message' => 'Berhasil hapus data!',
-		'data' => array()
-	);
-	if(!empty($_POST)){
-		if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
-			$ret['data'] = $wpdb->update('data_lansia_siks', array('active' => 0), array(
-				'id' => $_POST['id']
-			));
+	public function hapus_data_lansia_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil hapus data!',
+			'data' => array()
+		);
+		if(!empty($_POST)){
+			if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->update('data_lansia_siks', array('active' => 0), array(
+					'id' => $_POST['id']
+				));
+			}else{
+				$ret['status']	= 'error';
+				$ret['message']	= 'Api key tidak ditemukan!';
+			}
 		}else{
 			$ret['status']	= 'error';
-			$ret['message']	= 'Api key tidak ditemukan!';
+			$ret['message']	= 'Format Salah!';
 		}
-	}else{
-		$ret['status']	= 'error';
-		$ret['message']	= 'Format Salah!';
-	}
 
-	die(json_encode($ret));
-}
+		die(json_encode($ret));
+	}
 
     public function tambah_data_lansia(){
         global $wpdb;
