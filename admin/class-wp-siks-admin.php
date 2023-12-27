@@ -177,6 +177,22 @@ class Wp_Siks_Admin {
 			'post_status' => 'publish'
 		));
 
+		$data_anak_terlantar = $this->functions->generatePage(array(
+			'nama_page' => 'Data Anak Terlantar SIKS', 
+			'content' => '[data_anak_terlantar_siks]',
+        	'show_header' => 1,
+        	'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
+		$data_gepeng = $this->functions->generatePage(array(
+			'nama_page' => 'Data Gepeng SIKS', 
+			'content' => '[data_gepeng_siks]',
+        	'show_header' => 1,
+        	'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
 		$management_data_lansia = $this->functions->generatePage(array(
 			'nama_page' => 'Management Data Lansia',
 			'content' => '[management_data_lansia]',
@@ -217,6 +233,8 @@ class Wp_Siks_Admin {
 	            		<li><a target="_blank" href="'.$data_dtks['url'].'">'.$data_dtks['title'].'</a></li>
 	            		<li><a target="_blank" href="'.$data_lansia['url'].'">'.$data_lansia['title'].'</a></li>
 	            		<li><a target="_blank" href="'.$data_disabilitas['url'].'">'.$data_disabilitas['title'].'</a></li>
+	            		<li><a target="_blank" href="'.$data_anak_terlantar['url'].'">'.$data_anak_terlantar['title'].'</a></li>
+	            		<li><a target="_blank" href="'.$data_gepeng['url'].'">'.$data_gepeng['title'].'</a></li>
 	            		<li><a target="_blank" href="'.$data_bunda_kasih['url'].'">'.$data_bunda_kasih['title'].'</a></li>
 	            	</ol>' ),
 	            Field::make( 'text', 'crb_apikey_siks', 'API KEY' )
