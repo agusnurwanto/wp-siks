@@ -140,6 +140,15 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-disabilitas.php';
 	}
 
+	public function management_data_bunda_kasih()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-bunda-kasih.php';
+	}
+
 	public function peta_data_terpadu_siks()
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -937,6 +946,12 @@ class Wp_Siks_Public
                 if($ret['status'] != 'error' && !empty($_POST['kecamatan'])){
                     $kecamatan = $_POST['kecamatan'];
                 }
+                if($ret['status'] != 'error' && !empty($_POST['kabkot'])){
+                    $kabkot = $_POST['kabkot'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['provinsi'])){
+                    $provinsi = $_POST['provinsi'];
+                }
                 if($ret['status'] != 'error' && !empty($_POST['no_hp'])){
                     $no_hp = $_POST['no_hp'];
                 }
@@ -1152,6 +1167,8 @@ class Wp_Siks_Public
 						'rw' => $rw,
 						'desa' => $desa,
 						'kecamatan' => $kecamatan,
+						'kabkot' => $kabkot,
+						'provinsi' => $provinsi,
 						'no_hp' => $no_hp,
 						'pendidikan_terakhir' => $pendidikan_terakhir,
 						'nama_sekolah' => $nama_sekolah,
@@ -1270,86 +1287,88 @@ class Wp_Siks_Public
 			$params = $columns = $totalRecords = $data = array();
 			$params = $_REQUEST;
 			$columns = array(
-				0 => 'nama',
-				1 => 'gender',
-				2 => 'tempat_lahir',
-				3 => 'tanggal_lahir',
-				4 => 'status',
-				5 => 'dokumen_kewarganegaraan',
-				6 => 'nik',
-				7 => 'nomor_kk',
-				8 => 'rt',
-				9 => 'rw',
-				10 => 'desa',
-				11 => 'kecamatan',
-				12 => 'no_hp',
-				13 => 'pendidikan_terakhir',
-				14 => 'nama_sekolah',
-				15 => 'keterangan_lulus',
-				16 => 'jenis_disabilitas',
-				17 => 'keterangan_disabilitas',
-				18 => 'sebab_disabilitas',
-				19 => 'diagnosa_medis',
-				20 => 'penyakit_lain',
-				21 => 'tempat_pengobatan',
-				22 => 'perawat',
-				23 => 'aktivitas',
-				24 => 'aktivitas_bantuan',
-				25 => 'perlu_bantu',
-				26 => 'alat_bantu',
-				27 => 'alat_yang_dimiliki',
-				28 => 'kondisi_alat',
-				29 => 'jaminan_kesehatan',
-				30 => 'cara_menggunakan_jamkes',
-				31 => 'jaminan_sosial',
-				32 => 'pekerjaan',
-				33 => 'lokasi_bekerja',
-				34 => 'alasan_tidak_bekerja',
-				35 => 'pendapatan_bulan',
-				36 => 'pengeluaran_bulan',
-				37 => 'pendapatan_lain',
-				38 => 'minat_kerja',
-				39 => 'keterampilan',
-				40 => 'pelatihan_yang_diikuti',
-				41 => 'pelatihan_yang_diminat',
-				42 => 'status_rumah',
-				43 => 'lantai',
-				44 => 'kamar_mandi',
-				45 => 'wc',
-				46 => 'akses_ke_lingkungan',
-				47 => 'dinding',
-				48 => 'sarana_air',
-				49 => 'penerangan',
-				50 => 'desa_paud',
-				51 => 'tk_di_desa',
-				52 => 'kecamatan_slb',
-				53 => 'sd_menerima_abk',
-				54 => 'smp_menerima_abk',
-				55 => 'jumlah_posyandu',
-				56 => 'kader_posyandu',
-				57 => 'layanan_kesehatan',
-				58 => 'sosialitas_ke_tetangga',
-				59 => 'keterlibatan_berorganisasi',
-				60 => 'kegiatan_kemasyarakatan',
-				61 => 'keterlibatan_musrembang',
-				62 => 'alat_bantu_bantuan',
-				63 => 'asal_alat_bantu',
-				64 => 'tahun_pemberian',
-				65 => 'bantuan_uep',
-				66 => 'asal_uep',
-				67 => 'tahun',
-				68 => 'lainnya',
-				69 => 'rehabilitas',
-				70 => 'lokasi_rehabilitas',
-				71 => 'tahun_rehabilitas',
-				72 => 'keahlian_khusus',
-				73 => 'prestasi',
-				74 => 'nama_perawat_wali',
-				75 => 'hubungan_dengan_pd',
-				76 => 'nomor_hp',
-				77 => 'kelayakan',
-				78 => 'tahun_anggaran',
-			   	79 => 'id'
+				0 => 'nik',
+				1 => 'nomor_kk',
+				2 => 'nama',
+				3 => 'provinsi',
+				4 => 'kabkot',
+				5 => 'kecamatan',
+				6 => 'desa',
+				7 => 'rt',
+				8 => 'rw',
+				9 => 'tempat_lahir',
+				10 => 'tanggal_lahir',
+				11 => 'gender',
+				12 => 'status',
+				13 => 'dokumen_kewarganegaraan',
+				14 => 'no_hp',
+				15 => 'pendidikan_terakhir',
+				16 => 'nama_sekolah',
+				17 => 'keterangan_lulus',
+				18 => 'jenis_disabilitas',
+				19 => 'keterangan_disabilitas',
+				20 => 'sebab_disabilitas',
+				21 => 'diagnosa_medis',
+				22 => 'penyakit_lain',
+				23 => 'tempat_pengobatan',
+				24 => 'perawat',
+				25 => 'aktivitas',
+				26 => 'aktivitas_bantuan',
+				27 => 'perlu_bantu',
+				28 => 'alat_bantu',
+				29 => 'alat_yang_dimiliki',
+				30 => 'kondisi_alat',
+				31 => 'jaminan_kesehatan',
+				32 => 'cara_menggunakan_jamkes',
+				33 => 'jaminan_sosial',
+				34 => 'pekerjaan',
+				35 => 'lokasi_bekerja',
+				36 => 'alasan_tidak_bekerja',
+				37 => 'pendapatan_bulan',
+				38 => 'pengeluaran_bulan',
+				39 => 'pendapatan_lain',
+				40 => 'minat_kerja',
+				41 => 'keterampilan',
+				42 => 'pelatihan_yang_diikuti',
+				43 => 'pelatihan_yang_diminat',
+				44 => 'status_rumah',
+				45 => 'lantai',
+				46 => 'kamar_mandi',
+				47 => 'wc',
+				48 => 'akses_ke_lingkungan',
+				49 => 'dinding',
+				50 => 'sarana_air',
+				51 => 'penerangan',
+				52 => 'desa_paud',
+				53 => 'tk_di_desa',
+				54 => 'kecamatan_slb',
+				55 => 'sd_menerima_abk',
+				56 => 'smp_menerima_abk',
+				57 => 'jumlah_posyandu',
+				58 => 'kader_posyandu',
+				59 => 'layanan_kesehatan',
+				60 => 'sosialitas_ke_tetangga',
+				61 => 'keterlibatan_berorganisasi',
+				62 => 'kegiatan_kemasyarakatan',
+				63 => 'keterlibatan_musrembang',
+				64 => 'alat_bantu_bantuan',
+				65 => 'asal_alat_bantu',
+				66 => 'tahun_pemberian',
+				67 => 'bantuan_uep',
+				68 => 'asal_uep',
+				69 => 'tahun',
+				70 => 'lainnya',
+				71 => 'rehabilitas',
+				72 => 'lokasi_rehabilitas',
+				73 => 'tahun_rehabilitas',
+				74 => 'keahlian_khusus',
+				75 => 'prestasi',
+				76 => 'nama_perawat_wali',
+				77 => 'hubungan_dengan_pd',
+				78 => 'nomor_hp',
+				79 => 'kelayakan',
+				80 => 'tahun_anggaran',
+			   	81 => 'id'
 			);
 			$where = $sqlTot = $sqlRec = "";
 
@@ -1485,6 +1504,12 @@ class Wp_Siks_Public
                 //  $ret['status'] = 'error';
                 //  $ret['message'] = 'Data Tanggal Lahir tidak boleh kosong!';
                 }
+                if($ret['status'] != 'error' && !empty($_POST['provinsi'])){
+                    $provinsi = $_POST['provinsi'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['kabkot'])){
+                    $kabkot = $_POST['kabkot'];
+                }
                 if($ret['status'] != 'error' && !empty($_POST['kecamatan'])){
                     $kecamatan = $_POST['kecamatan'];
                 // }else{
@@ -1580,6 +1605,8 @@ class Wp_Siks_Public
                         'nama' => $nama,
                         'alamat' => $alamat,
                         'desa' => $desa,
+                        'provinsi' => $provinsi,
+                        'kabkot' => $kabkot,
                         'kecamatan' => $kecamatan,
                         'nik' => $nik,
                         'tanggal_lahir' => $tanggal_lahir,
@@ -1646,25 +1673,27 @@ class Wp_Siks_Public
 			$params = $columns = $totalRecords = $data = array();
 			$params = $_REQUEST;
 			$columns = array(
-				0 => 'nama',
-				1 => 'alamat',
-				2 => 'desa',
-				3 => 'kecamatan',
-				4 => 'nik',
-				5 => 'tanggal_lahir',
-				6 => 'usia',
-                7 => 'dokumen_kependudukan',
-                8 => 'status_tempat_tinggal',
-                9 => 'status_pemenuhan_kebutuhan',
-               10 => 'status_kehidupan_rumah_tangga',
-               11 => 'status_dtks',
-               12 => 'status_kepersertaan_program_bansos',
-               13 => 'rekomendasi_pendata_lama',
-               14 => 'keterangan_lainnya_lama',
-               15 => 'rekomendasi_pendata',
-               16 => 'keterangan_lainnya',
-			   17 => 'tahun_anggaran',
-			   18 => 'id'
+				0 => 'nik',
+				1 => 'nama',
+				2 => 'provinsi',
+				3 => 'kabkot',
+				4 => 'kecamatan',
+				5 => 'desa',
+				6 => 'alamat',
+				7 => 'tanggal_lahir',
+				8 => 'usia',
+                9 => 'dokumen_kependudukan',
+                10 => 'status_tempat_tinggal',
+                11 => 'status_pemenuhan_kebutuhan',
+               12 => 'status_kehidupan_rumah_tangga',
+               13 => 'status_dtks',
+               14 => 'status_kepersertaan_program_bansos',
+               15 => 'rekomendasi_pendata_lama',
+               16 => 'keterangan_lainnya_lama',
+               17 => 'rekomendasi_pendata',
+               18 => 'keterangan_lainnya',
+			   19 => 'tahun_anggaran',
+			   20 => 'id'
 			);
 			$where = $sqlTot = $sqlRec = "";
 
@@ -1678,6 +1707,222 @@ class Wp_Siks_Public
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_lansia_siks`";
 			$sql = "SELECT " . implode(', ', $columns) . " FROM `data_lansia_siks`";
+			$where_first = " WHERE 1=1 AND active = 1";
+			$sqlTot .= $sql_tot . $where_first;
+			$sqlRec .= $sql . $where_first;
+			if (isset($where) && $where != '') {
+				$sqlTot .= $where;
+				$sqlRec .= $where;
+			}
+
+			$limit = '';
+			if ($params['length'] != -1) {
+				$limit = "  LIMIT " . $wpdb->prepare('%d', $params['start']) . " ," . $wpdb->prepare('%d', $params['length']);
+			}
+			$sqlRec .= " ORDER BY update_at DESC" . $limit;
+
+			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
+			$totalRecords = $queryTot[0]['jml'];
+			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
+
+			foreach ($queryRecords as $recKey => $recVal) {
+				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
+				$btn .= '<a style="margin-left: 10px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+				$queryRecords[$recKey]['aksi'] = $btn;
+			}
+
+			$json_data = array(
+				"draw"            => intval($params['draw']),
+				"recordsTotal"    => intval($totalRecords),
+				"recordsFiltered" => intval($totalRecords),
+				"data"            => $queryRecords,
+				"sql"             => $sqlRec
+			);
+
+			die(json_encode($json_data));
+		} else {
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
+
+    public function get_data_bunda_kasih_by_id()
+    {
+        global $wpdb;
+        $ret = array(
+            'status' => 'success',
+            'message' => 'Berhasil get data!',
+            'data' => array()
+        );
+        if(!empty($_POST)){
+            if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+                $ret['data'] = $wpdb->get_row($wpdb->prepare('
+                    SELECT 
+                        *
+                    FROM data_bunda_kasih_siks
+                    WHERE id=%d
+                ', $_POST['id']), ARRAY_A);
+            }else{
+                $ret['status']  = 'error';
+                $ret['message'] = 'Api key tidak ditemukan!';
+            }
+        }else{
+            $ret['status']  = 'error';
+            $ret['message'] = 'Format Salah!';
+        }
+
+        die(json_encode($ret));
+    }
+
+	public function hapus_data_bunda_kasih_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil hapus data!',
+			'data' => array()
+		);
+		if(!empty($_POST)){
+			if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->update('data_bunda_kasih_siks', array('active' => 0), array(
+					'id' => $_POST['id']
+				));
+			}else{
+				$ret['status']	= 'error';
+				$ret['message']	= 'Api key tidak ditemukan!';
+			}
+		}else{
+			$ret['status']	= 'error';
+			$ret['message']	= 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
+    public function tambah_data_bunda_kasih(){
+        global $wpdb;
+        $ret = array(
+            'status' => 'success',
+            'message' => 'Berhasil simpan data!',
+            'data' => array()
+        );
+        if(!empty($_POST)){
+            if(!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+                if($ret['status'] != 'error' && !empty($_POST['nama'])){
+                    $nama = $_POST['nama'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['provinsi'])){
+                    $provinsi = $_POST['provinsi'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['kabkot'])){
+                    $kabkot = $_POST['kabkot'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['kecamatan'])){
+                    $kecamatan = $_POST['kecamatan'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['desa'])){
+                    $desa = $_POST['desa'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['rt_rw'])){
+                    $rt_rw = $_POST['rt_rw'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['nik'])){
+                    $nik = $_POST['nik'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['kk'])){
+                    $kk = $_POST['kk'];
+                }
+                if($ret['status'] != 'error' && !empty($_POST['tahun_anggaran'])){
+                    $tahun_anggaran = $_POST['tahun_anggaran'];
+                }
+                if($ret['status'] != 'error'){
+                    $data = array(
+                        'nama' => $nama,
+                        'provinsi' => $provinsi,
+                        'desa' => $desa,
+                        'kecamatan' => $kecamatan,
+                        'nik' => $nik,
+                        'kabkot' => $kabkot,
+                        'rt_rw' => $rt_rw,
+                        'kk' => $kk,
+                        'tahun_anggaran' => $tahun_anggaran,
+                        'active' => 1,
+                        'update_at' => current_time('mysql')
+                    );
+                    if(!empty($_POST['id_data'])){
+                        $wpdb->update('data_bunda_kasih_siks', $data, array(
+                            'id' => $_POST['id_data']
+                        ));
+                        $ret['message'] = 'Berhasil update data!';
+                    }else{
+                        $cek_id = $wpdb->get_row($wpdb->prepare('
+                            SELECT
+                                id,
+                                active
+                            FROM data_bunda_kasih_siks
+			                WHERE id=%d
+			            ', $_POST['id']), ARRAY_A);
+                        // print_r($cek_id); die($wpdb->last_query);
+                        if(empty($cek_id)){
+                            $wpdb->insert('data_bunda_kasih_siks', $data);
+                        }else{
+                            if($cek_id['active'] == 0){
+                                $wpdb->update('data_bunda_kasih_siks', $data, array(
+                                    'id' => $cek_id['id']
+                                ));
+                            }
+                        }
+                    }
+                }
+            }else{
+                $ret['status']  = 'error';
+                $ret['message'] = 'Api key tidak ditemukan!';
+            }
+        }else{
+            $ret['status']  = 'error';
+            $ret['message'] = 'Format Salah!';
+        }
+
+        die(json_encode($ret));
+    }
+
+	function get_datatable_bunda_kasih()
+	{
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil get data bunda_kasih!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			$params = $columns = $totalRecords = $data = array();
+			$params = $_REQUEST;
+			$columns = array(
+				0 => 'nik',
+                1 => 'kk',
+				2 => 'nama',
+				3 => 'provinsi',
+				4 => 'kabkot',
+				5 => 'kecamatan',
+				6 => 'desa',
+				7 => 'rt_rw',
+			   8  => 'tahun_anggaran',
+			   9  => 'id'
+			);
+			$where = $sqlTot = $sqlRec = "";
+
+			// check search value exist
+			if (!empty($params['search']['value'])) {
+				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+                $where .=" AND ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";    
+                $where .=" OR nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+			}
+
+			// getting total number records without any search
+			$sql_tot = "SELECT count(id) as jml FROM `data_bunda_kasih_siks`";
+			$sql = "SELECT " . implode(', ', $columns) . " FROM `data_bunda_kasih_siks`";
 			$where_first = " WHERE 1=1 AND active = 1";
 			$sqlTot .= $sql_tot . $where_first;
 			$sqlRec .= $sql . $where_first;

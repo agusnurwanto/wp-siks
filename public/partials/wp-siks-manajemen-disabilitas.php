@@ -19,18 +19,20 @@ $url = admin_url('admin-ajax.php');
         <table id="tableManajemenDisabilitas" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
             <thead>
                 <tr>
-                    <th class="text-center">Nama</th>
-                    <th class="text-center">Gender</th>
-                    <th class="text-center">Tempat Lahir</th>
-                    <th class="text-center">Tanggal Lahir</th>
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Dokumen Kewarganegaraan</th>
                     <th class="text-center">NIK</th>
                     <th class="text-center">Nomor Kartu Keluarga</th>
+                    <th class="text-center">Nama</th>
+                    <th class="text-center">Provinsi</th>
+                    <th class="text-center">Kabupaten / Kota</th>
+                    <th class="text-center">Kecamatan</th>
+                    <th class="text-center">Desa</th>
                     <th class="text-center">RT</th>
                     <th class="text-center">RW</th>
-                    <th class="text-center">Desa</th>
-                    <th class="text-center">Kecamatan</th>
+                    <th class="text-center">Tempat Lahir</th>
+                    <th class="text-center">Tanggal Lahir</th>
+                    <th class="text-center">Gender</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Dokumen Kewarganegaraan</th>
                     <th class="text-center">No Handphone</th>
                     <th class="text-center">Pendidikan Terakhir</th>
                     <th class="text-center">Nama Sekolah</th>
@@ -118,12 +120,40 @@ $url = admin_url('admin-ajax.php');
             <div class="modal-body">
                 <input type='hidden' id='id_data' name="id_data" placeholder=''>
                 <div class="form-group">
+                    <label>NIK</label>
+                    <input type="text" class="form-control" id="nik">
+                </div>
+                <div class="form-group">
+                    <label>Nomor Kartu Keluarga</label>
+                    <input type="text" class="form-control" id="nomor_kk">
+                </div> 
+                <div class="form-group">
                     <label>Nama</label>
                     <input type="text" class="form-control" id="nama">
                 </div>
                 <div class="form-group">
-                    <label>Gender</label>
-                    <input type="text" class="form-control" id="gender">
+                    <label>Provinsi</label>
+                    <input type="text" class="form-control" id="provinsi">
+                </div>
+                <div class="form-group">
+                    <label>Kabupaten / Kota</label>
+                    <input type="text" class="form-control" id="kabkot">
+                </div>
+                <div class="form-group">
+                    <label>Kecamatan</label>
+                    <input type="text" class="form-control" id="kecamatan">
+                </div>
+                <div class="form-group">
+                    <label>Desa</label>
+                    <input type="text" class="form-control" id="desa">
+                </div>
+                <div class="form-group">
+                    <label>RT</label>
+                    <input type="text" class="form-control" id="rt">
+                </div>
+                <div class="form-group">
+                    <label>RW</label>
+                    <input type="text" class="form-control" id="rw">
                 </div>
                 <div class="form-group">
                     <label>Tempat Lahir</label>
@@ -134,36 +164,16 @@ $url = admin_url('admin-ajax.php');
                     <input type="text" class="form-control" id="tanggal_lahir">
                 </div>
                 <div class="form-group">
+                    <label>Gender</label>
+                    <input type="text" class="form-control" id="gender">
+                </div>
+                <div class="form-group">
                     <label>Status</label>
                     <input type="text" class="form-control" id="status">
                 </div>
                     <div class="form-group">
                     <label>Dokumen Kewarganegaraan</label>
                     <input type="text" class="form-control" id="dokumen_kewarganegaraan">
-                </div>
-                <div class="form-group">
-                    <label>NIK</label>
-                    <input type="text" class="form-control" id="nik">
-                </div>
-                <div class="form-group">
-                    <label>Nomor Kartu Keluarga</label>
-                    <input type="text" class="form-control" id="nomor_kk">
-                </div> 
-                <div class="form-group">
-                    <label>RT</label>
-                    <input type="text" class="form-control" id="rt">
-                </div>
-                <div class="form-group">
-                    <label>RW</label>
-                    <input type="text" class="form-control" id="rw">
-                </div>
-                <div class="form-group">
-                    <label>Desa</label>
-                    <input type="text" class="form-control" id="desa">
-                </div>
-                <div class="form-group">
-                    <label>Kecamatan</label>
-                    <input type="text" class="form-control" id="kecamatan">
                 </div>
                 <div class="form-group">
                     <label>No Handphone</label>
@@ -471,35 +481,31 @@ function get_data_disabilitas() {
                 jQuery("#wraploading").hide();
             },
             "columns": [{
-                    "data": 'nama',
-                    className: "text-center"
-                },
-                {
-                    "data": 'gender',
-                    className: "text-center"
-                },
-                {
-                    "data": 'tempat_lahir',
-                    className: "text-center"
-                },
-                {
-                    "data": 'tanggal_lahir',
-                    className: "text-center"
-                },
-                {
-                    "data": 'status',
-                    className: "text-center"
-                },
-                {
-                    "data": 'dokumen_kewarganegaraan',
-                    className: "text-center"
-                },
-                {
                     "data": 'nik',
                     className: "text-center"
                 },
                 {
                     "data": 'nomor_kk',
+                    className: "text-center"
+                },
+                {
+                    "data": 'nama',
+                    className: "text-center"
+                },
+                {
+                    "data": 'provinsi',
+                    className: "text-center"
+                },
+                {
+                    "data": 'kabkot',
+                    className: "text-center"
+                },
+                {
+                    "data": 'kecamatan',
+                    className: "text-center"
+                },
+                {
+                    "data": 'desa',
                     className: "text-center"
                 },
                 {
@@ -511,11 +517,23 @@ function get_data_disabilitas() {
                     className: "text-center"
                 },
                 {
-                    "data": 'desa',
+                    "data": 'tempat_lahir',
                     className: "text-center"
                 },
                 {
-                    "data": 'kecamatan',
+                    "data": 'tanggal_lahir',
+                    className: "text-center"
+                },
+                {
+                    "data": 'gender',
+                    className: "text-center"
+                },
+                {
+                    "data": 'status',
+                    className: "text-center"
+                },
+                {
+                    "data": 'dokumen_kewarganegaraan',
                     className: "text-center"
                 },
                 {
@@ -837,18 +855,20 @@ function edit_data(_id){
         success: function(res){
             if(res.status == 'success'){
                 jQuery('#id_data').val(res.data.id);
-                jQuery('#nama').val(res.data.nama);
-                jQuery('#gender').val(res.data.gender);
-                jQuery('#tempat_lahir').val(res.data.tempat_lahir);
-                jQuery('#tanggal_lahir').val(res.data.tanggal_lahir);
-                jQuery('#status').val(res.data.status);
-                jQuery('#dokumen_kewarganegaraan').val(res.data.dokumen_kewarganegaraan);
                 jQuery('#nik').val(res.data.nik);
                 jQuery('#nomor_kk').val(res.data.nomor_kk);
+                jQuery('#nama').val(res.data.nama);
+                jQuery('#provinsi').val(res.data.provinsi);
+                jQuery('#kabkot').val(res.data.kabkot);
+                jQuery('#kecamatan').val(res.data.kecamatan);
+                jQuery('#desa').val(res.data.desa);
                 jQuery('#rt').val(res.data.rt);
                 jQuery('#rw').val(res.data.rw);
-                jQuery('#desa').val(res.data.desa);
-                jQuery('#kecamatan').val(res.data.kecamatan);
+                jQuery('#tempat_lahir').val(res.data.tempat_lahir);
+                jQuery('#tanggal_lahir').val(res.data.tanggal_lahir);
+                jQuery('#gender').val(res.data.gender);
+                jQuery('#status').val(res.data.status);
+                jQuery('#dokumen_kewarganegaraan').val(res.data.dokumen_kewarganegaraan);
                 jQuery('#no_hp').val(res.data.no_hp);
                 jQuery('#pendidikan_terakhir').val(res.data.pendidikan_terakhir);
                 jQuery('#nama_sekolah').val(res.data.nama_sekolah);
@@ -938,6 +958,8 @@ function tambah_data_disabilitas() {
     jQuery('#rt').val('').show();
     jQuery('#rw').val('').show();
     jQuery('#desa').val('').show();
+    jQuery('#provinsi').val('').show();
+    jQuery('#kabkot').val('').show();
     jQuery('#kecamatan').val('').show();
     jQuery('#no_hp').val('').show();
     jQuery('#pendidikan_terakhir').val('').show();
@@ -1058,6 +1080,14 @@ function submitDataDisabilitas(){
     var kecamatan = jQuery('#kecamatan').val();
     if(kecamatan == ''){
         return alert('Data Kecamatan tidak boleh kosong!');
+    }
+    var kabkot = jQuery('#kabkot').val();
+    if(kabkot == ''){
+        return alert('Data Kabupaten / Kota tidak boleh kosong!');
+    }
+    var provinsi = jQuery('#provinsi').val();
+    if(provinsi == ''){
+        return alert('Data Provinsi tidak boleh kosong!');
     }
     var no_hp = jQuery('#no_hp').val();
     if(no_hp == ''){
@@ -1349,6 +1379,8 @@ function submitDataDisabilitas(){
             'rw': rw,
             'desa': desa,
             'kecamatan': kecamatan,
+            'kabkot': kabkot,
+            'provinsi': provinsi,
             'no_hp': no_hp,
             'pendidikan_terakhir': pendidikan_terakhir,
             'nama_sekolah': nama_sekolah,

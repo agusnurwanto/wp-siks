@@ -210,6 +210,10 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_get_data_disabilitas_by_id',  $plugin_public, 'get_data_disabilitas_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_disabilitas',  $plugin_public, 'tambah_data_disabilitas');
 		$this->loader->add_action('wp_ajax_hapus_data_disabilitas_by_id', $plugin_public, 'hapus_data_disabilitas_by_id');
+		$this->loader->add_action('wp_ajax_get_datatable_bunda_kasih',  $plugin_public, 'get_datatable_bunda_kasih');
+		$this->loader->add_action('wp_ajax_get_data_bunda_kasih_by_id',  $plugin_public, 'get_data_bunda_kasih_by_id');
+		$this->loader->add_action('wp_ajax_tambah_data_bunda_kasih',  $plugin_public, 'tambah_data_bunda_kasih');
+		$this->loader->add_action('wp_ajax_hapus_data_bunda_kasih_by_id', $plugin_public, 'hapus_data_bunda_kasih_by_id');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 		add_shortcode('peta_desa_siks', array($plugin_public, 'peta_desa_siks'));
@@ -218,6 +222,7 @@ class Wp_Siks {
 		add_shortcode('data_dtks_siks', array($plugin_public, 'data_dtks_siks'));
 		add_shortcode('management_data_lansia', array($plugin_public, 'management_data_lansia'));
 		add_shortcode('management_data_disabilitas', array($plugin_public, 'management_data_disabilitas'));
+		add_shortcode('management_data_bunda_kasih', array($plugin_public, 'management_data_bunda_kasih'));
 		add_shortcode('data_lansia_siks', array($plugin_public, 'data_lansia_siks'));
 		add_shortcode('data_disabilitas_siks', array($plugin_public, 'data_disabilitas_siks'));
 		add_shortcode('data_bunda_kasih_siks', array($plugin_public, 'data_bunda_kasih_siks'));

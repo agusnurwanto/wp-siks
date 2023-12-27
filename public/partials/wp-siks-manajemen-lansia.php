@@ -19,11 +19,13 @@ $url = admin_url('admin-ajax.php');
         <table id="tableManajemenLansia" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
             <thead>
                 <tr>
-                    <th class="text-center">Nama</th>
-                    <th class="text-center">Alamat</th>
-                    <th class="text-center">Desa</th>
-                    <th class="text-center">Kecamatan</th>
                     <th class="text-center">NIK</th>
+                    <th class="text-center">Nama</th>
+                    <th class="text-center">Provinsi</th>
+                    <th class="text-center">Kabupaten / Kota</th>
+                    <th class="text-center">Kecamatan</th>
+                    <th class="text-center">Desa</th>
+                    <th class="text-center">Alamat</th>
                     <th class="text-center">Tanggal Lahir</th>
                     <th class="text-center">Usia</th>
                     <th class="text-center">Dokumen Kependudukan</th>
@@ -57,12 +59,20 @@ $url = admin_url('admin-ajax.php');
             <div class="modal-body">
                 <input type='hidden' id='id_data' name="id_data" placeholder=''>
                 <div class="form-group">
+                    <label>NIK</label>
+                    <input type="text" class="form-control" id="nik">
+                </div>
+                <div class="form-group">
                     <label>Nama</label>
                     <input type="text" class="form-control" id="nama">
                 </div>
                 <div class="form-group">
-                    <label>Alamat</label>
-                    <input type="text" class="form-control" id="alamat">
+                    <label>Provinsi</label>
+                    <input type="text" class="form-control" id="provinsi">
+                </div>
+                <div class="form-group">
+                    <label>Kabupaten / Kota</label>
+                    <input type="text" class="form-control" id="kabkot">
                 </div>
                 <div class="form-group">
                     <label>Kecamatan</label>
@@ -73,16 +83,16 @@ $url = admin_url('admin-ajax.php');
                     <input type="text" class="form-control" id="desa">
                 </div>
                 <div class="form-group">
+                    <label>Alamat</label>
+                    <input type="text" class="form-control" id="alamat">
+                </div>
+                <div class="form-group">
                     <label>Tanggal Lahir</label>
                     <input type="text" class="form-control" id="tanggal_lahir">
                 </div>
                 <div class="form-group">
                     <label>Usia</label>
                     <input type="text" class="form-control" id="usia">
-                </div>
-                <div class="form-group">
-                    <label>NIK</label>
-                    <input type="text" class="form-control" id="nik">
                 </div>
                 <div class="form-group">
                     <label for='dokumen_kependudukan' style='display:inline-block'>Dokumen Kependudukan</label>
@@ -166,11 +176,19 @@ function get_data_lansia() {
                 jQuery("#wraploading").hide();
             },
             "columns": [{
+                    "data": 'nik',
+                    className: "text-center"
+                },
+                {
                     "data": 'nama',
                     className: "text-center"
                 },
                 {
-                    "data": 'alamat',
+                    "data": 'provinsi',
+                    className: "text-center"
+                },
+                {
+                    "data": 'kabkot',
                     className: "text-center"
                 },
                 {
@@ -182,7 +200,7 @@ function get_data_lansia() {
                     className: "text-center"
                 },
                 {
-                    "data": 'nik',
+                    "data": 'alamat',
                     className: "text-center"
                 },
                 {
@@ -289,10 +307,12 @@ function edit_data(_id){
             if(res.status == 'success'){
                 jQuery('#id_data').val(res.data.id);
                 jQuery('#nama').val(res.data.nama);
+                jQuery('#nik').val(res.data.nik);
+                jQuery('#provinsi').val(res.data.provinsi);
+                jQuery('#kabkot').val(res.data.kabkot);
                 jQuery('#kecamatan').val(res.data.kecamatan);
                 jQuery('#desa').val(res.data.desa);
                 jQuery('#alamat').val(res.data.alamat);
-                jQuery('#nik').val(res.data.nik);
                 jQuery('#tanggal_lahir').val(res.data.tanggal_lahir);
                 jQuery('#usia').val(res.data.usia);
                 jQuery('#dokumen_kependudukan').val(res.data.dokumen_kependudukan);
@@ -317,11 +337,13 @@ function edit_data(_id){
 }
 
 function tambah_data_lansia() {
+    jQuery('#nik').val('').show();
     jQuery('#nama').val('').show();
-    jQuery('#alamat').val('').show();
+    jQuery('#provinsi').val('').show();
+    jQuery('#kabkot').val('').show();
     jQuery('#desa').val('').show();
     jQuery('#kecamatan').val('').show();
-    jQuery('#nik').val('').show();
+    jQuery('#alamat').val('').show();
     jQuery('#tanggal_lahir').val('').show();
     jQuery('#usia').val('').show();
     jQuery('#dokumen_kependudukan').val('').show();
@@ -351,6 +373,14 @@ function submitDataLansia(){
     var tanggal_lahir = jQuery('#tanggal_lahir').val();
     if(tanggal_lahir == ''){
         return alert('Data Tanggal Lahir tidak boleh kosong!');
+    }
+    var provinsi = jQuery('#provinsi').val();
+    if(provinsi == ''){
+        return alert('Data Provinsi tidak boleh kosong!');
+    }
+    var kabkot = jQuery('#kabkot').val();
+    if(kabkot == ''){
+        return alert('Data Kabupaten / Kota tidak boleh kosong!');
     }
     var kecamatan = jQuery('#kecamatan').val();
     if(kecamatan == ''){
@@ -425,6 +455,8 @@ function submitDataLansia(){
             'nama': nama,
             'nik': nik,
             'tanggal_lahir': tanggal_lahir,
+            'provinsi': provinsi,
+            'kabkot': kabkot,
             'kecamatan': kecamatan,
             'desa': desa,
             'alamat': alamat,
