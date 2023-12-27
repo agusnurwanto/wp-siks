@@ -223,6 +223,8 @@ class Wp_Siks {
 		add_shortcode('management_data_lansia', array($plugin_public, 'management_data_lansia'));
 		add_shortcode('management_data_disabilitas', array($plugin_public, 'management_data_disabilitas'));
 		add_shortcode('management_data_bunda_kasih', array($plugin_public, 'management_data_bunda_kasih'));
+		add_shortcode('management_data_anak_terlantar', array($plugin_public, 'management_data_anak_terlantar'));
+		add_shortcode('management_data_lksa', array($plugin_public, 'management_data_lksa'));
 		add_shortcode('data_lansia_siks', array($plugin_public, 'data_lansia_siks'));
 		add_shortcode('data_disabilitas_siks', array($plugin_public, 'data_disabilitas_siks'));
 		add_shortcode('data_bunda_kasih_siks', array($plugin_public, 'data_bunda_kasih_siks'));

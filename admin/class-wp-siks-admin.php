@@ -216,6 +216,22 @@ class Wp_Siks_Admin {
 			'no_key' => 1,
 			'post_status' => 'private'
 		));
+		
+		$management_data_anak_terlantar = $this->functions->generatePage(array(
+			'nama_page' => 'Management Data Anak Terlantar',
+			'content' => '[management_data_anak_terlantar]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'private'
+		));
+		
+		$management_data_lksa = $this->functions->generatePage(array(
+			'nama_page' => 'Management Data Lembaga Kesejahteraan Sosial Anak (LKSA)',
+			'content' => '[management_data_lksa]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'private'
+		));
 
 		$basic_options_container = Container::make( 'theme_options', __( 'SIKS Options' ) )
 			->set_page_menu_position( 4 )
@@ -390,6 +406,64 @@ class Wp_Siks_Admin {
 	            	->set_html( 'Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>' ),
 		        Field::make( 'html', 'crb_lansia_save_button' )
 	            	->set_html( '<a onclick="import_excel_bunda_kasih(); return false" href="javascript:void(0);" class="button button-primary">Import Bunda Kasih</a>' )
+	        ) );
+			
+	    Container::make( 'theme_options', __( 'Data Anak Terlantar' ) )
+			->set_page_parent( $basic_options_container )
+			->add_fields( array(
+		    	Field::make( 'html', 'crb_anak_terlantar_hide_sidebar' )
+		        	->set_html( '
+		        		<style>
+		        			.postbox-container { display: none; }
+		        			#poststuff #post-body.columns-2 { margin: 0 !important; }
+		        		</style>
+		        	' ), 
+				Field::make( 'html', 'crb_siks_halaman_terkait_anak_terlantar' )
+		        	->set_html( '
+					<h5>HALAMAN TERKAIT</h5>
+	            	<ol>
+	            		<li><a target="_blank" href="'.$management_data_anak_terlantar['url'].'">'.$management_data_anak_terlantar['title'].'</a></li>
+	            	</ol>
+		        	' ),
+		        Field::make( 'html', 'crb_anak_terlantar_upload_html' )
+	            	->set_html( '<h3>Import EXCEL data Anak Terlantar</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
+	            		Contoh format file excel untuk <b>Anak Terlantar</b> bisa <a target="_blank" href="'.SIKS_PLUGIN_URL. 'excel/contoh_anak_terlantar.xlsx">download di sini</a>.<br>
+	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
+	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
+	            		Sheet file excel yang akan diimport harus diberi nama <b>data</b>. Untuk kolom nilai angka ditulis tanpa tanda titik.<br>' ),
+	            Field::make( 'html', 'crb_anak_terlantar_siks' )
+	            	->set_html( 'Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>' ),
+		        Field::make( 'html', 'crb_lansia_save_button' )
+	            	->set_html( '<a onclick="import_excel_anak_terlantar(); return false" href="javascript:void(0);" class="button button-primary">Import Anak Terlantar</a>' )
+	        ) );
+
+	    Container::make( 'theme_options', __( 'Data LKSA' ) )
+			->set_page_parent( $basic_options_container )
+			->add_fields( array(
+		    	Field::make( 'html', 'crb_lksa_hide_sidebar' )
+		        	->set_html( '
+		        		<style>
+		        			.postbox-container { display: none; }
+		        			#poststuff #post-body.columns-2 { margin: 0 !important; }
+		        		</style>
+		        	' ), 
+				Field::make( 'html', 'crb_siks_halaman_terkait_lksa' )
+		        	->set_html( '
+					<h5>HALAMAN TERKAIT</h5>
+	            	<ol>
+	            		<li><a target="_blank" href="'.$management_data_lksa['url'].'">'.$management_data_lksa['title'].'</a></li>
+	            	</ol>
+		        	' ),
+		        Field::make( 'html', 'crb_lksa_upload_html' )
+	            	->set_html( '<h3>Import EXCEL data LKSA</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
+	            		Contoh format file excel untuk <b>LKSA</b> bisa <a target="_blank" href="'.SIKS_PLUGIN_URL. 'excel/contoh_lksa.xlsx">download di sini</a>.<br>
+	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
+	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
+	            		Sheet file excel yang akan diimport harus diberi nama <b>data</b>. Untuk kolom nilai angka ditulis tanpa tanda titik.<br>' ),
+	            Field::make( 'html', 'crb_lksa_siks' )
+	            	->set_html( 'Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>' ),
+		        Field::make( 'html', 'crb_lansia_save_button' )
+	            	->set_html( '<a onclick="import_excel_lksa(); return false" href="javascript:void(0);" class="button button-primary">Import LKSA</a>' )
 	        ) );
 	}
 
@@ -684,6 +758,160 @@ class Wp_Siks_Admin {
 		if (!empty($_POST)) {
 			
 			$table_data = 'data_bunda_kasih_siks';
+
+			if(
+				!empty($_POST['update_active']) 
+				&& $_POST['page'] == 1
+			){
+				$wpdb->query($wpdb->prepare("UPDATE $table_data SET active=0, update_at='".date('Y-m-d H:i:s')."'"));
+			}
+			
+			$ret['data'] = array(
+				'insert' => 0, 
+				'update' => 0,
+				'error' => array()
+			);
+
+			foreach ($_POST['data'] as $k => $data) {
+				
+				$newData = array();
+				
+				foreach($data as $kk => $vv){
+					$newData[trim(preg_replace('/\s+/', ' ', $kk))] = trim(preg_replace('/\s+/', ' ', $vv));
+				}
+
+				$data_db = array(
+					'nama' => $newData['nama'],
+				    'nik' => $newData['nik'],
+				    'kk' => $newData['kk'],
+				    'rt_rw' => $newData['rt_rw'],
+				    'desa' => $newData['desa_kelurahan'],
+				    'kecamatan' => $newData['kecamatan'],
+				    'kabkot' => $newData['kabupaten'],
+				    'provinsi' => $newData['provinsi'],
+				    'tahun_anggaran' => $newData['tahun_anggaran'],
+				    'active' => 1,
+				    'update_at' => current_time('mysql')
+				);
+
+				$wpdb->last_error = "";
+
+				$cek_id = $wpdb->get_var($wpdb->prepare("
+					SELECT 
+						id 
+					FROM $table_data 
+					WHERE tahun_anggaran=%d
+						AND nik=%s"
+					, $newData['tahun_anggaran'], $newData['nik']));
+
+				if(empty($cek_id)){
+					$wpdb->insert($table_data, $data_db);
+					$ret['data']['insert']++;
+				}else{
+					$wpdb->update($table_data, $data_db, array(
+						"id" => $cek_id
+					));
+					$ret['data']['update']++;
+				}
+
+				if(!empty($wpdb->last_error)){
+					$ret['data']['error'][] = array($wpdb->last_error, $data_db);
+				};
+			}
+		} else {
+			$ret['status'] = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+		die(json_encode($ret));
+	}
+
+	function import_excel_anak_terlantar(){
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil import excel!'
+		);
+
+		if (!empty($_POST)) {
+			
+			$table_data = 'data_anak_terlantar_siks';
+
+			if(
+				!empty($_POST['update_active']) 
+				&& $_POST['page'] == 1
+			){
+				$wpdb->query($wpdb->prepare("UPDATE $table_data SET active=0, update_at='".date('Y-m-d H:i:s')."'"));
+			}
+			
+			$ret['data'] = array(
+				'insert' => 0, 
+				'update' => 0,
+				'error' => array()
+			);
+
+			foreach ($_POST['data'] as $k => $data) {
+				
+				$newData = array();
+				
+				foreach($data as $kk => $vv){
+					$newData[trim(preg_replace('/\s+/', ' ', $kk))] = trim(preg_replace('/\s+/', ' ', $vv));
+				}
+
+				$data_db = array(
+					'nama' => $newData['nama'],
+				    'nik' => $newData['nik'],
+				    'kk' => $newData['kk'],
+				    'rt_rw' => $newData['rt_rw'],
+				    'desa' => $newData['desa_kelurahan'],
+				    'kecamatan' => $newData['kecamatan'],
+				    'kabkot' => $newData['kabupaten'],
+				    'provinsi' => $newData['provinsi'],
+				    'tahun_anggaran' => $newData['tahun_anggaran'],
+				    'active' => 1,
+				    'update_at' => current_time('mysql')
+				);
+
+				$wpdb->last_error = "";
+
+				$cek_id = $wpdb->get_var($wpdb->prepare("
+					SELECT 
+						id 
+					FROM $table_data 
+					WHERE tahun_anggaran=%d
+						AND nik=%s"
+					, $newData['tahun_anggaran'], $newData['nik']));
+
+				if(empty($cek_id)){
+					$wpdb->insert($table_data, $data_db);
+					$ret['data']['insert']++;
+				}else{
+					$wpdb->update($table_data, $data_db, array(
+						"id" => $cek_id
+					));
+					$ret['data']['update']++;
+				}
+
+				if(!empty($wpdb->last_error)){
+					$ret['data']['error'][] = array($wpdb->last_error, $data_db);
+				};
+			}
+		} else {
+			$ret['status'] = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+		die(json_encode($ret));
+	}
+
+	function import_excel_lksa(){
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil import excel!'
+		);
+
+		if (!empty($_POST)) {
+			
+			$table_data = 'data_lksa_siks';
 
 			if(
 				!empty($_POST['update_active']) 
