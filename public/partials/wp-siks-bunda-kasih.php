@@ -22,11 +22,11 @@ foreach($maps_all as $i => $desa){
             $total_bunda_kasih += $orang['jml'];
         }
     }
-    if($total_bunda_kasih <= 15){
+    if($total_bunda_kasih <= 5){
         $maps_all[$i]['color'] = '#0cbf00';
-    }else if($total_bunda_kasih <= 40){
+    }else if($total_bunda_kasih <= 10){
         $maps_all[$i]['color'] = '#fff70a';
-    }else if($total_bunda_kasih > 40){
+    }else if($total_bunda_kasih > 10){
         $maps_all[$i]['color'] = '#ff0000';
     }
     $maps_all[$i]['index'] = $i;
@@ -70,8 +70,8 @@ foreach($maps_all as $i => $desa){
     <h3 style="margin-top: 20px;">Keterangan</h3>
     <ol>
         <li>Warna hijau berarti jumlah Bunda Kasih antara 0 sampai 5 orang</li>
-        <li>Warna kuning berarti jumlah Bunda Kasih antara 5 sampai 15 orang</li>
-        <li>Warna merah berarti jumlah Bunda Kasih diatas 15 orang</li>
+        <li>Warna kuning berarti jumlah Bunda Kasih antara 5 sampai 10 orang</li>
+        <li>Warna merah berarti jumlah Bunda Kasih diatas 10 orang</li>
     </ol>
     <h2 class="text-center">Tabel Data Bunda Kasih<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
     <div style="width: 100%; overflow: auto; height: 100vh;">
