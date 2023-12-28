@@ -236,6 +236,14 @@ class Wp_Siks_Admin
 			'post_status' => 'private'
 		));
 
+		$management_data_odgj = $this->functions->generatePage(array(
+			'nama_page' => 'Management Data Orang Dengan Gangguan Jiwa ( ODGJ )',
+			'content' => '[management_data_odgj]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
 		$basic_options_container = Container::make('theme_options', __('SIKS Options'))
 			->set_page_menu_position(4)
 			->add_fields(array(
@@ -368,6 +376,7 @@ class Wp_Siks_Admin
 					<h5>HALAMAN TERKAIT</h5>
 	            	<ol>
 	            		<li><a target="_blank" href="' . $management_data_disabilitas['url'] . '">' . $management_data_disabilitas['title'] . '</a></li>
+	            		<li><a target="_blank" href="' . $management_data_odgj['url'] . '">' . $management_data_odgj['title'] . '</a></li>
 	            	</ol>
 		        	'),
 				Field::make('html', 'crb_disabilitas_upload_html')
