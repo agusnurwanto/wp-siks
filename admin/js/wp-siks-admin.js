@@ -106,6 +106,14 @@ function import_excel_bunda_kasih(action = '', message = ''){
     import_excel('import_excel_bunda_kasih', 'Success import data Bunda Kasih dari excel!');
 }
 
+function import_excel_anak_terlantar(action = '', message = ''){
+    var jenis_import = jQuery('input[name="carbon_fields_compact_input[_crb_jenis_anak_terlantar]"]:checked').val();
+    if(jenis_import == ''){
+        return alert('Jenis data belum dipilih!');
+    }
+    import_excel(jenis_import, 'Success import data dari excel!');
+}
+
 function import_excel(action = '', message = ''){
     if(action == ''){
         alert('Action tidak diketahui!');
