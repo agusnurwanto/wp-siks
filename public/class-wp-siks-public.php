@@ -2295,11 +2295,12 @@ class Wp_Siks_Public
 				kabkot,
 				kecamatan,
 				desa,
+				jenis_disabilitas,
 				count(id) as jml
 			FROM data_disabilitas_siks 
 			WHERE $where
 				AND active=1
-			GROUP BY provinsi, kabkot, kecamatan, desa
+			GROUP BY provinsi, kabkot, kecamatan, desa, jenis_disabilitas
 			ORDER BY  provinsi, kabkot, kecamatan, desa
 		", ARRAY_A);
 		// print_r($data); die($wpdb->last_query);

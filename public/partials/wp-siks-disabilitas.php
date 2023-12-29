@@ -13,13 +13,39 @@ foreach($disabilitas_all as $data){
 }
 
 $total_all = 0;
+$total_all_jenis = array();
+$nama_jenis = array();
 $body =  '';
+$body2 =  '';
 foreach($maps_all as $i => $desa){
     $index = strtolower($desa['data']['provinsi']).'.'.strtolower($desa['data']['kab_kot']).'.'.strtolower($desa['data']['kecamatan']).'.'.strtolower($desa['data']['desa']);
     $total_disabilitas = 0;
+    $total_jenis = array();
+    $total_jenis_disabilitas = array();
+    $nama_jenis = array();
     if(!empty($disabilitas_all_desa[$index])){
         foreach($disabilitas_all_desa[$index] as $orang){
             $total_disabilitas += $orang['jml'];
+            if($orang['jenis_disabilitas'] != ''){
+                if(empty($total_jenis_disabilitas[$orang['jenis_disabilitas']])){
+                    $total_jenis_disabilitas[$orang['jenis_disabilitas']] = 0;
+                }
+                if(empty($total_all_jenis[$orang['jenis_disabilitas']])){
+                    $total_all_jenis[$orang['jenis_disabilitas']] = 0;
+                }
+                if(empty($nama_jenis[$orang['jenis_disabilitas']])){
+                $nama_jenis[$orang['jenis_disabilitas']] = array();
+                }
+                $nama_jenis[$orang['jenis_disabilitas']] = array();
+                $total_jenis_disabilitas[$orang['jenis_disabilitas']] += $orang['jml'];
+                $total_all_jenis[$orang['jenis_disabilitas']] += $orang['jml'];
+            }
+        }
+        foreach($total_jenis_disabilitas as $key => $data){
+            $total_jenis_disabilitas[$key] = $key.': '.$data;
+        }
+        foreach($nama_jenis as $key => $data){
+            $nama_jenis[$key] = $key;
         }
     }
     if($total_disabilitas <= 15){
@@ -58,10 +84,20 @@ foreach($maps_all as $i => $desa){
             <td class='text-center'>".$desa['data']['kecamatan']."</td>
             <td class='text-center'>".$desa['data']['desa']."</td>
             <td class='text-center'>".$total_disabilitas."</td>
+            <td>".implode('<hr>', $total_jenis_disabilitas)."</td>
             <td class='text-center'><a style='margin-bottom: 5px;' onclick='cari_alamat_siks(\"".$search."\"); return false;' href='#' class='btn btn-danger'>Map</a></td>
         </tr>
     ";
     $total_all += $total_disabilitas;
+}
+
+foreach($total_all_jenis as $key => $data){
+    $body2 .= "
+        <tr>
+            <td class='text-left'>".$key."</td>
+            <td class='text-center'>".$data."</td>
+        </tr>
+    ";
 }
 ?>
 <h1 class="text-center">Peta Sebaran Disabilitas<br><?php echo $this->getNamaDaerah(); ?></h1>
@@ -84,11 +120,25 @@ foreach($maps_all as $i => $desa){
                     <th class='text-center'>Kecamatan</th>
                     <th class='text-center'>Desa</th>
                     <th class='text-center'>Total Disabilitas</th>
+                    <th class='text-center'>Jenis Disabilitas</th>
                     <th class='text-center'>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 <?php echo $body; ?>
+            </tbody>
+        </table>
+    </div><br>
+    <h2 class="text-center">Tabel Total Data <br>per Jenis Disabilitas</h2>
+        <table class="table table-bordered" id="table-data-jenis">
+            <thead>
+                <tr>
+                    <th class="text-center">Jenis Disabilitas</th>
+                    <th class="text-center">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php echo $body2; ?>
             </tbody>
         </table>
     </div>
@@ -99,6 +149,10 @@ foreach($maps_all as $i => $desa){
     jQuery('#table-data').dataTable({
         lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
         order: [[5, 'desc']]
+    });
+    jQuery('#table-data-jenis').dataTable({
+        lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+        order: [[1, 'desc']]
     });
 </script>
 <script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
