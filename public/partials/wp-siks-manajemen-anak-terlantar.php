@@ -1,5 +1,7 @@
 <?php
 $api_key = get_option(SIKS_APIKEY);
+$url = admin_url('admin-ajax.php');
+
 
 ?>
 <style type="text/css">
@@ -19,13 +21,17 @@ $api_key = get_option(SIKS_APIKEY);
             <thead>
                 <tr>
                     <th class="text-center">Nama</th>
-                    <th class="text-center">Alamat</th>
-                    <th class="text-center">Desa</th>
-                    <th class="text-center">Kecamatan</th>
+                    <th class="text-center">No KK</th>
                     <th class="text-center">NIK</th>
+                    <th class="text-center">Jenis Kelamin</th>
                     <th class="text-center">Tanggal Lahir</th>
                     <th class="text-center">Usia</th>
-                    <th class="text-center">Tahun Anggaran</th>
+                    <th class="text-center">Pendidikan</th>
+                    <th class="text-center">Provinsi</th>
+                    <th class="text-center">Kabupaten/Kota</th>
+                    <th class="text-center">Kecamatan</th>
+                    <th class="text-center">Desa/Kelurahan</th>
+                    <th class="text-center">Alamat</th>
                     <th class="text-center" style="width: 100px;">Aksi</th>
                 </tr>
             </thead>
@@ -45,36 +51,70 @@ $api_key = get_option(SIKS_APIKEY);
             </div>
             <div class="modal-body">
                 <div class="form-group">
+                    <label>Tahun Anggaran</label>
+                    <input type="text" class="form-control" id="tahun_anggaran">
+                </div>
+                <div class="form-group">
                     <label>Nama</label>
                     <input type="text" class="form-control" id="nama">
                 </div>
                 <div class="form-group">
-                    <label>Alamat</label>
-                    <input type="text" class="form-control" id="alamat">
+                    <label>Nomor Kartu Keluarga</label>
+                    <input type="text" class="form-control" id="kk">
                 </div>
                 <div class="form-group">
-                    <label>Kecamatan</label>
-                    <input type="text" class="form-control" id="kecamatan">
+                    <label>NIK</label>
+                    <input type="text" class="form-control" id="nik">
                 </div>
-                <div class="form-group">
-                    <label>Desa</label>
-                    <input type="text" class="form-control" id="desa">
+                <div class="form-group" id="status_jk">
+                    <label for="jenis_kelamin">Jenis Kelamin</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_laki" value="L">
+                        <label class="form-check-label" for="jenis_laki">Laki-laki</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_perempuan" value="P">
+                        <label class="form-check-label" for="jenis_perempuan">Perempuan</label>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Tanggal Lahir</label>
-                    <input type="text" class="form-control" id="tanggalLahir">
+                    <input type="text" class="form-control" id="tanggal_Lahir">
                 </div>
                 <div class="form-group">
                     <label>Usia</label>
                     <input type="text" class="form-control" id="usia">
                 </div>
                 <div class="form-group">
-                    <label>NIK</label>
-                    <input type="text" class="form-control" id="nik">
+                    <label>Pendidikan</label>
+                    <input type="text" class="form-control" id="pendidikan">
                 </div>
                 <div class="form-group">
-                    <label>Tahun Anggaran</label>
-                    <input type="text" class="form-control" id="tahunAnggaran">
+                    <label>Provinsi</label>
+                    <input type="text" class="form-control" id="provinsi">
+                </div>
+                <div class="form-group">
+                    <label>Kabupaten/Kota</label>
+                    <input type="text" class="form-control" id="kabkot">
+                </div>
+                <div class="form-group">
+                    <label>Kecamatan</label>
+                    <input type="text" class="form-control" id="kecamatan">
+                </div>
+                <div class="form-group">
+                    <label>Desa/Kelurahan</label>
+                    <input type="text" class="form-control" id="desa_kelurahan">
+                </div>
+                <div class="form-group" id="status_kelembagaan">
+                    <label>Status Lembaga</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="status_lembaga" id="status_in" value="1">
+                        <label class="form-check-label" for="status_in">Dalam Lembaga</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="status_lembaga" id="status_out" value="0">
+                        <label class="form-check-label" for="status_out">Luar Lembaga</label>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -86,20 +126,20 @@ $api_key = get_option(SIKS_APIKEY);
 </div>
 <script>
     jQuery(document).ready(function() {
-        getDataTables();
+        get_data_anak_terlantar();
     });
 
-    function getDataTables() {
+    function get_data_anak_terlantar() {
         if (typeof tableAnakTerlantar === 'undefined') {
             window.tableAnakTerlantar = jQuery('#tableManajemenAnakTerlantar').DataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    url: '',
+                    url: '<?php echo $url?>',
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        'action': 'get_data_AnakTerlantar',
+                        'action': 'get_datatable_anak_terlantar',
                         'api_key': '<?php echo $api_key ?>',
                     }
                 },
@@ -118,19 +158,15 @@ $api_key = get_option(SIKS_APIKEY);
                         className: "text-center"
                     },
                     {
-                        "data": 'alamat',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'desa',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'kecamatan',
+                        "data": 'kk',
                         className: "text-center"
                     },
                     {
                         "data": 'nik',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'jenis_kelamin',
                         className: "text-center"
                     },
                     {
@@ -142,7 +178,23 @@ $api_key = get_option(SIKS_APIKEY);
                         className: "text-center"
                     },
                     {
-                        "data": 'tahun_anggaran',
+                        "data": 'pendidikan',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'provinsi',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'kabkot',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'kecamatan',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'desa_kelurahan',
                         className: "text-center"
                     },
                     {
@@ -158,14 +210,19 @@ $api_key = get_option(SIKS_APIKEY);
     }
 
     function tambah_data_anak_terlantar() {
+        jQuery('#tahun_anggaran').val('').show()
         jQuery('#nama').val('').show()
-        jQuery('#alamat').val('').show()
-        jQuery('#desa').val('').show()
-        jQuery('#kecamatan').val('').show()
+        jQuery('#kk').val('').show()
         jQuery('#nik').val('').show()
-        jQuery('#tanggalLahir').val('').show()
+        jQuery('#status_jk').val('').show()
+        jQuery('#tanggal_Lahir').val('').show()
         jQuery('#usia').val('').show()
-        jQuery('#tahunAnggaran').val('').show()
+        jQuery('#pendidikan').val('').show()
+        jQuery('#usia').val('').show()
+        jQuery('#provinsi').val('').show()
+        jQuery('#kabkot').val('').show()
+        jQuery('#kecamatan').val('').show()
+        jQuery('#desa_kelurahan').val('').show()
         jQuery('#modalTambahDataAnakTerlantar').modal('show');
     }
 </script>
