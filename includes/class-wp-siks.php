@@ -169,6 +169,7 @@ class Wp_Siks {
   		$this->loader->add_action( 'wp_ajax_import_excel_bunda_kasih',  $plugin_admin, 'import_excel_bunda_kasih');
   		$this->loader->add_action( 'wp_ajax_import_excel_anak_terlantar',  $plugin_admin, 'import_excel_anak_terlantar');
   		$this->loader->add_action( 'wp_ajax_import_excel_lksa',  $plugin_admin, 'import_excel_lksa');
+  		$this->loader->add_action( 'wp_ajax_import_excel_odgj',  $plugin_admin, 'import_excel_odgj');
 
 		$this->loader->add_action('carbon_fields_register_fields', $plugin_admin, 'crb_attach_siks_options');
 	}

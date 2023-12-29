@@ -382,13 +382,20 @@ class Wp_Siks_Admin
 				Field::make('html', 'crb_disabilitas_upload_html')
 					->set_html('<h3>Import EXCEL data Disabilitas</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
 	            		Contoh format file excel untuk <b>Disabilitas</b> bisa <a target="_blank" href="' . SIKS_PLUGIN_URL . 'excel/contoh_disabilitas.xlsx">download di sini</a>.<br>
+	            		Contoh format file excel untuk <b>ODGJ</b> bisa <a target="_blank" href="' . SIKS_PLUGIN_URL . 'excel/contoh_odgj.xlsx">download di sini</a>.<br>
 	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
 	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
 	            		Sheet file excel yang akan diimport harus diberi nama <b>data</b>. Untuk kolom nilai angka ditulis tanpa tanda titik.<br>'),
+				Field::make('radio', 'crb_jenis_disabilitas',('Pilih Jenis Data Excel'))
+					->add_options(array(
+						'import_excel_disabilitas' => 'Import Data Disabilitas',
+						'import_excel_odgj' => 'Import Data ODGJ'
+					))
+					->set_help_text('Pilih jenis data yang ingin diimpor.'),
 				Field::make('html', 'crb_disabilitas_siks')
 					->set_html('Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>'),
 				Field::make('html', 'crb_lansia_save_button')
-					->set_html('<a onclick="import_excel_disabilitas(); return false" href="javascript:void(0);" class="button button-primary">Import Disabilitas</a>')
+					->set_html('<a onclick="import_excel_disabilitas(); return false" href="javascript:void(0);" class="button button-primary">Import</a>')
 			));
 
 		Container::make('theme_options', __('Data Bunda Kasih'))
@@ -974,6 +981,93 @@ class Wp_Siks_Admin
 						AND nama=%s",
 					$newData['tahun_anggaran'],
 					$newData['nama']
+				));
+
+				if (empty($cek_id)) {
+					$wpdb->insert($table_data, $data_db);
+					$ret['data']['insert']++;
+				} else {
+					$wpdb->update($table_data, $data_db, array(
+						"id" => $cek_id
+					));
+					$ret['data']['update']++;
+				}
+
+				if (!empty($wpdb->last_error)) {
+					$ret['data']['error'][] = array($wpdb->last_error, $data_db);
+				};
+			}
+		} else {
+			$ret['status'] = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+		die(json_encode($ret));
+	}
+
+	function import_excel_odgj()
+	{
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil import excel!'
+		);
+
+		if (!empty($_POST)) {
+
+			$table_data = 'data_odgj_siks';
+
+			if (
+				!empty($_POST['update_active'])
+				&& $_POST['page'] == 1
+			) {
+				$wpdb->query($wpdb->prepare("UPDATE $table_data SET active=0, update_at='" . date('Y-m-d H:i:s') . "'"));
+			}
+
+			$ret['data'] = array(
+				'insert' => 0,
+				'update' => 0,
+				'error' => array()
+			);
+
+			foreach ($_POST['data'] as $k => $data) {
+
+				$newData = array();
+
+				foreach ($data as $kk => $vv) {
+					$newData[trim(preg_replace('/\s+/', ' ', $kk))] = trim(preg_replace('/\s+/', ' ', $vv));
+				}
+
+				$data_db = array(
+					'nik' => $newData['nik'],
+					'kk' => $newData['kk'],
+					'nama' => $newData['nama'],
+					'provinsi' => $newData['provinsi'],
+					'kecamatan' => $newData['kecamatan'],
+					'kabkot' => $newData['kabkot'],
+					'desa' => $newData['desa'],
+					'rt' => $newData['rt'],
+					'rw' => $newData['rw'],
+					'jenis_kelamin' => $newData['jenis_kelamin'],
+					'usia' => $newData['usia'],
+					'nama_ortu' => $newData['nama_ortu'],
+					'pengobatan' => $newData['pengobatan'],
+					'keterangan' => $newData['keterangan'],
+					'tahun_anggaran' => $newData['tahun_anggaran'], 
+					'active' => 1,
+					'update_at' => current_time('mysql')
+				);
+
+				$wpdb->last_error = "";
+
+				$cek_id = $wpdb->get_var($wpdb->prepare(
+					"
+					SELECT 
+						id 
+					FROM $table_data 
+					WHERE tahun_anggaran=%d
+						AND nik=%s",
+					$newData['tahun_anggaran'],
+					$newData['nik']
 				));
 
 				if (empty($cek_id)) {
