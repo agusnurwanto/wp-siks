@@ -164,11 +164,15 @@ class Wp_Siks {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'wp_ajax_sql_migrate_siks', $plugin_admin, 'sql_migrate_siks' );
+  		$this->loader->add_action( 'wp_ajax_management_data_dtks_siks',  $plugin_admin, 'management_data_dtks_siks');
   		$this->loader->add_action( 'wp_ajax_import_excel_lansia',  $plugin_admin, 'import_excel_lansia');
   		$this->loader->add_action( 'wp_ajax_import_excel_disabilitas',  $plugin_admin, 'import_excel_disabilitas');
   		$this->loader->add_action( 'wp_ajax_import_excel_bunda_kasih',  $plugin_admin, 'import_excel_bunda_kasih');
+  		$this->loader->add_action( 'wp_ajax_get_data_dtks_siks',  $plugin_admin, 'get_data_dtks_siks');
 
 		$this->loader->add_action('carbon_fields_register_fields', $plugin_admin, 'crb_attach_siks_options');
+		
+		add_shortcode('management_data_dtks_siks', array($plugin_admin, 'management_data_dtks_siks'));
 	}
 
 	/**

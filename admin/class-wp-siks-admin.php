@@ -217,6 +217,14 @@ class Wp_Siks_Admin {
 			'post_status' => 'private'
 		));
 
+		$management_data_dtks_siks = $this->functions->generatePage(array(
+			'nama_page' => 'Management Data DTKS SIKS',
+			'content' => '[management_data_dtks_siks]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'private'
+		));
+
 		$basic_options_container = Container::make( 'theme_options', __( 'SIKS Options' ) )
 			->set_page_menu_position( 4 )
 	        ->add_fields( array(
@@ -303,6 +311,25 @@ class Wp_Siks_Admin {
 	        	Field::make( 'image', 'crb_icon_kecamatan_siks', 'Icon kecamatan' )
 	        		->set_value_type('url')
         			->set_default_value(SIKS_PLUGIN_URL.'public/images/lokasi.png')
+	        ) );
+
+	    Container::make( 'theme_options', __( 'Data DTKS' ) )
+			->set_page_parent( $basic_options_container )
+			->add_fields( array(
+		    	Field::make( 'html', 'crb_dtks_siks_hide_sidebar' )
+		        	->set_html( '
+		        		<style>
+		        			.postbox-container { display: none; }
+		        			#poststuff #post-body.columns-2 { margin: 0 !important; }
+		        		</style>
+		        	' ), 
+				Field::make( 'html', 'crb_siks_halaman_terkait_dtks' )
+		        	->set_html( '
+					<h5>HALAMAN TERKAIT</h5>
+	            	<ol>
+	            		<li><a target="_blank" href="'.$management_data_dtks_siks['url'].'">'.$management_data_dtks_siks['title'].'</a></li>
+	            	</ol>
+		        	' )
 	        ) );
 
 	    Container::make( 'theme_options', __( 'Data Lansia' ) )
@@ -749,5 +776,97 @@ class Wp_Siks_Admin {
 			$ret['message'] = 'Format Salah!';
 		}
 		die(json_encode($ret));
+	}
+
+	function management_data_dtks_siks(){
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wp-siks-data-dtks.php';
+	}
+
+	function get_data_dtks_siks(){
+		global $wpdb;
+
+		try{
+			if (!empty($_POST)) {
+				if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+
+					$params = $columns = $totalRecords = $data = array();
+		 			$params = $_REQUEST;
+		 			$columns = array( 
+		 			  0 => 'Nama',
+		 			  1 => 'NIK',
+		 			  2 => 'NOKK',
+		 			  3 => 'Alamat',
+		 			  4 => 'provinsi',
+		 			  5 => 'kabkot',
+		 			  6 => 'kecamatan',
+		 			  7 => 'desa_kelurahan',
+		 			  8 => 'ATENSI',
+		 			  9 => 'BLT',
+		 			  10 => 'BLT_BBM',
+		 			  11 => 'BNPT_PPKM',
+		 			  12 => 'BPNT',
+		 			  13 => 'BST',
+		 			  14 => 'FIRST_SK',
+		 			  15 => 'PBI',
+		 			  16 => 'PENA',
+		 			  17 => 'PERMAKANAN',
+		 			  18 => 'RUTILAHU',
+		 			  19 => 'SEMBAKO_ADAPTIF',
+		 			  20 => 'YAPI',
+		 			  21 => 'PKH',
+		 			);
+		 			$where = $sqlTot = $sqlRec = "";
+
+		 			if( !empty($params['search']['value']) ) {
+		 				$where .=" AND ( NIK LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
+		 				$where .=" OR Nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
+		 				$where .=" OR Alamat LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
+		 				$where .=" OR NOKK LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
+		 				$where .=" ) ";
+		 			}
+
+		 			$sql_tot = "SELECT count(id) as jml FROM `data_dtks`";
+		 			$sql = "SELECT ".implode(', ', $columns)." FROM `data_dtks`";
+		 			$where_first = " WHERE 1=1 AND is_nonaktif = 1";
+		 			$sqlTot .= $sql_tot.$where_first;
+		 			$sqlRec .= $sql.$where_first;
+		 			if(isset($where) && $where != '') {
+		 				$sqlTot .= $where;
+		 				$sqlRec .= $where;
+		 			}
+
+		 			$limit = '';
+		 			if($params['length'] != -1){
+		 				$limit = "  LIMIT ".$wpdb->prepare('%d', $params['start'])." ,".$wpdb->prepare('%d', $params['length']);
+		 			}
+		 		 	$sqlRec .=  " ORDER BY ". $columns[$params['order'][0]['column']]."   ".$params['order'][0]['dir'].$limit;
+
+		 			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
+		 			$totalRecords = $queryTot[0]['jml'];
+		 			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
+
+					exit(json_encode(array(
+						"draw"            => intval( $params['draw'] ),   
+						"recordsTotal"    => intval( $totalRecords ),  
+						"recordsFiltered" => intval($totalRecords),
+						"data"            => $queryRecords,
+						"sql"             => $sqlRec
+					)));
+
+				}else{
+					throw new Exception('Api key tidak sesuai');
+				}
+			}else{
+				throw new Exception('Format tidak sesuai');
+			}
+		}catch(Exception $e){
+			echo json_encode([
+				'status' => false,
+				'message' => $e->getMessage()
+			]);exit;
+		}
 	}
 }
