@@ -10,6 +10,16 @@ $url = admin_url('admin-ajax.php');
         max-height: 100vh;
         width: 100%;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
 <div style="padding: 10px;margin:0 0 3rem 0;">
     <h1 class="text-center" style="margin:3rem;">Manajemen Data Anak Terlantar</h1>
@@ -50,72 +60,80 @@ $url = admin_url('admin-ajax.php');
                 </button>
             </div>
             <div class="modal-body">
+                <input type='hidden' id='id_data' name="id_data">
                 <div class="form-group">
                     <label>Tahun Anggaran</label>
-                    <input type="text" class="form-control" id="tahun_anggaran">
+                    <input type="text" class="form-control" id="tahun_anggaran" placeholder="Masukkan Tahun Anggaran">
                 </div>
                 <div class="form-group">
                     <label>Nama</label>
-                    <input type="text" class="form-control" id="nama">
+                    <input type="text" class="form-control" id="nama" placeholder="Masukkan Nama">
                 </div>
                 <div class="form-group">
                     <label>Nomor Kartu Keluarga</label>
-                    <input type="text" class="form-control" id="kk">
+                    <input type="number" class="form-control" id="kk" min="16" max="16" placeholder="Masukkan Nomor KK (max 16 digit)">
                 </div>
                 <div class="form-group">
                     <label>NIK</label>
-                    <input type="text" class="form-control" id="nik">
-                </div>
-                <div class="form-group" id="status_jk">
-                    <label for="jenis_kelamin">Jenis Kelamin</label><br>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_laki" value="L">
-                        <label class="form-check-label" for="jenis_laki">Laki-laki</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_perempuan" value="P">
-                        <label class="form-check-label" for="jenis_perempuan">Perempuan</label>
-                    </div>
+                    <input type="number" class="form-control" id="nik" max="16" placeholder="Masukkan NIK (max 16 digit)">
                 </div>
                 <div class="form-group">
-                    <label>Tanggal Lahir</label>
-                    <input type="text" class="form-control" id="tanggal_Lahir">
+                    <label for="jenisKelamin">Jenis Kelamin</label>
+                    <select class="form-control" id="jenisKelamin" name="jenisKelamin">
+                        <option selected disabled>Masukkan Jenis Kelamin</option>
+                        <option value="1">Laki-laki</option>
+                        <option value="2">Perempuan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tanggal_lahir">Tanggal Lahir</label>
+                    <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir">
                 </div>
                 <div class="form-group">
                     <label>Usia</label>
-                    <input type="text" class="form-control" id="usia">
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="usia" placeholder="Masukkan Usia">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Tahun</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Pendidikan</label>
-                    <input type="text" class="form-control" id="pendidikan">
+                    <input type="text" class="form-control" id="pendidikan" placeholder="Masukkan Pendidikan">
+                </div>
+                <div class="form-group">
+                    <label>Alamat</label>
+                    <textarea class="form-control" id="alamat" rows="4" placeholder="Masukkan Alamat"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Provinsi</label>
-                    <input type="text" class="form-control" id="provinsi">
+                    <input type="text" class="form-control" id="provinsi" placeholder="Masukkan Provinsi">
                 </div>
                 <div class="form-group">
                     <label>Kabupaten/Kota</label>
-                    <input type="text" class="form-control" id="kabkot">
+                    <input type="text" class="form-control" id="kabkot" placeholder="Masukkan Kabupaten/Kota">
                 </div>
                 <div class="form-group">
                     <label>Kecamatan</label>
-                    <input type="text" class="form-control" id="kecamatan">
+                    <input type="text" class="form-control" id="kecamatan" placeholder="Masukkan Kecamatan">
                 </div>
                 <div class="form-group">
                     <label>Desa/Kelurahan</label>
-                    <input type="text" class="form-control" id="desa_kelurahan">
+                    <input type="text" class="form-control" id="desa_kelurahan" placeholder="Masukkan Desa/Kelurahan">
                 </div>
                 <div class="form-group" id="status_kelembagaan">
                     <label>Status Lembaga</label><br>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="status_lembaga" id="status_in" value="1">
-                        <label class="form-check-label" for="status_in">Dalam Lembaga</label>
+                        <input class="form-check-input" type="radio" name="status_lembaga" id="dalam_lembaga" value="1">
+                        <label class="form-check-label" for="dalam_lembaga">Dalam Lembaga</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="status_lembaga" id="status_out" value="0">
-                        <label class="form-check-label" for="status_out">Luar Lembaga</label>
+                        <input class="form-check-input" type="radio" name="status_lembaga" id="luar_lembaga" value="0">
+                        <label class="form-check-label" for="luar_lembaga">Luar Lembaga</label>
                     </div>
                 </div>
+
             </div>
             <div class="modal-footer">
                 <button type="submit" onclick="submitDataAnakTerlantar(this);" class="btn btn-primary send_data">Simpan</button>
@@ -135,7 +153,7 @@ $url = admin_url('admin-ajax.php');
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    url: '<?php echo $url?>',
+                    url: '<?php echo $url ?>',
                     type: 'POST',
                     dataType: 'json',
                     data: {
@@ -198,6 +216,10 @@ $url = admin_url('admin-ajax.php');
                         className: "text-center"
                     },
                     {
+                        "data": 'alamat',
+                        className: "text-center"
+                    },
+                    {
                         "data": 'aksi',
                         className: "text-center"
                     },
@@ -220,9 +242,138 @@ $url = admin_url('admin-ajax.php');
         jQuery('#pendidikan').val('').show()
         jQuery('#usia').val('').show()
         jQuery('#provinsi').val('').show()
+        jQuery('#alamat').val('').show()
         jQuery('#kabkot').val('').show()
         jQuery('#kecamatan').val('').show()
         jQuery('#desa_kelurahan').val('').show()
         jQuery('#modalTambahDataAnakTerlantar').modal('show');
+    }
+
+    function edit_data(_id) {
+        jQuery('#wrap-loading').show();
+        jQuery.ajax({
+            method: 'POST',
+            url: '<?php echo $url; ?>',
+            dataType: 'json',
+            data: {
+                'action': 'get_anak_terlantar_by_id',
+                'api_key': '<?php echo $api_key; ?>',
+                'id': _id,
+            },
+            success: function(res) {
+                if (res.status == 'success') {
+                    jQuery('#id_data').val(res.data.id);
+                    jQuery('#tahun_anggaran').val(res.data.tahun_anggaran);
+                    jQuery('#nama').val(res.data.nama);
+                    jQuery('#kk').val(res.data.kk);
+                    jQuery('#nik').val(res.data.nik);
+                    jQuery('#jenisKelamin').val(res.data.jenis_kelamin);
+                    jQuery('#tanggal_Lahir').val(res.data.tanggal_lahir);
+                    jQuery('#usia').val(res.data.usia);
+                    jQuery('#pendidikan').val(res.data.pendidikan);
+                    jQuery('#provinsi').val(res.data.provinsi);
+                    jQuery('#alamat').val(res.data.alamat);
+                    jQuery('#kabkot').val(res.data.kabkot);
+                    jQuery('#kecamatan').val(res.data.kecamatan);
+                    jQuery('#desa_kelurahan').val(res.data.desa_kelurahan);
+                    if (res.data.kelembagaan === '1') {
+                        jQuery('#dalam_lembaga').prop('checked', true);
+                    } else if (res.data.kelembagaan === '0') {
+                        jQuery('#luar_lembaga').prop('checked', true);
+                    }
+                    jQuery('#modalTambahDataAnakTerlantar').modal('show');
+                } else {
+                    alert(res.message);
+                }
+                jQuery('#wrap-loading').hide();
+            }
+        });
+    }
+
+
+    function hapus_data(id) {
+        let confirmDelete = confirm("Apakah anda yakin akan menghapus data ini?");
+        if (confirmDelete) {
+            jQuery('#wrap-loading').show();
+            jQuery.ajax({
+                url: '<?php echo $url ?>',
+                type: 'POST',
+                data: {
+                    'action': 'hapus_anak_terlantar_by_id',
+                    'api_key': '<?php echo $api_key ?>',
+                    'id': id
+                },
+                dataType: 'json',
+                success: function(response) {
+                    jQuery('#wrap-loading').hide();
+                    if (response.status == 'success') {
+                        alert("Berhasil Hapus Data!");
+                        get_data_anak_terlantar();
+                    } else {
+                        alert(`GAGAL! \n${response.message}`);
+                    }
+                }
+            });
+        }
+    }
+
+    function submitDataAnakTerlantar(that) {
+        let id_data = jQuery('#id_data').val();
+        let nama = jQuery('#nama').val();
+        let kk = jQuery('#kk').val();
+        if (kk > 16) {
+            return (alert("Input KK Maksimal 16 Digit"));
+        }
+        let nik = jQuery('#nik').val();
+        if (nik > 16) {
+            return (alert("Input NIK Maksimal 16 Digit"));
+        }
+        let tahun_anggaran = jQuery('#tahun_anggaran').val();
+        let kabkot = jQuery('#kabkot').val();
+        let alamat = jQuery('#alamat').val();
+        let jenisKelamin = jQuery('#jenisKelamin').val();
+        let tanggal_Lahir = jQuery('#tanggal_Lahir').val();
+        let usia = jQuery('#usia').val();
+        let pendidikan = jQuery('#pendidikan').val();
+        let provinsi = jQuery('#provinsi').val();
+        let kecamatan = jQuery('#kecamatan').val();
+        let desa_kelurahan = jQuery('#desa_kelurahan').val();
+        let dalam_lembaga = jQuery('#dalam_lembaga').is(':checked') ? '1' : '';
+        let luar_lembaga = jQuery('#luar_lembaga').is(':checked') ? '0' : '';
+
+        jQuery('#wrap-loading').show();
+        jQuery.ajax({
+            method: 'POST',
+            url: '<?php echo $url; ?>',
+            dataType: 'json',
+            data: {
+                'action': 'tambah_data_anak_terlantar',
+                'api_key': '<?php echo $api_key; ?>',
+                'id': id_data,
+                'nama': nama,
+                'kk': kk,
+                'nik': nik,
+                'tahun_anggaran': tahun_anggaran,
+                'kabkot': kabkot,
+                'alamat': alamat,
+                'jenisKelamin': jenisKelamin,
+                'tanggal_Lahir': tanggal_Lahir,
+                'usia': usia,
+                'desa_kelurahan': desa_kelurahan,
+                'pendidikan': pendidikan,
+                'provinsi': provinsi,
+                'kecamatan': kecamatan,
+                'dalam_lembaga': dalam_lembaga,
+                'luar_lembaga': luar_lembaga,
+            },
+            success: function(res) {
+                alert(res.message);
+                jQuery('#modalTambahDataAnakTerlantar').modal('hide');
+                if (res.status == 'success') {
+                    get_data_anak_terlantar();
+                    jQuery('#wrap-loading').hide();
+                }
+            }
+        });
     }
 </script>

@@ -9,6 +9,16 @@ $url = admin_url('admin-ajax.php');
         max-height: 100vh;
         width: 100%;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
 <div style="padding: 10px;margin:0 0 3rem 0;">
     <h1 class="text-center" style="margin:3rem;">Manajemen Data Lembaga Kesejahteraan Sosial Anak (LKSA)</h1>
@@ -46,7 +56,7 @@ $url = admin_url('admin-ajax.php');
                 </button>
             </div>
             <div class="modal-body">
-                <input type='hidden' id='id_data' name="id_data" placeholder=''>
+                <input type='hidden' id='id_data' name="id_data">
                 <div class="form-group">
                     <label>Tahun Anggaran</label>
                     <input type="text" class="form-control" id="tahun_anggaran">
@@ -69,7 +79,7 @@ $url = admin_url('admin-ajax.php');
                 </div>
                 <div class="form-group">
                     <label>Nomor HP</label>
-                    <input type="text" class="form-control" id="no_hp">
+                    <input type="number" class="form-control" id="no_hp">
                 </div>
                 <div class="form-group">
                     <label>Akreditasi Lembaga</label>
@@ -77,15 +87,15 @@ $url = admin_url('admin-ajax.php');
                 </div>
                 <div class="form-group">
                     <label>Anak dalam LKSA</label>
-                    <input type="text" class="form-control" id="dalam_lksa">
+                    <input type="number" class="form-control" id="dalam_lksa">
                 </div>
                 <div class="form-group">
                     <label>Anak luar LKSA</label>
-                    <input type="text" class="form-control" id="luar_lksa">
+                    <input type="number" class="form-control" id="luar_lksa">
                 </div>
                 <div class="form-group">
                     <label>Total Anak LKSA</label>
-                    <input type="text" class="form-control" id="total_anak">
+                    <input type="number" class="form-control" id="total_anak">
                 </div>
             </div>
             <div class="modal-footer">

@@ -897,7 +897,7 @@ class Wp_Siks_Admin
 				}
 
 				$data_db = array(
-					'kk' => $newData['kk'],
+					'nama' => $newData['nama'],
 					'kk' => $newData['kk'],
 					'nik' => $newData['nik'],
 					'jenis_kelamin' => $newData['jenis_kelamin'],
@@ -905,13 +905,13 @@ class Wp_Siks_Admin
 					'usia' => $newData['usia'],
 					'pendidikan' => $newData['pendidikan'],
 					'alamat' => $newData['alamat'],
-					'desa_kelurahan' => $newData['desa_kelurahan'],
-					'kecamatan' => $newData['kecamatan'],
-					'kabkot' => $newData['kabkot'],
 					'provinsi' => $newData['provinsi'],
-					'tahun_anggaran' => $newData['tahun_anggaran'],
+					'kabkot' => $newData['kabkot'],
+					'kecamatan' => $newData['kecamatan'],
+					'desa_kelurahan' => $newData['desa_kelurahan'],
 					'lembaga' => $newData['lembaga'],
 					'luar_lembaga' => $newData['luar_lembaga'],
+					'tahun_anggaran' => $newData['tahun_anggaran'],
 					'active' => 1,
 					'update_at' => current_time('mysql')
 				);
