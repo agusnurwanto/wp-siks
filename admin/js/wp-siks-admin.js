@@ -99,7 +99,11 @@ function import_excel_lansia(){
 }
 
 function import_excel_disabilitas(action = '', message = ''){
-    import_excel('import_excel_disabilitas', 'Success import data Disabilitas dari excel!');
+    var jenis_import = jQuery('input[name="carbon_fields_compact_input[_crb_jenis_disabilitas]"]:checked').val();
+    if(jenis_import == ''){
+        return alert('Jenis data belum dipilih!');
+    }
+    import_excel(jenis_import, 'Success import data dari excel!');
 }
 
 function import_excel_bunda_kasih(action = '', message = ''){
@@ -107,7 +111,15 @@ function import_excel_bunda_kasih(action = '', message = ''){
 }
 
 function import_excel_anak_terlantar(action = '', message = ''){
+<<<<<<< HEAD
     import_excel('import_excel_anak_terlantar', 'Success import data Anak Terlantar dari excel!');
+=======
+    var jenis_import = jQuery('input[name="carbon_fields_compact_input[_crb_jenis_anak_terlantar]"]:checked').val();
+    if(jenis_import == ''){
+        return alert('Jenis data belum dipilih!');
+    }
+    import_excel(jenis_import, 'Success import data dari excel!');
+>>>>>>> da8aa1bd191ac8ad38ad58109b1179b820e429e8
 }
 
 function import_excel(action = '', message = ''){

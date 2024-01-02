@@ -230,3 +230,64 @@ CREATE TABLE `data_bunda_kasih_siks` (
     `update_at` datetime DEFAULT current_timestamp,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE `data_anak_terlantar_siks` (
+    `id` int(11) NOT NULL auto_increment,
+    `nama` TEXT DEFAULT NULL,
+    `kk` TEXT DEFAULT NULL,
+    `nik` TEXT DEFAULT NULL,
+    `jenis_kelamin` TEXT DEFAULT NULL,
+    `tanggal_lahir` TEXT DEFAULT NULL,
+    `usia` TEXT DEFAULT NULL,
+    `pendidikan` TEXT DEFAULT NULL,
+    `alamat` TEXT DEFAULT NULL,
+    `provinsi` TEXT DEFAULT NULL,
+    `kabkot` TEXT DEFAULT NULL,
+    `kecamatan` TEXT DEFAULT NULL,
+    `desa_kelurahan` TEXT DEFAULT NULL,
+    `lembaga` tinyint(4) DEFAULT NULL,
+    `luar_lembaga` tinyint(4) DEFAULT NULL,
+    `tahun_anggaran`  int(4) DEFAULT NULL,
+    `active` tinyint(4) DEFAULT 1,
+    `update_at` datetime DEFAULT current_timestamp,
+    PRIMARY KEY (id)
+);
+									
+CREATE TABLE `data_lksa_siks` (
+    `id` int(11) NOT NULL auto_increment,
+    `nama` TEXT DEFAULT NULL,
+    `kabkot` TEXT DEFAULT NULL,
+    `alamat` TEXT DEFAULT NULL,
+    `ketua` TEXT DEFAULT NULL,
+    `no_hp` TEXT DEFAULT NULL,
+    `akreditasi` TEXT DEFAULT NULL,
+    `anak_dalam_lksa` int DEFAULT NULL,
+    `anak_luar_lksa` int DEFAULT NULL,
+    `total_anak` int DEFAULT NULL,
+    `tahun_anggaran`  int(4) DEFAULT NULL,
+    `active` tinyint(4) DEFAULT 1,
+    `update_at` datetime DEFAULT current_timestamp,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE `data_odgj_siks` (
+    `id` int(11) NOT NULL auto_increment,
+    `nama` TEXT DEFAULT NULL,
+    `kk` TEXT DEFAULT NULL,
+    `nik` TEXT DEFAULT NULL,
+    `jenis_kelamin` TEXT DEFAULT NULL,
+    `usia` TEXT DEFAULT NULL,
+    `provinsi` TEXT DEFAULT NULL,
+    `kabkot` TEXT DEFAULT NULL,
+    `kecamatan` TEXT DEFAULT NULL,
+    `desa` TEXT DEFAULT NULL,
+    `rt` TEXT DEFAULT NULL,
+    `rw` TEXT DEFAULT NULL,
+    `nama_ortu` TEXT DEFAULT NULL,
+    `keterangan` TEXT DEFAULT NULL,
+    `pengobatan` TEXT DEFAULT NULL,
+    `tahun_anggaran`  int(4) DEFAULT NULL,
+    `active` tinyint(4) DEFAULT 1,
+    `update_at` datetime DEFAULT current_timestamp,
+    PRIMARY KEY (id)
+);
