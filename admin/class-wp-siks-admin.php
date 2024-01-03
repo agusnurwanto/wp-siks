@@ -341,30 +341,30 @@ class Wp_Siks_Admin
 					->set_default_value(SIKS_PLUGIN_URL . 'public/images/lokasi.png')
 			));
 
-	    Container::make( 'theme_options', __( 'Data DTKS' ) )
-			->set_page_parent( $basic_options_container )
-			->add_fields( array(
-		    	Field::make( 'html', 'crb_dtks_siks_hide_sidebar' )
-		        	->set_html( '
+		Container::make('theme_options', __('Data DTKS'))
+			->set_page_parent($basic_options_container)
+			->add_fields(array(
+				Field::make('html', 'crb_dtks_siks_hide_sidebar')
+					->set_html('
 		        		<style>
 		        			.postbox-container { display: none; }
 		        			#poststuff #post-body.columns-2 { margin: 0 !important; }
 		        		</style>
-		        	' ), 
-				Field::make( 'html', 'crb_siks_halaman_terkait_dtks' )
-		        	->set_html( '
+		        	'),
+				Field::make('html', 'crb_siks_halaman_terkait_dtks')
+					->set_html('
 					<h5>HALAMAN TERKAIT</h5>
 	            	<ol>
-	            		<li><a target="_blank" href="'.$management_data_dtks_siks['url'].'">'.$management_data_dtks_siks['title'].'</a></li>
+	            		<li><a target="_blank" href="' . $management_data_dtks_siks['url'] . '">' . $management_data_dtks_siks['title'] . '</a></li>
 	            	</ol>
-		        	' )
-	        ) );
+		        	')
+			));
 
-	    Container::make( 'theme_options', __( 'Data Lansia' ) )
-			->set_page_parent( $basic_options_container )
-			->add_fields( array(
-		    	Field::make( 'html', 'crb_lansia_hide_sidebar' )
-		        	->set_html( '
+		Container::make('theme_options', __('Data Lansia'))
+			->set_page_parent($basic_options_container)
+			->add_fields(array(
+				Field::make('html', 'crb_lansia_hide_sidebar')
+					->set_html('
 		        		<style>
 		        			.postbox-container { display: none; }
 		        			#poststuff #post-body.columns-2 { margin: 0 !important; }
@@ -414,7 +414,7 @@ class Wp_Siks_Admin
 	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
 	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
 	            		Sheet file excel yang akan diimport harus diberi nama <b>data</b>. Untuk kolom nilai angka ditulis tanpa tanda titik.<br>'),
-				Field::make('radio', 'crb_jenis_disabilitas',('Pilih Jenis Data Excel'))
+				Field::make('radio', 'crb_jenis_disabilitas', ('Pilih Jenis Data Excel'))
 					->add_options(array(
 						'import_excel_disabilitas' => 'Import Data Disabilitas',
 						'import_excel_odgj' => 'Import Data ODGJ'
@@ -475,11 +475,11 @@ class Wp_Siks_Admin
 		        	'),
 				Field::make('html', 'crb_anak_terlantar_upload_html')
 					->set_html('<h3>Import EXCEL data Anak Terlantar</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
-	            		Contoh format file excel untuk <b>Anak Terlantar</b> bisa <a target="_blank" href="' . SIKS_PLUGIN_URL . 'excel/contoh_anak_terlantar.xlsx">download di sini</a>.<br>
+	            		Contoh format file excel untuk <b>Anak Terlantar dan LKSA</b> bisa <a target="_blank" href="' . SIKS_PLUGIN_URL . 'excel/contoh_anak_terlantar_lksa.xlsx">download di sini</a>.<br>
 	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
 	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
 	            		Sheet file excel yang akan diimport harus diberi nama <b>data</b>. Untuk kolom nilai angka ditulis tanpa tanda titik.<br>'),
-				Field::make('radio', 'crb_jenis_anak_terlantar',('Pilih Jenis Data Excel'))
+				Field::make('radio', 'crb_jenis_anak_terlantar', ('Pilih Jenis Data Excel'))
 					->add_options(array(
 						'import_excel_anak_terlantar' => 'Import Data Anak Terlantar',
 						'import_excel_lksa' => 'Import Data LKSA'
@@ -1080,7 +1080,7 @@ class Wp_Siks_Admin
 					'nama_ortu' => $newData['nama_ortu'],
 					'pengobatan' => $newData['pengobatan'],
 					'keterangan' => $newData['keterangan'],
-					'tahun_anggaran' => $newData['tahun_anggaran'], 
+					'tahun_anggaran' => $newData['tahun_anggaran'],
 					'active' => 1,
 					'update_at' => current_time('mysql')
 				);
@@ -1119,95 +1119,97 @@ class Wp_Siks_Admin
 		die(json_encode($ret));
 	}
 
-	function management_data_dtks_siks(){
+	function management_data_dtks_siks()
+	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
 		}
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wp-siks-data-dtks.php';
 	}
 
-	function get_data_dtks_siks(){
+	function get_data_dtks_siks()
+	{
 		global $wpdb;
 
-		try{
+		try {
 			if (!empty($_POST)) {
-				if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+				if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 
 					$params = $columns = $totalRecords = $data = array();
-		 			$params = $_REQUEST;
-		 			$columns = array( 
-		 			  0 => 'Nama',
-		 			  1 => 'NIK',
-		 			  2 => 'NOKK',
-		 			  3 => 'Alamat',
-		 			  4 => 'provinsi',
-		 			  5 => 'kabkot',
-		 			  6 => 'kecamatan',
-		 			  7 => 'desa_kelurahan',
-		 			  8 => 'ATENSI',
-		 			  9 => 'BLT',
-		 			  10 => 'BLT_BBM',
-		 			  11 => 'BNPT_PPKM',
-		 			  12 => 'BPNT',
-		 			  13 => 'BST',
-		 			  14 => 'FIRST_SK',
-		 			  15 => 'PBI',
-		 			  16 => 'PENA',
-		 			  17 => 'PERMAKANAN',
-		 			  18 => 'RUTILAHU',
-		 			  19 => 'SEMBAKO_ADAPTIF',
-		 			  20 => 'YAPI',
-		 			  21 => 'PKH',
-		 			);
-		 			$where = $sqlTot = $sqlRec = "";
+					$params = $_REQUEST;
+					$columns = array(
+						0 => 'Nama',
+						1 => 'NIK',
+						2 => 'NOKK',
+						3 => 'Alamat',
+						4 => 'provinsi',
+						5 => 'kabkot',
+						6 => 'kecamatan',
+						7 => 'desa_kelurahan',
+						8 => 'ATENSI',
+						9 => 'BLT',
+						10 => 'BLT_BBM',
+						11 => 'BNPT_PPKM',
+						12 => 'BPNT',
+						13 => 'BST',
+						14 => 'FIRST_SK',
+						15 => 'PBI',
+						16 => 'PENA',
+						17 => 'PERMAKANAN',
+						18 => 'RUTILAHU',
+						19 => 'SEMBAKO_ADAPTIF',
+						20 => 'YAPI',
+						21 => 'PKH',
+					);
+					$where = $sqlTot = $sqlRec = "";
 
-		 			if( !empty($params['search']['value']) ) {
-		 				$where .=" AND ( NIK LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
-		 				$where .=" OR Nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
-		 				$where .=" OR Alamat LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
-		 				$where .=" OR NOKK LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
-		 				$where .=" ) ";
-		 			}
+					if (!empty($params['search']['value'])) {
+						$where .= " AND ( NIK LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+						$where .= " OR Nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+						$where .= " OR Alamat LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+						$where .= " OR NOKK LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+						$where .= " ) ";
+					}
 
-		 			$sql_tot = "SELECT count(id) as jml FROM `data_dtks`";
-		 			$sql = "SELECT ".implode(', ', $columns)." FROM `data_dtks`";
-		 			$where_first = " WHERE 1=1 AND is_nonaktif = 1";
-		 			$sqlTot .= $sql_tot.$where_first;
-		 			$sqlRec .= $sql.$where_first;
-		 			if(isset($where) && $where != '') {
-		 				$sqlTot .= $where;
-		 				$sqlRec .= $where;
-		 			}
+					$sql_tot = "SELECT count(id) as jml FROM `data_dtks`";
+					$sql = "SELECT " . implode(', ', $columns) . " FROM `data_dtks`";
+					$where_first = " WHERE 1=1 AND is_nonaktif = 1";
+					$sqlTot .= $sql_tot . $where_first;
+					$sqlRec .= $sql . $where_first;
+					if (isset($where) && $where != '') {
+						$sqlTot .= $where;
+						$sqlRec .= $where;
+					}
 
-		 			$limit = '';
-		 			if($params['length'] != -1){
-		 				$limit = "  LIMIT ".$wpdb->prepare('%d', $params['start'])." ,".$wpdb->prepare('%d', $params['length']);
-		 			}
-		 		 	$sqlRec .=  " ORDER BY ". $columns[$params['order'][0]['column']]."   ".$params['order'][0]['dir'].$limit;
+					$limit = '';
+					if ($params['length'] != -1) {
+						$limit = "  LIMIT " . $wpdb->prepare('%d', $params['start']) . " ," . $wpdb->prepare('%d', $params['length']);
+					}
+					$sqlRec .=  " ORDER BY " . $columns[$params['order'][0]['column']] . "   " . $params['order'][0]['dir'] . $limit;
 
-		 			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
-		 			$totalRecords = $queryTot[0]['jml'];
-		 			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
+					$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
+					$totalRecords = $queryTot[0]['jml'];
+					$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
 
 					exit(json_encode(array(
-						"draw"            => intval( $params['draw'] ),   
-						"recordsTotal"    => intval( $totalRecords ),  
+						"draw"            => intval($params['draw']),
+						"recordsTotal"    => intval($totalRecords),
 						"recordsFiltered" => intval($totalRecords),
 						"data"            => $queryRecords,
 						"sql"             => $sqlRec
 					)));
-
-				}else{
+				} else {
 					throw new Exception('Api key tidak sesuai');
 				}
-			}else{
+			} else {
 				throw new Exception('Format tidak sesuai');
 			}
-		}catch(Exception $e){
+		} catch (Exception $e) {
 			echo json_encode([
 				'status' => false,
 				'message' => $e->getMessage()
-			]);exit;
+			]);
+			exit;
 		}
 	}
 }

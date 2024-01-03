@@ -5,7 +5,7 @@ $anak_terlantar_all = $this->get_anak_terlantar();
 
 $anak_terlantar_all_desa = array();
 foreach ($anak_terlantar_all as $data) {
-    $index = strtolower($data['provinsi']) . '.' . strtolower($data['kabkot']) . '.' . strtolower($data['kecamatan']) . '.' . strtolower($data['desa']);
+    $index = strtolower($data['provinsi']) . '.' . strtolower($data['kabkot']) . '.' . strtolower($data['kecamatan']) . '.' . strtolower($data['desa_kelurahan']);
     if (empty($anak_terlantar_all_desa[$index])) {
         $anak_terlantar_all_desa[$index] = array();
     }
@@ -17,8 +17,17 @@ $body =  '';
 foreach ($maps_all as $i => $desa) {
     $index = strtolower($desa['data']['provinsi']) . '.' . strtolower($desa['data']['kab_kot']) . '.' . strtolower($desa['data']['kecamatan']) . '.' . strtolower($desa['data']['desa']);
     $total_anak_terlantar = 0;
-    if ($total_anak_terlantar <= 0) {
+    if (!empty($anak_terlantar_all_desa[$index])) {
+        foreach ($anak_terlantar_all_desa[$index] as $orang) {
+            $total_anak_terlantar += $orang['jml'];
+        }
+    }
+    if ($total_anak_terlantar <= 15) {
         $maps_all[$i]['color'] = '#0cbf00';
+    } else if ($total_anak_terlantar <= 40) {
+        $maps_all[$i]['color'] = '#fff70a';
+    } else if ($total_anak_terlantar > 40) {
+        $maps_all[$i]['color'] = '#ff0000';
     }
     $maps_all[$i]['index'] = $i;
 
@@ -48,7 +57,7 @@ foreach ($maps_all as $i => $desa) {
             <td class='text-center'>" . $desa['data']['kab_kot'] . "</td>
             <td class='text-center'>" . $desa['data']['kecamatan'] . "</td>
             <td class='text-center'>" . $desa['data']['desa'] . "</td>
-            <td class='text-center'>0</td>
+            <td class='text-center'>" . $total_anak_terlantar . "</td>
             <td class='text-center'><a style='margin-bottom: 5px;' onclick='cari_alamat_siks(\"" . $search . "\"); return false;' href='#' class='btn btn-danger'>Map</a></td>
         </tr>
     ";

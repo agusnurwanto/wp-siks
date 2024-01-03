@@ -81,8 +81,8 @@ $url = admin_url('admin-ajax.php');
                     <label for="jenisKelamin">Jenis Kelamin</label>
                     <select class="form-control" id="jenisKelamin" name="jenisKelamin">
                         <option selected disabled>Masukkan Jenis Kelamin</option>
-                        <option value="1">Laki-laki</option>
-                        <option value="2">Perempuan</option>
+                        <option id="1" value="Laki-Laki">Laki-laki</option>
+                        <option id="2" value="Perempuan">Perempuan</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -251,7 +251,7 @@ $url = admin_url('admin-ajax.php');
 
     function edit_data(_id) {
         jQuery('#wrap-loading').show();
-        jQuery.ajax({
+        jQuery.ajax({ 
             method: 'POST',
             url: '<?php echo $url; ?>',
             dataType: 'json',
@@ -320,13 +320,15 @@ $url = admin_url('admin-ajax.php');
     function submitDataAnakTerlantar(that) {
         let id_data = jQuery('#id_data').val();
         let nama = jQuery('#nama').val();
-        let kk = jQuery('#kk').val();
-        if (kk > 16) {
-            return (alert("Input KK Maksimal 16 Digit"));
+        let kk = jQuery('#kk').val().toString();
+        if (kk.length > 16) {
+            alert("Input KK maksimal 16 digit");
+            return;
         }
-        let nik = jQuery('#nik').val();
-        if (nik > 16) {
-            return (alert("Input NIK Maksimal 16 Digit"));
+        let nik = jQuery('#nik').val().toString();
+        if (nik.length > 16) {
+            alert("Input NIK maksimal 16 digit");
+            return;
         }
         let tahun_anggaran = jQuery('#tahun_anggaran').val();
         let kabkot = jQuery('#kabkot').val();
@@ -338,8 +340,7 @@ $url = admin_url('admin-ajax.php');
         let provinsi = jQuery('#provinsi').val();
         let kecamatan = jQuery('#kecamatan').val();
         let desa_kelurahan = jQuery('#desa_kelurahan').val();
-        let dalam_lembaga = jQuery('#dalam_lembaga').is(':checked') ? '1' : '';
-        let luar_lembaga = jQuery('#luar_lembaga').is(':checked') ? '0' : '';
+        let status_lembaga = jQuery('input[name="status_lembaga"]:checked').val();
 
         jQuery('#wrap-loading').show();
         jQuery.ajax({
@@ -363,8 +364,7 @@ $url = admin_url('admin-ajax.php');
                 'pendidikan': pendidikan,
                 'provinsi': provinsi,
                 'kecamatan': kecamatan,
-                'dalam_lembaga': dalam_lembaga,
-                'luar_lembaga': luar_lembaga,
+                'kelembagaan': status_lembaga,
             },
             success: function(res) {
                 alert(res.message);

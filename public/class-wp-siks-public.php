@@ -2306,8 +2306,6 @@ class Wp_Siks_Public
 			GROUP BY provinsi, kabkot, kecamatan, desa_kelurahan
 			ORDER BY  provinsi, kabkot, kecamatan, desa_kelurahan
 		", ARRAY_A);
-		print_r($data);
-		die($wpdb->last_query);
 
 		return $data;
 	}
@@ -2712,7 +2710,6 @@ class Wp_Siks_Public
 					$desa_kelurahan = sanitize_text_field($_POST['desa_kelurahan']);
 					$alamat = sanitize_text_field($_POST['alamat']);
 					$status_lembaga = sanitize_text_field($_POST['kelembagaan']);
-
 
 					$data = array(
 						'tahun_anggaran' => $tahun_anggaran,
