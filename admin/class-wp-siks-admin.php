@@ -1162,11 +1162,24 @@ class Wp_Siks_Admin
 		 			$where = $sqlTot = $sqlRec = "";
 
 		 			if( !empty($params['search']['value']) ) {
-		 				$where .=" AND ( NIK LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
-		 				$where .=" OR Nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
-		 				$where .=" OR Alamat LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
-		 				$where .=" OR NOKK LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
-		 				$where .=" ) ";
+		 				$where .=" AND (";
+		 				$where .=" NIK LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
+				 		$where .=" OR Nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
+				 		$where .=" OR Alamat LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
+				 		$where .=" OR NOKK LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
+		 				$where .=")";
+		 			}
+
+		 			if(!empty($params['columns'][2]['search']['value']) && $params['columns'][2]['search']['value']=='nik_kosong'){
+		 				$where .=" AND (";
+		 				$where .=" NIK = '' ";
+		 				$where .=")";
+		 			}
+
+		 			if(!empty($params['columns'][1]['search']['value']) && $params['columns'][1]['search']['value']=='kk_kosong'){
+		 				$where .=" AND (";
+		 				$where .=" NOKK = '' ";
+		 				$where .=")";
 		 			}
 
 		 			$sql_tot = "SELECT count(id) as jml FROM `data_dtks`";
@@ -1209,5 +1222,9 @@ class Wp_Siks_Admin
 				'message' => $e->getMessage()
 			]);exit;
 		}
+	}
+
+	function export_data_dtks_siks(){
+
 	}
 }
