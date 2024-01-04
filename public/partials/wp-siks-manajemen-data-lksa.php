@@ -9,6 +9,16 @@ $url = admin_url('admin-ajax.php');
         max-height: 100vh;
         width: 100%;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
 <div style="padding: 10px;margin:0 0 3rem 0;">
     <h1 class="text-center" style="margin:3rem;">Manajemen Data Lembaga Kesejahteraan Sosial Anak (LKSA)</h1>
@@ -46,46 +56,46 @@ $url = admin_url('admin-ajax.php');
                 </button>
             </div>
             <div class="modal-body">
-                <input type='hidden' id='id_data' name="id_data" placeholder=''>
+                <input type='hidden' id='id_data' name="id_data">
                 <div class="form-group">
                     <label>Tahun Anggaran</label>
-                    <input type="text" class="form-control" id="tahun_anggaran">
+                    <input type="text" class="form-control" id="tahun_anggaran" placeholder="Masukkan Tahun Anggaran">
                 </div>
                 <div class="form-group">
                     <label>Nama Lembaga</label>
-                    <input type="text" class="form-control" id="nama">
+                    <input type="text" class="form-control" id="nama" placeholder="Masukkan Nama Lembaga">
                 </div>
                 <div class="form-group">
                     <label>Kabupaten Kota</label>
-                    <input type="text" class="form-control" id="kabkot">
+                    <input type="text" class="form-control" id="kabkot" placeholder="Masukkan Kabupaten/Kota Lembaga">
                 </div>
                 <div class="form-group">
                     <label>Alamat</label>
-                    <input type="text" class="form-control" id="alamat">
+                    <input type="text" class="form-control" id="alamat" placeholder="Masukkan Alamat Lembaga">
                 </div>
                 <div class="form-group">
                     <label>Ketua Lembaga</label>
-                    <input type="text" class="form-control" id="ketua">
+                    <input type="text" class="form-control" id="ketua" placeholder="Masukkan Nama Ketua Lembaga">
                 </div>
                 <div class="form-group">
-                    <label>Nomor HP</label>
-                    <input type="text" class="form-control" id="no_hp">
+                    <label>Nomor HP/Telfon</label>
+                    <input type="number" class="form-control" id="no_hp" placeholder="Masukkan Nomor HP/Telfon Lembaga">
                 </div>
                 <div class="form-group">
                     <label>Akreditasi Lembaga</label>
-                    <input type="text" class="form-control" id="akreditasi">
+                    <input type="text" class="form-control" id="akreditasi" placeholder="Masukkan Akreditasi Lembaga">
                 </div>
                 <div class="form-group">
                     <label>Anak dalam LKSA</label>
-                    <input type="text" class="form-control" id="dalam_lksa">
+                    <input type="number" class="form-control" id="dalam_lksa" placeholder="Masukkan Jumlah Anak dalam LKSA">
                 </div>
                 <div class="form-group">
                     <label>Anak luar LKSA</label>
-                    <input type="text" class="form-control" id="luar_lksa">
+                    <input type="number" class="form-control" id="luar_lksa" placeholder="Masukkan Jumlah Anak luar LKSA">
                 </div>
                 <div class="form-group">
                     <label>Total Anak LKSA</label>
-                    <input type="text" class="form-control" id="total_anak">
+                    <input type="number" class="form-control" id="total_anak" placeholder="Masukkan Total Jumlah Anak LKSA">
                 </div>
             </div>
             <div class="modal-footer">
@@ -97,10 +107,21 @@ $url = admin_url('admin-ajax.php');
 </div>
 <script>
     jQuery(document).ready(function() {
-        get_data_lksa();
+        get_datatable_lksa();
+
+        function hitungTotalAnak() {
+            let dalamLksa = parseInt(jQuery('#dalam_lksa').val()) || 0;
+            let luarLksa = parseInt(jQuery('#luar_lksa').val()) || 0;
+            let total = dalamLksa + luarLksa;
+            jQuery('#total_anak').val(total);
+        }
+        jQuery('#dalam_lksa, #luar_lksa').on('input', function() {
+            hitungTotalAnak();
+        });
+        jQuery('#total_anak').prop('disabled', true);
     });
 
-    function get_data_lksa() {
+    function get_datatable_lksa() {
         if (typeof tableLksa === 'undefined') {
             window.tableLksa = jQuery('#tableManajemenLksa').DataTable({
                 "processing": true,
@@ -188,7 +209,7 @@ $url = admin_url('admin-ajax.php');
                     jQuery('#wrap-loading').hide();
                     if (response.status == 'success') {
                         alert("Berhasil Hapus Data!");
-                        get_data_lksa();
+                        get_datatable_lksa();
                     } else {
                         alert(`GAGAL! \n${response.message}`);
                     }
@@ -281,7 +302,7 @@ $url = admin_url('admin-ajax.php');
                 alert(res.message);
                 jQuery('#modalTambahDataLksa').modal('hide');
                 if (res.status == 'success') {
-                    get_data_lksa();
+                    get_datatable_lksa();
                     jQuery('#wrap-loading').hide();
                 }
             }
