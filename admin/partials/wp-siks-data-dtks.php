@@ -4,6 +4,11 @@
         max-height: 100vh; 
         width: 100%; 
     }
+
+    .dataTables_wrapper .dt-buttons {
+      float:none;  
+      text-align:center;
+    }
 </style>
 <div class="cetak">
     <div style="padding: 10px;margin:0 0 3rem 0;">
@@ -45,6 +50,9 @@
     </div>          
 </div>
 
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script> 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
 <script type="text/javascript">
 	jQuery(document).ready(function(){
 	    getDtks().then(function(){
@@ -54,9 +62,7 @@
 
     function getDtks(){
         return new Promise(function(resolve, reject){
-
             var dataDtks = jQuery('#management_data_table').DataTable({
-                
                 "searchDelay": 500,
                 "processing": true,
                 "serverSide": true,
@@ -70,17 +76,60 @@
                         'api_key': '<?php echo get_option( SIKS_APIKEY ); ?>',
                     }
                 },
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        "extend": 'excel',
+                        "titleAttr": 'Excel',
+                        "text": 'Download Excel',
+                        "className": "btn btn-success",
+                        "action": function (e, dt, button, config ) {
+                            
+                            let data = {};
 
-                initComplete: function (settings, json) {
+                            data.action = 'export_excel_data_dtks_siks';
+
+                            data.api_key = '<?php echo get_option( SIKS_APIKEY ); ?>';
+
+                            if(
+                                jQuery("#search_filter_action").val() != '' && 
+                                jQuery("#search_filter_action").val() != '-')
+                            {
+                                data.filter_kriteria = jQuery("#search_filter_action").val();
+                            }
+
+                            if(dataDtks.search() !=''){
+                                data.search_value = dataDtks.search();
+                            }
+
+                            jQuery.ajax({
+                                method:'post',
+                                url:ajax.url,
+                                cache: false,
+                                xhrFields: {
+                                    responseType: 'blob'
+                                },
+                                data:data,
+                                success:function(response){
+                                    let link = document.createElement('a');
+                                    link.href = window.URL.createObjectURL(response);
+                                    link.download = `Export Data DTKS`;
+                                    link.click();
+                                }
+                            })
+                        },
+                    } 
+                ],
+                initComplete: function (settings, json) {                    
                     let html_filter = ""
                     +"<div class='row col-lg-12'>"
                         +"<div class='col-lg-12'>"
-                            +"<button class='btn btn-sm btn-success' onclick='exportExcel()'>Export Excel</button>&nbsp;"
                             +"<select name='filter_status' class='ml-3 bulk-action' id='search_filter_action' style='width: 20%'>"
                                 +"<option value='-'>Pilih Kriteria</option>"
                             +"</select>"
                         +"</div>"
                     +"</div>";
+
                     jQuery("#management_data_table").before(html_filter);
 
                     kriteria = [{'kk_kosong': 'KK Kosong'}, {'nik_kosong': 'NIK Kosong'}];
@@ -218,10 +267,5 @@
                 }
             });
         });
-    }
-
-    function exportExcel(){
-        let kriteria = jQuery('#search_filter_action').val();
-        console.log(kriteria);
     }
 </script>

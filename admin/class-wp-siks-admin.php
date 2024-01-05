@@ -1226,7 +1226,116 @@ class Wp_Siks_Admin
 		}
 	}
 
-	function export_data_dtks_siks(){
+	function export_excel_data_dtks_siks(){
+		global $wpdb;
 
+		try {
+			if (!empty($_POST)) {
+				if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+
+					$where = '';
+					if( !empty($_POST['search_value']) ) {
+		 				$where .=" AND (";
+		 				$where .=" NIK LIKE ".$wpdb->prepare('%s', "%".$_POST['search_value']."%");
+				 		$where .=" OR Nama LIKE ".$wpdb->prepare('%s', "%".$_POST['search_value']."%");
+				 		$where .=" OR Alamat LIKE ".$wpdb->prepare('%s', "%".$_POST['search_value']."%");
+				 		$where .=" OR NOKK LIKE ".$wpdb->prepare('%s', "%".$_POST['search_value']."%");
+		 				$where .=")";
+		 			}
+
+		 			if(!empty($_POST['filter_kriteria']=='nik_kosong')){
+		 				$where .=" AND (";
+		 				$where .=" NIK = '' ";
+		 				$where .=")";
+		 			}
+
+		 			if(!empty($_POST['filter_kriteria']=='kk_kosong')){
+		 				$where .=" AND (";
+		 				$where .=" NOKK = '' ";
+		 				$where .=")";
+		 			}
+
+		 			$data = $wpdb->get_results($wpdb->prepare("SELECT * FROM data_dtks WHERE 1=1 AND is_nonaktif = 1" . $where . " ORDER BY id"), ARRAY_A);
+
+		 			$html = '<table><thead>
+		 						<tr>
+		 							<th>Nama</th>
+		 							<th>NIK</th>
+		 							<th>NO KK</th>
+		 							<th>Alamat</th>
+		 							<th>Provinsi</th>
+		 							<th>Kabupaten/Kota</th>
+		 							<th>Kecamatan</th>
+		 							<th>Desa/Kelurahan</th>
+		 							<th>Atensi</th>
+		 							<th>BLT</th>
+		 							<th>BLT BBM</th>
+		 							<th>BNPT PPKM</th>
+		 							<th>BPNT</th>
+		 							<th>BST</th>
+		 							<th>FIRST SK</th>
+		 							<th>PBI</th>
+		 							<th>PENA</th>
+		 							<th>PERMAKANAN</th>
+		 							<th>PKH</th>
+		 							<th>RUTILAHU</th>
+		 							<th>SEMBAKO ADAPTIF</th>
+		 							<th>YAPI</th>
+		 						</tr>
+		 					</thead>
+		 					<tbody>';
+
+		 					foreach ($data as $key => $value) {
+		 						$nik = !empty($value['NIK']) ? "`".$value['NIK'] : '';
+		 						$nokk = !empty($value['NOKK']) ? "`".$value['NOKK'] : '';
+		 						$html.='<tr>
+		 							<td>'.$value['Nama'].'</td>
+		 							<td>'.$nik.'</td>
+		 							<td>'.$nokk.'</td>
+		 							<td>'.$value['Alamat'].'</td>
+		 							<td>'.$value['provinsi'].'</td>
+		 							<td>'.$value['kabupaten'].'</td>
+		 							<td>'.$value['kecamatan'].'</td>
+		 							<td>'.$value['desa_kelurahan'].'</td>
+		 							<td>'.$value['ATENSI'].'</td>
+		 							<td>'.$value['BLT'].'</td>
+		 							<td>'.$value['BLT_BBM'].'</td>
+		 							<td>'.$value['BNPT_PPKM'].'</td>
+		 							<td>'.$value['BPNT'].'</td>
+		 							<td>'.$value['BST'].'</td>
+		 							<td>'.$value['FIRST_SK'].'</td>
+		 							<td>'.$value['PBI'].'</td>
+		 							<td>'.$value['PENA'].'</td>
+		 							<td>'.$value['PERMAKANAN'].'</td>
+		 							<td>'.$value['PKH'].'</td>
+		 							<td>'.$value['RUTILAHU'].'</td>
+		 							<td>'.$value['SEMBAKO_ADAPTIF'].'</td>
+		 							<td>'.$value['YAPI'].'</td>
+		 						</tr>';
+		 					}
+		 					$html.='</tbody></table>';
+
+		 			$this->generateExcel($html);
+
+				}else {
+						throw new Exception('Api key tidak sesuai');
+					}
+			} else {
+				throw new Exception('Format tidak sesuai');
+			}
+		} catch (Exception $e) {
+			echo json_encode([
+				'status' => false,
+				'message' => $e->getMessage()
+			]);
+			exit;
+		}
+	}
+
+	function generateExcel($html = ''){
+		header("Content-Disposition: attachment;"); 
+		header("Content-Type: application/vnd.ms-excel");
+
+		die($html);
 	}
 }
