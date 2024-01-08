@@ -173,6 +173,8 @@ class Wp_Siks {
   		$this->loader->add_action( 'wp_ajax_import_excel_odgj',  $plugin_admin, 'import_excel_odgj');
   		$this->loader->add_action( 'wp_ajax_get_data_dtks_siks',  $plugin_admin, 'get_data_dtks_siks');
   		$this->loader->add_action( 'wp_ajax_export_excel_data_dtks_siks',  $plugin_admin, 'export_excel_data_dtks_siks');
+  		$this->loader->add_action( 'wp_ajax_get_data_kecamatan_siks',  $plugin_admin, 'get_data_kecamatan_siks');
+  		$this->loader->add_action( 'wp_ajax_get_data_desa_siks',  $plugin_admin, 'get_data_desa_siks');
 
 		$this->loader->add_action('carbon_fields_register_fields', $plugin_admin, 'crb_attach_siks_options');
 		
