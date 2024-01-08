@@ -2310,6 +2310,29 @@ class Wp_Siks_Public
 		return $data;
 	}
 
+	function get_anak_terlantar_luar_magetan()
+	{
+		global $wpdb;
+		$kab = get_option('_crb_siks_kab');
+		$where = "kabkot != '$kab'";
+		$data = $wpdb->get_results("
+			SELECT  
+				provinsi,
+				kabkot,
+				kecamatan,
+				desa_kelurahan,
+				count(id) as jml
+			FROM data_anak_terlantar_siks
+			WHERE $where
+				AND active=1
+			GROUP BY provinsi, kabkot, kecamatan, desa_kelurahan
+			ORDER BY  provinsi, kabkot, kecamatan, desa_kelurahan
+		", ARRAY_A);
+
+		return $data;
+	}
+
+
 	function get_disabilitas()
 	{
 		global $wpdb;

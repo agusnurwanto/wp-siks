@@ -909,9 +909,7 @@ class Wp_Siks_Admin
 					'kabkot' => $newData['kabkot'],
 					'kecamatan' => $newData['kecamatan'],
 					'desa_kelurahan' => $newData['desa_kelurahan'],
-					'lembaga' => $newData['lembaga'],
-					'luar_lembaga' => $newData['luar_lembaga'],
-					'tahun_anggaran' => $newData['tahun_anggaran'],
+					'kelembagaan' => $newData['kelembagaan'],
 					'active' => 1,
 					'update_at' => current_time('mysql')
 				);
