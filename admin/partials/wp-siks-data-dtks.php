@@ -41,6 +41,7 @@
                     <th class='text-center'>SEMBAKO ADAPTIF</th>
                     <th class='text-center'>YAPI</th>
                     <th class='text-center'>PKH</th>
+                    <th class='text-center'>UPDATE TERAKHIR</th>
                 </tr>
             </thead>
             <tbody>
@@ -57,12 +58,17 @@
 	jQuery(document).ready(function(){
 	    getDtks().then(function(){
             jQuery("#search_filter_action").select2();
+
+            getKecamatan().then(function(){
+                jQuery("#search_filter_kecamatan_action").select2();
+                jQuery("#search_filter_desa_action").select2();
+            })
         });
 	});
 
     function getDtks(){
         return new Promise(function(resolve, reject){
-            var dataDtks = jQuery('#management_data_table').DataTable({
+            dataDtks = jQuery('#management_data_table').DataTable({
                 "searchDelay": 500,
                 "processing": true,
                 "serverSide": true,
@@ -98,6 +104,20 @@
                                 data.filter_kriteria = jQuery("#search_filter_action").val();
                             }
 
+                            if(
+                                jQuery("#search_filter_kecamatan_action").val() != '' && 
+                                jQuery("#search_filter_kecamatan_action").val() != '-')
+                            {
+                                data.filter_kecamatan = jQuery("#search_filter_kecamatan_action").val();
+                            }
+
+                            if(
+                                jQuery("#search_filter_desa_action").val() != '' && 
+                                jQuery("#search_filter_desa_action").val() != '-')
+                            {
+                                data.filter_desa = jQuery("#search_filter_desa_action").val();
+                            }
+
                             if(dataDtks.search() !=''){
                                 data.search_value = dataDtks.search();
                             }
@@ -126,13 +146,24 @@
                         +"<div class='col-lg-12'>"
                             +"<select name='filter_status' class='ml-3 bulk-action' id='search_filter_action' style='width: 20%'>"
                                 +"<option value='-'>Pilih Kriteria</option>"
+                            +"</select>&nbsp;"
+                            +"<select name='filter_kecamatan' class='ml-3 bulk-action' id='search_filter_kecamatan_action' style='width: 20%'>"
+                                +"<option value='-'>Pilih Kecamatan</option>"
+                            +"</select>&nbsp;"
+                            +"<select name='filter_desa' class='ml-3 bulk-action' id='search_filter_desa_action' style='width: 20%'>"
+                                +"<option value='-'>Pilih Desa</option>"
                             +"</select>"
                         +"</div>"
                     +"</div>";
 
                     jQuery("#management_data_table").before(html_filter);
 
-                    kriteria = [{'kk_kosong': 'KK Kosong'}, {'nik_kosong': 'NIK Kosong'}];
+                    kriteria = [
+                            {'kk_kosong': 'KK Kosong'}, 
+                            {'nik_kosong': 'NIK Kosong'}, 
+                            {'nik_atau_kk_kosong': 'NIK atau KK Kosong'}
+                        ];
+
                     for (var key in kriteria) {
                         var obj = kriteria[key];
                         for (var prop in obj) {
@@ -146,6 +177,7 @@
                         var option = jQuery(this).val();
                         switch(option){
                             case 'kk_kosong':
+                            case 'nik_atau_kk_kosong':
                                 dataDtks.column(2).search('');
                                 dataDtks.column(1).search(option).draw();
                                 break;
@@ -155,6 +187,46 @@
                                 dataDtks.column(2).search(option).draw();
                                 break;
                         }
+                    });
+
+
+                    jQuery('#search_filter_kecamatan_action').on('change', function () {
+                        var nama_kecamatan = jQuery(this).val();
+
+                        jQuery.ajax({
+                            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                            type: 'post',
+                            dataType: 'json',
+                            data:{
+                                'action': 'get_data_desa_siks',
+                                'kecamatan': nama_kecamatan,
+                                'api_key': '<?php echo get_option( SIKS_APIKEY ); ?>',
+                            },
+                            success:function(response){
+                                
+                                let option = `<option value='-'>Pilih Desa</option>`;
+                                response.data.map(function(value, index){
+                                    option+=`<option value="${value.desa}">${value.desa}</option>`;
+                                });
+                                jQuery("#search_filter_desa_action").html(option);
+
+                                jQuery("#search_filter_desa_action").select2();
+
+                                dataDtks.column(7).search('');
+
+                                dataDtks.column(7).search(nama_kecamatan).draw();
+
+                                resolve();
+                            }
+                        })
+                    });
+
+                    jQuery('#search_filter_desa_action').on('change', function () {
+                        var nama_desa = jQuery(this).val();
+                        
+                        dataDtks.column(8).search('');
+
+                        dataDtks.column(8).search(nama_desa).draw();
                     });
                 },
 
@@ -252,6 +324,10 @@
                         "data": 'PKH',
                         className: "text-center"
                     },
+                    {
+                        "data": 'update_at',
+                        className: "text-center"
+                    },
                 ],
                 "columnDefs":[
                     {
@@ -267,5 +343,28 @@
                 }
             });
         });
+    }
+
+    function getKecamatan(){
+        return new Promise(function(resolve, reject){
+            jQuery.ajax({
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                type: 'post',
+                dataType: 'json',
+                data:{
+                    'action': 'get_data_kecamatan_siks',
+                    'api_key': '<?php echo get_option( SIKS_APIKEY ); ?>',
+                },
+                success:function(response){
+                    
+                    let option = `<option value='-'>Pilih Kecamatan</option>`;
+                    response.data.map(function(value, index){
+                        option+=`<option value="${value.kecamatan}">${value.kecamatan}</option>`;
+                    });
+                    jQuery("#search_filter_kecamatan_action").html(option);
+                    resolve();
+                }
+            })
+        })
     }
 </script>

@@ -909,9 +909,7 @@ class Wp_Siks_Admin
 					'kabkot' => $newData['kabkot'],
 					'kecamatan' => $newData['kecamatan'],
 					'desa_kelurahan' => $newData['desa_kelurahan'],
-					'lembaga' => $newData['lembaga'],
-					'luar_lembaga' => $newData['luar_lembaga'],
-					'tahun_anggaran' => $newData['tahun_anggaran'],
+					'kelembagaan' => $newData['kelembagaan'],
 					'active' => 1,
 					'update_at' => current_time('mysql')
 				);
@@ -1160,6 +1158,7 @@ class Wp_Siks_Admin
 						19 => 'SEMBAKO_ADAPTIF',
 						20 => 'YAPI',
 						21 => 'PKH',
+						22 => 'update_at',
 					);
 					$where = $sqlTot = $sqlRec = "";
 
@@ -1172,16 +1171,24 @@ class Wp_Siks_Admin
 		 				$where .=")";
 		 			}
 
-		 			if(!empty($params['columns'][2]['search']['value']) && $params['columns'][2]['search']['value']=='nik_kosong'){
-		 				$where .=" AND (";
-		 				$where .=" NIK = '' ";
-		 				$where .=")";
+		 			if(!empty($params['columns'][1]['search']['value']) && $params['columns'][1]['search']['value']=='kk_kosong'){
+		 				$where .=" AND NOKK = '' ";
 		 			}
 
-		 			if(!empty($params['columns'][1]['search']['value']) && $params['columns'][1]['search']['value']=='kk_kosong'){
-		 				$where .=" AND (";
-		 				$where .=" NOKK = '' ";
-		 				$where .=")";
+		 			if(!empty($params['columns'][1]['search']['value']) && $params['columns'][1]['search']['value']=='nik_atau_kk_kosong'){
+		 				$where .=" AND ( NIK = '' OR NOKK = '' )";
+		 			}
+
+		 			if(!empty($params['columns'][2]['search']['value']) && $params['columns'][2]['search']['value']=='nik_kosong'){
+		 				$where .=" AND NIK = '' ";
+		 			}
+
+		 			if(!empty($params['columns'][7]['search']['value'])){
+		 				$where .=" AND kecamatan LIKE '".$params['columns'][7]['search']['value']."%' ";
+		 			}
+
+		 			if(!empty($params['columns'][8]['search']['value'])){
+		 				$where .=" AND desa_kelurahan LIKE '".$params['columns'][8]['search']['value']."%' ";
 		 			}
 
 					$sql_tot = "SELECT count(id) as jml FROM `data_dtks`";
@@ -1244,15 +1251,23 @@ class Wp_Siks_Admin
 		 			}
 
 		 			if(!empty($_POST['filter_kriteria']=='nik_kosong')){
-		 				$where .=" AND (";
-		 				$where .=" NIK = '' ";
-		 				$where .=")";
+		 				$where .=" AND NIK = ''";
 		 			}
 
 		 			if(!empty($_POST['filter_kriteria']=='kk_kosong')){
-		 				$where .=" AND (";
-		 				$where .=" NOKK = '' ";
-		 				$where .=")";
+		 				$where .=" AND NOKK = ''";
+		 			}
+
+		 			if(!empty($_POST['filter_kriteria']=='nik_atau_kk_kosong')){
+		 				$where .=" AND ( NIK = '' OR NOKK = '' )";
+		 			}
+
+		 			if(!empty($_POST['filter_kecamatan'])){
+		 				$where .=" AND kecamatan LIKE '".$_POST['filter_kecamatan']."%' ";
+		 			}
+
+		 			if(!empty($_POST['filter_desa'])){
+		 				$where .=" AND desa_kelurahan LIKE '".$_POST['filter_desa']."%' ";
 		 			}
 
 		 			$data = $wpdb->get_results($wpdb->prepare("SELECT * FROM data_dtks WHERE 1=1 AND is_nonaktif = 1" . $where . " ORDER BY id"), ARRAY_A);
@@ -1337,5 +1352,61 @@ class Wp_Siks_Admin
 		header("Content-Type: application/vnd.ms-excel");
 
 		die($html);
+	}
+
+	function get_data_kecamatan_siks(){
+		global $wpdb;
+
+		try {
+			if (!empty($_POST)) {
+				if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+
+					$data = $wpdb->get_results($wpdb->prepare("SELECT DISTINCT kecno, kecamatan FROM `data_batas_kecamatan_siks` order by kecno"), ARRAY_A);
+
+					exit(json_encode(array(
+						"status"	=> true,
+						"data"		=> $data
+					)));
+				}else{
+					throw new Exception('Api key tidak sesuai');
+				}
+			}else{
+				throw new Exception('Format tidak sesuai');
+			}
+		} catch (Exception $e) {
+			echo json_encode([
+				'status' => false,
+				'message' => $e->getMessage()
+			]);
+			exit;
+		}
+	}
+
+	function get_data_desa_siks(){
+		global $wpdb;
+
+		try {
+			if (!empty($_POST)) {
+				if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+
+					$data = $wpdb->get_results($wpdb->prepare("SELECT desa FROM `data_batas_desa_siks` WHERE kecamatan LIKE %s ORDER BY kecno", $_POST['kecamatan']."%"), ARRAY_A);
+
+					exit(json_encode(array(
+						"status"	=> true,
+						"data"		=> $data
+					)));
+				}else{
+					throw new Exception('Api key tidak sesuai');
+				}
+			}else{
+				throw new Exception('Format tidak sesuai');
+			}
+		} catch (Exception $e) {
+			echo json_encode([
+				'status' => false,
+				'message' => $e->getMessage()
+			]);
+			exit;
+		}
 	}
 }
