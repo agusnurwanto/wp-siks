@@ -280,6 +280,7 @@ class Wp_Siks_Admin
 	            		<li><a target="_blank" href="' . $data_anak_terlantar['url'] . '">' . $data_anak_terlantar['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_gepeng['url'] . '">' . $data_gepeng['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_bunda_kasih['url'] . '">' . $data_bunda_kasih['title'] . '</a></li>
+	            		<li><a target="_blank" href="' . $data_p3ke['url'] . '">' . $data_p3ke['title'] . '</a></li>
 	            	</ol>'),
 				Field::make('text', 'crb_apikey_siks', 'API KEY')
 					->set_default_value($this->functions->generateRandomString())
@@ -512,6 +513,9 @@ class Wp_Siks_Admin
 				Field::make('html', 'crb_siks_halaman_terkait_p3ke')
 					->set_html('
 					<h5>HALAMAN TERKAIT</h5>
+	            	<ol>
+	            		<li><a target="_blank" href="' . $data_p3ke['url'] . '">' . $data_p3ke['title'] . '</a></li>
+	            	</ol>
 		        	'),
 				Field::make('html', 'crb_p3ke_upload_html')
 					->set_html('<h3>Import EXCEL data P3KE</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
