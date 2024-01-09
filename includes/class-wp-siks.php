@@ -171,6 +171,7 @@ class Wp_Siks {
   		$this->loader->add_action( 'wp_ajax_import_excel_anak_terlantar',  $plugin_admin, 'import_excel_anak_terlantar');
   		$this->loader->add_action( 'wp_ajax_import_excel_lksa',  $plugin_admin, 'import_excel_lksa');
   		$this->loader->add_action( 'wp_ajax_import_excel_odgj',  $plugin_admin, 'import_excel_odgj');
+  		$this->loader->add_action( 'wp_ajax_import_excel_p3ke_siks',  $plugin_admin, 'import_excel_p3ke_siks');
   		$this->loader->add_action( 'wp_ajax_get_data_dtks_siks',  $plugin_admin, 'get_data_dtks_siks');
   		$this->loader->add_action( 'wp_ajax_export_excel_data_dtks_siks',  $plugin_admin, 'export_excel_data_dtks_siks');
   		$this->loader->add_action( 'wp_ajax_get_data_kecamatan_siks',  $plugin_admin, 'get_data_kecamatan_siks');
@@ -255,7 +256,7 @@ class Wp_Siks {
 		add_shortcode('data_bunda_kasih_siks', array($plugin_public, 'data_bunda_kasih_siks'));
 		add_shortcode('data_anak_terlantar_siks', array($plugin_public, 'data_anak_terlantar_siks'));
 		add_shortcode('data_gepeng_siks', array($plugin_public, 'data_gepeng_siks'));
-		add_shortcode('data_odgj_siks', array($plugin_public, 'data_odgj_siks'));
+		add_shortcode('data_p3ke_siks', array($plugin_public, 'data_p3ke_siks'));
 
 		// untuk menjalankan conjob refresh session
 		$this->loader->add_action('siks_conjob',  $plugin_public, 'refresh_token');

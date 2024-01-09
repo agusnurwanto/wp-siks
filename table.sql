@@ -251,6 +251,7 @@ CREATE TABLE `data_anak_terlantar_siks` (
     `update_at` datetime DEFAULT current_timestamp,
     PRIMARY KEY (id)
 );
+
 									
 CREATE TABLE `data_lksa_siks` (
     `id` int(11) NOT NULL auto_increment,
@@ -285,6 +286,29 @@ CREATE TABLE `data_odgj_siks` (
     `nama_ortu` TEXT DEFAULT NULL,
     `keterangan` TEXT DEFAULT NULL,
     `pengobatan` TEXT DEFAULT NULL,
+    `tahun_anggaran`  int(4) DEFAULT NULL,
+    `active` tinyint(4) DEFAULT 1,
+    `update_at` datetime DEFAULT current_timestamp,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE `data_p3ke_siks` (
+    `id` int(11) NOT NULL auto_increment,
+    `kk` TEXT DEFAULT NULL,
+    `nik` TEXT DEFAULT NULL,
+    `nama` TEXT DEFAULT NULL,
+    `provinsi` TEXT DEFAULT NULL,
+    `kabkot` TEXT DEFAULT NULL,
+    `kecamatan` TEXT DEFAULT NULL,
+    `desa` TEXT DEFAULT NULL,
+    `rt` TEXT DEFAULT NULL,
+    `rw` TEXT DEFAULT NULL,
+    `kode_anggota` tinyint(4) DEFAULT NULL COMMENT '1 = Kepala Keluarga, 2 = Istri, 3 = Anak Kandung, 4 = Anggota Tambahan',
+    `pekerjaan` TEXT DEFAULT NULL,
+    `program` TEXT DEFAULT NULL,
+    `penghasilan` TEXT DEFAULT NULL,
+    `keterangan` TEXT DEFAULT NULL,
+    `alamat` TEXT DEFAULT NULL,
     `tahun_anggaran`  int(4) DEFAULT NULL,
     `active` tinyint(4) DEFAULT 1,
     `update_at` datetime DEFAULT current_timestamp,

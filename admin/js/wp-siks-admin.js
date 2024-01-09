@@ -118,6 +118,10 @@ function import_excel_anak_terlantar(action = '', message = ''){
     import_excel(jenis_import, 'Success import data dari excel!');
 }
 
+function import_excel_p3ke_siks(){
+    import_excel('import_excel_p3ke_siks', 'Success import data P3KE dari excel!');
+}
+
 function import_excel(action = '', message = ''){
     if(action == ''){
         alert('Action tidak diketahui!');

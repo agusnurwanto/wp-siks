@@ -1302,7 +1302,7 @@ class Wp_Siks_Public
                         $ret['status'] != 'error'
                         && !empty($_FILES['lampiran'])
                     ) {
-                        $upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['pdf']);
+                        $upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
                         if ($upload['status'] == true) {
                             $data['file_lampiran'] = $upload['filename'];
                             $cek_file['file_lampiran'] = $data['file_lampiran'];
