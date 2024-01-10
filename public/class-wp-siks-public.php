@@ -2308,7 +2308,7 @@ class Wp_Siks_Public
 		} else {
 			$ret = array(
 				'status' => 'error',
-				'message'	=> 'Format tidak sesuai!'
+				'message'	=> 'Format tidak sesuai!'	
 			);
 		}
 		die(json_encode($ret));
@@ -2387,7 +2387,27 @@ class Wp_Siks_Public
 
 		return $data;
 	}
+	
+	function get_lksa()
+	{
+		global $wpdb;
+		$data = $wpdb->get_results("
+			SELECT  
+				nama,
+				kabkot,
+				alamat,
+				anak_dalam_lksa,
+				anak_luar_lksa,
+				total_anak,
+				count(id) as jml
+			FROM data_lksa_siks
+			WHERE active=1
+			GROUP BY nama, kabkot, alamat, anak_dalam_lksa, anak_luar_lksa, total_anak
+			ORDER BY  kabkot, nama, alamat, anak_dalam_lksa, anak_luar_lksa, total_anak
+		", ARRAY_A);
 
+		return $data;
+	}
 
 	function get_disabilitas()
 	{

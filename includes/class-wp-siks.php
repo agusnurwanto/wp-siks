@@ -236,6 +236,7 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_get_datatable_anak_terlantar', $plugin_public, 'get_datatable_anak_terlantar');
 		$this->loader->add_action('wp_ajax_get_anak_terlantar', $plugin_public, 'get_anak_terlantar');
 		$this->loader->add_action('wp_ajax_get_anak_terlantar_luar_magetan', $plugin_public, 'get_anak_terlantar_luar_magetan');
+		$this->loader->add_action('wp_ajax_get_lksa', $plugin_public, 'get_lksa');
 		$this->loader->add_action('wp_ajax_get_anak_terlantar_by_id', $plugin_public, 'get_anak_terlantar_by_id');
 		$this->loader->add_action('wp_ajax_hapus_anak_terlantar_by_id', $plugin_public, 'hapus_anak_terlantar_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_anak_terlantar', $plugin_public, 'tambah_data_anak_terlantar');
