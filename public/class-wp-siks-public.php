@@ -180,6 +180,15 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-odgj.php';
 	}
 
+	public function management_data_p3ke()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-p3ke.php';
+	}
+
 	public function peta_data_terpadu_siks()
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -2842,6 +2851,253 @@ class Wp_Siks_Public
 			$ret['message'] = 'Format Salah!';
 		}
 
+		die(json_encode($ret));
+	}
+
+	public function get_data_p3ke_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil get data!',
+			'data' => array()
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->get_row($wpdb->prepare('
+                    SELECT 
+                        *
+                    FROM data_p3ke_siks
+                    WHERE id=%d
+                ', $_POST['id']), ARRAY_A);
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
+	public function hapus_data_p3ke_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil hapus data!',
+			'data' => array()
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->update('data_p3ke_siks', array('active' => 0), array(
+					'id' => $_POST['id']
+				));
+			} else {
+				$ret['status']	= 'error';
+				$ret['message']	= 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']	= 'error';
+			$ret['message']	= 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
+    public function tambah_data_p3ke()
+    {
+        global $wpdb;
+        $ret = array(
+            'status' => 'success',
+            'message' => 'Berhasil simpan data!',
+            'data' => array()
+        );
+        if (!empty($_POST)) {
+            if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+                if ($ret['status'] != 'error' && !empty($_POST['nama'])) {
+                    $nama = $_POST['nama'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['provinsi'])) {
+                    $provinsi = $_POST['provinsi'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['kabkot'])) {
+                    $kabkot = $_POST['kabkot'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['kecamatan'])) {
+                    $kecamatan = $_POST['kecamatan'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['desa'])) {
+                    $desa = $_POST['desa'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['rt'])) {
+                    $rt = $_POST['rt'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['nik'])) {
+                    $nik = $_POST['nik'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['kk'])) {
+                    $kk = $_POST['kk'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['rw'])) {
+                    $rw = $_POST['rw'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['pekerjaan'])) {
+                    $pekerjaan = $_POST['pekerjaan'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['alamat'])) {
+                    $alamat = $_POST['alamat'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['program'])) {
+                    $program = $_POST['program'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['penghasilan'])) {
+                    $penghasilan = $_POST['penghasilan'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['keterangan'])) {
+                    $keterangan = $_POST['keterangan'];
+                }
+                if ($ret['status'] != 'error' && !empty($_POST['tahun_anggaran'])) {
+                    $tahun_anggaran = $_POST['tahun_anggaran'];
+                }
+                if ($ret['status'] != 'error') {
+                    $data = array(
+                        'nama' => $nama,
+                        'provinsi' => $provinsi,
+                        'desa' => $desa,
+                        'kecamatan' => $kecamatan,
+                        'nik' => $nik,
+                        'kk' => $kk,
+                        'kabkot' => $kabkot,
+                        'rt' => $rt,
+                        'rw' => $rw,
+                        'alamat' => $alamat,
+                        'pekerjaan' => $pekerjaan,
+                        'program' => $program,
+                        'penghasilan' => $penghasilan,
+                        'keterangan' => $keterangan,
+                        'tahun_anggaran' => $tahun_anggaran,
+                        'active' => 1,
+                        'update_at' => current_time('mysql')
+                    );
+                    if (!empty($_POST['id_data'])) {
+                        $wpdb->update('data_p3ke_siks', $data, array(
+                            'id' => $_POST['id_data']
+                        ));
+                        $ret['message'] = 'Berhasil update data!';
+                    } else {
+                        $cek_id = $wpdb->get_row($wpdb->prepare('
+                            SELECT
+                                id,
+                                active
+                            FROM data_p3ke_siks
+                            WHERE id=%d
+                        ', $_POST['id']), ARRAY_A);
+                        // print_r($cek_id); die($wpdb->last_query);
+                        if (empty($cek_id)) {
+                            $wpdb->insert('data_p3ke_siks', $data);
+                        } else {
+                            if ($cek_id['active'] == 0) {
+                                $wpdb->update('data_p3ke_siks', $data, array(
+                                    'id' => $cek_id['id']
+                                ));
+                            }
+                        }
+                    }
+                }
+            } else {
+                $ret['status']  = 'error';
+                $ret['message'] = 'Api key tidak ditemukan!';
+            }
+        } else {
+            $ret['status']  = 'error';
+            $ret['message'] = 'Format Salah!';
+        }
+
+        die(json_encode($ret));
+    }
+
+	function get_datatable_p3ke()
+	{
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil get data p3ke!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			$params = $columns = $totalRecords = $data = array();
+			$params = $_REQUEST;
+			$columns = array(
+				0 => 'nik',
+                1 => 'kk',
+                2 => 'nama',
+                3 => 'provinsi',
+                4 => 'kabkot',
+                5 => 'kecamatan',
+                6 => 'desa',
+                7 => 'rt',
+                8 => 'rw',
+                9 => 'alamat',
+                10 => 'pekerjaan',
+                11 => 'program',
+                12 => 'penghasilan',
+                13 => 'keterangan',
+                14 => 'tahun_anggaran',
+                15 => 'id'
+			);
+			$where = $sqlTot = $sqlRec = "";
+
+			// check search value exist
+			if (!empty($params['search']['value'])) {
+				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+				$where .= " AND ( nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+			}
+
+			// getting total number records without any search
+			$sql_tot = "SELECT count(id) as jml FROM `data_p3ke_siks`";
+			$sql = "SELECT " . implode(', ', $columns) . " FROM `data_p3ke_siks`";
+			$where_first = " WHERE 1=1 AND active = 1";
+			$sqlTot .= $sql_tot . $where_first;
+			$sqlRec .= $sql . $where_first;
+			if (isset($where) && $where != '') {
+				$sqlTot .= $where;
+				$sqlRec .= $where;
+			}
+
+			$limit = '';
+			if ($params['length'] != -1) {
+				$limit = "  LIMIT " . $wpdb->prepare('%d', $params['start']) . " ," . $wpdb->prepare('%d', $params['length']);
+			}
+			$sqlRec .= " ORDER BY update_at DESC" . $limit;
+
+			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
+			$totalRecords = $queryTot[0]['jml'];
+			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
+
+			foreach ($queryRecords as $recKey => $recVal) {
+				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
+				$btn .= '<a class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+				$queryRecords[$recKey]['aksi'] = $btn;
+			}
+
+			$json_data = array(
+				"draw"            => intval($params['draw']),
+				"recordsTotal"    => intval($totalRecords),
+				"recordsFiltered" => intval($totalRecords),
+				"data"            => $queryRecords,
+				"sql"             => $sqlRec
+			);
+
+			die(json_encode($json_data));
+		} else {
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
 		die(json_encode($ret));
 	}
 }

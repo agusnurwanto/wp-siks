@@ -261,6 +261,14 @@ class Wp_Siks_Admin
 			'post_status' => 'private'
 		));
 
+		$management_data_p3ke = $this->functions->generatePage(array(
+			'nama_page' => 'Management Data P3KE SIKS',
+			'content' => '[management_data_p3ke]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'private'
+		));
+
 		$basic_options_container = Container::make('theme_options', __('SIKS Options'))
 			->set_page_menu_position(4)
 			->add_fields(array(
@@ -514,7 +522,7 @@ class Wp_Siks_Admin
 					->set_html('
 					<h5>HALAMAN TERKAIT</h5>
 	            	<ol>
-	            		<li><a target="_blank" href="' . $data_p3ke['url'] . '">' . $data_p3ke['title'] . '</a></li>
+	            		<li><a target="_blank" href="' . $management_data_p3ke['url'] . '">' . $management_data_p3ke['title'] . '</a></li>
 	            	</ol>
 		        	'),
 				Field::make('html', 'crb_p3ke_upload_html')
