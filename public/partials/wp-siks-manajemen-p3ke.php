@@ -46,7 +46,7 @@ $url = admin_url('admin-ajax.php');
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTambahDataP3KE">Tambah Data Orang Gangguan Jiwa ( P3KE )</h5>
+                <h5 class="modal-title" id="modalTambahDataP3KE">Tambah Data P3KE </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
