@@ -1,13 +1,16 @@
 <?php
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
-$data_lksa = $this->get_lksa(); 
-$anak_terlantar_dalam = $this->get_anak_terlantar(); 
-$anak_terlantar_luar = $this->get_anak_terlantar_luar_magetan(); 
+$data_lksa = $this->get_lksa();
+$anak_terlantar_dalam = $this->get_anak_terlantar();
+$anak_terlantar_luar = $this->get_anak_terlantar_luar_magetan();
 
 $data_all_lksa = array();
 $anak_terlantar_dalam_magetan = array();
 $anak_terlantar_luar_magetan = array();
+$last_update_terlantar_dalam = null;
+$last_update_terlantar_luar = null;
+$last_update_lksa = null;
 
 // Pengolahan data dalam Magetan
 foreach ($anak_terlantar_dalam as $data) {
@@ -20,6 +23,9 @@ foreach ($anak_terlantar_dalam as $data) {
 
     if (empty($anak_terlantar_dalam_magetan[$index])) {
         $anak_terlantar_dalam_magetan[$index] = array();
+    }
+    if ($last_update_terlantar_dalam === null || $data['last_update'] > $last_update_terlantar_dalam) {
+        $last_update_terlantar_dalam = $data['last_update'];
     }
     $anak_terlantar_dalam_magetan[$index][] = $data;
 }
@@ -35,6 +41,9 @@ foreach ($anak_terlantar_luar as $data) {
 
     if (empty($anak_terlantar_luar_magetan[$index])) {
         $anak_terlantar_luar_magetan[$index] = array();
+    }
+    if ($last_update_terlantar_luar === null || $data['last_update'] > $last_update_terlantar_luar) {
+        $last_update_terlantar_luar = $data['last_update'];
     }
     $anak_terlantar_luar_magetan[$index][] = $data;
 }
@@ -52,6 +61,9 @@ foreach ($data_lksa as $data) {
 
     if (empty($data_all_lksa[$index])) {
         $data_all_lksa[$index] = array();
+    }
+    if ($last_update_lksa === null || $data['last_update'] > $last_update_lksa) {
+        $last_update_lksa = $data['last_update'];
     }
     $data_all_lksa[$index][] = $data;
 }
@@ -159,6 +171,7 @@ foreach ($data_all_lksa as $index => $lksa_data) {
         <li>Warna merah berarti jumlah Anak Terlantar diatas 40 Anak</li>
     </ol>
     <h2 class="text-center">Tabel Data Anak Terlantar Kabupaten Magetan<br>Total <?php echo $this->number_format($total_dalam); ?> Anak</h2>
+    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_terlantar_dalam ?></h3>
     <div style="width: 100%; overflow: auto; height: 100vh;">
         <table class="table table-bordered" id="table-data-dalam">
             <thead>
@@ -178,6 +191,7 @@ foreach ($data_all_lksa as $index => $lksa_data) {
         </table>
     </div><br>
     <h2 class="text-center">Tabel Data Anak Terlantar Luar Kabupaten Magetan<br>Total <?php echo $this->number_format($total_luar); ?> Anak</h2>
+    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_terlantar_luar ?></h3>
     <div style="width: 100%; overflow: auto; height: 100vh;">
         <table class="table table-bordered" id="table-data-luar">
             <thead>
@@ -195,6 +209,7 @@ foreach ($data_all_lksa as $index => $lksa_data) {
         </table>
     </div><br>
     <h2 class="text-center">Tabel Data LKSA (Lembaga Kesejahteraan Sosial Anak)<br>Total <?php echo $this->number_format($total_lembaga); ?> Lembaga</h2>
+    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_lksa ?></h3>
     <div style="width: 100%; overflow: auto; height: 100vh;">
         <table class="table table-bordered" id="table-data-lksa">
             <thead>

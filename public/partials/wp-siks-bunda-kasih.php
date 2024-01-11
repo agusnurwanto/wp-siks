@@ -3,11 +3,15 @@ $center = $this->get_center();
 $maps_all = $this->get_polygon();
 $bunda_kasih_all = $this->get_bunda_kasih();
 
+$last_update_bunda_kasih = null;
 $bunda_kasih_all_desa = array();
 foreach($bunda_kasih_all as $data){
     $index = strtolower($data['provinsi']).'.'.strtolower($data['kabkot']).'.'.strtolower($data['kecamatan']).'.'.strtolower($data['desa']);
     if(empty($bunda_kasih_all_desa[$index])){
         $bunda_kasih_all_desa[$index] = array();
+    }
+    if ($last_update_bunda_kasih === null || $data['last_update'] > $last_update_bunda_kasih) {
+        $last_update_bunda_kasih = $data['last_update'];
     }
     $bunda_kasih_all_desa[$index][] = $data;
 }
@@ -73,7 +77,8 @@ foreach($maps_all as $i => $desa){
         <li>Warna kuning berarti jumlah Bunda Kasih antara 5 sampai 10 orang</li>
         <li>Warna merah berarti jumlah Bunda Kasih diatas 10 orang</li>
     </ol>
-    <h2 class="text-center">Tabel Data Bunda Kasih<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
+    <h1 class="text-center">Tabel Data Bunda Kasih<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
+    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_bunda_kasih?></h3>
     <div style="width: 100%; overflow: auto; height: 100vh;">
         <table class="table table-bordered" id="table-data">
             <thead>

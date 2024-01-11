@@ -3,11 +3,15 @@ $center = $this->get_center();
 $maps_all = $this->get_polygon();
 $lansia_all = $this->get_lansia();
 
+$last_update_lansia =  null;
 $lansia_all_desa = array();
 foreach($lansia_all as $data){
     $index = strtolower($data['provinsi']).'.'.strtolower($data['kabkot']).'.'.strtolower($data['kecamatan']).'.'.strtolower($data['desa']);
     if(empty($lansia_all_desa[$index])){
         $lansia_all_desa[$index] = array();
+    }
+    if ($last_update_lansia === null || $data['last_update'] > $last_update_lansia) {
+        $last_update_lansia = $data['last_update'];
     }
     $lansia_all_desa[$index][] = $data;
 }
@@ -65,6 +69,7 @@ foreach($maps_all as $i => $desa){
         <li>Warna merah berarti jumlah Gepeng diatas 40 orang</li>
     </ol>
     <h2 class="text-center">Tabel Data Gepeng<br>Total 0 Orang</h1>
+    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_lansia?></h3>
     <div style="width: 100%; overflow: auto; height: 100vh;">
         <table class="table table-bordered" id="table-data">
             <thead>

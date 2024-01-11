@@ -3,11 +3,15 @@ $center = $this->get_center();
 $maps_all = $this->get_polygon();
 $disabilitas_all = $this->get_disabilitas();
 
+$last_update_disabilitas = null;
 $disabilitas_all_desa = array();
 foreach ($disabilitas_all as $data) {
     $index = strtolower($data['provinsi']) . '.' . strtolower($data['kabkot']) . '.' . strtolower($data['kecamatan']) . '.' . strtolower($data['desa']);
     if (empty($disabilitas_all_desa[$index])) {
         $disabilitas_all_desa[$index] = array();
+    }
+    if ($last_update_disabilitas === null || $data['last_update'] > $last_update_disabilitas) {
+        $last_update_disabilitas = $data['last_update'];
     }
     $disabilitas_all_desa[$index][] = $data;
 }
@@ -109,7 +113,8 @@ foreach ($total_all_jenis as $key => $data) {
         <li>Warna kuning berarti jumlah Disabilitas antara 16 sampai 40 orang</li>
         <li>Warna merah berarti jumlah Disabilitas diatas 40 orang</li>
     </ol>
-    <h2 class="text-center">Tabel Data Disabilitas<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
+    <h1 class="text-center">Tabel Data Disabilitas<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
+    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_disabilitas?></h3>
         <div style="width: 100%; overflow: auto; height: 100vh;">
             <table class="table table-bordered" id="table-data">
                 <thead>

@@ -2,14 +2,26 @@
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
 $lansia_all = $this->get_lansia();
+$bunda_kasih_all = $this->get_bunda_kasih();
 
 $lansia_all_desa = array();
+$last_update_lansia = null;
+$last_update_bunda_kasih = null;
+
 foreach ($lansia_all as $data) {
     $index = strtolower($data['provinsi']) . '.' . strtolower($data['kabkot']) . '.' . strtolower($data['kecamatan']) . '.' . strtolower($data['desa']);
     if (empty($lansia_all_desa[$index])) {
         $lansia_all_desa[$index] = array();
     }
+    if ($last_update_lansia === null || $data['last_update'] > $last_update_lansia) {
+        $last_update_lansia = $data['last_update'];
+    }
     $lansia_all_desa[$index][] = $data;
+}
+foreach ($bunda_kasih_all as $data) {
+    if ($last_update_bunda_kasih === null || $data['last_update'] > $last_update_bunda_kasih) {
+        $last_update_bunda_kasih = $data['last_update'];
+    }
 }
 
 $total_all = 0;
@@ -73,25 +85,28 @@ foreach ($maps_all as $i => $desa) {
         <li>Warna kuning berarti jumlah Lansia antara 16 sampai 40 orang</li>
         <li>Warna merah berarti jumlah Lansia diatas 40 orang</li>
     </ol>
-    <h2 class="text-center">Tabel Data Lansia<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
-        <div style="width: 100%; overflow: auto; height: 100vh;">
-            <table class="table table-bordered" id="table-data">
-                <thead>
-                    <tr>
-                        <th class='text-center'>Kode Desa</th>
-                        <th class='text-center'>Provinsi</th>
-                        <th class='text-center'>Kabupaten/Kota</th>
-                        <th class='text-center'>Kecamatan</th>
-                        <th class='text-center'>Desa</th>
-                        <th class='text-center'>Total Lansia</th>
-                        <th class='text-center'>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php echo $body; ?>
-                </tbody>
-            </table>
-        </div>
+    <h1 class="text-center">Tabel Data Lansia<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
+    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_lansia; ?></h3>
+    <h1 class="text-center">Total Bunda Kasih 0 Orang</h1>
+    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_bunda_kasih ?></h3>
+    <div style="width: 100%; overflow: auto; height: 100vh;">
+        <table class="table table-bordered" id="table-data">
+            <thead>
+                <tr>
+                    <th class='text-center'>Kode Desa</th>
+                    <th class='text-center'>Provinsi</th>
+                    <th class='text-center'>Kabupaten/Kota</th>
+                    <th class='text-center'>Kecamatan</th>
+                    <th class='text-center'>Desa</th>
+                    <th class='text-center'>Total Lansia</th>
+                    <th class='text-center'>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php echo $body; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 <script type="text/javascript">
     window.maps_all_siks = <?php echo json_encode($maps_all); ?>;

@@ -2326,6 +2326,7 @@ class Wp_Siks_Public
 		$data = $wpdb->get_results("
 			SELECT  
 				provinsi,
+				MAX(update_at) as last_update,
 				kabkot,
 				kecamatan,
 				desa,
@@ -2352,6 +2353,7 @@ class Wp_Siks_Public
 		$data = $wpdb->get_results("
 			SELECT  
 				provinsi,
+				MAX(update_at) as last_update,
 				kabkot,
 				kecamatan,
 				desa_kelurahan,
@@ -2375,6 +2377,7 @@ class Wp_Siks_Public
 			SELECT  
 				provinsi,
 				kabkot,
+				MAX(update_at) as last_update,
 				kecamatan,
 				desa_kelurahan,
 				count(id) as jml
@@ -2395,6 +2398,7 @@ class Wp_Siks_Public
 			SELECT  
 				nama,
 				kabkot,
+				MAX(update_at) as last_update,
 				alamat,
 				anak_dalam_lksa,
 				anak_luar_lksa,
@@ -2422,6 +2426,7 @@ class Wp_Siks_Public
 			SELECT  
 				provinsi,
 				kabkot,
+				MAX(update_at) as last_update,
 				kecamatan,
 				desa,
 				jenis_disabilitas,
@@ -2450,6 +2455,7 @@ class Wp_Siks_Public
 			SELECT  
 				provinsi,
 				kabkot,
+				MAX(update_at) as last_update,
 				kecamatan,
 				desa,
 				count(id) as jml
@@ -2477,6 +2483,7 @@ class Wp_Siks_Public
 			SELECT  
 				provinsi,
 				kabkot,
+				MAX(update_at) as last_update,
 				kecamatan,
 				desa,
 				count(id) as jml
