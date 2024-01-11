@@ -815,7 +815,8 @@ class Wp_Siks_Public
 		}
 		$data = $wpdb->get_results("
 			SELECT 
-				provinsi, 
+				provinsi,
+				MAX(update_at) as last_update,
 				kabkot, 
 				kecamatan, 
 				desa_kelurahan,

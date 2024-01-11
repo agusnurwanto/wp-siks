@@ -3,11 +3,15 @@ $center = $this->get_center();
 $maps_all = $this->get_polygon();
 $p3ke_all = $this->get_p3ke();
 
+$last_update_p3ke = null;
 $p3ke_all_desa = array();
 foreach($p3ke_all as $data){
     $index = strtolower($data['provinsi']).'.'.strtolower($data['kabkot']).'.'.strtolower($data['kecamatan']).'.'.strtolower($data['desa']);
     if(empty($p3ke_all_desa[$index])){
         $p3ke_all_desa[$index] = array();
+    }
+    if ($last_update_p3ke === null || $data['last_update'] > $last_update_p3ke) {
+        $last_update_p3ke = $data['last_update'];
     }
     $p3ke_all_desa[$index][] = $data;
 }
@@ -73,7 +77,8 @@ foreach($maps_all as $i => $desa){
         <li>Warna kuning berarti jumlah P3KE antara 51 sampai 100 orang</li>
         <li>Warna merah berarti jumlah P3KE diatas 100 orang</li>
     </ol>
-    <h2 class="text-center">Tabel Data P3KE<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
+    <h1 class="text-center">Tabel Data P3KE<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
+    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_p3ke?></h3>
     <div style="width: 100%; overflow: auto; height: 100vh;">
         <table class="table table-bordered" id="table-data">
             <thead>

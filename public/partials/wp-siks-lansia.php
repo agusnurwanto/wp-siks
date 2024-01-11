@@ -5,9 +5,9 @@ $lansia_all = $this->get_lansia();
 $bunda_kasih_all = $this->get_bunda_kasih();
 
 $lansia_all_desa = array();
+$bunda_kasih_all_desa = array();
 $last_update_lansia = null;
 $last_update_bunda_kasih = null;
-
 foreach ($lansia_all as $data) {
     $index = strtolower($data['provinsi']) . '.' . strtolower($data['kabkot']) . '.' . strtolower($data['kecamatan']) . '.' . strtolower($data['desa']);
     if (empty($lansia_all_desa[$index])) {
@@ -19,9 +19,17 @@ foreach ($lansia_all as $data) {
     $lansia_all_desa[$index][] = $data;
 }
 foreach ($bunda_kasih_all as $data) {
+    $index = strtolower($data['provinsi']) . '.' . strtolower($data['kabkot']) . '.' . strtolower($data['kecamatan']) . '.' . strtolower($data['desa']);
+    if (empty($bunda_kasih_all_desa[$index])) {
+        $bunda_kasih_all_desa[$index] = array();
+    }
     if ($last_update_bunda_kasih === null || $data['last_update'] > $last_update_bunda_kasih) {
         $last_update_bunda_kasih = $data['last_update'];
     }
+    if ($last_update_bunda_kasih === null || $data['last_update'] > $last_update_bunda_kasih) {
+        $last_update_bunda_kasih = $data['last_update'];
+    }
+    $bunda_kasih_all_desa[$index][] = $data;
 }
 
 $total_all = 0;
@@ -32,6 +40,13 @@ foreach ($maps_all as $i => $desa) {
     if (!empty($lansia_all_desa[$index])) {
         foreach ($lansia_all_desa[$index] as $orang) {
             $total_lansia += $orang['jml'];
+        }
+    }
+    $index = strtolower($desa['data']['provinsi']) . '.' . strtolower($desa['data']['kab_kot']) . '.' . strtolower($desa['data']['kecamatan']) . '.' . strtolower($desa['data']['desa']);
+    $total_bunda_kasih = 0;
+    if (!empty($bunda_kasih_all_desa[$index])) {
+        foreach ($bunda_kasih_all_desa[$index] as $orang) {
+            $total_bunda_kasih += $orang['jml'];
         }
     }
     if ($total_lansia <= 15) {
@@ -70,9 +85,11 @@ foreach ($maps_all as $i => $desa) {
             <td class='text-center'>" . $desa['data']['kecamatan'] . "</td>
             <td class='text-center'>" . $desa['data']['desa'] . "</td>
             <td class='text-center'>" . $total_lansia . "</td>
+            <td class='text-center'>" . $total_bunda_kasih . "</td>
             <td class='text-center'><a style='margin-bottom: 5px;' onclick='cari_alamat_siks(\"" . $search . "\"); return false;' href='#' class='btn btn-danger'>Map</a></td>
         </tr>
     ";
+    $total_bunda_kasih_all += $total_bunda_kasih;
     $total_all += $total_lansia;
 }
 ?>
@@ -87,7 +104,7 @@ foreach ($maps_all as $i => $desa) {
     </ol>
     <h1 class="text-center">Tabel Data Lansia<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
     <h3 class="text-center">Terakhir diupdate <?php echo $last_update_lansia; ?></h3>
-    <h1 class="text-center">Total Bunda Kasih 0 Orang</h1>
+    <h1 class="text-center">Total Bunda Kasih <?php echo $this->number_format($total_bunda_kasih_all); ?> Orang</h1>
     <h3 class="text-center">Terakhir diupdate <?php echo $last_update_bunda_kasih ?></h3>
     <div style="width: 100%; overflow: auto; height: 100vh;">
         <table class="table table-bordered" id="table-data">
@@ -99,6 +116,7 @@ foreach ($maps_all as $i => $desa) {
                     <th class='text-center'>Kecamatan</th>
                     <th class='text-center'>Desa</th>
                     <th class='text-center'>Total Lansia</th>
+                    <th class='text-center'>Total Bunda Kasih</th>
                     <th class='text-center'>Aksi</th>
                 </tr>
             </thead>
@@ -117,7 +135,7 @@ foreach ($maps_all as $i => $desa) {
             [20, 50, 100, "All"]
         ],
         order: [
-            [5, 'desc']
+            [6, 'desc']
         ]
     });
 </script>
