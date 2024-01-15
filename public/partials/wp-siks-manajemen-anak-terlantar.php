@@ -401,8 +401,8 @@ $url = admin_url('admin-ajax.php');
         success: function(res) {
             alert(res.message);
             if (res.status == 'success') {
-                jQuery('#modalTambahDataDisabilitas').modal('hide');
-                get_data_disabilitas();
+                jQuery('#modalTambahDataAnakTerlantar').modal('hide');
+                get_data_anak_terlantar();
             }   
             jQuery('#wrap-loading').hide();
         }

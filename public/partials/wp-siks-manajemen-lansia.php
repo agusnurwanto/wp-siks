@@ -508,8 +508,8 @@ function submitDataLansia(){
         success: function(res) {
             alert(res.message);
             if (res.status == 'success') {
-                jQuery('#modalTambahDataDisabilitas').modal('hide');
-                get_data_disabilitas();
+                jQuery('#modalTambahDataLansia').modal('hide');
+                get_data_lansia();
             }   
             jQuery('#wrap-loading').hide();
         }

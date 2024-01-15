@@ -332,8 +332,8 @@ function submitDataBundaKasih(){
         success: function(res) {
             alert(res.message);
             if (res.status == 'success') {
-                jQuery('#modalTambahDataDisabilitas').modal('hide');
-                get_data_disabilitas();
+                jQuery('#modalTambahDataBundaKasih').modal('hide');
+                get_data_bunda_kasih();
             }   
             jQuery('#wrap-loading').hide();
         }

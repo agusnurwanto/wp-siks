@@ -429,7 +429,7 @@ function submitDataP3KE(){
             alert(res.message);
             if (res.status == 'success') {
                 jQuery('#modalTambahDataDisabilitas').modal('hide');
-                get_data_disabilitas();
+                get_data_p3ke();
             }   
             jQuery('#wrap-loading').hide();
         }
