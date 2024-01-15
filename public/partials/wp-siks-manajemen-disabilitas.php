@@ -101,8 +101,8 @@ $maps_all = $this->get_polygon();
                     <th class="text-center">Hubungan Dengan PD</th>
                     <th class="text-center">Nomor Handphone PD</th>
                     <th class="text-center">Kelayakan</th>
-                    <th class="text-center">Tahun Anggaran</th>
                     <th class="text-center">Lampiran</th>
+                    <th class="text-center">Tahun Anggaran</th>
                     <th class="text-center" style="width: 100px;">Aksi</th>
                 </tr>
             </thead>
@@ -829,11 +829,11 @@ function get_data_disabilitas() {
                     className: "text-center"
                 },
                 {
-                    "data": 'tahun_anggaran',
+                    "data": 'file_lampiran',
                     className: "text-center"
                 },
                 {
-                    "data": 'file_lampiran',
+                    "data": 'tahun_anggaran',
                     className: "text-center"
                 },
                 {

@@ -38,6 +38,7 @@ $url = admin_url('admin-ajax.php');
                     <th class="text-center">Keterangan Lainnya Lama</th>
                     <th class="text-center">Rekomendasi Pendata</th>
                     <th class="text-center">Keterangan Lainnya</th>
+                    <th class="text-center">Lampiran</th>
                     <th class="text-center">Tahun Anggaran</th>
                     <th class="text-center" style="width: 100px;">Aksi</th>
                 </tr>
@@ -138,6 +139,12 @@ $url = admin_url('admin-ajax.php');
                     <label>Tahun Anggaran</label>
                     <input type="text" class="form-control" id="tahun_anggaran">
                 </div>
+                <div class="form-group">
+                    <label for="">Lampiran</label>
+                    <input type="file" name="file" class="form-control-file" id="lampiran" accept="application/pdf, .png, .jpg, .jpeg">
+                    <div style="padding-top: 10px; padding-bottom: 10px;"><a id="file_lampiran_existing"></a></div>
+                </div>
+                <div><small>Upload file maksimal 1 Mb, berformat .pdf .png .jpg .jpeg</small></div>
             </div>
             <div class="modal-footer">
                 <button type="submit" onclick="submitDataLansia(this);" class="btn btn-primary send_data">Simpan</button>
@@ -252,6 +259,10 @@ function get_data_lansia() {
                     className: "text-center"
                 },
                 {
+                    "data": 'file_lampiran',
+                    className: "text-center"
+                },
+                {
                     "data": 'tahun_anggaran',
                     className: "text-center"
                 },
@@ -326,6 +337,8 @@ function edit_data(_id){
                 jQuery('#rekomendasi_pendata').val(res.data.rekomendasi_pendata);
                 jQuery('#keterangan_lainnya').val(res.data.keterangan_lainnya);
                 jQuery('#tahun_anggaran').val(res.data.tahun_anggaran);
+                jQuery('#file_lampiran_existing').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran);
+                jQuery('#lampiran').val('').show();
                 jQuery('#modalTambahDataLansia .send_data').show();
                 jQuery('#modalTambahDataLansia').modal('show');
             }else{
@@ -356,7 +369,11 @@ function tambah_data_lansia() {
     jQuery('#keterangan_lainnya_lama').val('').show();
     jQuery('#rekomendasi_pendata').val('').show();
     jQuery('#keterangan_lainnya').val('').show();
-    jQuery('#tahun_anggaran').val('').show()
+    jQuery('#tahun_anggaran').val('').show();
+    jQuery('#lampiran').html('');
+
+    jQuery('#file_lampiran_existing').hide();
+    jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
     jQuery('#modalTambahDataLansia').modal('show');
 }
 
@@ -442,44 +459,59 @@ function submitDataLansia(){
     if(tahun_anggaran == ''){
         return alert('Data Tahun Anggaran tidak boleh kosong!');
     }
+    var lampiran = jQuery('#lampiran')[0].files[0];
+    if (id_data == '') {
+        if (typeof lampiran == 'undefined') {
+            return alert('Upload file lampiran dulu!');
+        }
+    }
+    
+    let tempData = new FormData();
+        tempData.append('action', 'tambah_data_lansia');
+        tempData.append('api_key', '<?php echo get_option(SIKS_APIKEY); ?>');
+        tempData.append('id_data', id_data);
+        tempData.append('nama', nama);
+        tempData.append('nik', nik);
+        tempData.append('tanggal_lahir', tanggal_lahir);
+        tempData.append('provinsi', provinsi);
+        tempData.append('kabkot', kabkot);
+        tempData.append('kecamatan', kecamatan);
+        tempData.append('desa', desa);
+        tempData.append('alamat', alamat);
+        tempData.append('usia', usia);
+        tempData.append('dokumen_kependudukan', dokumen_kependudukan);
+        tempData.append('status_kehidupan_rumah_tangga', status_kehidupan_rumah_tangga);
+        tempData.append('status_dtks', status_dtks);
+        tempData.append('status_kepersertaan_program_bansos', status_kepersertaan_program_bansos);
+        tempData.append('keterangan_lainnya_lama', keterangan_lainnya_lama);
+        tempData.append('rekomendasi_pendata', rekomendasi_pendata);
+        tempData.append('keterangan_lainnya', keterangan_lainnya);
+        tempData.append('status_tempat_tinggal', status_tempat_tinggal);
+        tempData.append('status_pemenuhan_kebutuhan', status_pemenuhan_kebutuhan);
+        tempData.append('rekomendasi_pendata_lama', rekomendasi_pendata_lama);
+        tempData.append('tahun_anggaran', tahun_anggaran);
+   
+    if (typeof lampiran != 'undefined') {
+            tempData.append('lampiran', lampiran);
+    }
+    tempData.append('lampiran', lampiran);
 
     jQuery('#wrap-loading').show();
     jQuery.ajax({
         method: 'post',
         url: '<?php echo admin_url('admin-ajax.php'); ?>',
         dataType: 'json',
-        data:{
-            'action': 'tambah_data_lansia',
-            'api_key': '<?php echo get_option(SIKS_APIKEY); ?>',
-            'id_data': id_data,
-            'nama': nama,
-            'nik': nik,
-            'tanggal_lahir': tanggal_lahir,
-            'provinsi': provinsi,
-            'kabkot': kabkot,
-            'kecamatan': kecamatan,
-            'desa': desa,
-            'alamat': alamat,
-            'usia': usia,
-            'dokumen_kependudukan': dokumen_kependudukan,
-            'status_kehidupan_rumah_tangga': status_kehidupan_rumah_tangga,
-            'status_dtks': status_dtks,
-            'status_kepersertaan_program_bansos': status_kepersertaan_program_bansos,
-            'keterangan_lainnya_lama': keterangan_lainnya_lama,
-            'rekomendasi_pendata': rekomendasi_pendata,
-            'keterangan_lainnya': keterangan_lainnya,
-            'status_tempat_tinggal': status_tempat_tinggal,
-            'status_pemenuhan_kebutuhan': status_pemenuhan_kebutuhan,
-            'rekomendasi_pendata_lama': rekomendasi_pendata_lama,
-            'tahun_anggaran': tahun_anggaran,
-        },
-        success: function(res){
+        data: tempData,
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: function(res) {
             alert(res.message);
-            jQuery('#modalTambahDataLansia').modal('hide');
-            if(res.status == 'success'){
-                get_data_lansia();
-                jQuery('#wrap-loading').hide();
-            }
+            if (res.status == 'success') {
+                jQuery('#modalTambahDataDisabilitas').modal('hide');
+                get_data_disabilitas();
+            }   
+            jQuery('#wrap-loading').hide();
         }
     });
 }

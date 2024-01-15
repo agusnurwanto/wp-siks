@@ -42,6 +42,7 @@ $url = admin_url('admin-ajax.php');
                     <th class="text-center">Kecamatan</th>
                     <th class="text-center">Desa/Kelurahan</th>
                     <th class="text-center">Alamat</th>
+                    <th class="text-center">Lampiran</th>
                     <th class="text-center" style="width: 100px;">Aksi</th>
                 </tr>
             </thead>
@@ -133,7 +134,12 @@ $url = admin_url('admin-ajax.php');
                         <label class="form-check-label" for="luar_lembaga">Luar Lembaga</label>
                     </div>
                 </div>
-
+                <div class="form-group">
+                    <label for="">Lampiran</label>
+                    <input type="file" name="file" class="form-control-file" id="lampiran" accept="application/pdf, .png, .jpg, .jpeg">
+                    <div style="padding-top: 10px; padding-bottom: 10px;"><a id="file_lampiran_existing"></a></div>
+                </div>
+                <div><small>Upload file maksimal 1 Mb, berformat .pdf .png .jpg .jpeg</small></div>
             </div>
             <div class="modal-footer">
                 <button type="submit" onclick="submitDataAnakTerlantar(this);" class="btn btn-primary send_data">Simpan</button>
@@ -220,6 +226,10 @@ $url = admin_url('admin-ajax.php');
                         className: "text-center"
                     },
                     {
+                        "data": 'file_lampiran',
+                        className: "text-center"
+                    },
+                    {
                         "data": 'aksi',
                         className: "text-center"
                     },
@@ -244,8 +254,12 @@ $url = admin_url('admin-ajax.php');
         jQuery('#provinsi').val('').show()
         jQuery('#alamat').val('').show()
         jQuery('#kabkot').val('').show()
+        jQuery('#desa_kelurahan').val('').show()        
         jQuery('#kecamatan').val('').show()
-        jQuery('#desa_kelurahan').val('').show()
+        jQuery('#lampiran').html('');
+
+        jQuery('#file_lampiran_existing').hide();
+        jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
         jQuery('#modalTambahDataAnakTerlantar').modal('show');
     }
 
@@ -281,6 +295,8 @@ $url = admin_url('admin-ajax.php');
                     } else if (res.data.kelembagaan === '0') {
                         jQuery('#luar_lembaga').prop('checked', true);
                     }
+                    jQuery('#lampiran').val('').show();
+                    jQuery('#file_lampiran_existing').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran);
                     jQuery('#modalTambahDataAnakTerlantar').modal('show');
                 } else {
                     alert(res.message);
@@ -342,38 +358,54 @@ $url = admin_url('admin-ajax.php');
         let desa_kelurahan = jQuery('#desa_kelurahan').val();
         let status_lembaga = jQuery('input[name="status_lembaga"]:checked').val();
 
-        jQuery('#wrap-loading').show();
-        jQuery.ajax({
-            method: 'POST',
-            url: '<?php echo $url; ?>',
-            dataType: 'json',
-            data: {
-                'action': 'tambah_data_anak_terlantar',
-                'api_key': '<?php echo $api_key; ?>',
-                'id': id_data,
-                'nama': nama,
-                'kk': kk,
-                'nik': nik,
-                'tahun_anggaran': tahun_anggaran,
-                'kabkot': kabkot,
-                'alamat': alamat,
-                'jenisKelamin': jenisKelamin,
-                'tanggal_Lahir': tanggal_Lahir,
-                'usia': usia,
-                'desa_kelurahan': desa_kelurahan,
-                'pendidikan': pendidikan,
-                'provinsi': provinsi,
-                'kecamatan': kecamatan,
-                'kelembagaan': status_lembaga,
-            },
-            success: function(res) {
-                alert(res.message);
-                jQuery('#modalTambahDataAnakTerlantar').modal('hide');
-                if (res.status == 'success') {
-                    get_data_anak_terlantar();
-                    jQuery('#wrap-loading').hide();
-                }
+        var lampiran = jQuery('#lampiran')[0].files[0];
+        if (id_data == '') {
+            if (typeof lampiran == 'undefined') {
+                return alert('Upload file lampiran dulu!');
             }
-        });
-    }
+        }
+        
+        let tempData = new FormData();
+            tempData.append('action', 'tambah_data_anak_terlantar');
+            tempData.append('api_key', '<?php echo $api_key; ?>');
+            tempData.append('id', ' id_data');
+            tempData.append('nama', ' nama');
+            tempData.append('kk', ' kk');
+            tempData.append('nik', ' nik');
+            tempData.append('tahun_anggaran', ' tahun_anggaran');
+            tempData.append('kabkot', ' kabkot');
+            tempData.append('alamat', ' alamat');
+            tempData.append('jenisKelamin', ' jenisKelamin');
+            tempData.append('tanggal_Lahir', ' tanggal_Lahir');
+            tempData.append('usia', ' usia');
+            tempData.append('desa_kelurahan', ' desa_kelurahan');
+            tempData.append('pendidikan', ' pendidikan');
+            tempData.append('provinsi', ' provinsi');
+            tempData.append('kecamatan', ' kecamatan');
+            tempData.append('kelembagaan', ' status_lembaga');
+  
+        if (typeof lampiran != 'undefined') {
+                tempData.append('lampiran', lampiran);
+        }
+        tempData.append('lampiran', lampiran);
+
+    jQuery('#wrap-loading').show();
+    jQuery.ajax({
+        method: 'post',
+        url: '<?php echo admin_url('admin-ajax.php'); ?>',
+        dataType: 'json',
+        data: tempData,
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: function(res) {
+            alert(res.message);
+            if (res.status == 'success') {
+                jQuery('#modalTambahDataDisabilitas').modal('hide');
+                get_data_disabilitas();
+            }   
+            jQuery('#wrap-loading').hide();
+        }
+    });
+}
 </script>

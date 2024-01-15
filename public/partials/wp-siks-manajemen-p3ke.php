@@ -33,6 +33,7 @@ $url = admin_url('admin-ajax.php');
                     <th class="text-center">Program</th>
                     <th class="text-center">Penghasilan</th>
                     <th class="text-center">Keterangan</th>
+                    <th class="text-center">Lampiran</th>
                     <th class="text-center">Tahun Anggaran</th>
                     <th class="text-center" style="width: 100px;">Aksi</th>
                 </tr>
@@ -113,6 +114,12 @@ $url = admin_url('admin-ajax.php');
                     <label>Tahun Anggaran</label>
                     <input type="text" class="form-control" id="tahun_anggaran">
                 </div>
+                <div class="form-group">
+                    <label for="">Lampiran</label>
+                    <input type="file" name="file" class="form-control-file" id="lampiran" accept="application/pdf, .png, .jpg, .jpeg">
+                    <div style="padding-top: 10px; padding-bottom: 10px;"><a id="file_lampiran_existing"></a></div>
+                </div>
+                <div><small>Upload file maksimal 1 Mb, berformat .pdf .png .jpg .jpeg</small></div>
             </div>
             <div class="modal-footer">
                 <button type="submit" onclick="submitDataP3KE(this);" class="btn btn-primary send_data">Simpan</button>
@@ -207,6 +214,10 @@ function get_data_p3ke() {
                     className: "text-center"
                 },
                 {
+                    "data": 'file_lampiran',
+                    className: "text-center"
+                },
+                {
                     "data": 'tahun_anggaran',
                     className: "text-center"
                 },
@@ -276,6 +287,8 @@ function edit_data(_id){
                 jQuery('#penghasilan').val(res.data.penghasilan);
                 jQuery('#keterangan').val(res.data.keterangan);
                 jQuery('#tahun_anggaran').val(res.data.tahun_anggaran);
+                jQuery('#file_lampiran_existing').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran);
+                jQuery('#lampiran').val('').show();
                 jQuery('#modalTambahDataP3KE .send_data').show();
                 jQuery('#modalTambahDataP3KE').modal('show');
             }else{
@@ -301,7 +314,11 @@ function tambah_data_p3ke() {
     jQuery('#pekerjaan').val('').show();
     jQuery('#penghasilan').val('').show();
     jQuery('#keterangan').val('').show();
-    jQuery('#tahun_anggaran').val('').show()
+    jQuery('#tahun_anggaran').val('').show();
+    jQuery('#lampiran').html('');
+
+    jQuery('#file_lampiran_existing').hide();
+    jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
     jQuery('#modalTambahDataP3KE').modal('show');
 }
 
@@ -367,39 +384,54 @@ function submitDataP3KE(){
     if(tahun_anggaran == ''){
         return alert('Data Tahun Anggaran tidak boleh kosong!');
     }
+    var lampiran = jQuery('#lampiran')[0].files[0];
+    if (id_data == '') {
+        if (typeof lampiran == 'undefined') {
+            return alert('Upload file lampiran dulu!');
+        }
+    }
+    
+    let tempData = new FormData();
+        tempData.append(' action', 'tambah_data_p3ke');
+        tempData.append(' api_key', '<?php echo get_option(SIKS_APIKEY); ?>');
+        tempData.append(' id_data', id_data);
+        tempData.append(' nama', nama);
+        tempData.append(' nik', nik);
+        tempData.append(' kabkot', kabkot);
+        tempData.append(' kecamatan', kecamatan);
+        tempData.append(' desa', desa);
+        tempData.append(' provinsi', provinsi);
+        tempData.append(' kk', kk);
+        tempData.append(' rt', rt);
+        tempData.append(' rw', rw);
+        tempData.append(' alamat', alamat);
+        tempData.append(' pekerjaan', pekerjaan);
+        tempData.append(' program', program);
+        tempData.append(' penghasilan', penghasilan);
+        tempData.append(' keterangan', keterangan);
+        tempData.append(' tahun_anggaran', tahun_anggaran);
+   
+    if (typeof lampiran != 'undefined') {
+            tempData.append('lampiran', lampiran);
+    }
+    tempData.append('lampiran', lampiran);
 
     jQuery('#wrap-loading').show();
     jQuery.ajax({
         method: 'post',
         url: '<?php echo admin_url('admin-ajax.php'); ?>',
         dataType: 'json',
-        data:{
-            'action': 'tambah_data_p3ke',
-            'api_key': '<?php echo get_option(SIKS_APIKEY); ?>',
-            'id_data': id_data,
-            'nama': nama,
-            'nik': nik,
-            'kabkot': kabkot,
-            'kecamatan': kecamatan,
-            'desa': desa,
-            'provinsi': provinsi,
-            'kk': kk,
-            'rt': rt,
-            'rw': rw,
-            'alamat': alamat,
-            'pekerjaan': pekerjaan,
-            'program': program,
-            'penghasilan': penghasilan,
-            'keterangan': keterangan,
-            'tahun_anggaran': tahun_anggaran,
-        },
-        success: function(res){
+        data: tempData,
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: function(res) {
             alert(res.message);
-            jQuery('#modalTambahDataP3KE').modal('hide');
-            if(res.status == 'success'){
-                get_data_p3ke();
-                jQuery('#wrap-loading').hide();
-            }
+            if (res.status == 'success') {
+                jQuery('#modalTambahDataDisabilitas').modal('hide');
+                get_data_disabilitas();
+            }   
+            jQuery('#wrap-loading').hide();
         }
     });
 }

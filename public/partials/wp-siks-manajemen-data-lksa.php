@@ -97,6 +97,12 @@ $url = admin_url('admin-ajax.php');
                     <label>Total Anak LKSA</label>
                     <input type="number" class="form-control" id="total_anak" placeholder="Masukkan Total Jumlah Anak LKSA">
                 </div>
+                <div class="form-group">
+                    <label for="">Lampiran</label>
+                    <input type="file" name="file" class="form-control-file" id="lampiran" accept="application/pdf, .png, .jpg, .jpeg">
+                    <div style="padding-top: 10px; padding-bottom: 10px;"><a id="file_lampiran_existing"></a></div>
+                </div>
+                <div><small>Upload file maksimal 1 Mb, berformat .pdf .png .jpg .jpeg</small></div>
             </div>
             <div class="modal-footer">
                 <button type="submit" onclick="submitDataLksa(this);" class="btn btn-primary send_data">Simpan</button>
@@ -182,6 +188,10 @@ $url = admin_url('admin-ajax.php');
                         className: "text-center"
                     },
                     {
+                        "data": 'file_lampiran',
+                        className: "text-center"
+                    },
+                    {
                         "data": 'aksi',
                         className: "text-center"
                     },
@@ -242,6 +252,8 @@ $url = admin_url('admin-ajax.php');
                     jQuery('#dalam_lksa').val(res.data.anak_dalam_lksa);
                     jQuery('#luar_lksa').val(res.data.anak_luar_lksa);
                     jQuery('#total_anak').val(res.data.total_anak);
+                    jQuery('#file_lampiran_existing').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran);
+                    jQuery('#lampiran').val('').show();
                     jQuery('#modalTambahDataLksa').modal('show');
                 } else {
                     alert(res.message);
@@ -262,6 +274,10 @@ $url = admin_url('admin-ajax.php');
         jQuery('#dalam_lksa').val('').show();
         jQuery('#luar_lksa').val('').show();
         jQuery('#total_anak').val('').show();
+        jQuery('#lampiran').html('');
+
+        jQuery('#file_lampiran_existing').hide();
+        jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
         jQuery('#modalTambahDataLksa').modal('show');
     }
 
@@ -277,35 +293,49 @@ $url = admin_url('admin-ajax.php');
         let dalam_lksa = jQuery('#dalam_lksa').val();
         let luar_lksa = jQuery('#luar_lksa').val();
         let total_anak = jQuery('#total_anak').val();
-
-        jQuery('#wrap-loading').show();
-        jQuery.ajax({
-            method: 'post',
-            url: '<?php echo $url; ?>',
-            dataType: 'json',
-            data: {
-                'action': 'tambah_data_lksa',
-                'api_key': '<?php echo $api_key; ?>',
-                'id': id_data,
-                'nama': nama,
-                'tahun_anggaran': tahun_anggaran,
-                'kabkot': kabkot,
-                'alamat': alamat,
-                'ketua': ketua,
-                'no_hp': no_hp,
-                'akreditasi': akreditasi,
-                'dalam_lksa': dalam_lksa,
-                'luar_lksa': luar_lksa,
-                'total_anak': total_anak
-            },
-            success: function(res) {
-                alert(res.message);
-                jQuery('#modalTambahDataLksa').modal('hide');
-                if (res.status == 'success') {
-                    get_datatable_lksa();
-                    jQuery('#wrap-loading').hide();
-                }
+        var lampiran = jQuery('#lampiran')[0].files[0];
+        if (id_data == '') {
+            if (typeof lampiran == 'undefined') {
+                return alert('Upload file lampiran dulu!');
             }
-        });
+        }    
+    let tempData = new FormData();
+        tempData.append('action', 'tambah_data_lksa');
+        tempData.append('api_key', '<?php echo $api_key; ?>');
+        tempData.append('id', id_data);
+        tempData.append('nama', nama);
+        tempData.append('tahun_anggaran', tahun_anggaran);
+        tempData.append('kabkot', kabkot);
+        tempData.append('alamat', alamat);
+        tempData.append('ketua', ketua);
+        tempData.append('no_hp', no_hp);
+        tempData.append('akreditasi', akreditasi);
+        tempData.append('dalam_lksa', dalam_lksa);
+        tempData.append('luar_lksa', luar_lksa);
+        tempData.append('total_anak', total_anak);
+   
+    if (typeof lampiran != 'undefined') {
+            tempData.append('lampiran', lampiran);
     }
+    tempData.append('lampiran', lampiran);
+
+    jQuery('#wrap-loading').show();
+    jQuery.ajax({
+        method: 'post',
+        url: '<?php echo admin_url('admin-ajax.php'); ?>',
+        dataType: 'json',
+        data: tempData,
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: function(res) {
+            alert(res.message);
+            if (res.status == 'success') {
+                jQuery('#modalTambahDataDisabilitas').modal('hide');
+                get_data_disabilitas();
+            }   
+            jQuery('#wrap-loading').hide();
+        }
+    });
+}
 </script>
