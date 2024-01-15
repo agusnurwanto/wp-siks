@@ -428,8 +428,8 @@ function submitDataODGJ(){
         success: function(res) {
             alert(res.message);
             if (res.status == 'success') {
-                jQuery('#modalTambahDataDisabilitas').modal('hide');
-                get_data_disabilitas();
+                jQuery('#modalTambahDataodgj').modal('hide');
+                get_data_odgj();
             }   
             jQuery('#wrap-loading').hide();
         }

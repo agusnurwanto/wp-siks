@@ -38,6 +38,7 @@ $url = admin_url('admin-ajax.php');
                     <th class="text-center">Anak Dalam LKSA</th>
                     <th class="text-center">Anak Luar LKSA</th>
                     <th class="text-center">Total Anak LKSA</th>
+                    <th class="text-center">Lampiran</th>
                     <th class="text-center">Aksi</th>
                 </tr>
             </thead>
@@ -331,8 +332,8 @@ $url = admin_url('admin-ajax.php');
         success: function(res) {
             alert(res.message);
             if (res.status == 'success') {
-                jQuery('#modalTambahDataDisabilitas').modal('hide');
-                get_data_disabilitas();
+                jQuery('#modalTambahDataLksa').modal('hide');
+                get_data_lksa();
             }   
             jQuery('#wrap-loading').hide();
         }

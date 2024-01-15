@@ -428,7 +428,7 @@ function submitDataP3KE(){
         success: function(res) {
             alert(res.message);
             if (res.status == 'success') {
-                jQuery('#modalTambahDataDisabilitas').modal('hide');
+                jQuery('#modalTambahDataP3KE').modal('hide');
                 get_data_p3ke();
             }   
             jQuery('#wrap-loading').hide();

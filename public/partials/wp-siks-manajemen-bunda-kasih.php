@@ -334,8 +334,8 @@ function submitDataBundaKasih(){
             if (res.status == 'success') {
                 jQuery('#modalTambahDataBundaKasih').modal('hide');
                 get_data_bunda_kasih();
-            }   
             jQuery('#wrap-loading').hide();
+            }   
         }
     });
 }
