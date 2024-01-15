@@ -2804,6 +2804,7 @@ class Wp_Siks_Public
                             $wpdb->insert('data_lksa_siks', $data);
                         }
                     }
+                }
             } else {
                 $ret['status']  = 'error';
                 $ret['message'] = 'Api key tidak ditemukan!';
@@ -3046,6 +3047,7 @@ class Wp_Siks_Public
                             $wpdb->insert('data_anak_terlantar_siks', $data);
                         }
                     }
+                }
             } else {
                 $ret['status']  = 'error';
                 $ret['message'] = 'Api key tidak ditemukan!';
