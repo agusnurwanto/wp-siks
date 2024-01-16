@@ -1502,7 +1502,7 @@ class Wp_Siks_Public
 
 			foreach ($queryRecords as $recKey => $recVal) {
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
-				$btn .= '<a class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+				$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/disabilitas/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
 			}
@@ -1862,7 +1862,7 @@ class Wp_Siks_Public
 
 			foreach ($queryRecords as $recKey => $recVal) {
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
-				$btn .= '<a class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+				$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/lansia/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
 			}
@@ -2105,7 +2105,7 @@ class Wp_Siks_Public
 
 			foreach ($queryRecords as $recKey => $recVal) {
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
-				$btn .= '<a class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+				$btn .= '<a style="margin-left: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/bunda_kasih/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
 			}
@@ -2378,7 +2378,7 @@ class Wp_Siks_Public
 
 			foreach ($queryRecords as $recKey => $recVal) {
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
-				$btn .= '<a class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+				$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/odgj/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
 			}
@@ -2641,7 +2641,7 @@ class Wp_Siks_Public
 
 			foreach ($queryRecords as $recKey => $recVal) {
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
-				$btn .= '<a class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+				$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/lksa/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
 			}
@@ -2841,7 +2841,7 @@ class Wp_Siks_Public
 				11 => 'kecamatan',
 				12 => 'desa_kelurahan',
 				13 => 'alamat',
-				13 => 'file_lampiran',
+				14 => 'file_lampiran',
 			);
 			$where = $sqlTot = $sqlRec = "";
 
@@ -2876,7 +2876,7 @@ class Wp_Siks_Public
 
 			foreach ($queryRecords as $recKey => $recVal) {
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
-				$btn .= '<a class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+				$btn .= '<a style="margin-left: 10px;" style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/anak_terlantar/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
 			}
@@ -3310,7 +3310,7 @@ class Wp_Siks_Public
 
 			foreach ($queryRecords as $recKey => $recVal) {
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
-				$btn .= '<a class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+				$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/p3ke/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
 			}

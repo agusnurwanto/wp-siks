@@ -156,6 +156,7 @@ $url = admin_url('admin-ajax.php');
 <script>
 jQuery(document).ready(function() {
     get_data_lansia();
+        window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/lansia/'; ?>";
 });
 
 function get_data_lansia() {
@@ -371,7 +372,6 @@ function tambah_data_lansia() {
     jQuery('#keterangan_lainnya').val('').show();
     jQuery('#tahun_anggaran').val('').show();
     jQuery('#lampiran').html('');
-
     jQuery('#file_lampiran_existing').hide();
     jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
     jQuery('#modalTambahDataLansia').modal('show');

@@ -131,6 +131,7 @@ $url = admin_url('admin-ajax.php');
 <script>
 jQuery(document).ready(function() {
     get_data_odgj();
+        window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/odgj/'; ?>";
 });
 
 function get_data_odgj() {
@@ -428,7 +429,7 @@ function submitDataODGJ(){
         success: function(res) {
             alert(res.message);
             if (res.status == 'success') {
-                jQuery('#modalTambahDataodgj').modal('hide');
+                jQuery('#modalTambahDataODGJ').modal('hide');
                 get_data_odgj();
             }   
             jQuery('#wrap-loading').hide();

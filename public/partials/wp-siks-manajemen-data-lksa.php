@@ -115,6 +115,7 @@ $url = admin_url('admin-ajax.php');
 <script>
     jQuery(document).ready(function() {
         get_datatable_lksa();
+        window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/lksa/'; ?>";
 
         function hitungTotalAnak() {
             let dalamLksa = parseInt(jQuery('#dalam_lksa').val()) || 0;

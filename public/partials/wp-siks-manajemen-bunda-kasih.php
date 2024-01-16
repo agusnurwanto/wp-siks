@@ -101,6 +101,7 @@ $url = admin_url('admin-ajax.php');
 <script>
 jQuery(document).ready(function() {
     get_data_bunda_kasih();
+        window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/bunda_kasih/'; ?>";
 });
 
 function get_data_bunda_kasih() {

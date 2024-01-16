@@ -151,6 +151,7 @@ $url = admin_url('admin-ajax.php');
 <script>
     jQuery(document).ready(function() {
         get_data_anak_terlantar();
+        window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/anak_terlantar/'; ?>";
     });
 
     function get_data_anak_terlantar() {

@@ -131,6 +131,7 @@ $url = admin_url('admin-ajax.php');
 <script>
 jQuery(document).ready(function() {
     get_data_p3ke();
+        window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/p3ke/'; ?>";
 });
 
 function get_data_p3ke() {
