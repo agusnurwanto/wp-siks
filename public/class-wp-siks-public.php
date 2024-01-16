@@ -125,6 +125,15 @@ class Wp_Siks_Public
 		}
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-cek-bansos.php';
 	}
+	
+	public function disabilitas_per_desa()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-disabilitas-per-desa.php';
+	}
 
 	public function management_data_lansia()
 	{
@@ -1477,6 +1486,10 @@ class Wp_Siks_Public
 				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
 				$where .= " AND ( nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
 				$where .= " OR nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+			}
+
+			if(!empty($params['desa'])){
+				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
 			}
 
 			// getting total number records without any search

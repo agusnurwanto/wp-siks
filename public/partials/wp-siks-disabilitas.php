@@ -72,26 +72,39 @@ foreach ($maps_all as $i => $desa) {
         $html .= '
             <tr>
                 <td><b>' . $k . '</b></td>
-                <td>' . $v . '</td>
+                <td>' . $v . '</td></a>
             </tr>
         ';
     }
     $html .= '</table>';
+    $link_per_desa = '';
+    if (is_user_logged_in()) {
+        $link_per_desa = add_query_arg('desa', urlencode($desa['data']['desa']), home_url('/disabilitas-per-desa/'));
+    }
     $maps_all[$i]['html'] = $html;
 
     $search = $this->getSearchLocation($desa['data']);
     $body .= "
-        <tr>
-            <td class='text-center'>" . $desa['data']['id2012'] . "</td>
-            <td class='text-center'>" . $desa['data']['provinsi'] . "</td>
-            <td class='text-center'>" . $desa['data']['kab_kot'] . "</td>
-            <td class='text-center'>" . $desa['data']['kecamatan'] . "</td>
-            <td class='text-center'>" . $desa['data']['desa'] . "</td>
-            <td class='text-center'>" . $total_disabilitas . "</td>
-            <td>" . implode('<hr>', $total_jenis_disabilitas) . "</td>
-            <td class='text-center'><a style='margin-bottom: 5px;' onclick='cari_alamat_siks(\"" . $search . "\"); return false;' href='#' class='btn btn-danger'>Map</a></td>
-        </tr>
-    ";
+    <tr>
+        <td class='text-center'>" . $desa['data']['id2012'] . "</td>
+        <td class='text-center'>" . $desa['data']['provinsi'] . "</td>
+        <td class='text-center'>" . $desa['data']['kab_kot'] . "</td>
+        <td class='text-center'>" . $desa['data']['kecamatan'] . "</td>
+        <td class='text-center'>";
+
+    // Tampilkan link hanya jika pengguna sudah login
+    if (!empty($link_per_desa)) {
+        $body .= "<a href='" . esc_url($link_per_desa) . "'>" . esc_html($desa['data']['desa']) . "</a>";
+    } else {
+        $body .= esc_html($desa['data']['desa']);
+    }
+
+    $body .= "</td>
+        <td class='text-center'>" . $total_disabilitas . "</td>
+        <td>" . implode('<hr>', $total_jenis_disabilitas) . "</td>
+        <td class='text-center'><a style='margin-bottom: 5px;' onclick='cari_alamat_siks(\"" . $search . "\"); return false;' href='#' class='btn btn-danger'>Map</a></td>
+    </tr>
+";
     $total_all += $total_disabilitas;
 }
 
@@ -114,38 +127,38 @@ foreach ($total_all_jenis as $key => $data) {
         <li>Warna merah berarti jumlah Disabilitas diatas 40 orang</li>
     </ol>
     <h1 class="text-center">Tabel Data Disabilitas<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
-    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_disabilitas?></h3>
-        <div style="width: 100%; overflow: auto; height: 100vh;">
-            <table class="table table-bordered" id="table-data">
-                <thead>
-                    <tr>
-                        <th class='text-center'>Kode Desa</th>
-                        <th class='text-center'>Provinsi</th>
-                        <th class='text-center'>Kabupaten/Kota</th>
-                        <th class='text-center'>Kecamatan</th>
-                        <th class='text-center'>Desa</th>
-                        <th class='text-center'>Total Disabilitas</th>
-                        <th class='text-center'>Jenis Disabilitas</th>
-                        <th class='text-center'>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php echo $body; ?>
-                </tbody>
-            </table>
-        </div><br>
-        <h2 class="text-center">Tabel Total Data <br>per Jenis Disabilitas</h2>
-        <table class="table table-bordered" id="table-data-jenis">
+    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_disabilitas ?></h3>
+    <div style="width: 100%; overflow: auto; height: 100vh;">
+        <table class="table table-bordered" id="table-data">
             <thead>
                 <tr>
-                    <th class="text-center">Jenis Disabilitas</th>
-                    <th class="text-center">Total</th>
+                    <th class='text-center'>Kode Desa</th>
+                    <th class='text-center'>Provinsi</th>
+                    <th class='text-center'>Kabupaten/Kota</th>
+                    <th class='text-center'>Kecamatan</th>
+                    <th class='text-center'>Desa</th>
+                    <th class='text-center'>Total Disabilitas</th>
+                    <th class='text-center'>Jenis Disabilitas</th>
+                    <th class='text-center'>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                <?php echo $body2; ?>
+                <?php echo $body; ?>
             </tbody>
         </table>
+    </div><br>
+    <h2 class="text-center">Tabel Total Data <br>per Jenis Disabilitas</h2>
+    <table class="table table-bordered" id="table-data-jenis">
+        <thead>
+            <tr>
+                <th class="text-center">Jenis Disabilitas</th>
+                <th class="text-center">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php echo $body2; ?>
+        </tbody>
+    </table>
 </div>
 </div>
 <script type="text/javascript">
