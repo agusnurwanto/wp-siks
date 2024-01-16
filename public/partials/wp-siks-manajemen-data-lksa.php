@@ -276,7 +276,7 @@ $url = admin_url('admin-ajax.php');
         jQuery('#dalam_lksa').val('').show();
         jQuery('#luar_lksa').val('').show();
         jQuery('#total_anak').val('').show();
-        jQuery('#lampiran').html('');
+        jQuery('#lampiran').val('').show();
 
         jQuery('#file_lampiran_existing').hide();
         jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();

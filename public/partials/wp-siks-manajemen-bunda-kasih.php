@@ -249,8 +249,8 @@ function tambah_data_bunda_kasih() {
     jQuery('#kabkot').val('').show();
     jQuery('#kk').val('').show();
     jQuery('#rt_rw').val('').show();
-    jQuery('#tahun_anggaran').val('').show()
-    jQuery('#lampiran').html('');
+    jQuery('#tahun_anggaran').val('').show();
+    jQuery('#lampiran').val('').show();
 
     jQuery('#file_lampiran_existing').hide();
     jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();

@@ -316,7 +316,7 @@ function tambah_data_odgj() {
     jQuery('#pengobatan').val('').show();
     jQuery('#keterangan').val('').show();
     jQuery('#tahun_anggaran').val('').show();
-    jQuery('#lampiran').html('');
+    jQuery('#lampiran').val('').show();
 
     jQuery('#file_lampiran_existing').hide();
     jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();

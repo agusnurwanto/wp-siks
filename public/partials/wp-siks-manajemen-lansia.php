@@ -371,7 +371,7 @@ function tambah_data_lansia() {
     jQuery('#rekomendasi_pendata').val('').show();
     jQuery('#keterangan_lainnya').val('').show();
     jQuery('#tahun_anggaran').val('').show();
-    jQuery('#lampiran').html('');
+    jQuery('#lampiran').val('').show();
     jQuery('#file_lampiran_existing').hide();
     jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
     jQuery('#modalTambahDataLansia').modal('show');

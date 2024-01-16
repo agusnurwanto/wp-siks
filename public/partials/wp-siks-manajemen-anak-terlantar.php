@@ -256,8 +256,8 @@ $url = admin_url('admin-ajax.php');
         jQuery('#alamat').val('').show()
         jQuery('#kabkot').val('').show()
         jQuery('#desa_kelurahan').val('').show()        
-        jQuery('#kecamatan').val('').show()
-        jQuery('#lampiran').html('');
+        jQuery('#kecamatan').val('').show();
+        jQuery('#lampiran').val('').show();
 
         jQuery('#file_lampiran_existing').hide();
         jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();

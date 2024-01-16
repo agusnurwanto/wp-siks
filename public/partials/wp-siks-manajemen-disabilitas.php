@@ -1062,7 +1062,7 @@ function tambah_data_disabilitas() {
     jQuery('#nomor_hp').val('').show();
     jQuery('#kelayakan').val('').show();
     jQuery('#tahun_anggaran').val('').show();
-    jQuery('#lampiran').html('');
+    jQuery('#lampiran').val('').show();
 
     jQuery('#file_lampiran_existing').hide();
     jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
@@ -1516,4 +1516,5 @@ if (id_data == '') {
     });
 }
 </script>
+<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 
