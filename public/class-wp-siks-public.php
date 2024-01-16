@@ -1948,33 +1948,63 @@ class Wp_Siks_Public
 		);
 		if (!empty($_POST)) {
 			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
-				if ($ret['status'] != 'error' && !empty($_POST['nama'])) {
-					$nama = $_POST['nama'];
+				if ($ret['status'] != 'error' && empty($_POST['nama'])) {
+                    $ret['status'] = 'error';
+                    $ret['message'] = 'Nama tidak boleh kosong!';
 				}
-				if ($ret['status'] != 'error' && !empty($_POST['provinsi'])) {
+				if ($ret['status'] != 'error' && empty($_POST['provinsi'])) {
+                    $ret['status'] = 'error';
+                    $ret['message'] = 'Provinsi tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['kabkot'])) {
+                    $ret['status'] = 'error';
+                    $ret['message'] = 'Kabupaten / Kota tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['kecamatan'])) {
+                    $ret['status'] = 'error';
+                    $ret['message'] = 'Kecamatan tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['desa'])) {
+                    $ret['status'] = 'error';
+                    $ret['message'] = 'Desa tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['rt_rw'])) {
+                    $ret['status'] = 'error';
+                    $ret['message'] = 'RT / RW tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['nik'])) {
+                    $ret['status'] = 'error';
+                    $ret['message'] = 'NIK tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['kk'])) {
+                    $ret['status'] = 'error';
+                    $ret['message'] = 'KK tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['tahun_anggaran'])) {
+                    $ret['status'] = 'error';
+                    $ret['message'] = 'Tahun Anggaran tidak boleh kosong!';
+				} 
+                if (empty($_POST['id_data'])) {
+                    if ($ret['status'] != 'error' && !empty($_FILES['lampiran'])) {
+                        $lampiran = $_FILES['lampiran'];
+                    } elseif ($ret['status'] != 'error') {
+                        $ret['status'] = 'error';
+                        $ret['message'] = 'Lampiran tidak boleh kosong!';
+                    }
+                }
+
+                if ($ret['status'] != 'error') {
 					$provinsi = $_POST['provinsi'];
-				}
-				if ($ret['status'] != 'error' && !empty($_POST['kabkot'])) {
 					$kabkot = $_POST['kabkot'];
-				}
-				if ($ret['status'] != 'error' && !empty($_POST['kecamatan'])) {
 					$kecamatan = $_POST['kecamatan'];
-				}
-				if ($ret['status'] != 'error' && !empty($_POST['desa'])) {
 					$desa = $_POST['desa'];
-				}
-				if ($ret['status'] != 'error' && !empty($_POST['rt_rw'])) {
 					$rt_rw = $_POST['rt_rw'];
-				}
-				if ($ret['status'] != 'error' && !empty($_POST['nik'])) {
 					$nik = $_POST['nik'];
-				}
-				if ($ret['status'] != 'error' && !empty($_POST['kk'])) {
 					$kk = $_POST['kk'];
-				}
-				if ($ret['status'] != 'error' && !empty($_POST['tahun_anggaran'])) {
 					$tahun_anggaran = $_POST['tahun_anggaran'];
-				}
+					$nama = $_POST['nama'];
+                    $latitude = $_POST['lat'];
+                    $longitude = $_POST['lng'];
 					$data = array(
 						'nama' => $nama,
 						'provinsi' => $provinsi,
@@ -1985,59 +2015,66 @@ class Wp_Siks_Public
 						'rt_rw' => $rt_rw,
 						'kk' => $kk,
 						'tahun_anggaran' => $tahun_anggaran,
+						'lng' => $longitude,
+						'lat' => $latitude,
 						'active' => 1,
 						'update_at' => current_time('mysql')
 					);
-                    $path = SIKS_PLUGIN_PATH . 'public/media/bunda_kasih/';
- 
-                    $cek_file = array();
-                    if (
-                        $ret['status'] != 'error'
-                        && !empty($_FILES['lampiran'])
-                    ) {
-                        $upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
-                        if ($upload['status'] == true) {
-                            $data['file_lampiran'] = $upload['filename'];
-                            $cek_file['file_lampiran'] = $data['file_lampiran'];
-                        } else {
-                            $ret['status'] = 'error';
-                            $ret['message'] = $upload['message'];
-                        }
+                    if (empty($_POST['id_data'])) {
+                        $data['status'] = 0; // 0 berati belum dicek
                     }
 
-                    if ($ret['status'] == 'error') {
-                        // hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
-                        foreach ($cek_file as $newfile) {
-                            if (is_file($path . $newfile)) {
-                                unlink($path . $newfile);
-                            }
-                        }
-                    }
+	                $path = SIKS_PLUGIN_PATH . 'public/media/bunda_kasih/';
 
-                    if ($ret['status'] != 'error') {
-                        if (!empty($_POST['id_data'])) {
-                            $file_lama = $wpdb->get_row($wpdb->prepare('
-                                SELECT
-                                    file_lampiran
-                                FROM data_bunda_kasih_siks
-                                WHERE id=%d
-                            ', $_POST['id_data']), ARRAY_A);
+	                $cek_file = array();
+	                if (
+	                    $ret['status'] != 'error'
+	                    && !empty($_FILES['lampiran'])
+	                ) {
+	                    $upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
+	                    if ($upload['status'] == true) {
+	                        $data['file_lampiran'] = $upload['filename'];
+	                        $cek_file['file_lampiran'] = $data['file_lampiran'];
+	                    } else {
+	                        $ret['status'] = 'error';
+	                        $ret['message'] = $upload['message'];
+	                    }
+	                }
 
-                            if (
-                                $file_lama['file_lampiran'] != $data['file_lampiran']
-                                && is_file($path . $file_lama['file_lampiran'])
-                            ) {
-                                unlink($path . $file_lama['file_lampiran']);
-                            }
-                            // print_r($file_lama); die($wpdb->last_query);
-                            $wpdb->update('data_bunda_kasih_siks', $data, array(
-                                'id' => $_POST['id_data']
-                            ));
-                            $ret['message'] = 'Berhasil update data!';
-                        } else {
-                            $wpdb->insert('data_bunda_kasih_siks', $data);
-                        }
-                    }
+	                if ($ret['status'] == 'error') {
+	                    // hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
+	                    foreach ($cek_file as $newfile) {
+	                        if (is_file($path . $newfile)) {
+	                            unlink($path . $newfile);
+	                        }
+	                    }
+	                }
+
+	                if ($ret['status'] != 'error') {
+	                    if (!empty($_POST['id_data'])) {
+	                        $file_lama = $wpdb->get_row($wpdb->prepare('
+	                            SELECT
+	                                file_lampiran
+	                            FROM data_bunda_kasih_siks
+	                            WHERE id=%d
+	                        ', $_POST['id_data']), ARRAY_A);
+
+	                        if (
+	                            $file_lama['file_lampiran'] != $data['file_lampiran']
+	                            && is_file($path . $file_lama['file_lampiran'])
+	                        ) {
+	                            unlink($path . $file_lama['file_lampiran']);
+	                        }
+	                        // print_r($file_lama); die($wpdb->last_query);
+	                        $wpdb->update('data_bunda_kasih_siks', $data, array(
+	                            'id' => $_POST['id_data']
+	                        ));
+	                        $ret['message'] = 'Berhasil update data!';
+	                    } else {
+	                        $wpdb->insert('data_bunda_kasih_siks', $data);
+	                    }
+	                }
+	            }
             } else {
                 $ret['status']  = 'error';
                 $ret['message'] = 'Api key tidak ditemukan!';
@@ -2071,7 +2108,9 @@ class Wp_Siks_Public
 				7 => 'rt_rw',
 				8  => 'file_lampiran',
 				9  => 'tahun_anggaran',
-				10  => 'id'
+				10  => 'lat',
+				11  => 'lng',
+				12  => 'id'
 			);
 			$where = $sqlTot = $sqlRec = "";
 

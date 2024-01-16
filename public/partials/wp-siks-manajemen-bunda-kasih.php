@@ -1,6 +1,8 @@
 <?php
 $api_key = get_option(SIKS_APIKEY);
 $url = admin_url('admin-ajax.php');
+$center = $this->get_center();
+$maps_all = $this->get_polygon();
 
 ?>
 <style type="text/css">
@@ -25,8 +27,8 @@ $url = admin_url('admin-ajax.php');
                     <th class="text-center">Provinsi</th>
                     <th class="text-center">Kabupaten / Kota</th>
                     <th class="text-center">Kecamatan</th>
-                    <th class="text-center">Desa</th>>
-                    <th class="text-center">RT / RW</th>>
+                    <th class="text-center">Desa</th>
+                    <th class="text-center">RT / RW</th>
                     <th class="text-center">Lampiran</th>
                     <th class="text-center">Tahun Anggaran</th>
                     <th class="text-center" style="width: 100px;">Aksi</th>
@@ -38,7 +40,7 @@ $url = admin_url('admin-ajax.php');
     </div>
 </div>
 <div class="modal fade mt-4" id="modalTambahDataBundaKasih" tabindex="-1" role="dialog" aria-labelledby="modalTambahDataBundaKasihLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalTambahDataBundaKasihLabel">Tambah Data Bunda Kasih</h5>
@@ -84,6 +86,22 @@ $url = admin_url('admin-ajax.php');
                     <label>Tahun Anggaran</label>
                     <input type="text" class="form-control" id="tahun_anggaran">
                 </div>
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">Koordinat Latitude</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="latitude" placeholder="0" disabled>
+                    </div>
+                    <label class="col-md-2 col-form-label">Koordinat Longitude</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="longitude" placeholder="0" disabled>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-2">Map</label>
+                    <div class="col-md-10">
+                        <div style="height:600px; width: 100%;" id="map-canvas-siks"></div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="">Lampiran</label>
                     <input type="file" name="file" class="form-control-file" id="lampiran" accept="application/pdf, .png, .jpg, .jpeg">
@@ -98,10 +116,13 @@ $url = admin_url('admin-ajax.php');
         </div>
     </div>
 </div>
+<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
+window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/bunda_kasih/'; ?>";
+window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
+window.maps_center_siks = <?php echo json_encode($center); ?>;
 jQuery(document).ready(function() {
     get_data_bunda_kasih();
-        window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/bunda_kasih/'; ?>";
 });
 
 function get_data_bunda_kasih() {
@@ -181,29 +202,29 @@ function get_data_bunda_kasih() {
 }
 
 function hapus_data(id){
-        let confirmDelete = confirm("Apakah anda yakin akan menghapus data ini?");
-        if(confirmDelete){
-            jQuery('#wrap-loading').show();
-            jQuery.ajax({
-                url: '<?php echo admin_url('admin-ajax.php'); ?>',
-                type:'post',
-                data:{
-                    'action' : 'hapus_data_bunda_kasih_by_id',
-                    'api_key': '<?php echo get_option(SIKS_APIKEY); ?>',
-                    'id'     : id
-                },
-                dataType: 'json',
-                success:function(response){
-                    jQuery('#wrap-loading').hide();
-                    if(response.status == 'success'){
-                        get_data_bunda_kasih(); 
-                    }else{
-                        alert(`GAGAL! \n${response.message}`);
-                    }
+    let confirmDelete = confirm("Apakah anda yakin akan menghapus data ini?");
+    if(confirmDelete){
+        jQuery('#wrap-loading').show();
+        jQuery.ajax({
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+            type:'post',
+            data:{
+                'action' : 'hapus_data_bunda_kasih_by_id',
+                'api_key': '<?php echo get_option(SIKS_APIKEY); ?>',
+                'id'     : id
+            },
+            dataType: 'json',
+            success:function(response){
+                jQuery('#wrap-loading').hide();
+                if(response.status == 'success'){
+                    get_data_bunda_kasih(); 
+                }else{
+                    alert(`GAGAL! \n${response.message}`);
                 }
-            });
-        }
+            }
+        });
     }
+}
 
 function edit_data(_id){
     jQuery('#wrap-loading').show();
@@ -218,6 +239,43 @@ function edit_data(_id){
         },
         success: function(res){
             if(res.status == 'success'){
+
+                // Lokasi Center Map
+                if(
+                    !res.data.lat
+                    || !res.data.lng
+                ){
+                    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+                }else{
+                    var lokasi_center = new google.maps.LatLng(res.data.lat, res.data.lng);
+                }
+
+                if(typeof evm != 'undefined'){
+                    evm.setMap(null);
+                }
+
+                // Menampilkan Marker
+                window.evm = new google.maps.Marker({
+                    position: lokasi_center,
+                    map,
+                    draggable: true,
+                    title: 'Lokasi Map'
+                });
+
+                window.infoWindow = new google.maps.InfoWindow({
+                    content: JSON.stringify(res.data)
+                });
+
+                google.maps.event.addListener(evm, 'click', function(event) {
+                    infoWindow.setPosition(event.latLng);
+                    infoWindow.open(map);
+                });
+
+                google.maps.event.addListener(evm, 'mouseup', function(event) {
+                    jQuery('input[name="latitude"]').val(event.latLng.lat());
+                    jQuery('input[name="longitude"]').val(event.latLng.lng());
+                });
+
                 jQuery('#id_data').val(res.data.id);
                 jQuery('#nama').val(res.data.nama);
                 jQuery('#kecamatan').val(res.data.kecamatan);
@@ -250,6 +308,8 @@ function tambah_data_bunda_kasih() {
     jQuery('#kk').val('').show();
     jQuery('#rt_rw').val('').show();
     jQuery('#tahun_anggaran').val('').show();
+    jQuery('#latitude').val('').show();
+    jQuery('#longitude').val('').show();
     jQuery('#lampiran').val('').show();
 
     jQuery('#file_lampiran_existing').hide();
@@ -315,6 +375,8 @@ function submitDataBundaKasih(){
         tempData.append('kk', kk);
         tempData.append('rt_rw', rt_rw);
         tempData.append('tahun_anggaran', tahun_anggaran);
+        tempData.append('lat',jQuery('input[name="latitude"]').val());
+        tempData.append('lng',jQuery('input[name="longitude"]').val());
    
     if (typeof lampiran != 'undefined') {
             tempData.append('lampiran', lampiran);
