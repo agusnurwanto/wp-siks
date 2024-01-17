@@ -74,6 +74,10 @@ foreach ($maps_all as $i => $desa) {
         ';
     }
     $html .= '</table>';
+    $link_per_desa = '';
+    if (is_user_logged_in()) {
+        $link_per_desa = add_query_arg('desa', urlencode($desa['data']['desa']), home_url('/lansia-per-desa/'));
+    }
     $maps_all[$i]['html'] = $html;
 
     $search = $this->getSearchLocation($desa['data']);
@@ -83,7 +87,13 @@ foreach ($maps_all as $i => $desa) {
             <td class='text-center'>" . $desa['data']['provinsi'] . "</td>
             <td class='text-center'>" . $desa['data']['kab_kot'] . "</td>
             <td class='text-center'>" . $desa['data']['kecamatan'] . "</td>
-            <td class='text-center'>" . $desa['data']['desa'] . "</td>
+            <td class='text-center'>";
+    if (!empty($link_per_desa)) {
+        $body .= "<a href='" . esc_url($link_per_desa) . "'>" . esc_html($desa['data']['desa']) . "</a>";
+    } else {
+        $body .= esc_html($desa['data']['desa']);
+    }
+    $body .= "</td>
             <td class='text-center'>" . $total_lansia . "</td>
             <td class='text-center'>" . $total_bunda_kasih . "</td>
             <td class='text-center'><a style='margin-bottom: 5px;' onclick='cari_alamat_siks(\"" . $search . "\"); return false;' href='#' class='btn btn-danger'>Map</a></td>

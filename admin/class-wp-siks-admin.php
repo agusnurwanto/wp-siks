@@ -155,6 +155,22 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
+		
+		$anak_terlantar_per_desa = $this->functions->generatePage(array(
+			'nama_page' => 'Anak Terlantar Per Desa',
+			'content' => '[anak_terlantar_per_desa]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+		
+		$lansia_per_desa = $this->functions->generatePage(array(
+			'nama_page' => 'Lansia Per Desa',
+			'content' => '[lansia_per_desa]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
 
 		$data_dtks = $this->functions->generatePage(array(
 			'nama_page' => 'Data DTKS SIKS',
@@ -297,7 +313,6 @@ class Wp_Siks_Admin
 	            		<li><a target="_blank" href="' . $data_gepeng['url'] . '">' . $data_gepeng['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_bunda_kasih['url'] . '">' . $data_bunda_kasih['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_p3ke['url'] . '">' . $data_p3ke['title'] . '</a></li>
-	            		<li><a target="_blank" href="' . $disabilitas_per_desa['url'] . '">' . $disabilitas_per_desa['title'] . '</a></li>
 	            	</ol>'),
 				Field::make('text', 'crb_apikey_siks', 'API KEY')
 					->set_default_value($this->functions->generateRandomString())
