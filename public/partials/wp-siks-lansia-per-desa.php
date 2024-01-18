@@ -97,11 +97,11 @@ if (empty($nama_desa) && is_user_logged_in()) {
                         className: "text-center"
                     },
                     {
-                        "data": 'desa',
+                        "data": 'kecamatan',
                         className: "text-center"
                     },
                     {
-                        "data": 'kecamatan',
+                        "data": 'desa',
                         className: "text-center"
                     },
                     {
