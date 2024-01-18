@@ -21,12 +21,12 @@
  * @author     Agus Nurwanto <agusnurwantomuslim@gmail.com>
  */
 
-require_once SIKS_PLUGIN_PATH."/public/trait/CustomTrait.php";
+require_once SIKS_PLUGIN_PATH . "/public/trait/CustomTrait.php";
 
 class Wp_Siks_Public
 {
 	use CustomTraitSiks;
-	
+
 	/**
 	 * The ID of this plugin.
 	 *
@@ -125,7 +125,7 @@ class Wp_Siks_Public
 		}
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-cek-bansos.php';
 	}
-	
+
 	public function disabilitas_per_desa()
 	{
 		// untuk disable render shortcode di halaman edit page/post
@@ -133,6 +133,33 @@ class Wp_Siks_Public
 			return '';
 		}
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-disabilitas-per-desa.php';
+	}
+
+	public function anak_terlantar_per_desa()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-anak-terlantar-per-desa.php';
+	}
+
+	public function p3ke_per_desa()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-p3ke-per-desa.php';
+	}
+
+	public function lansia_per_desa()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-lansia-per-desa.php';
 	}
 
 	public function management_data_lansia()
@@ -1489,41 +1516,40 @@ class Wp_Siks_Public
                         'update_at' => current_time('mysql')
                     );
 
-                    $path = SIKS_PLUGIN_PATH . 'public/media/disabilitas/';
- 
-                    $cek_file = array();
-                    if (
-                        $ret['status'] != 'error'
-                        && !empty($_FILES['lampiran'])
-                    ) {
-                        $upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
-                        if ($upload['status'] == true) {
-                            $data['file_lampiran'] = $upload['filename'];
-                            $cek_file['file_lampiran'] = $data['file_lampiran'];
-                        } else {
-                            $ret['status'] = 'error';
-                            $ret['message'] = $upload['message'];
-                        }
-                    }
+					$path = SIKS_PLUGIN_PATH . 'public/media/disabilitas/';
 
-                    if ($ret['status'] == 'error') {
-                        // hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
-                        foreach ($cek_file as $newfile) {
-                            if (is_file($path . $newfile)) {
-                                unlink($path . $newfile);
-                            }
-                        }
-                    }
+					$cek_file = array();
+					if (
+						$ret['status'] != 'error'
+						&& !empty($_FILES['lampiran'])
+					) {
+						$upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
+						if ($upload['status'] == true) {
+							$data['file_lampiran'] = $upload['filename'];
+							$cek_file['file_lampiran'] = $data['file_lampiran'];
+						} else {
+							$ret['status'] = 'error';
+							$ret['message'] = $upload['message'];
+						}
+					}
 
-                    if ($ret['status'] != 'error') {
-                        if (!empty($_POST['id_data'])) {
-                            $file_lama = $wpdb->get_row($wpdb->prepare('
+					if ($ret['status'] == 'error') {
+						// hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
+						foreach ($cek_file as $newfile) {
+							if (is_file($path . $newfile)) {
+								unlink($path . $newfile);
+							}
+						}
+					}
+
+					if ($ret['status'] != 'error') {
+						if (!empty($_POST['id_data'])) {
+							$file_lama = $wpdb->get_row($wpdb->prepare('
                                 SELECT
                                     file_lampiran
                                 FROM data_disabilitas_siks
                                 WHERE id=%d
                             ', $_POST['id_data']), ARRAY_A);
-
                             if (
                                 $file_lama['file_lampiran'] != $data['file_lampiran']
                                 && is_file($path . $file_lama['file_lampiran'])
@@ -1549,8 +1575,8 @@ class Wp_Siks_Public
             $ret['message'] = 'Format Salah!';
         }
 
-        die(json_encode($ret));
-    }
+		die(json_encode($ret));
+	}
 
 	function get_datatable_disabilitas()
 	{
@@ -1658,7 +1684,7 @@ class Wp_Siks_Public
 				$where .= " OR nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
 			}
 
-			if(!empty($params['desa'])){
+			if (!empty($params['desa'])) {
 				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
 			}
 
@@ -1687,7 +1713,7 @@ class Wp_Siks_Public
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 				$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
-				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/disabilitas/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
+				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/disabilitas/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
 			}
 
 			$json_data = array(
@@ -1926,24 +1952,38 @@ class Wp_Siks_Public
                         }
                     }
 
-                    if ($ret['status'] == 'error') {
-                        // hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
-                        foreach ($cek_file as $newfile) {
-                            if (is_file($path . $newfile)) {
-                                unlink($path . $newfile);
-                            }
-                        }
-                    }
+					$cek_file = array();
+					if (
+						$ret['status'] != 'error'
+						&& !empty($_FILES['lampiran'])
+					) {
+						$upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
+						if ($upload['status'] == true) {
+							$data['file_lampiran'] = $upload['filename'];
+							$cek_file['file_lampiran'] = $data['file_lampiran'];
+						} else {
+							$ret['status'] = 'error';
+							$ret['message'] = $upload['message'];
+						}
+					}
 
-                    if ($ret['status'] != 'error') {
-                        if (!empty($_POST['id_data'])) {
-                            $file_lama = $wpdb->get_row($wpdb->prepare('
+					if ($ret['status'] == 'error') {
+						// hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
+						foreach ($cek_file as $newfile) {
+							if (is_file($path . $newfile)) {
+								unlink($path . $newfile);
+							}
+						}
+					}
+
+					if ($ret['status'] != 'error') {
+						if (!empty($_POST['id_data'])) {
+							$file_lama = $wpdb->get_row($wpdb->prepare('
                                 SELECT
                                     file_lampiran
                                 FROM data_lansia_siks
                                 WHERE id=%d
                             ', $_POST['id_data']), ARRAY_A);
-
                             if (
                                 $file_lama['file_lampiran'] != $data['file_lampiran']
                                 && is_file($path . $file_lama['file_lampiran'])
@@ -1969,8 +2009,8 @@ class Wp_Siks_Public
             $ret['message'] = 'Format Salah!';
         }
 
-        die(json_encode($ret));
-    }
+		die(json_encode($ret));
+	}
 
 	function get_datatable_lansia()
 	{
@@ -2017,6 +2057,10 @@ class Wp_Siks_Public
 				$where .= " OR nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
 			}
 
+			if (!empty($params['desa'])) {
+				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
+			}
+
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_lansia_siks`";
 			$sql = "SELECT " . implode(', ', $columns) . " FROM `data_lansia_siks`";
@@ -2042,7 +2086,7 @@ class Wp_Siks_Public
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 				$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
-				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/lansia/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
+				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/lansia/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
 			}
 
 			$json_data = array(
@@ -2127,51 +2171,51 @@ class Wp_Siks_Public
 		if (!empty($_POST)) {
 			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 				if ($ret['status'] != 'error' && empty($_POST['nama'])) {
-                    $ret['status'] = 'error';
-                    $ret['message'] = 'Nama tidak boleh kosong!';
+					$ret['status'] = 'error';
+					$ret['message'] = 'Nama tidak boleh kosong!';
 				}
 				if ($ret['status'] != 'error' && empty($_POST['provinsi'])) {
-                    $ret['status'] = 'error';
-                    $ret['message'] = 'Provinsi tidak boleh kosong!';
+					$ret['status'] = 'error';
+					$ret['message'] = 'Provinsi tidak boleh kosong!';
 				}
 				if ($ret['status'] != 'error' && empty($_POST['kabkot'])) {
-                    $ret['status'] = 'error';
-                    $ret['message'] = 'Kabupaten / Kota tidak boleh kosong!';
+					$ret['status'] = 'error';
+					$ret['message'] = 'Kabupaten / Kota tidak boleh kosong!';
 				}
 				if ($ret['status'] != 'error' && empty($_POST['kecamatan'])) {
-                    $ret['status'] = 'error';
-                    $ret['message'] = 'Kecamatan tidak boleh kosong!';
+					$ret['status'] = 'error';
+					$ret['message'] = 'Kecamatan tidak boleh kosong!';
 				}
 				if ($ret['status'] != 'error' && empty($_POST['desa'])) {
-                    $ret['status'] = 'error';
-                    $ret['message'] = 'Desa tidak boleh kosong!';
+					$ret['status'] = 'error';
+					$ret['message'] = 'Desa tidak boleh kosong!';
 				}
 				if ($ret['status'] != 'error' && empty($_POST['rt_rw'])) {
-                    $ret['status'] = 'error';
-                    $ret['message'] = 'RT / RW tidak boleh kosong!';
+					$ret['status'] = 'error';
+					$ret['message'] = 'RT / RW tidak boleh kosong!';
 				}
 				if ($ret['status'] != 'error' && empty($_POST['nik'])) {
-                    $ret['status'] = 'error';
-                    $ret['message'] = 'NIK tidak boleh kosong!';
+					$ret['status'] = 'error';
+					$ret['message'] = 'NIK tidak boleh kosong!';
 				}
 				if ($ret['status'] != 'error' && empty($_POST['kk'])) {
-                    $ret['status'] = 'error';
-                    $ret['message'] = 'KK tidak boleh kosong!';
+					$ret['status'] = 'error';
+					$ret['message'] = 'KK tidak boleh kosong!';
 				}
 				if ($ret['status'] != 'error' && empty($_POST['tahun_anggaran'])) {
-                    $ret['status'] = 'error';
-                    $ret['message'] = 'Tahun Anggaran tidak boleh kosong!';
-				} 
-                if (empty($_POST['id_data'])) {
-                    if ($ret['status'] != 'error' && !empty($_FILES['lampiran'])) {
-                        $lampiran = $_FILES['lampiran'];
-                    } elseif ($ret['status'] != 'error') {
-                        $ret['status'] = 'error';
-                        $ret['message'] = 'Lampiran tidak boleh kosong!';
-                    }
-                }
+					$ret['status'] = 'error';
+					$ret['message'] = 'Tahun Anggaran tidak boleh kosong!';
+				}
+				if (empty($_POST['id_data'])) {
+					if ($ret['status'] != 'error' && !empty($_FILES['lampiran'])) {
+						$lampiran = $_FILES['lampiran'];
+					} elseif ($ret['status'] != 'error') {
+						$ret['status'] = 'error';
+						$ret['message'] = 'Lampiran tidak boleh kosong!';
+					}
+				}
 
-                if ($ret['status'] != 'error') {
+				if ($ret['status'] != 'error') {
 					$provinsi = $_POST['provinsi'];
 					$kabkot = $_POST['kabkot'];
 					$kecamatan = $_POST['kecamatan'];
@@ -2181,8 +2225,8 @@ class Wp_Siks_Public
 					$kk = $_POST['kk'];
 					$tahun_anggaran = $_POST['tahun_anggaran'];
 					$nama = $_POST['nama'];
-                    $latitude = $_POST['lat'];
-                    $longitude = $_POST['lng'];
+					$latitude = $_POST['lat'];
+					$longitude = $_POST['lng'];
 					$data = array(
 						'lng' => $longitude,
 						'lat' => $latitude,
@@ -2199,68 +2243,68 @@ class Wp_Siks_Public
 						'update_at' => current_time('mysql')
 					);
 
-	                $path = SIKS_PLUGIN_PATH . 'public/media/bunda_kasih/';
+					$path = SIKS_PLUGIN_PATH . 'public/media/bunda_kasih/';
 
-	                $cek_file = array();
-	                if (
-	                    $ret['status'] != 'error'
-	                    && !empty($_FILES['lampiran'])
-	                ) {
-	                    $upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
-	                    if ($upload['status'] == true) {
-	                        $data['file_lampiran'] = $upload['filename'];
-	                        $cek_file['file_lampiran'] = $data['file_lampiran'];
-	                    } else {
-	                        $ret['status'] = 'error';
-	                        $ret['message'] = $upload['message'];
-	                    }
-	                }
+					$cek_file = array();
+					if (
+						$ret['status'] != 'error'
+						&& !empty($_FILES['lampiran'])
+					) {
+						$upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
+						if ($upload['status'] == true) {
+							$data['file_lampiran'] = $upload['filename'];
+							$cek_file['file_lampiran'] = $data['file_lampiran'];
+						} else {
+							$ret['status'] = 'error';
+							$ret['message'] = $upload['message'];
+						}
+					}
 
-	                if ($ret['status'] == 'error') {
-	                    // hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
-	                    foreach ($cek_file as $newfile) {
-	                        if (is_file($path . $newfile)) {
-	                            unlink($path . $newfile);
-	                        }
-	                    }
-	                }
+					if ($ret['status'] == 'error') {
+						// hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
+						foreach ($cek_file as $newfile) {
+							if (is_file($path . $newfile)) {
+								unlink($path . $newfile);
+							}
+						}
+					}
 
-	                if ($ret['status'] != 'error') {
-	                    if (!empty($_POST['id_data'])) {
-	                        $file_lama = $wpdb->get_row($wpdb->prepare('
+					if ($ret['status'] != 'error') {
+						if (!empty($_POST['id_data'])) {
+							$file_lama = $wpdb->get_row($wpdb->prepare('
 	                            SELECT
 	                                file_lampiran
 	                            FROM data_bunda_kasih_siks
 	                            WHERE id=%d
 	                        ', $_POST['id_data']), ARRAY_A);
 
-	                        if (
-	                            $file_lama['file_lampiran'] != $data['file_lampiran']
-	                            && is_file($path . $file_lama['file_lampiran'])
-	                        ) {
-	                            unlink($path . $file_lama['file_lampiran']);
-	                        }
-	                        // print_r($file_lama); die($wpdb->last_query);
-	                        $wpdb->update('data_bunda_kasih_siks', $data, array(
-	                            'id' => $_POST['id_data']
-	                        ));
-	                        $ret['message'] = 'Berhasil update data!';
-	                    } else {
-	                        $wpdb->insert('data_bunda_kasih_siks', $data);
-	                    }
-	                }
-	            }
-            } else {
-                $ret['status']  = 'error';
-                $ret['message'] = 'Api key tidak ditemukan!';
-            }
-        } else {
-            $ret['status']  = 'error';
-            $ret['message'] = 'Format Salah!';
-        }
+							if (
+								$file_lama['file_lampiran'] != $data['file_lampiran']
+								&& is_file($path . $file_lama['file_lampiran'])
+							) {
+								unlink($path . $file_lama['file_lampiran']);
+							}
+							// print_r($file_lama); die($wpdb->last_query);
+							$wpdb->update('data_bunda_kasih_siks', $data, array(
+								'id' => $_POST['id_data']
+							));
+							$ret['message'] = 'Berhasil update data!';
+						} else {
+							$wpdb->insert('data_bunda_kasih_siks', $data);
+						}
+					}
+				}
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
 
-        die(json_encode($ret));
-    }
+		die(json_encode($ret));
+	}
 
 	function get_datatable_bunda_kasih()
 	{
@@ -2321,7 +2365,7 @@ class Wp_Siks_Public
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 				$btn .= '<a style="margin-left: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
-				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/bunda_kasih/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
+				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/bunda_kasih/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
 			}
 
 			$json_data = array(
@@ -2529,24 +2573,38 @@ class Wp_Siks_Public
                         }
                     }
 
-                    if ($ret['status'] == 'error') {
-                        // hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
-                        foreach ($cek_file as $newfile) {
-                            if (is_file($path . $newfile)) {
-                                unlink($path . $newfile);
-                            }
-                        }
-                    }
+					$cek_file = array();
+					if (
+						$ret['status'] != 'error'
+						&& !empty($_FILES['lampiran'])
+					) {
+						$upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
+						if ($upload['status'] == true) {
+							$data['file_lampiran'] = $upload['filename'];
+							$cek_file['file_lampiran'] = $data['file_lampiran'];
+						} else {
+							$ret['status'] = 'error';
+							$ret['message'] = $upload['message'];
+						}
+					}
 
-                    if ($ret['status'] != 'error') {
-                        if (!empty($_POST['id_data'])) {
-                            $file_lama = $wpdb->get_row($wpdb->prepare('
+					if ($ret['status'] == 'error') {
+						// hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
+						foreach ($cek_file as $newfile) {
+							if (is_file($path . $newfile)) {
+								unlink($path . $newfile);
+							}
+						}
+					}
+
+					if ($ret['status'] != 'error') {
+						if (!empty($_POST['id_data'])) {
+							$file_lama = $wpdb->get_row($wpdb->prepare('
                                 SELECT
                                     file_lampiran
                                 FROM data_odgj_siks
                                 WHERE id=%d
                             ', $_POST['id_data']), ARRAY_A);
-
                             if (
                                 $file_lama['file_lampiran'] != $data['file_lampiran']
                                 && is_file($path . $file_lama['file_lampiran'])
@@ -2572,8 +2630,8 @@ class Wp_Siks_Public
             $ret['message'] = 'Format Salah!';
         }
 
-        die(json_encode($ret));
-    }
+		die(json_encode($ret));
+	}
 
 	function get_datatable_odgj()
 	{
@@ -2640,7 +2698,7 @@ class Wp_Siks_Public
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 				$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
-				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/odgj/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
+				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/odgj/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
 			}
 
 			$json_data = array(
@@ -2655,7 +2713,7 @@ class Wp_Siks_Public
 		} else {
 			$ret = array(
 				'status' => 'error',
-				'message'	=> 'Format tidak sesuai!'	
+				'message'	=> 'Format tidak sesuai!'
 			);
 		}
 		die(json_encode($ret));
@@ -2737,7 +2795,7 @@ class Wp_Siks_Public
 
 		return $data;
 	}
-	
+
 	function get_lksa()
 	{
 		global $wpdb;
@@ -2905,7 +2963,7 @@ class Wp_Siks_Public
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 				$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
-				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/lksa/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
+				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/lksa/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
 			}
 
 			$json_data = array(
@@ -3020,68 +3078,68 @@ class Wp_Siks_Public
 						'active' => 1,
 						'update_at' => current_time('mysql')
 					);
-                    $path = SIKS_PLUGIN_PATH . 'public/media/lksa/';
- 
-                    $cek_file = array();
-                    if (
-                        $ret['status'] != 'error'
-                        && !empty($_FILES['lampiran'])
-                    ) {
-                        $upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
-                        if ($upload['status'] == true) {
-                            $data['file_lampiran'] = $upload['filename'];
-                            $cek_file['file_lampiran'] = $data['file_lampiran'];
-                        } else {
-                            $ret['status'] = 'error';
-                            $ret['message'] = $upload['message'];
-                        }
-                    }
+					$path = SIKS_PLUGIN_PATH . 'public/media/lksa/';
 
-                    if ($ret['status'] == 'error') {
-                        // hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
-                        foreach ($cek_file as $newfile) {
-                            if (is_file($path . $newfile)) {
-                                unlink($path . $newfile);
-                            }
-                        }
-                    }
+					$cek_file = array();
+					if (
+						$ret['status'] != 'error'
+						&& !empty($_FILES['lampiran'])
+					) {
+						$upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
+						if ($upload['status'] == true) {
+							$data['file_lampiran'] = $upload['filename'];
+							$cek_file['file_lampiran'] = $data['file_lampiran'];
+						} else {
+							$ret['status'] = 'error';
+							$ret['message'] = $upload['message'];
+						}
+					}
 
-                    if ($ret['status'] != 'error') {
-                        if (!empty($_POST['id_data'])) {
-                            $file_lama = $wpdb->get_row($wpdb->prepare('
+					if ($ret['status'] == 'error') {
+						// hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
+						foreach ($cek_file as $newfile) {
+							if (is_file($path . $newfile)) {
+								unlink($path . $newfile);
+							}
+						}
+					}
+
+					if ($ret['status'] != 'error') {
+						if (!empty($_POST['id_data'])) {
+							$file_lama = $wpdb->get_row($wpdb->prepare('
                                 SELECT
                                     file_lampiran
                                 FROM data_lksa_siks
                                 WHERE id=%d
                             ', $_POST['id_data']), ARRAY_A);
 
-                            if (
-                                $file_lama['file_lampiran'] != $data['file_lampiran']
-                                && is_file($path . $file_lama['file_lampiran'])
-                            ) {
-                                unlink($path . $file_lama['file_lampiran']);
-                            }
-                            // print_r($file_lama); die($wpdb->last_query);
-                            $wpdb->update('data_lksa_siks', $data, array(
-                                'id' => $_POST['id_data']
-                            ));
-                            $ret['message'] = 'Berhasil update data!';
-                        } else {
-                            $wpdb->insert('data_lksa_siks', $data);
-                        }
-                    }
-                }
-            } else {
-                $ret['status']  = 'error';
-                $ret['message'] = 'Api key tidak ditemukan!';
-            }
-        } else {
-            $ret['status']  = 'error';
-            $ret['message'] = 'Format Salah!';
-        }
+							if (
+								$file_lama['file_lampiran'] != $data['file_lampiran']
+								&& is_file($path . $file_lama['file_lampiran'])
+							) {
+								unlink($path . $file_lama['file_lampiran']);
+							}
+							// print_r($file_lama); die($wpdb->last_query);
+							$wpdb->update('data_lksa_siks', $data, array(
+								'id' => $_POST['id_data']
+							));
+							$ret['message'] = 'Berhasil update data!';
+						} else {
+							$wpdb->insert('data_lksa_siks', $data);
+						}
+					}
+				}
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
 
-        die(json_encode($ret));
-    }
+		die(json_encode($ret));
+	}
 
 	function get_datatable_anak_terlantar()
 	{
@@ -3121,6 +3179,10 @@ class Wp_Siks_Public
 				$where .= " OR nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
 			}
 
+			if (!empty($params['desa'])) {
+				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);
+			}
+
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_anak_terlantar_siks`";
 			$sql = "SELECT " . implode(', ', $columns) . " FROM `data_anak_terlantar_siks`";
@@ -3146,7 +3208,7 @@ class Wp_Siks_Public
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 				$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
-				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/anak_terlantar/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
+				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/anak_terlantar/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
 			}
 
 			$json_data = array(
@@ -3269,68 +3331,68 @@ class Wp_Siks_Public
 						'active' => 1,
 						'update_at' => current_time('mysql')
 					);
-                    $path = SIKS_PLUGIN_PATH . 'public/media/anak_terlantar/';
- 
-                    $cek_file = array();
-                    if (
-                        $ret['status'] != 'error'
-                        && !empty($_FILES['lampiran'])
-                    ) {
-                        $upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
-                        if ($upload['status'] == true) {
-                            $data['file_lampiran'] = $upload['filename'];
-                            $cek_file['file_lampiran'] = $data['file_lampiran'];
-                        } else {
-                            $ret['status'] = 'error';
-                            $ret['message'] = $upload['message'];
-                        }
-                    }
+					$path = SIKS_PLUGIN_PATH . 'public/media/anak_terlantar/';
 
-                    if ($ret['status'] == 'error') {
-                        // hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
-                        foreach ($cek_file as $newfile) {
-                            if (is_file($path . $newfile)) {
-                                unlink($path . $newfile);
-                            }
-                        }
-                    }
+					$cek_file = array();
+					if (
+						$ret['status'] != 'error'
+						&& !empty($_FILES['lampiran'])
+					) {
+						$upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
+						if ($upload['status'] == true) {
+							$data['file_lampiran'] = $upload['filename'];
+							$cek_file['file_lampiran'] = $data['file_lampiran'];
+						} else {
+							$ret['status'] = 'error';
+							$ret['message'] = $upload['message'];
+						}
+					}
 
-                    if ($ret['status'] != 'error') {
-                        if (!empty($_POST['id_data'])) {
-                            $file_lama = $wpdb->get_row($wpdb->prepare('
+					if ($ret['status'] == 'error') {
+						// hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
+						foreach ($cek_file as $newfile) {
+							if (is_file($path . $newfile)) {
+								unlink($path . $newfile);
+							}
+						}
+					}
+
+					if ($ret['status'] != 'error') {
+						if (!empty($_POST['id_data'])) {
+							$file_lama = $wpdb->get_row($wpdb->prepare('
                                 SELECT
                                     file_lampiran
                                 FROM data_anak_terlantar_siks
                                 WHERE id=%d
                             ', $_POST['id_data']), ARRAY_A);
 
-                            if (
-                                $file_lama['file_lampiran'] != $data['file_lampiran']
-                                && is_file($path . $file_lama['file_lampiran'])
-                            ) {
-                                unlink($path . $file_lama['file_lampiran']);
-                            }
-                            // print_r($file_lama); die($wpdb->last_query);
-                            $wpdb->update('data_anak_terlantar_siks', $data, array(
-                                'id' => $_POST['id_data']
-                            ));
-                            $ret['message'] = 'Berhasil update data!';
-                        } else {
-                            $wpdb->insert('data_anak_terlantar_siks', $data);
-                        }
-                    }
-                }
-            } else {
-                $ret['status']  = 'error';
-                $ret['message'] = 'Api key tidak ditemukan!';
-            }
-        } else {
-            $ret['status']  = 'error';
-            $ret['message'] = 'Format Salah!';
-        }
+							if (
+								$file_lama['file_lampiran'] != $data['file_lampiran']
+								&& is_file($path . $file_lama['file_lampiran'])
+							) {
+								unlink($path . $file_lama['file_lampiran']);
+							}
+							// print_r($file_lama); die($wpdb->last_query);
+							$wpdb->update('data_anak_terlantar_siks', $data, array(
+								'id' => $_POST['id_data']
+							));
+							$ret['message'] = 'Berhasil update data!';
+						} else {
+							$wpdb->insert('data_anak_terlantar_siks', $data);
+						}
+					}
+				}
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
 
-        die(json_encode($ret));
-    }
+		die(json_encode($ret));
+	}
 
 	public function get_data_p3ke_by_id()
 	{
@@ -3519,24 +3581,38 @@ class Wp_Siks_Public
                         }
                     }
 
-                    if ($ret['status'] == 'error') {
-                        // hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
-                        foreach ($cek_file as $newfile) {
-                            if (is_file($path . $newfile)) {
-                                unlink($path . $newfile);
-                            }
-                        }
-                    }
+					$cek_file = array();
+					if (
+						$ret['status'] != 'error'
+						&& !empty($_FILES['lampiran'])
+					) {
+						$upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
+						if ($upload['status'] == true) {
+							$data['file_lampiran'] = $upload['filename'];
+							$cek_file['file_lampiran'] = $data['file_lampiran'];
+						} else {
+							$ret['status'] = 'error';
+							$ret['message'] = $upload['message'];
+						}
+					}
 
-                    if ($ret['status'] != 'error') {
-                        if (!empty($_POST['id_data'])) {
-                            $file_lama = $wpdb->get_row($wpdb->prepare('
+					if ($ret['status'] == 'error') {
+						// hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
+						foreach ($cek_file as $newfile) {
+							if (is_file($path . $newfile)) {
+								unlink($path . $newfile);
+							}
+						}
+					}
+
+					if ($ret['status'] != 'error') {
+						if (!empty($_POST['id_data'])) {
+							$file_lama = $wpdb->get_row($wpdb->prepare('
                                 SELECT
                                     file_lampiran
                                 FROM data_p3ke_siks
                                 WHERE id=%d
                             ', $_POST['id_data']), ARRAY_A);
-
                             if (
                                 $file_lama['file_lampiran'] != $data['file_lampiran']
                                 && is_file($path . $file_lama['file_lampiran'])
@@ -3562,8 +3638,8 @@ class Wp_Siks_Public
             $ret['message'] = 'Format Salah!';
         }
 
-        die(json_encode($ret));
-    }
+		die(json_encode($ret));
+	}
 
 	function get_datatable_p3ke()
 	{
@@ -3605,6 +3681,10 @@ class Wp_Siks_Public
 				$where .= " OR nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
 			}
 
+			if (!empty($params['desa'])) {
+				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
+			}
+
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_p3ke_siks`";
 			$sql = "SELECT " . implode(', ', $columns) . " FROM `data_p3ke_siks`";
@@ -3630,7 +3710,7 @@ class Wp_Siks_Public
 				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 				$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				$queryRecords[$recKey]['aksi'] = $btn;
-				$queryRecords[$recKey]['file_lampiran'] = '<a href="'.SIKS_PLUGIN_URL.'public/media/p3ke/'.$recVal['file_lampiran'].'" target="_blank">'.$recVal['file_lampiran'].'</a>';
+				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/p3ke/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
 			}
 
 			$json_data = array(

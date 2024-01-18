@@ -258,6 +258,9 @@ class Wp_Siks {
 		add_shortcode('management_data_lksa', array($plugin_public, 'management_data_lksa'));
 		add_shortcode('management_data_p3ke', array($plugin_public, 'management_data_p3ke'));
 		add_shortcode('disabilitas_per_desa', array($plugin_public, 'disabilitas_per_desa'));
+		add_shortcode('anak_terlantar_per_desa', array($plugin_public, 'anak_terlantar_per_desa'));
+		add_shortcode('lansia_per_desa', array($plugin_public, 'lansia_per_desa'));
+		add_shortcode('p3ke_per_desa', array($plugin_public, 'p3ke_per_desa'));
 		add_shortcode('data_lansia_siks', array($plugin_public, 'data_lansia_siks'));
 		add_shortcode('data_disabilitas_siks', array($plugin_public, 'data_disabilitas_siks'));
 		add_shortcode('data_bunda_kasih_siks', array($plugin_public, 'data_bunda_kasih_siks'));
