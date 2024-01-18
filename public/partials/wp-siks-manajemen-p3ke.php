@@ -1,6 +1,8 @@
 <?php
 $api_key = get_option(SIKS_APIKEY);
 $url = admin_url('admin-ajax.php');
+$center = $this->get_center();
+$maps_all = $this->get_polygon();
 
 ?>
 <style type="text/css">
@@ -44,7 +46,7 @@ $url = admin_url('admin-ajax.php');
     </div>
 </div>
 <div class="modal fade mt-4" id="modalTambahDataP3KE" tabindex="-1" role="dialog" aria-labelledby="modalTambahDataP3KE" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalTambahDataP3KE">Tambah Data P3KE </h5>
@@ -114,6 +116,22 @@ $url = admin_url('admin-ajax.php');
                     <label>Tahun Anggaran</label>
                     <input type="text" class="form-control" id="tahun_anggaran">
                 </div>
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">Koordinat Latitude</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" id="latitude" name="latitude" placeholder="0" disabled>
+                    </div>
+                    <label class="col-md-2 col-form-label">Koordinat Longitude</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" id="longitude" name="longitude" placeholder="0" disabled>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-2">Map</label>
+                    <div class="col-md-10">
+                        <div style="height:600px; width: 100%;" id="map-canvas-siks"></div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="">Lampiran</label>
                     <input type="file" name="file" class="form-control-file" id="lampiran" accept="application/pdf, .png, .jpg, .jpeg">
@@ -128,10 +146,13 @@ $url = admin_url('admin-ajax.php');
         </div>
     </div>
 </div>
+<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
+window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/p3ke/'; ?>";
+window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
+window.maps_center_siks = <?php echo json_encode($center); ?>;
 jQuery(document).ready(function() {
     get_data_p3ke();
-        window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/p3ke/'; ?>";
 });
 
 function get_data_p3ke() {
@@ -272,6 +293,42 @@ function edit_data(_id){
         },
         success: function(res){
             if(res.status == 'success'){
+
+                // Lokasi Center Map
+                if(
+                    !res.data.lat
+                    || !res.data.lng
+                ){
+                    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+                }else{
+                    var lokasi_center = new google.maps.LatLng(res.data.lat, res.data.lng);
+                }
+
+                if(typeof evm != 'undefined'){
+                    evm.setMap(null);
+                }
+
+                // Menampilkan Marker
+                window.evm = new google.maps.Marker({
+                    position: lokasi_center,
+                    map,
+                    draggable: true,
+                    title: 'Lokasi Map'
+                });
+
+                window.infoWindow = new google.maps.InfoWindow({
+                    content: JSON.stringify(res.data)
+                });
+
+                google.maps.event.addListener(evm, 'click', function(event) {
+                    infoWindow.setPosition(event.latLng);
+                    infoWindow.open(map);
+                });
+
+                google.maps.event.addListener(evm, 'mouseup', function(event) {
+                    jQuery('input[name="latitude"]').val(event.latLng.lat());
+                    jQuery('input[name="longitude"]').val(event.latLng.lng());
+                });
                 jQuery('#id_data').val(res.data.id);
                 jQuery('#nama').val(res.data.nama);
                 jQuery('#kecamatan').val(res.data.kecamatan);
@@ -288,8 +345,10 @@ function edit_data(_id){
                 jQuery('#penghasilan').val(res.data.penghasilan);
                 jQuery('#keterangan').val(res.data.keterangan);
                 jQuery('#tahun_anggaran').val(res.data.tahun_anggaran);
-                jQuery('#file_lampiran_existing').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran);
+                jQuery('#latitude').val(res.data.lat);
+                jQuery('#longitude').val(res.data.lng);
                 jQuery('#lampiran').val('').show();
+                jQuery('#file_lampiran_existing').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran).show();
                 jQuery('#modalTambahDataP3KE .send_data').show();
                 jQuery('#modalTambahDataP3KE').modal('show');
             }else{
@@ -301,6 +360,27 @@ function edit_data(_id){
 }
 
 function tambah_data_p3ke() {
+    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+
+    if(typeof evm != 'undefined'){
+        evm.setMap(null);
+    }
+
+    // Menampilkan Marker
+    window.evm = new google.maps.Marker({
+        position: lokasi_center,
+        map,
+        draggable: true,
+        title: 'Lokasi Map'
+    });
+
+    google.maps.event.addListener(evm, 'mouseup', function(event) {
+        jQuery('input[name="latitude"]').val(event.latLng.lat());
+        jQuery('input[name="longitude"]').val(event.latLng.lng());
+    });
+
+    jQuery('#longitude').val(maps_center_siks['lng']).show();
+    jQuery('#latitude').val(maps_center_siks['lat']).show();
     jQuery('#nama').val('').show();
     jQuery('#provinsi').val('').show();
     jQuery('#desa').val('').show();
@@ -411,6 +491,8 @@ function submitDataP3KE(){
         tempData.append(' penghasilan', penghasilan);
         tempData.append(' keterangan', keterangan);
         tempData.append(' tahun_anggaran', tahun_anggaran);
+        tempData.append('lat',jQuery('input[name="latitude"]').val());
+        tempData.append('lng',jQuery('input[name="longitude"]').val());
    
     if (typeof lampiran != 'undefined') {
             tempData.append('lampiran', lampiran);

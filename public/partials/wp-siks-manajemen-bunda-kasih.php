@@ -89,11 +89,11 @@ $maps_all = $this->get_polygon();
                 <div class="form-group row">
                     <label class="col-md-2 col-form-label">Koordinat Latitude</label>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="latitude" placeholder="0" disabled>
+                        <input type="text" class="form-control" id="latitude" name="latitude" placeholder="0" disabled>
                     </div>
                     <label class="col-md-2 col-form-label">Koordinat Longitude</label>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="longitude" placeholder="0" disabled>
+                        <input type="text" class="form-control" id="longitude" name="longitude" placeholder="0" disabled>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -285,8 +285,10 @@ function edit_data(_id){
                 jQuery('#kabkot').val(res.data.kabkot);
                 jQuery('#kk').val(res.data.kk);
                 jQuery('#rt_rw').val(res.data.rt_rw);
+                jQuery('#latitude').val(res.data.lat);
+                jQuery('#longitude').val(res.data.lng);
                 jQuery('#tahun_anggaran').val(res.data.tahun_anggaran);
-                jQuery('#file_lampiran_existing').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran);
+                jQuery('#file_lampiran_existing').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran).show();
                 jQuery('#lampiran').val('').show();
                 jQuery('#modalTambahDataBundaKasih .send_data').show();
                 jQuery('#modalTambahDataBundaKasih').modal('show');
@@ -299,6 +301,25 @@ function edit_data(_id){
 }
 
 function tambah_data_bunda_kasih() {
+    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+
+    if(typeof evm != 'undefined'){
+        evm.setMap(null);
+    }
+
+    // Menampilkan Marker
+    window.evm = new google.maps.Marker({
+        position: lokasi_center,
+        map,
+        draggable: true,
+        title: 'Lokasi Map'
+    });
+
+    google.maps.event.addListener(evm, 'mouseup', function(event) {
+        jQuery('input[name="latitude"]').val(event.latLng.lat());
+        jQuery('input[name="longitude"]').val(event.latLng.lng());
+    });
+
     jQuery('#nama').val('').show();
     jQuery('#provinsi').val('').show();
     jQuery('#desa').val('').show();
@@ -308,8 +329,8 @@ function tambah_data_bunda_kasih() {
     jQuery('#kk').val('').show();
     jQuery('#rt_rw').val('').show();
     jQuery('#tahun_anggaran').val('').show();
-    jQuery('#latitude').val('').show();
-    jQuery('#longitude').val('').show();
+    jQuery('#longitude').val(maps_center_siks['lng']).show();
+    jQuery('#latitude').val(maps_center_siks['lat']).show();
     jQuery('#lampiran').val('').show();
 
     jQuery('#file_lampiran_existing').hide();
@@ -397,8 +418,8 @@ function submitDataBundaKasih(){
             if (res.status == 'success') {
                 jQuery('#modalTambahDataBundaKasih').modal('hide');
                 get_data_bunda_kasih();
-            jQuery('#wrap-loading').hide();
             }   
+            jQuery('#wrap-loading').hide();
         }
     });
 }
