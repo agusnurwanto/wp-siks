@@ -144,6 +144,15 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-anak-terlantar-per-desa.php';
 	}
 
+	public function p3ke_per_desa()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-p3ke-per-desa.php';
+	}
+
 	public function lansia_per_desa()
 	{
 		// untuk disable render shortcode di halaman edit page/post
@@ -1870,10 +1879,10 @@ class Wp_Siks_Public
 				$where .= " OR nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
 			}
 
-			if(!empty($params['desa'])){
+			if (!empty($params['desa'])) {
 				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
 			}
-			
+
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_lansia_siks`";
 			$sql = "SELECT " . implode(', ', $columns) . " FROM `data_lansia_siks`";
@@ -3363,6 +3372,10 @@ class Wp_Siks_Public
 				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
 				$where .= " AND ( nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
 				$where .= " OR nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+			}
+
+			if (!empty($params['desa'])) {
+				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
 			}
 
 			// getting total number records without any search

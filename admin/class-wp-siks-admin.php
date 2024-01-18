@@ -171,6 +171,14 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
+		
+		$p3ke_per_desa = $this->functions->generatePage(array(
+			'nama_page' => 'P3KE Per Desa',
+			'content' => '[p3ke_per_desa]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
 
 		$data_dtks = $this->functions->generatePage(array(
 			'nama_page' => 'Data DTKS SIKS',
