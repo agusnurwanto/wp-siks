@@ -179,6 +179,30 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
+		
+		$bunda_kasih_per_desa = $this->functions->generatePage(array(
+			'nama_page' => 'Bunda Kasih Per Desa',
+			'content' => '[bunda_kasih_per_desa]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
+		$gepeng_per_desa = $this->functions->generatePage(array(
+			'nama_page' => 'Gepeng Per Desa',
+			'content' => '[gepeng_per_desa]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+		
+		$dtks_per_desa = $this->functions->generatePage(array(
+			'nama_page' => 'DTKS Per Desa',
+			'content' => '[dtks_per_desa]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
 
 		$data_dtks = $this->functions->generatePage(array(
 			'nama_page' => 'Data DTKS SIKS',
