@@ -92,7 +92,6 @@ foreach ($maps_all as $i => $desa) {
         <td class='text-center'>" . $desa['data']['kecamatan'] . "</td>
         <td class='text-center'>";
 
-    // Tampilkan link hanya jika pengguna sudah login
     if (!empty($link_per_desa)) {
         $body .= "<a href='" . esc_url($link_per_desa) . "'>" . esc_html($desa['data']['desa']) . "</a>";
     } else {
