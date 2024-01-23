@@ -146,7 +146,6 @@ $maps_all = $this->get_polygon();
         </div>
     </div>
 </div>
-<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
 window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/p3ke/'; ?>";
 window.maps_all_siks = <?php echo json_encode($maps_all); ?>;

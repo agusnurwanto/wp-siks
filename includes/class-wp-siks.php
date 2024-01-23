@@ -270,6 +270,8 @@ class Wp_Siks {
 		add_shortcode('data_anak_terlantar_siks', array($plugin_public, 'data_anak_terlantar_siks'));
 		add_shortcode('data_gepeng_siks', array($plugin_public, 'data_gepeng_siks'));
 		add_shortcode('data_p3ke_siks', array($plugin_public, 'data_p3ke_siks'));
+		add_shortcode('data_calon_p3ke', array($plugin_public, 'data_calon_p3ke'));
+		add_shortcode('management_calon_p3ke', array($plugin_public, 'management_calon_p3ke'));
 
 		// untuk menjalankan conjob refresh session
 		$this->loader->add_action('siks_conjob',  $plugin_public, 'refresh_token');

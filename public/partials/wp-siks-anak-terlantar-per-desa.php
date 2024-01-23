@@ -22,7 +22,7 @@ if (empty($nama_desa) && is_user_logged_in()) {
 <div style="width: 95%; margin: 0 auto; min-height: 90vh; padding-bottom: 75px;">
     <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
     <div style="padding: 10px;margin:0 0 3rem 0;">
-        <h1 class="text-center" style="margin:3rem;">Data Anak Terlantar Per Desa <?= $nama_desa ?></h1>
+        <h1 class="text-center" style="margin:3rem;">Data Anak Terlantar<br>DESA <?= $nama_desa ?></h1>
         <div class="wrap-table">
             <table id="tableAnakTerlantarPerDesa" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
                 <thead>

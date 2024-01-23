@@ -203,6 +203,22 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
+		
+		$calon_penerima_p3ke = $this->functions->generatePage(array(
+			'nama_page' => 'Calon Penerima P3KE',
+			'content' => '[calon_penerima_p3ke]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+		
+		$managemen_calon_penerima_p3ke = $this->functions->generatePage(array(
+			'nama_page' => 'Manajemen Calon Penerima P3KE',
+			'content' => '[managemen_calon_penerima_p3ke]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
 
 		$data_dtks = $this->functions->generatePage(array(
 			'nama_page' => 'Data DTKS SIKS',
@@ -345,6 +361,7 @@ class Wp_Siks_Admin
 	            		<li><a target="_blank" href="' . $data_gepeng['url'] . '">' . $data_gepeng['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_bunda_kasih['url'] . '">' . $data_bunda_kasih['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_p3ke['url'] . '">' . $data_p3ke['title'] . '</a></li>
+	            		<li><a target="_blank" href="' . $calon_penerima_p3ke['url'] . '">' . $calon_penerima_p3ke['title'] . '</a></li>
 	            	</ol>'),
 				Field::make('text', 'crb_apikey_siks', 'API KEY')
 					->set_default_value($this->functions->generateRandomString())
@@ -591,6 +608,35 @@ class Wp_Siks_Admin
 					->set_html('Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>'),
 				Field::make('html', 'crb_p3ke_save_button')
 					->set_html('<a onclick="import_excel_p3ke_siks(); return false" href="javascript:void(0);" class="button button-primary">Import P3KE</a>')
+			));
+
+		Container::make('theme_options', __('Data Calon Penerima P3KE'))
+			->set_page_parent($basic_options_container)
+			->add_fields(array(
+				Field::make('html', 'crb_p3ke_hide_sidebar')
+					->set_html('
+		        		<style>
+		        			.postbox-container { display: none; }
+		        			#poststuff #post-body.columns-2 { margin: 0 !important; }
+		        		</style>
+		        	'),
+				Field::make('html', 'crb_siks_halaman_terkait_calon_p3ke')
+					->set_html('
+					<h5>HALAMAN TERKAIT</h5>
+	            	<ol>
+	            		<li><a target="_blank" href="' . $managemen_calon_penerima_p3ke['url'] . '">' . $managemen_calon_penerima_p3ke['title'] . '</a></li>
+	            	</ol>
+		        	'),
+				Field::make('html', 'crb_calon_p3ke_upload_html')
+					->set_html('<h3>Import EXCEL data Calon Penerima P3KE</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
+	            		Contoh format file excel untuk <b>Calon Penerima P3KE</b> bisa <a target="_blank" href="' . SIKS_PLUGIN_URL . 'excel/contoh_calon_penerima_p3ke.xlsx">download di sini</a>.<br>
+	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
+	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
+	            		Sheet file excel yang akan diimport harus diberi nama <b>data</b>. Untuk kolom nilai angka ditulis tanpa tanda titik.<br>'),
+				Field::make('html', 'crb_calon_p3ke_siks')
+					->set_html('Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>'),
+				Field::make('html', 'crb_calon_p3ke_save_button')
+					->set_html('<a onclick="import_excel_calon_p3ke_siks(); return false" href="javascript:void(0);" class="button button-primary">Import P3KE</a>')
 			));
 	}
 
@@ -1230,6 +1276,94 @@ class Wp_Siks_Admin
 		if (!empty($_POST)) {
 
 			$table_data = 'data_p3ke_siks';
+
+			if (
+				!empty($_POST['update_active'])
+				&& $_POST['page'] == 1
+			) {
+				$wpdb->query($wpdb->prepare("UPDATE $table_data SET active=0, update_at='" . date('Y-m-d H:i:s') . "'"));
+			}
+
+			$ret['data'] = array(
+				'insert' => 0,
+				'update' => 0,
+				'error' => array()
+			);
+
+			foreach ($_POST['data'] as $k => $data) {
+
+				$newData = array();
+
+				foreach ($data as $kk => $vv) {
+					$newData[trim(preg_replace('/\s+/', ' ', $kk))] = trim(preg_replace('/\s+/', ' ', $vv));
+				}
+
+				$data_db = array(
+					'nama' => $newData['nama'],
+					'alamat' => $newData['alamat'],
+					'desa' => $newData['desa'],
+					'kecamatan' => $newData['kecamatan'],
+					'kabkot' => $newData['kabkot'],
+					'provinsi' => $newData['provinsi'],
+					'nik' => $newData['nik'],
+					'kk' => $newData['kk'],
+					'kode_anggota' => $newData['kode_anggota'],
+					'pekerjaan' => $newData['pekerjaan'],
+					'program' => $newData['program'],
+					'penghasilan' => $newData['penghasilan'],
+					'keterangan' => $newData['keterangan'],
+					'rt' => $newData['rt'],
+					'rw' => $newData['rw'],
+					'tahun_anggaran' => $newData['tahun_anggaran'],
+					'active' => 1,
+					'update_at' => current_time('mysql')
+				);
+
+				$wpdb->last_error = "";
+
+				$cek_id = $wpdb->get_var($wpdb->prepare(
+					"
+					SELECT 
+						id 
+					FROM $table_data 
+					WHERE tahun_anggaran=%d
+						AND nik=%s",
+					$newData['tahun_anggaran'],
+					$newData['nik']
+				));
+
+				if (empty($cek_id)) {
+					$wpdb->insert($table_data, $data_db);
+					$ret['data']['insert']++;
+				} else {
+					$wpdb->update($table_data, $data_db, array(
+						"id" => $cek_id
+					));
+					$ret['data']['update']++;
+				}
+
+				if (!empty($wpdb->last_error)) {
+					$ret['data']['error'][] = array($wpdb->last_error, $data_db);
+				};
+			}
+		} else {
+			$ret['status'] = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+		die(json_encode($ret));
+	}
+
+	function import_excel_calon_p3ke_siks()
+	{
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil import excel!'
+		);
+
+		if (!empty($_POST)) {
+
+			$table_data = 'data_calon_p3ke_siks';
 
 			if (
 				!empty($_POST['update_active'])
