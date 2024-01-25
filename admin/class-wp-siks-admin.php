@@ -204,17 +204,17 @@ class Wp_Siks_Admin
 			'post_status' => 'publish'
 		));
 		
-		$calon_penerima_p3ke = $this->functions->generatePage(array(
+		$data_calon_p3ke = $this->functions->generatePage(array(
 			'nama_page' => 'Calon Penerima P3KE',
-			'content' => '[calon_penerima_p3ke]',
+			'content' => '[data_calon_p3ke]',
 			'show_header' => 1,
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
 		
-		$managemen_calon_penerima_p3ke = $this->functions->generatePage(array(
+		$management_calon_p3ke = $this->functions->generatePage(array(
 			'nama_page' => 'Manajemen Calon Penerima P3KE',
-			'content' => '[managemen_calon_penerima_p3ke]',
+			'content' => '[management_calon_p3ke]',
 			'show_header' => 1,
 			'no_key' => 1,
 			'post_status' => 'publish'
@@ -361,7 +361,7 @@ class Wp_Siks_Admin
 	            		<li><a target="_blank" href="' . $data_gepeng['url'] . '">' . $data_gepeng['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_bunda_kasih['url'] . '">' . $data_bunda_kasih['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_p3ke['url'] . '">' . $data_p3ke['title'] . '</a></li>
-	            		<li><a target="_blank" href="' . $calon_penerima_p3ke['url'] . '">' . $calon_penerima_p3ke['title'] . '</a></li>
+	            		<li><a target="_blank" href="' . $data_calon_p3ke['url'] . '">' . $data_calon_p3ke['title'] . '</a></li>
 	            	</ol>'),
 				Field::make('text', 'crb_apikey_siks', 'API KEY')
 					->set_default_value($this->functions->generateRandomString())
@@ -624,7 +624,7 @@ class Wp_Siks_Admin
 					->set_html('
 					<h5>HALAMAN TERKAIT</h5>
 	            	<ol>
-	            		<li><a target="_blank" href="' . $managemen_calon_penerima_p3ke['url'] . '">' . $managemen_calon_penerima_p3ke['title'] . '</a></li>
+	            		<li><a target="_blank" href="' . $management_calon_p3ke['url'] . '">' . $management_calon_p3ke['title'] . '</a></li>
 	            	</ol>
 		        	'),
 				Field::make('html', 'crb_calon_p3ke_upload_html')
@@ -636,7 +636,7 @@ class Wp_Siks_Admin
 				Field::make('html', 'crb_calon_p3ke_siks')
 					->set_html('Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>'),
 				Field::make('html', 'crb_calon_p3ke_save_button')
-					->set_html('<a onclick="import_excel_calon_p3ke_siks(); return false" href="javascript:void(0);" class="button button-primary">Import P3KE</a>')
+					->set_html('<a onclick="import_excel_calon_p3ke_siks(); return false" href="javascript:void(0);" class="button button-primary">Import Calon P3KE</a>')
 			));
 	}
 
@@ -1387,25 +1387,29 @@ class Wp_Siks_Admin
 				}
 
 				$data_db = array(
-					'nama' => $newData['nama'],
+					'id_kpm' => $newData['id_kpm'],
+					'nik_kk' => $newData['nik_kk'],
+					'nik_pkk' => $newData['nik_pkk'],
+					'nama_kk' => $newData['nama_kk'],
+					'nama_pkk' => $newData['nama_pkk'],
+					'nama_anak' => $newData['nama_anak'],
+					'nik_anak' => $newData['nik_anak'],
 					'alamat' => $newData['alamat'],
-					'desa' => $newData['desa'],
+					'nama_rt' => $newData['nama_rt'],
+					'nama_rw' => $newData['nama_rw'],
+					'desa_kelurahan' => $newData['desa_kelurahan'],
 					'kecamatan' => $newData['kecamatan'],
 					'kabkot' => $newData['kabkot'],
-					'provinsi' => $newData['provinsi'],
-					'nik' => $newData['nik'],
-					'kk' => $newData['kk'],
-					'kode_anggota' => $newData['kode_anggota'],
-					'pekerjaan' => $newData['pekerjaan'],
-					'program' => $newData['program'],
-					'penghasilan' => $newData['penghasilan'],
-					'keterangan' => $newData['keterangan'],
-					'rt' => $newData['rt'],
-					'rw' => $newData['rw'],
+					'district' => $newData['district'],
+					'sumber' => $newData['sumber'],
+					'desil_p3ke' => $newData['desil_p3ke'],
+					'lat' => $newData['lat'],
+					'lng' => $newData['lng'],
 					'tahun_anggaran' => $newData['tahun_anggaran'],
 					'active' => 1,
 					'update_at' => current_time('mysql')
 				);
+				
 
 				$wpdb->last_error = "";
 
@@ -1415,9 +1419,9 @@ class Wp_Siks_Admin
 						id 
 					FROM $table_data 
 					WHERE tahun_anggaran=%d
-						AND nik=%s",
+						AND nik_kk=%s",
 					$newData['tahun_anggaran'],
-					$newData['nik']
+					$newData['nik_kk']
 				));
 
 				if (empty($cek_id)) {

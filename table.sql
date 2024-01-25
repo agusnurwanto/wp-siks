@@ -335,3 +335,29 @@ CREATE TABLE `data_p3ke_siks` (
     `update_at` datetime DEFAULT current_timestamp,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE `data_calon_p3ke_siks` (
+    `id` int(11) NOT NULL auto_increment,
+    `id_kpm` TEXT DEFAULT NULL,
+    `nik_kk` TEXT DEFAULT NULL,
+    `nik_pkk` TEXT DEFAULT NULL,
+    `nama_kk` TEXT DEFAULT NULL,
+    `nama_pkk` TEXT DEFAULT NULL,
+    `nama_anak` TEXT DEFAULT NULL,
+    `nik_anak` TEXT DEFAULT NULL,
+    `alamat` TEXT DEFAULT NULL,
+    `nama_rt` TEXT DEFAULT NULL,
+    `nama_rw` TEXT DEFAULT NULL,
+    `desa_kelurahan` TEXT DEFAULT NULL,
+    `kecamatan` TEXT DEFAULT NULL,
+    `kabkot` TEXT DEFAULT NULL,
+    `district` TEXT DEFAULT NULL,
+    `sumber` TEXT DEFAULT NULL,
+    `desil_p3ke` TEXT DEFAULT NULL,
+    `lat` text DEFAULT NULL,
+    `lng` text DEFAULT NULL,
+    `tahun_anggaran`  int(4) DEFAULT NULL,
+    `active` tinyint(4) DEFAULT 1,
+    `update_at` datetime DEFAULT current_timestamp,
+    PRIMARY KEY (id)
+);

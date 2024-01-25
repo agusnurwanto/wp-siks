@@ -108,6 +108,7 @@ if (empty($nama_desa) && is_user_logged_in()) {
                     <th class="text-center">Kelayakan</th>
                     <th class="text-center">Lampiran</th>
                     <th class="text-center">Tahun Anggaran</th>
+                    <th class="text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -472,6 +473,10 @@ if (empty($nama_desa) && is_user_logged_in()) {
                         },
                         {
                             "data": 'tahun_anggaran',
+                            className: "text-center"
+                        }
+                        {
+                            "data": 'aksi',
                             className: "text-center"
                         }
                     ]

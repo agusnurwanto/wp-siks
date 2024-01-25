@@ -3,7 +3,8 @@ global $wpdb;
 $api_key = get_option(SIKS_APIKEY);
 $url = admin_url('admin-ajax.php');
 $maps_all = $this->get_polygon();
-$search = $this->getSearchLocation($desa['data']);
+$center = $this->get_center();
+$search = $this->getSearchLocation();
 $nama_desa = null;
 $center_desa = null;
 
@@ -67,7 +68,7 @@ if (empty($nama_desa) && is_user_logged_in()) {
     </div>
     <script>
         window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
-        window.maps_center_siks = <?php echo json_encode($center_desa); ?>;
+        window.maps_center_siks = <?php echo json_encode($center); ?>;
         jQuery(document).ready(function() {
             get_data_p3ke();
         });

@@ -122,6 +122,10 @@ function import_excel_p3ke_siks(){
     import_excel('import_excel_p3ke_siks', 'Success import data P3KE dari excel!');
 }
 
+function import_excel_calon_p3ke_siks(action = '', message = ''){
+    import_excel('import_excel_calon_p3ke_siks', 'Success import data Calon Penerima P3KE dari excel!');
+}
+
 function import_excel(action = '', message = ''){
     if(action == ''){
         alert('Action tidak diketahui!');

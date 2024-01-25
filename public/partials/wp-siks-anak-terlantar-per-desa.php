@@ -40,6 +40,7 @@ if (empty($nama_desa) && is_user_logged_in()) {
                         <th class="text-center">Desa/Kelurahan</th>
                         <th class="text-center">Alamat</th>
                         <th class="text-center">Lampiran</th>
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -129,6 +130,10 @@ if (empty($nama_desa) && is_user_logged_in()) {
                         },
                         {
                             "data": 'file_lampiran',
+                            className: "text-center"
+                        },
+                        {
+                            "data": 'aksi',
                             className: "text-center"
                         },
 
