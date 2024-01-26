@@ -245,6 +245,11 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_get_data_p3ke_by_id',  $plugin_public, 'get_data_p3ke_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_p3ke',  $plugin_public, 'tambah_data_p3ke');
 		$this->loader->add_action('wp_ajax_hapus_data_p3ke_by_id', $plugin_public, 'hapus_data_p3ke_by_id');
+		$this->loader->add_action('wp_ajax_get_data_calon_p3ke_by_id', $plugin_public, 'get_data_calon_p3ke_by_id');
+		$this->loader->add_action('wp_ajax_get_tambah_data_calon_p3ke', $plugin_public, 'get_tambah_data_calon_p3ke');
+		$this->loader->add_action('wp_ajax_get_get_datatable_calon_p3ke', $plugin_public, 'get_get_datatable_calon_p3ke');
+		$this->loader->add_action('wp_ajax_get_get_datatable_calon_p3ke', $plugin_public, 'get_get_datatable_calon_p3ke');
+		$this->loader->add_action('wp_ajax_get_hapus_data_calon_p3ke_by_id', $plugin_public, 'get_hapus_data_calon_p3ke_by_id');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 		add_shortcode('peta_desa_siks', array($plugin_public, 'peta_desa_siks'));

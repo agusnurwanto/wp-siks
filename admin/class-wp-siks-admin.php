@@ -636,7 +636,7 @@ class Wp_Siks_Admin
 				Field::make('html', 'crb_calon_p3ke_siks')
 					->set_html('Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>'),
 				Field::make('html', 'crb_calon_p3ke_save_button')
-					->set_html('<a onclick="import_excel_calon_p3ke_siks(); return false" href="javascript:void(0);" class="button button-primary">Import Calon P3KE</a>')
+					->set_html('<a onclick="import_excel_calon_penerima_p3ke_siks(); return false" href="javascript:void(0);" class="button button-primary">Import Calon P3KE</a>')
 			));
 	}
 

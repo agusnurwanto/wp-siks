@@ -164,10 +164,6 @@ $url = admin_url('admin-ajax.php');
                         jQuery("#wraploading").hide();
                     },
                     "columns": [{
-                            "data": 'id_kpm',
-                            className: "text-center"
-                        },
-                        {
                             "data": 'nik_kk',
                             className: "text-center"
                         },
@@ -307,11 +303,14 @@ $url = admin_url('admin-ajax.php');
                     jQuery('#lng').val(res.data.lng);
                     jQuery('#tahun_anggaran').val(res.data.tahun_anggaran);
                     jQuery('#modalTambahDataCalonP3KE').modal('show');
+                    jQuery('#wrap-loading').hide();
+                },
+                error: function() {
+                    jQuery('#wrap-loading').hide();
                 }
-                jQuery('#wrap-loading').hide();
-
             });
         }
+
 
         function tambah_data_calon_p3ke() {
             jQuery('#nik_kk').val('').show();

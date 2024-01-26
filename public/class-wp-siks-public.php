@@ -197,7 +197,7 @@ class Wp_Siks_Public
 		}
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-lansia.php';
 	}
-	
+
 	public function management_calon_p3ke()
 	{
 		// untuk disable render shortcode di halaman edit page/post
@@ -206,7 +206,7 @@ class Wp_Siks_Public
 		}
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-calon-penerima-p3ke.php';
 	}
-	
+
 	public function data_calon_p3ke()
 	{
 		// untuk disable render shortcode di halaman edit page/post
@@ -3815,4 +3815,208 @@ class Wp_Siks_Public
 		}
 		die(json_encode($ret));
 	}
+
+
+	function get_datatable_calon_p3ke()
+	{
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil get data lansia!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			$params = $columns = $totalRecords = $data = array();
+			$params = $_REQUEST;
+			$columns = array(
+				1 => 'id',
+				2 => 'id_kpm',
+				3 => 'nik_kk',
+				4 => 'nik_pkk',
+				5 => 'nama_kk',
+				6 => 'nama_pkk',
+				7 => 'nama_anak',
+				8 => 'nik_anak',
+				9 => 'alamat',
+				10 => 'nama_rt',
+				11 => 'nama_rw',
+				12 => 'desa_kelurahan',
+				13 => 'kecamatan',
+				14 => 'kabkot',
+				15 => 'district',
+				16 => 'sumber',
+				17 => 'desil_p3ke',
+				18 => 'lat',
+				19 => 'lng',
+				20 => 'tahun_anggaran',
+			);
+			$where = $sqlTot = $sqlRec = "";
+
+			if (!empty($params['desa'])) {
+				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);
+			}
+			// check search value exist
+			if (!empty($params['search']['value'])) {
+				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+				$where .= " AND ( nama_kk LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR nama_pkk LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR nama_anak LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR kabkot LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR alamat LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+			}
+
+			// getting total number records without any search
+			$sql_tot = "SELECT count(id) as jml FROM `data_calon_p3ke_siks`";
+			$sql = "SELECT " . implode(', ', $columns) . " FROM `data_calon_p3ke_siks`";
+			$where_first = " WHERE 1=1 AND active = 1";
+			$sqlTot .= $sql_tot . $where_first;
+			$sqlRec .= $sql . $where_first;
+			if (isset($where) && $where != '') {
+				$sqlTot .= $where;
+				$sqlRec .= $where;
+			}
+
+			$limit = '';
+			if ($params['length'] != -1) {
+				$limit = "  LIMIT " . $wpdb->prepare('%d', $params['start']) . " ," . $wpdb->prepare('%d', $params['length']);
+			}
+			$sqlRec .= " ORDER BY update_at DESC" . $limit;
+
+			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
+			$totalRecords = $queryTot[0]['jml'];
+			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
+
+			foreach ($queryRecords as $recKey => $recVal) {
+				if (empty($params['desa'])) {
+					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
+					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+				} else {
+					$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="cari_alamat_siks(\"" . $search . "\"); return false;" href="#" class="btn btn-danger">Map</a></td>';
+				}
+				$queryRecords[$recKey]['aksi'] = $btn;
+			}
+
+			$json_data = array(
+				"draw"            => intval($params['draw']),
+				"recordsTotal"    => intval($totalRecords),
+				"recordsFiltered" => intval($totalRecords),
+				"data"            => $queryRecords,
+				"sql"             => $sqlRec
+			);
+
+			die(json_encode($json_data));
+		} else {
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
+
+	public function tambah_data_calon_p3ke()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil simpan data!',
+			'data' => array()
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				if ($ret['status'] != 'error') {
+					$id_data = sanitize_text_field($_POST['id']);
+					$tahun_anggaran = sanitize_text_field($_POST['tahun_anggaran']);
+					$nama = sanitize_text_field($_POST['nama']);
+					$kabkot = sanitize_text_field($_POST['kabkot']);
+					$alamat = sanitize_text_field($_POST['alamat']);
+					$ketua = sanitize_text_field($_POST['ketua']);
+					$no_hp = sanitize_text_field($_POST['no_hp']);
+					$akreditasi = sanitize_text_field($_POST['akreditasi']);
+					$dalam_lksa = sanitize_text_field($_POST['dalam_lksa']);
+					$luar_lksa = sanitize_text_field($_POST['luar_lksa']);
+					$total_anak = sanitize_text_field($_POST['total_anak']);
+					$latitude = $_POST['lat'];
+					$longitude = $_POST['lng'];
+
+					$data = array(
+						'lng' => $longitude,
+						'lat' => $latitude,
+						'tahun_anggaran' => $tahun_anggaran,
+						'nama' => $nama,
+						'kabkot' => $kabkot,
+						'alamat' => $alamat,
+						'ketua' => $ketua,
+						'no_hp' => $no_hp,
+						'akreditasi' => $akreditasi,
+						'anak_dalam_lksa' => $dalam_lksa,
+						'anak_luar_lksa' => $luar_lksa,
+						'total_anak' => $total_anak,
+						'active' => 1,
+						'update_at' => current_time('mysql')
+					);
+				}
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+		die(json_encode($ret));
+	}
+
+	public function get_data_calon_p3ke_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil get data!',
+			'data' => array()
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->get_row($wpdb->prepare('
+                    SELECT 
+                        *
+                    FROM data_calon_p3ke_siks
+                    WHERE id=%d
+                ', $_POST['id']), ARRAY_A);
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
+	public function hapus_data_calon_p3ke_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil hapus data!',
+			'data' => array()
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->update('data_calon_p3ke_siks', array('active' => 0), array(
+					'id' => $_POST['id']
+				));
+			} else {
+				$ret['status']	= 'error';
+				$ret['message']	= 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']	= 'error';
+			$ret['message']	= 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
 }
