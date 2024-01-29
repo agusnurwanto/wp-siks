@@ -3857,11 +3857,14 @@ class Wp_Siks_Public
 			// check search value exist
 			if (!empty($params['search']['value'])) {
 				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-				$where .= " AND ( nama_kk LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
-				$where .= " OR nama_pkk LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
-				$where .= " OR nama_anak LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
-				$where .= " OR kabkot LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
-				$where .= " OR alamat LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " AND (kecamatan LIKE " . $search_value;
+				$where .= " OR nama_kk LIKE " . $search_value;
+				$where .= " OR nama_anak LIKE " . $search_value;
+				$where .= " OR nama_pkk LIKE " . $search_value;
+				$where .= " OR nik_pkk LIKE " . $search_value;
+				$where .= " OR nik_anak LIKE " . $search_value;
+				$where .= " OR nik_kk LIKE " . $search_value;
+				$where .= " OR alamat LIKE " . $search_value . ")";
 			}
 
 			// getting total number records without any search
@@ -3916,44 +3919,72 @@ class Wp_Siks_Public
 	public function tambah_data_calon_p3ke()
 	{
 		global $wpdb;
+
 		$ret = array(
 			'status' => 'success',
 			'message' => 'Berhasil simpan data!',
 			'data' => array()
 		);
+
 		if (!empty($_POST)) {
 			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 				if ($ret['status'] != 'error') {
-					$id_data = sanitize_text_field($_POST['id']);
-					$tahun_anggaran = sanitize_text_field($_POST['tahun_anggaran']);
-					$nama = sanitize_text_field($_POST['nama']);
-					$kabkot = sanitize_text_field($_POST['kabkot']);
+					$id_data = !empty($_POST['id_data']) ? sanitize_text_field($_POST['id_data']) : null;
+					$nik_kk = sanitize_text_field($_POST['nik_kk']);
+					$nik_pkk = sanitize_text_field($_POST['nik_pkk']);
+					$nama_kk = sanitize_text_field($_POST['nama_kk']);
+					$nama_pkk = sanitize_text_field($_POST['nama_pkk']);
+					$nama_anak = sanitize_text_field($_POST['nama_anak']);
+					$nik_anak = sanitize_text_field($_POST['nik_anak']);
 					$alamat = sanitize_text_field($_POST['alamat']);
-					$ketua = sanitize_text_field($_POST['ketua']);
-					$no_hp = sanitize_text_field($_POST['no_hp']);
-					$akreditasi = sanitize_text_field($_POST['akreditasi']);
-					$dalam_lksa = sanitize_text_field($_POST['dalam_lksa']);
-					$luar_lksa = sanitize_text_field($_POST['luar_lksa']);
-					$total_anak = sanitize_text_field($_POST['total_anak']);
-					$latitude = $_POST['lat'];
-					$longitude = $_POST['lng'];
+					$nama_rt = sanitize_text_field($_POST['nama_rt']);
+					$nama_rw = sanitize_text_field($_POST['nama_rw']);
+					$desa_kelurahan = sanitize_text_field($_POST['desa_kelurahan']);
+					$kecamatan = sanitize_text_field($_POST['kecamatan']);
+					$kabkot = sanitize_text_field($_POST['kabkot']);
+					$district = sanitize_text_field($_POST['district']);
+					$sumber = sanitize_text_field($_POST['sumber']);
+					$desil_p3ke = sanitize_text_field($_POST['desil_p3ke']);
+					$lat = $_POST['lat'];
+					$lng = $_POST['lng'];
+					$tahun_anggaran = sanitize_text_field($_POST['tahun_anggaran']);
 
 					$data = array(
-						'lng' => $longitude,
-						'lat' => $latitude,
-						'tahun_anggaran' => $tahun_anggaran,
-						'nama' => $nama,
-						'kabkot' => $kabkot,
+						'nik_kk' => $nik_kk,
+						'nik_pkk' => $nik_pkk,
+						'nama_kk' => $nama_kk,
+						'nama_pkk' => $nama_pkk,
+						'nama_anak' => $nama_anak,
+						'nik_anak' => $nik_anak,
 						'alamat' => $alamat,
-						'ketua' => $ketua,
-						'no_hp' => $no_hp,
-						'akreditasi' => $akreditasi,
-						'anak_dalam_lksa' => $dalam_lksa,
-						'anak_luar_lksa' => $luar_lksa,
-						'total_anak' => $total_anak,
+						'nama_rt' => $nama_rt,
+						'nama_rw' => $nama_rw,
+						'desa_kelurahan' => $desa_kelurahan,
+						'kecamatan' => $kecamatan,
+						'kabkot' => $kabkot,
+						'district' => $district,
+						'sumber' => $sumber,
+						'desil_p3ke' => $desil_p3ke,
+						'lat' => $lat,
+						'lng' => $lng,
+						'tahun_anggaran' => $tahun_anggaran,
 						'active' => 1,
 						'update_at' => current_time('mysql')
 					);
+
+					if ($id_data) {
+						$wpdb->update(
+							'data_calon_p3ke_siks',
+							$data,
+							array('id' => $id_data)
+						);
+						$ret['message'] = 'Berhasil update data!';
+					} else {
+						$wpdb->insert(
+							'data_calon_p3ke_siks',
+							$data
+						);
+					}
 				}
 			} else {
 				$ret['status']  = 'error';
@@ -3963,8 +3994,10 @@ class Wp_Siks_Public
 			$ret['status']  = 'error';
 			$ret['message'] = 'Format Salah!';
 		}
+
 		die(json_encode($ret));
 	}
+
 
 	public function get_data_calon_p3ke_by_id()
 	{
@@ -4018,5 +4051,4 @@ class Wp_Siks_Public
 
 		die(json_encode($ret));
 	}
-
 }

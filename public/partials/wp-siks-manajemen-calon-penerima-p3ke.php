@@ -8,6 +8,16 @@ $url = admin_url('admin-ajax.php');
         max-height: 100vh;
         width: 100%;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
 <div style="padding: 10px;margin:0 0 3rem 0;">
     <h1 class="text-center" style="margin:3rem;">Manajemen Calon Penerima Data Calon P3KE</h1>
@@ -48,7 +58,8 @@ $url = admin_url('admin-ajax.php');
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTambahDataCalonP3KE">Tambah Data Calon P3KE</h5>
+                <h5 class="modal-title" id="judulModalTambahDataCalonP3KE">Tambah Data Calon P3KE</h5>
+                <h5 class="modal-title" id="judulModalEditDataCalonP3KE">Edit Data Calon P3KE</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -57,15 +68,15 @@ $url = admin_url('admin-ajax.php');
                 <input type='hidden' id='id_data' name="id_data" placeholder=''>
                 <div class="form-group">
                     <label>Tahun Anggaran</label>
-                    <input type="text" class="form-control" id="tahun_anggaran" placeholder="Masukkan Tahun Anggaran">
+                    <input type="number" class="form-control" id="tahun_anggaran" placeholder="Masukkan Tahun Anggaran">
                 </div>
                 <div class="form-group">
                     <label>NIK KK</label>
-                    <input type="text" class="form-control" id="nik_kk" placeholder="Masukkan NIK KK">
+                    <input type="number" class="form-control" min="16" max="16" id="nik_kk" placeholder="Masukkan NIK KK">
                 </div>
                 <div class="form-group">
                     <label>NIK PKK</label>
-                    <input type="text" class="form-control" id="nik_pkk" placeholder="Masukkan NIK PKK">
+                    <input type="number" class="form-control" min="16" max="16" id="nik_pkk" placeholder="Masukkan NIK PKK">
                 </div>
                 <div class="form-group">
                     <label>Nama KK</label>
@@ -81,7 +92,7 @@ $url = admin_url('admin-ajax.php');
                 </div>
                 <div class="form-group">
                     <label>NIK Anak</label>
-                    <input type="text" class="form-control" id="nik_anak" placeholder="Masukkan NIK Anak">
+                    <input type="number" class="form-control" min="16" max="16" id="nik_anak" placeholder="Masukkan NIK Anak">
                 </div>
                 <div class="form-group">
                     <label>Alamat</label>
@@ -104,7 +115,7 @@ $url = admin_url('admin-ajax.php');
                     <input type="text" class="form-control" id="kecamatan" placeholder="Masukkan Kecamatan">
                 </div>
                 <div class="form-group">
-                    <label>Kab/Kot</label>
+                    <label>Kabupaten/Kota</label>
                     <input type="text" class="form-control" id="kabkot" placeholder="Masukkan Kab/Kot">
                 </div>
                 <div class="form-group">
@@ -141,7 +152,9 @@ $url = admin_url('admin-ajax.php');
 
         function get_data_calon_p3ke() {
             if (typeof tableCalonP3KE === 'undefined') {
-                window.tableCalonP3KE = jQuery('#tableManajemenCalonPenerimaCalonP3KE').DataTable({
+                window.tableCalonP3KE = jQuery('#tableManajemenCalonPenerimaCalonP3KE').on('preXhr.dt', function(e, settings, data) {
+                    jQuery("#wrap-loading").show();
+                }).DataTable({
                     "processing": true,
                     "serverSide": true,
                     "ajax": {
@@ -161,7 +174,7 @@ $url = admin_url('admin-ajax.php');
                         [0, 'asc']
                     ],
                     "drawCallback": function(settings) {
-                        jQuery("#wraploading").hide();
+                        jQuery("#wrap-loading").hide();
                     },
                     "columns": [{
                             "data": 'nik_kk',
@@ -260,8 +273,8 @@ $url = admin_url('admin-ajax.php');
                     },
                     dataType: 'json',
                     success: function(response) {
-                        jQuery('#wrap-loading').hide();
                         if (response.status == 'success') {
+                            alert("Berhasil Hapus Data!");
                             get_data_calon_p3ke();
                         } else {
                             alert(`GAGAL! \n${response.message}`);
@@ -270,6 +283,7 @@ $url = admin_url('admin-ajax.php');
                 });
             }
         }
+
 
         function edit_data(_id) {
             jQuery('#wrap-loading').show();
@@ -283,6 +297,8 @@ $url = admin_url('admin-ajax.php');
                     'id': _id,
                 },
                 success: function(res) {
+                    jQuery('#judulModalEditDataCalonP3KE').show();
+                    jQuery('#judulModalTambahDataCalonP3KE').hide();
                     jQuery('#id_data').val(res.data.id);
                     jQuery('#nik_kk').val(res.data.nik_kk);
                     jQuery('#nik_pkk').val(res.data.nik_pkk);
@@ -311,7 +327,6 @@ $url = admin_url('admin-ajax.php');
             });
         }
 
-
         function tambah_data_calon_p3ke() {
             jQuery('#nik_kk').val('').show();
             jQuery('#nik_pkk').val('').show();
@@ -331,17 +346,27 @@ $url = admin_url('admin-ajax.php');
             jQuery('#lat').val('').show();
             jQuery('#lng').val('').show();
             jQuery('#tahun_anggaran').val('').show();
+            jQuery('#judulModalEditDataCalonP3KE').hide();
+            jQuery('#judulModalTambahDataCalonP3KE').show();
             jQuery('#modalTambahDataCalonP3KE').modal('show');
         }
 
         function submitDataCalonP3KE(that) {
-            let nik_kk = jQuery('#nik_kk').val();
+            let nik_kk = jQuery('#nik_kk').val().toString();;
             if (nik_kk === '') {
                 return alert('Data NIK KK tidak boleh kosong!');
+                if (nik_kk.length > 16) {
+                    alert("Input KK maksimal 16 digit");
+                    return;
+                }
             }
-            let nik_pkk = jQuery('#nik_pkk').val();
+            let nik_pkk = jQuery('#nik_pkk').val().toString();;
             if (nik_pkk === '') {
                 return alert('Data NIK PKK tidak boleh kosong!');
+                if (nik_pkk.length > 16) {
+                    alert("Input KK maksimal 16 digit");
+                    return;
+                }
             }
             let nama_kk = jQuery('#nama_kk').val();
             if (nama_kk === '') {
@@ -354,6 +379,10 @@ $url = admin_url('admin-ajax.php');
             let nama_anak = jQuery('#nama_anak').val();
             if (nama_anak === '') {
                 return alert('Data Nama Anak tidak boleh kosong!');
+                if (nik_anak.length > 16) {
+                    alert("Input KK maksimal 16 digit");
+                    return;
+                }
             }
             let nik_anak = jQuery('#nik_anak').val();
             if (nik_anak === '') {
@@ -363,6 +392,10 @@ $url = admin_url('admin-ajax.php');
             if (alamat === '') {
                 return alert('Data Alamat tidak boleh kosong!');
             }
+            let desa = jQuery('#desa_kelurahan').val();
+            if (desa === '') {
+                return alert('Data Desa tidak boleh kosong!');
+            }
             let nama_rt = jQuery('#nama_rt').val();
             if (nama_rt === '') {
                 return alert('Data Nama RT tidak boleh kosong!');
@@ -371,14 +404,23 @@ $url = admin_url('admin-ajax.php');
             if (nama_rw === '') {
                 return alert('Data Nama RW tidak boleh kosong!');
             }
+            let tahun_anggaran = jQuery('#tahun_anggaran').val();
+            if (tahun_anggaran === '') {
+                return alert('Data Tahun Anggaran tidak boleh kosong!');
+            }
 
+            let id_data = jQuery('#id_data').val();
             let kabkot = jQuery('#kabkot').val();
+            let kecamatan = jQuery('#kecamatan').val();
+            let lat = jQuery('#lat').val();
+            let lng = jQuery('#lng').val();
             let district = jQuery('#district').val();
             let sumber = jQuery('#sumber').val();
             let desil_p3ke = jQuery('#desil_p3ke').val();
 
-
             let tempData = new FormData();
+            tempData.append('action', 'tambah_data_calon_p3ke');
+            tempData.append('api_key', '<?php echo get_option(SIKS_APIKEY); ?>');
             tempData.append('id_data', id_data);
             tempData.append('nik_kk', nik_kk);
             tempData.append('nik_pkk', nik_pkk);
@@ -415,7 +457,6 @@ $url = admin_url('admin-ajax.php');
                         jQuery('#modalTambahDataCalonP3KE').modal('hide');
                         get_data_calon_p3ke();
                     }
-                    jQuery('#wrap-loading').hide();
                 }
             });
         }
