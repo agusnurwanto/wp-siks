@@ -1,4 +1,5 @@
 <?php
+global $wpdb;
 $api_key = get_option(SIKS_APIKEY);
 $url = admin_url('admin-ajax.php');
 $center = $this->get_center();
@@ -10,6 +11,14 @@ if (empty($nama_desa) && is_user_logged_in()) {
 } else {
     die('error, coba login ulang');
 }
+$desa = $wpdb->get_row($wpdb->prepare('
+    SELECT
+        *
+    FROM data_batas_desa_siks
+    WHERE desa=%s
+        AND active=1
+', $nama_desa), ARRAY_A);
+$default_location = $this->getSearchLocation($desa);
 ?>
 <style type="text/css">
     .wrap-table {
@@ -28,6 +37,7 @@ if (empty($nama_desa) && is_user_logged_in()) {
             <table id="tableGepengPerDesa" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
                 <thead>
                     <tr>
+                        <th class="text-center">Aksi</th>
                         <th class="text-center">Nama</th>
                         <th class="text-center">Alamat</th>
                         <th class="text-center">Desa</th>
@@ -36,7 +46,6 @@ if (empty($nama_desa) && is_user_logged_in()) {
                         <th class="text-center">Tanggal Lahir</th>
                         <th class="text-center">Usia</th>
                         <th class="text-center">Tahun Anggaran</th>
-                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,12 +57,15 @@ if (empty($nama_desa) && is_user_logged_in()) {
         window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
         window.maps_center_siks = <?php echo json_encode($center); ?>;
         jQuery(document).ready(function() {
-            getDataTables();
+            getDataTablesGepeng();
+            cari_alamat_siks('<?php echo $default_location; ?>');
         });
 
-        function getDataTables() {
+        function getDataTablesGepeng() {
             if (typeof tableGepeng === 'undefined') {
-                window.tableGepeng = jQuery('#tableGepengPerDesa').DataTable({
+                window.tableGepeng = jQuery('#tableGepengPerDesa').on('preXhr.dt', function(e, settings, data) {
+                    jQuery("#wrap-loading").show();
+                }).DataTable({
                     "processing": true,
                     "serverSide": true,
                     "ajax": {
@@ -75,9 +87,13 @@ if (empty($nama_desa) && is_user_logged_in()) {
                         [0, 'asc']
                     ],
                     "drawCallback": function(settings) {
-                        jQuery("#wraploading").hide();
+                        jQuery("#wrap-loading").hide();
                     },
                     "columns": [{
+                            "data": 'aksi',
+                            className: "text-center"
+                        },
+                        {
                             "data": 'nama',
                             className: "text-center"
                         },
@@ -108,12 +124,7 @@ if (empty($nama_desa) && is_user_logged_in()) {
                         {
                             "data": 'tahun_anggaran',
                             className: "text-center"
-                        },
-                        {
-                            "data": 'aksi',
-                            className: "text-center"
-                        },
-
+                        }
                     ]
                 });
             } else {

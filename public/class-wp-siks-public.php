@@ -1760,7 +1760,10 @@ class Wp_Siks_Public
 					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				} else {
-					$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="cari_alamat_siks(\"" . $search . "\"); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					$btn = '-';
+					if (!empty($recVal['lat'])) {
+						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					}
 				}
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/disabilitas/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
@@ -2138,7 +2141,10 @@ class Wp_Siks_Public
 					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				} else {
-					$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="cari_alamat_siks(\"" . $search . "\"); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					$btn = '-';
+					if (!empty($recVal['lat'])) {
+						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					}
 				}
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/lansia/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
@@ -2426,7 +2432,10 @@ class Wp_Siks_Public
 					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				} else {
-					$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="cari_alamat_siks(\"" . $search . "\"); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					$btn = '-';
+					if (!empty($recVal['lat'])) {
+						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					}
 				}
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/bunda_kasih/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
@@ -2767,7 +2776,10 @@ class Wp_Siks_Public
 					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				} else {
-					$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="cari_alamat_siks(\"" . $search . "\"); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					$btn = '-';
+					if (!empty($recVal['lat'])) {
+						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					}
 				}
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/odgj/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
@@ -3036,7 +3048,10 @@ class Wp_Siks_Public
 					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				} else {
-					$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="cari_alamat_siks(\"" . $search . "\"); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					$btn = '-';
+					if (!empty($recVal['lat'])) {
+						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					}
 				}
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/lksa/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
@@ -3285,7 +3300,10 @@ class Wp_Siks_Public
 					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				} else {
-					$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="cari_alamat_siks(\"" . $search . "\"); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					$btn = '-';
+					if (!empty($recVal['lat'])) {
+						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					}
 				}
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/anak_terlantar/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
@@ -3792,7 +3810,10 @@ class Wp_Siks_Public
 					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				} else {
-					$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="cari_alamat_siks(\"" . $search . "\"); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					$btn = '-';
+					if (!empty($recVal['lat'])) {
+						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					}
 				}
 				$queryRecords[$recKey]['aksi'] = $btn;
 				$queryRecords[$recKey]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/p3ke/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
@@ -3893,7 +3914,10 @@ class Wp_Siks_Public
 					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				} else {
-					$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="cari_alamat_siks(\"" . $search . "\"); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					$btn = '-';
+					if (!empty($recVal['lat'])) {
+						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					}
 				}
 				$queryRecords[$recKey]['aksi'] = $btn;
 			}

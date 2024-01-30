@@ -30,13 +30,36 @@ function cari_alamat_siks(text) {
     });
 }
 
-function setCenterSiks(lng, ltd){
+function setCenterSiks(lng, ltd, maker=false, data){
     var lokasi_aset = new google.maps.LatLng(lng, ltd);
     map.setCenter(lokasi_aset);
     map.setZoom(15);
     jQuery([document.documentElement, document.body]).animate({
         scrollTop: jQuery("#map-canvas-siks").offset().top
     }, 500);
+    if(maker){
+        if(typeof evm != 'undefined'){
+            evm.setMap(null);
+        }
+        // Menampilkan Marker
+        window.evm = new google.maps.Marker({
+            position: lokasi_aset,
+            map,
+            draggable: false,
+            title: 'Lokasi Map'
+        });
+        if(typeof data == 'object'){
+            data = JSON.stringify(data);
+        }
+        window.infoWindow = new google.maps.InfoWindow({
+            content: data
+        });
+
+        google.maps.event.addListener(evm, 'click', function(event) {
+            infoWindow.setPosition(event.latLng);
+            infoWindow.open(map);
+        });
+    }
 }
 
 jQuery(document).ready(function(){

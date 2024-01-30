@@ -1,4 +1,5 @@
 <?php
+global $wpdb;
 $api_key = get_option(SIKS_APIKEY);
 $url = admin_url('admin-ajax.php');
 $center = $this->get_center();
@@ -10,6 +11,15 @@ if (empty($nama_desa) && is_user_logged_in()) {
 } else {
     die('error, coba login ulang');
 }
+
+$desa = $wpdb->get_row($wpdb->prepare('
+    SELECT
+        *
+    FROM data_batas_desa_siks
+    WHERE desa=%s
+        AND active=1
+', $nama_desa), ARRAY_A);
+$default_location = $this->getSearchLocation($desa);
 ?>
 <style type="text/css">
     .wrap-table {
@@ -26,6 +36,7 @@ if (empty($nama_desa) && is_user_logged_in()) {
         <table id="tableDisabilitasPerDesa" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
             <thead>
                 <tr>
+                    <th class="text-center">Aksi</th>
                     <th class="text-center">NIK</th>
                     <th class="text-center">Nomor Kartu Keluarga</th>
                     <th class="text-center">Nama</th>
@@ -108,7 +119,6 @@ if (empty($nama_desa) && is_user_logged_in()) {
                     <th class="text-center">Kelayakan</th>
                     <th class="text-center">Lampiran</th>
                     <th class="text-center">Tahun Anggaran</th>
-                    <th class="text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -120,11 +130,14 @@ if (empty($nama_desa) && is_user_logged_in()) {
         window.maps_center_siks = <?php echo json_encode($center); ?>;
         jQuery(document).ready(function() {
             get_datatable_disabilitas_per_desa();
+            cari_alamat_siks('<?php echo $default_location; ?>');
         })
 
         function get_datatable_disabilitas_per_desa() {
             if (typeof tableDisabilitas === 'undefined') {
-                window.tableDisabilitas = jQuery('#tableDisabilitasPerDesa').DataTable({
+                window.tableDisabilitas = jQuery('#tableDisabilitasPerDesa').on('preXhr.dt', function(e, settings, data) {
+                    jQuery("#wrap-loading").show();
+                }).DataTable({
                     "processing": true,
                     "serverSide": true,
                     "ajax": {
@@ -145,9 +158,13 @@ if (empty($nama_desa) && is_user_logged_in()) {
                         [0, 'asc']
                     ],
                     "drawCallback": function(settings) {
-                        jQuery("#wraploading").hide();
+                        jQuery("#wrap-loading").hide();
                     },
                     "columns": [{
+                            "data": 'aksi',
+                            className: "text-center"
+                        },
+                        {
                             "data": 'nik',
                             className: "text-center"
                         },
@@ -473,10 +490,6 @@ if (empty($nama_desa) && is_user_logged_in()) {
                         },
                         {
                             "data": 'tahun_anggaran',
-                            className: "text-center"
-                        }
-                        {
-                            "data": 'aksi',
                             className: "text-center"
                         }
                     ]
