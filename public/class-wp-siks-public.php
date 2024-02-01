@@ -3842,8 +3842,8 @@ class Wp_Siks_Public
 	{
 		global $wpdb;
 		$ret = array(
-			'status'	=> 'success',
-			'message'	=> 'Berhasil get data lansia!'
+			'status'    => 'success',
+			'message'   => 'Berhasil get data calon p3ke!'
 		);
 		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 			$params = $columns = $totalRecords = $data = array();
@@ -3872,41 +3872,71 @@ class Wp_Siks_Public
 			);
 			$where = $sqlTot = $sqlRec = "";
 
+			$where = $sqlTot = $sqlRec = "";
+
 			if (!empty($params['desa'])) {
 				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);
 			}
+
+			//not exist table p3ke_siks
+			$sqlTot = "SELECT COUNT(data_calon_p3ke_siks.id) as jml FROM `data_calon_p3ke_siks`";
+			$sqlTot .= " WHERE 1=1 AND data_calon_p3ke_siks.active = 1" . $where;
+			$sqlTot .= " AND NOT EXISTS (
+				SELECT 1
+				FROM data_p3ke_siks
+				WHERE data_calon_p3ke_siks.nik_kk = data_p3ke_siks.nik
+			)";
+
+			$sqlRec = "SELECT " . implode(', ', $columns) . " FROM `data_calon_p3ke_siks`";
+			$sqlRec .= " WHERE 1=1 AND data_calon_p3ke_siks.active = 1" . $where;
+			$sqlRec .= " AND NOT EXISTS (
+				SELECT 1
+				FROM data_p3ke_siks
+				WHERE data_calon_p3ke_siks.nik_kk = data_p3ke_siks.nik
+			)";
+
 			// check search value exist
 			if (!empty($params['search']['value'])) {
 				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-				$where .= " AND (kecamatan LIKE " . $search_value;
-				$where .= " OR nama_kk LIKE " . $search_value;
-				$where .= " OR nama_anak LIKE " . $search_value;
-				$where .= " OR nama_pkk LIKE " . $search_value;
-				$where .= " OR nik_pkk LIKE " . $search_value;
-				$where .= " OR nik_anak LIKE " . $search_value;
-				$where .= " OR nik_kk LIKE " . $search_value;
-				$where .= " OR alamat LIKE " . $search_value . ")";
+
+				$where .= " AND (
+					data_calon_p3ke_siks.kecamatan LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.alamat LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.nama_kk LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.nama_pkk LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.nama_anak LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.nik_anak LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.desa_kelurahan LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.kecamatan LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.kabkot LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.district LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.sumber LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.desil_p3ke LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.tahun_anggaran LIKE " . $search_value . "
+				)";
+
+				$sqlTot .= " AND NOT EXISTS (
+				SELECT 1
+				FROM data_p3ke_siks
+				WHERE data_calon_p3ke_siks.nik_kk = data_p3ke_siks.nik
+				)";
+
+				$sqlRec .= " AND NOT EXISTS (
+				SELECT 1
+				FROM data_p3ke_siks
+				WHERE data_calon_p3ke_siks.nik_kk = data_p3ke_siks.nik
+				)";
 			}
 
-			// getting total number records without any search
-			$sql_tot = "SELECT count(id) as jml FROM `data_calon_p3ke_siks`";
-			$sql = "SELECT " . implode(', ', $columns) . " FROM `data_calon_p3ke_siks`";
-			$where_first = " WHERE 1=1 AND active = 1";
-			$sqlTot .= $sql_tot . $where_first;
-			$sqlRec .= $sql . $where_first;
-			if (isset($where) && $where != '') {
-				$sqlTot .= $where;
-				$sqlRec .= $where;
-			}
+			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
+			$totalRecords = $queryTot[0]['jml'];
 
 			$limit = '';
 			if ($params['length'] != -1) {
 				$limit = "  LIMIT " . $wpdb->prepare('%d', $params['start']) . " ," . $wpdb->prepare('%d', $params['length']);
 			}
-			$sqlRec .= " ORDER BY update_at DESC" . $limit;
+			$sqlRec .= " ORDER BY data_calon_p3ke_siks.update_at DESC" . $limit;
 
-			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
-			$totalRecords = $queryTot[0]['jml'];
 			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
 
 			foreach ($queryRecords as $recKey => $recVal) {
@@ -3934,11 +3964,12 @@ class Wp_Siks_Public
 		} else {
 			$ret = array(
 				'status' => 'error',
-				'message'	=> 'Format tidak sesuai!'
+				'message'   => 'Format tidak sesuai!'
 			);
 		}
 		die(json_encode($ret));
 	}
+
 
 	public function tambah_data_calon_p3ke()
 	{
