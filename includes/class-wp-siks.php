@@ -249,6 +249,7 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_tambah_data_calon_p3ke', $plugin_public, 'tambah_data_calon_p3ke');
 		$this->loader->add_action('wp_ajax_get_datatable_calon_p3ke', $plugin_public, 'get_datatable_calon_p3ke');
 		$this->loader->add_action('wp_ajax_hapus_data_calon_p3ke_by_id', $plugin_public, 'hapus_data_calon_p3ke_by_id');
+		$this->loader->add_action('wp_ajax_cari_nik_siks', $plugin_public, 'cari_nik_siks');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 		add_shortcode('peta_desa_siks', array($plugin_public, 'peta_desa_siks'));
@@ -277,6 +278,7 @@ class Wp_Siks {
 		add_shortcode('data_p3ke_siks', array($plugin_public, 'data_p3ke_siks'));
 		add_shortcode('data_calon_p3ke', array($plugin_public, 'data_calon_p3ke'));
 		add_shortcode('management_calon_p3ke', array($plugin_public, 'management_calon_p3ke'));
+		add_shortcode('cek_nik_siks', array($plugin_public, 'cek_nik_siks'));
 
 		// untuk menjalankan conjob refresh session
 		$this->loader->add_action('siks_conjob',  $plugin_public, 'refresh_token');

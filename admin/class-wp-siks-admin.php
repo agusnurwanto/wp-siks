@@ -341,6 +341,14 @@ class Wp_Siks_Admin
 			'post_status' => 'private'
 		));
 
+		$cek_nik_siks = $this->functions->generatePage(array(
+			'nama_page' => 'Cek NIK SIKS',
+			'content' => '[cek_nik_siks]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
 		$basic_options_container = Container::make('theme_options', __('SIKS Options'))
 			->set_page_menu_position(4)
 			->add_fields(array(
@@ -362,6 +370,7 @@ class Wp_Siks_Admin
 	            		<li><a target="_blank" href="' . $data_bunda_kasih['url'] . '">' . $data_bunda_kasih['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_p3ke['url'] . '">' . $data_p3ke['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_calon_p3ke['url'] . '">' . $data_calon_p3ke['title'] . '</a></li>
+	            		<li><a target="_blank" href="' . $cek_nik_siks['url'] . '">' . $cek_nik_siks['title'] . '</a></li>
 	            	</ol>'),
 				Field::make('text', 'crb_apikey_siks', 'API KEY')
 					->set_default_value($this->functions->generateRandomString())

@@ -4075,4 +4075,76 @@ class Wp_Siks_Public
 
 		die(json_encode($ret));
 	}
+
+	function cek_nik_siks()
+	{
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-cek-nik.php';
+	}
+
+	function cari_nik_siks(){
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil get data!',
+			'data' => array()
+		);
+		if(strlen($_POST['nik']) >=3){
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SATSET_APIKEY )) {
+				$data_p3ke = $wpdb->get_results($wpdb->prepare("
+					SELECT
+						*
+					FROM data_p3ke_siks
+					WHERE nik like %s
+				", '%'.$_POST['nik'].'%'));
+				$data_anak_terlantar = $wpdb->get_results($wpdb->prepare("
+					SELECT
+						*
+					FROM data_anak_terlantar_siks
+					WHERE nik like %s
+				", '%' .$_POST['nik'].'%'));
+				$data_bunda_kasih = $wpdb->get_results($wpdb->prepare("
+					SELECT
+						*
+					FROM data_bunda_kasih_siks
+					WHERE nik like %s
+				", '%' .$_POST['nik'].'%'));
+				$data_disabilitas = $wpdb->get_results($wpdb->prepare("
+					SELECT
+						*
+					FROM data_disabilitas_siks
+					WHERE nik like %s
+				", '%' .$_POST['nik'].'%'));
+				$data_lansia = $wpdb->get_results($wpdb->prepare("
+					SELECT
+						*
+					FROM data_lansia_siks
+					WHERE nik like %s
+				", '%' .$_POST['nik'].'%'));
+				$data_odgj = $wpdb->get_results($wpdb->prepare("
+					SELECT
+						*
+					FROM data_odgj_siks
+					WHERE nik like %s
+				", '%' .$_POST['nik'].'%'));
+
+				$ret['data']['p3ke'] = $data_p3ke;
+				$ret['data']['anak_terlantar'] = $data_anak_terlantar;
+				$ret['data']['bunda_kasih'] = $data_bunda_kasih;
+				$ret['data']['disabilitas'] = $data_disabilitas;
+				$ret['data']['lansia'] = $data_lansia;
+				$ret['data']['odgj'] = $data_odgj;
+			}else{
+				$ret['status']	= 'error';
+				$ret['message']	= 'Api key tidak ditemukan!';
+			}
+		}else{
+			$ret['status']	= 'error';
+			$ret['message']	= 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
 }
