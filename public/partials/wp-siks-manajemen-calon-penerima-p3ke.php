@@ -28,6 +28,7 @@ $url = admin_url('admin-ajax.php');
         <table id="tableManajemenCalonPenerimaCalonP3KE" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
             <thead>
                 <tr>
+                    <th class="text-center">Status P3KE</th>
                     <th class="text-center">NIK KK</th>
                     <th class="text-center">NIK PKK</th>
                     <th class="text-center">Nama KK</th>
@@ -176,7 +177,14 @@ $url = admin_url('admin-ajax.php');
                     "drawCallback": function(settings) {
                         jQuery("#wrap-loading").hide();
                     },
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [18] }, 
+                        { "bSearchable": false, "aTargets": [18] }
+                    ],
                     "columns": [{
+                            "data": 'status_p3ke',
+                            className: "text-center"
+                        },{
                             "data": 'nik_kk',
                             className: "text-center"
                         },

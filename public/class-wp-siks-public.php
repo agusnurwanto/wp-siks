@@ -3849,51 +3849,29 @@ class Wp_Siks_Public
 			$params = $columns = $totalRecords = $data = array();
 			$params = $_REQUEST;
 			$columns = array(
-				1 => 'id',
-				2 => 'id_kpm',
-				3 => 'nik_kk',
-				4 => 'nik_pkk',
-				5 => 'nama_kk',
-				6 => 'nama_pkk',
-				7 => 'nama_anak',
-				8 => 'nik_anak',
-				9 => 'alamat',
-				10 => 'nama_rt',
-				11 => 'nama_rw',
-				12 => 'desa_kelurahan',
-				13 => 'kecamatan',
-				14 => 'kabkot',
-				15 => 'district',
-				16 => 'sumber',
-				17 => 'desil_p3ke',
-				18 => 'lat',
-				19 => 'lng',
-				20 => 'tahun_anggaran',
+				'data_p3ke_siks.nik as nik_p3ke',
+				'data_calon_p3ke_siks.nik_kk',
+				'data_calon_p3ke_siks.nik_pkk',
+				'data_calon_p3ke_siks.nama_kk',
+				'data_calon_p3ke_siks.nama_pkk',
+				'data_calon_p3ke_siks.nama_anak',
+				'data_calon_p3ke_siks.nik_anak',
+				'data_calon_p3ke_siks.alamat',
+				'data_calon_p3ke_siks.nama_rt',
+				'data_calon_p3ke_siks.nama_rw',
+				'data_calon_p3ke_siks.desa_kelurahan',
+				'data_calon_p3ke_siks.kecamatan',
+				'data_calon_p3ke_siks.kabkot',
+				'data_calon_p3ke_siks.district',
+				'data_calon_p3ke_siks.sumber',
+				'data_calon_p3ke_siks.desil_p3ke',
+				'data_calon_p3ke_siks.lat',
+				'data_calon_p3ke_siks.lng',
+				'data_calon_p3ke_siks.tahun_anggaran',
+				'data_calon_p3ke_siks.id',
+				'data_calon_p3ke_siks.id_kpm'
 			);
 			$where = $sqlTot = $sqlRec = "";
-
-			$where = $sqlTot = $sqlRec = "";
-
-			if (!empty($params['desa'])) {
-				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);
-			}
-
-			//not exist table p3ke_siks
-			$sqlTot = "SELECT COUNT(data_calon_p3ke_siks.id) as jml FROM `data_calon_p3ke_siks`";
-			$sqlTot .= " WHERE 1=1 AND data_calon_p3ke_siks.active = 1" . $where;
-			$sqlTot .= " AND NOT EXISTS (
-				SELECT 1
-				FROM data_p3ke_siks
-				WHERE data_calon_p3ke_siks.nik_kk = data_p3ke_siks.nik
-			)";
-
-			$sqlRec = "SELECT " . implode(', ', $columns) . " FROM `data_calon_p3ke_siks`";
-			$sqlRec .= " WHERE 1=1 AND data_calon_p3ke_siks.active = 1" . $where;
-			$sqlRec .= " AND NOT EXISTS (
-				SELECT 1
-				FROM data_p3ke_siks
-				WHERE data_calon_p3ke_siks.nik_kk = data_p3ke_siks.nik
-			)";
 
 			// check search value exist
 			if (!empty($params['search']['value'])) {
@@ -3914,19 +3892,23 @@ class Wp_Siks_Public
 					data_calon_p3ke_siks.desil_p3ke LIKE " . $search_value . " OR
 					data_calon_p3ke_siks.tahun_anggaran LIKE " . $search_value . "
 				)";
-
-				$sqlTot .= " AND NOT EXISTS (
-				SELECT 1
-				FROM data_p3ke_siks
-				WHERE data_calon_p3ke_siks.nik_kk = data_p3ke_siks.nik
-				)";
-
-				$sqlRec .= " AND NOT EXISTS (
-				SELECT 1
-				FROM data_p3ke_siks
-				WHERE data_calon_p3ke_siks.nik_kk = data_p3ke_siks.nik
-				)";
 			}
+
+			if (!empty($params['desa'])) {
+				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);
+			}
+
+			//not exist table p3ke_siks
+			$sqlTot = "SELECT COUNT(data_calon_p3ke_siks.id) as jml FROM `data_calon_p3ke_siks`";
+			$sqlTot .= " WHERE 1=1 AND data_calon_p3ke_siks.active = 1" . $where;
+			$sqlRec = "
+				SELECT 
+					" . implode(', ', $columns) . " 
+				FROM `data_calon_p3ke_siks`
+				LEFT JOIN data_p3ke_siks on data_calon_p3ke_siks.nik_kk = data_p3ke_siks.nik
+					AND data_p3ke_siks.active=1
+			";
+			$sqlRec .= " WHERE 1=1 AND data_calon_p3ke_siks.active = 1" . $where;
 
 			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
 			$totalRecords = $queryTot[0]['jml'];
@@ -3948,6 +3930,10 @@ class Wp_Siks_Public
 					if (!empty($recVal['lat'])) {
 						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
 					}
+				}
+				$queryRecords[$recKey]['status_p3ke'] = '-';
+				if(!empty($recVal['nik_p3ke'])){
+					$queryRecords[$recKey]['status_p3ke'] = 'Terdaftar';
 				}
 				$queryRecords[$recKey]['aksi'] = $btn;
 			}
@@ -4100,78 +4086,6 @@ class Wp_Siks_Public
 				$ret['message']	= 'Api key tidak ditemukan!';
 			}
 		} else {
-			$ret['status']	= 'error';
-			$ret['message']	= 'Format Salah!';
-		}
-
-		die(json_encode($ret));
-	}
-
-	function cek_nik_siks()
-	{
-		if (!empty($_GET) && !empty($_GET['post'])) {
-			return '';
-		}
-		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-cek-nik.php';
-	}
-
-	function cari_nik_siks(){
-		global $wpdb;
-		$ret = array(
-			'status' => 'success',
-			'message' => 'Berhasil get data!',
-			'data' => array()
-		);
-		if(strlen($_POST['nik']) >=3){
-			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SATSET_APIKEY )) {
-				$data_p3ke = $wpdb->get_results($wpdb->prepare("
-					SELECT
-						*
-					FROM data_p3ke_siks
-					WHERE nik like %s
-				", '%'.$_POST['nik'].'%'));
-				$data_anak_terlantar = $wpdb->get_results($wpdb->prepare("
-					SELECT
-						*
-					FROM data_anak_terlantar_siks
-					WHERE nik like %s
-				", '%' .$_POST['nik'].'%'));
-				$data_bunda_kasih = $wpdb->get_results($wpdb->prepare("
-					SELECT
-						*
-					FROM data_bunda_kasih_siks
-					WHERE nik like %s
-				", '%' .$_POST['nik'].'%'));
-				$data_disabilitas = $wpdb->get_results($wpdb->prepare("
-					SELECT
-						*
-					FROM data_disabilitas_siks
-					WHERE nik like %s
-				", '%' .$_POST['nik'].'%'));
-				$data_lansia = $wpdb->get_results($wpdb->prepare("
-					SELECT
-						*
-					FROM data_lansia_siks
-					WHERE nik like %s
-				", '%' .$_POST['nik'].'%'));
-				$data_odgj = $wpdb->get_results($wpdb->prepare("
-					SELECT
-						*
-					FROM data_odgj_siks
-					WHERE nik like %s
-				", '%' .$_POST['nik'].'%'));
-
-				$ret['data']['p3ke'] = $data_p3ke;
-				$ret['data']['anak_terlantar'] = $data_anak_terlantar;
-				$ret['data']['bunda_kasih'] = $data_bunda_kasih;
-				$ret['data']['disabilitas'] = $data_disabilitas;
-				$ret['data']['lansia'] = $data_lansia;
-				$ret['data']['odgj'] = $data_odgj;
-			}else{
-				$ret['status']	= 'error';
-				$ret['message']	= 'Api key tidak ditemukan!';
-			}
-		}else{
 			$ret['status']	= 'error';
 			$ret['message']	= 'Format Salah!';
 		}
