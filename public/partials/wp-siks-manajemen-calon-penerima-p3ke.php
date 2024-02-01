@@ -1,6 +1,24 @@
 <?php
+global $wpdb;
 $api_key = get_option(SIKS_APIKEY);
 $url = admin_url('admin-ajax.php');
+
+$terdaftar = $wpdb->get_row('
+    SELECT COUNT(data_calon_p3ke_siks.id) as jml 
+    FROM `data_calon_p3ke_siks`
+    INNER JOIN data_p3ke_siks
+        ON data_p3ke_siks.nik=data_calon_p3ke_siks.nik_kk
+        AND data_p3ke_siks.active=1
+    WHERE data_calon_p3ke_siks.active=1', ARRAY_A);
+
+$calon_terdaftar = $wpdb->get_row('
+    SELECT COUNT(id) as jml 
+    FROM `data_calon_p3ke_siks`
+    WHERE active=1', ARRAY_A);
+    
+$jumlah_terdaftar = $terdaftar['jml'];
+$jumlah_calon_terdaftar = $calon_terdaftar['jml'];
+$jumlah_tidak_terdaftar = $calon_terdaftar['jml']-$terdaftar['jml'];
 ?>
 <style type="text/css">
     .wrap-table {
@@ -20,7 +38,10 @@ $url = admin_url('admin-ajax.php');
     }
 </style>
 <div style="padding: 10px;margin:0 0 3rem 0;">
-    <h1 class="text-center" style="margin:3rem;">Manajemen Calon Penerima Data Calon P3KE</h1>
+    <h1 class="text-center" style="margin:3rem;">Manajemen Data Calon Penerima P3KE</h1>
+    <h2 class="text-center">Total Calon Penerima P3KE = <?php echo $jumlah_calon_terdaftar; ?></h2>
+    <h2 class="text-center">Jumlah Terdaftar P3KE = <?php echo $jumlah_terdaftar; ?></h2>
+    <h2 class="text-center">Jumlah Tidak Terdaftar P3KE = <?php echo $jumlah_tidak_terdaftar; ?></h2>
     <div style="margin-bottom: 25px;">
         <button class="btn btn-primary" onclick="tambah_data_calon_p3ke();"><i class="dashicons dashicons-plus"></i>Tambah Data</button>
     </div>
