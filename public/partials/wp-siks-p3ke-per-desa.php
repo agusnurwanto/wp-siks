@@ -75,6 +75,9 @@ $default_location = $this->getSearchLocation($desa);
                 }).DataTable({
                     "processing": true,
                     "serverSide": true,
+                    "search": {
+                        return: true
+                    },
                     "ajax": {
                         url: '<?php echo $url ?>',
                         type: 'POST',
@@ -95,8 +98,7 @@ $default_location = $this->getSearchLocation($desa);
                     "drawCallback": function(settings) {
                         jQuery("#wrap-loading").hide();
                     },
-                    "columns": [
-                        {
+                    "columns": [{
                             "data": 'aksi',
                             className: "text-center"
                         },
