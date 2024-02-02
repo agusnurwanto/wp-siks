@@ -15,10 +15,10 @@ $calon_terdaftar = $wpdb->get_row('
     SELECT COUNT(id) as jml 
     FROM `data_calon_p3ke_siks`
     WHERE active=1', ARRAY_A);
-    
+
 $jumlah_terdaftar = $terdaftar['jml'];
 $jumlah_calon_terdaftar = $calon_terdaftar['jml'];
-$jumlah_tidak_terdaftar = $calon_terdaftar['jml']-$terdaftar['jml'];
+$jumlah_tidak_terdaftar = $calon_terdaftar['jml'] - $terdaftar['jml'];
 ?>
 <style type="text/css">
     .wrap-table {
@@ -39,9 +39,9 @@ $jumlah_tidak_terdaftar = $calon_terdaftar['jml']-$terdaftar['jml'];
 </style>
 <div style="padding: 10px;margin:0 0 3rem 0;">
     <h1 class="text-center" style="margin:3rem;">Manajemen Data Calon Penerima P3KE</h1>
-    <h2 class="text-center">Total Calon Penerima P3KE = <?php echo $jumlah_calon_terdaftar; ?></h2>
-    <h2 class="text-center">Jumlah Terdaftar P3KE = <?php echo $jumlah_terdaftar; ?></h2>
-    <h2 class="text-center">Jumlah Tidak Terdaftar P3KE = <?php echo $jumlah_tidak_terdaftar; ?></h2>
+    <h2 class="text-center">Total Calon Penerima P3KE <?php echo number_format($jumlah_calon_terdaftar); ?> Orang</h2>
+    <h2 class="text-center">Jumlah Terdaftar P3KE <?php echo number_format($jumlah_terdaftar); ?> Orang</h2>
+    <h2 class="text-center">Jumlah Belum Terdaftar P3KE <?php echo number_format($jumlah_tidak_terdaftar); ?> Orang</h2>
     <div style="margin-bottom: 25px;">
         <button class="btn btn-primary" onclick="tambah_data_calon_p3ke();"><i class="dashicons dashicons-plus"></i>Tambah Data</button>
     </div>
@@ -179,33 +179,30 @@ $jumlah_tidak_terdaftar = $calon_terdaftar['jml']-$terdaftar['jml'];
                 }).DataTable({
                     "processing": true,
                     "serverSide": true,
+                    "search": {
+                        return: true
+                    },
                     "ajax": {
-                        url: '<?php echo $url ?>',
+                        url: '<?php echo $url; ?>',
                         type: 'POST',
                         dataType: 'json',
                         data: {
                             'action': 'get_datatable_calon_p3ke',
-                            'api_key': '<?php echo $api_key ?>',
+                            'api_key': '<?php echo $api_key; ?>',
                         }
                     },
                     lengthMenu: [
                         [20, 50, 100, -1],
                         [20, 50, 100, "All"]
                     ],
-                    order: [
-                        [0, 'asc']
-                    ],
+                    order: [],
                     "drawCallback": function(settings) {
                         jQuery("#wrap-loading").hide();
                     },
-                    "aoColumnDefs": [
-                        { "bSortable": false, "aTargets": [18] }, 
-                        { "bSearchable": false, "aTargets": [18] }
-                    ],
                     "columns": [{
                             "data": 'status_p3ke',
                             className: "text-center"
-                        },{
+                        }, {
                             "data": 'nik_kk',
                             className: "text-center"
                         },

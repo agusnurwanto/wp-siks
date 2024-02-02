@@ -132,36 +132,39 @@ $maps_all = $this->get_polygon();
 </div>
 <script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
-window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/lksa/'; ?>";
-window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
-window.maps_center_siks = <?php echo json_encode($center); ?>;
-jQuery(document).ready(function() {
-    get_datatable_lksa();
+    window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/lksa/'; ?>";
+    window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
+    window.maps_center_siks = <?php echo json_encode($center); ?>;
+    jQuery(document).ready(function() {
+        get_datatable_lksa();
 
-    function hitungTotalAnak() {
-        let dalamLksa = parseInt(jQuery('#dalam_lksa').val()) || 0;
-        let luarLksa = parseInt(jQuery('#luar_lksa').val()) || 0;
-        let total = dalamLksa + luarLksa;
-        jQuery('#total_anak').val(total);
-    }
-    jQuery('#dalam_lksa, #luar_lksa').on('input', function() {
-        hitungTotalAnak();
+        function hitungTotalAnak() {
+            let dalamLksa = parseInt(jQuery('#dalam_lksa').val()) || 0;
+            let luarLksa = parseInt(jQuery('#luar_lksa').val()) || 0;
+            let total = dalamLksa + luarLksa;
+            jQuery('#total_anak').val(total);
+        }
+        jQuery('#dalam_lksa, #luar_lksa').on('input', function() {
+            hitungTotalAnak();
+        });
+        jQuery('#total_anak').prop('disabled', true);
     });
-    jQuery('#total_anak').prop('disabled', true);
-});
 
     function get_datatable_lksa() {
         if (typeof tableLksa === 'undefined') {
             window.tableLksa = jQuery('#tableManajemenLksa').DataTable({
                 "processing": true,
                 "serverSide": true,
+                "search": {
+                    return: true
+                },
                 "ajax": {
-                    url: '<?php echo $url ?>',
+                    url: '<?php echo $url; ?>',
                     type: 'POST',
                     dataType: 'json',
                     data: {
                         'action': 'get_datatable_lksa',
-                        'api_key': '<?php echo $api_key ?>',
+                        'api_key': '<?php echo $api_key; ?>',
                     }
                 },
                 lengthMenu: [
@@ -265,41 +268,41 @@ jQuery(document).ready(function() {
             success: function(res) {
                 if (res.status == 'success') {
 
-                // Lokasi Center Map
-                if(
-                    !res.data.lat
-                    || !res.data.lng
-                ){
-                    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
-                }else{
-                    var lokasi_center = new google.maps.LatLng(res.data.lat, res.data.lng);
-                }
+                    // Lokasi Center Map
+                    if (
+                        !res.data.lat ||
+                        !res.data.lng
+                    ) {
+                        var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+                    } else {
+                        var lokasi_center = new google.maps.LatLng(res.data.lat, res.data.lng);
+                    }
 
-                if(typeof evm != 'undefined'){
-                    evm.setMap(null);
-                }
+                    if (typeof evm != 'undefined') {
+                        evm.setMap(null);
+                    }
 
-                // Menampilkan Marker
-                window.evm = new google.maps.Marker({
-                    position: lokasi_center,
-                    map,
-                    draggable: true,
-                    title: 'Lokasi Map'
-                });
+                    // Menampilkan Marker
+                    window.evm = new google.maps.Marker({
+                        position: lokasi_center,
+                        map,
+                        draggable: true,
+                        title: 'Lokasi Map'
+                    });
 
-                window.infoWindow = new google.maps.InfoWindow({
-                    content: JSON.stringify(res.data)
-                });
+                    window.infoWindow = new google.maps.InfoWindow({
+                        content: JSON.stringify(res.data)
+                    });
 
-                google.maps.event.addListener(evm, 'click', function(event) {
-                    infoWindow.setPosition(event.latLng);
-                    infoWindow.open(map);
-                });
+                    google.maps.event.addListener(evm, 'click', function(event) {
+                        infoWindow.setPosition(event.latLng);
+                        infoWindow.open(map);
+                    });
 
-                google.maps.event.addListener(evm, 'mouseup', function(event) {
-                    jQuery('input[name="latitude"]').val(event.latLng.lat());
-                    jQuery('input[name="longitude"]').val(event.latLng.lng());
-                });
+                    google.maps.event.addListener(evm, 'mouseup', function(event) {
+                        jQuery('input[name="latitude"]').val(event.latLng.lat());
+                        jQuery('input[name="longitude"]').val(event.latLng.lng());
+                    });
                     jQuery('#id_data').val(res.data.id);
                     jQuery('#tahun_anggaran').val(res.data.tahun_anggaran);
                     jQuery('#nama').val(res.data.nama);
@@ -324,44 +327,44 @@ jQuery(document).ready(function() {
         });
     }
 
-function tambahDataLksa() {
-    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+    function tambahDataLksa() {
+        var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
 
-    if(typeof evm != 'undefined'){
-        evm.setMap(null);
+        if (typeof evm != 'undefined') {
+            evm.setMap(null);
+        }
+
+        // Menampilkan Marker
+        window.evm = new google.maps.Marker({
+            position: lokasi_center,
+            map,
+            draggable: true,
+            title: 'Lokasi Map'
+        });
+
+        google.maps.event.addListener(evm, 'mouseup', function(event) {
+            jQuery('input[name="latitude"]').val(event.latLng.lat());
+            jQuery('input[name="longitude"]').val(event.latLng.lng());
+        });
+
+        jQuery('#longitude').val(maps_center_siks['lng']).show();
+        jQuery('#latitude').val(maps_center_siks['lat']).show();
+        jQuery('#tahun_anggaran').val('').show();
+        jQuery('#nama').val('').show();
+        jQuery('#kabkot').val('').show();
+        jQuery('#alamat').val('').show();
+        jQuery('#ketua').val('').show();
+        jQuery('#no_hp').val('').show();
+        jQuery('#akreditasi').val('').show();
+        jQuery('#dalam_lksa').val('').show();
+        jQuery('#luar_lksa').val('').show();
+        jQuery('#total_anak').val('').show();
+        jQuery('#lampiran').val('').show();
+
+        jQuery('#file_lampiran_existing').hide();
+        jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
+        jQuery('#modalTambahDataLksa').modal('show');
     }
-
-    // Menampilkan Marker
-    window.evm = new google.maps.Marker({
-        position: lokasi_center,
-        map,
-        draggable: true,
-        title: 'Lokasi Map'
-    });
-
-    google.maps.event.addListener(evm, 'mouseup', function(event) {
-        jQuery('input[name="latitude"]').val(event.latLng.lat());
-        jQuery('input[name="longitude"]').val(event.latLng.lng());
-    });
-
-    jQuery('#longitude').val(maps_center_siks['lng']).show();
-    jQuery('#latitude').val(maps_center_siks['lat']).show();
-    jQuery('#tahun_anggaran').val('').show();
-    jQuery('#nama').val('').show();
-    jQuery('#kabkot').val('').show();
-    jQuery('#alamat').val('').show();
-    jQuery('#ketua').val('').show();
-    jQuery('#no_hp').val('').show();
-    jQuery('#akreditasi').val('').show();
-    jQuery('#dalam_lksa').val('').show();
-    jQuery('#luar_lksa').val('').show();
-    jQuery('#total_anak').val('').show();
-    jQuery('#lampiran').val('').show();
-
-    jQuery('#file_lampiran_existing').hide();
-    jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
-    jQuery('#modalTambahDataLksa').modal('show');
-}
 
     function submitDataLksa(that) {
         let id_data = jQuery('#id_data').val();
@@ -380,8 +383,8 @@ function tambahDataLksa() {
             if (typeof lampiran == 'undefined') {
                 return alert('Upload file lampiran dulu!');
             }
-        }    
-    let tempData = new FormData();
+        }
+        let tempData = new FormData();
         tempData.append('action', 'tambah_data_lksa');
         tempData.append('api_key', '<?php echo $api_key; ?>');
         tempData.append('id', id_data);
@@ -395,31 +398,31 @@ function tambahDataLksa() {
         tempData.append('dalam_lksa', dalam_lksa);
         tempData.append('luar_lksa', luar_lksa);
         tempData.append('total_anak', total_anak);
-        tempData.append('lat',jQuery('input[name="latitude"]').val());
-        tempData.append('lng',jQuery('input[name="longitude"]').val());
-   
-    if (typeof lampiran != 'undefined') {
-            tempData.append('lampiran', lampiran);
-    }
-    tempData.append('lampiran', lampiran);
+        tempData.append('lat', jQuery('input[name="latitude"]').val());
+        tempData.append('lng', jQuery('input[name="longitude"]').val());
 
-    jQuery('#wrap-loading').show();
-    jQuery.ajax({
-        method: 'post',
-        url: '<?php echo admin_url('admin-ajax.php'); ?>',
-        dataType: 'json',
-        data: tempData,
-        processData: false,
-        contentType: false,
-        cache: false,
-        success: function(res) {
-            alert(res.message);
-            if (res.status == 'success') {
-                jQuery('#modalTambahDataLksa').modal('hide');
-                get_datatable_lksa();
-            }   
-            jQuery('#wrap-loading').hide();
+        if (typeof lampiran != 'undefined') {
+            tempData.append('lampiran', lampiran);
         }
-    });
-}
+        tempData.append('lampiran', lampiran);
+
+        jQuery('#wrap-loading').show();
+        jQuery.ajax({
+            method: 'post',
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+            dataType: 'json',
+            data: tempData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(res) {
+                alert(res.message);
+                if (res.status == 'success') {
+                    jQuery('#modalTambahDataLksa').modal('hide');
+                    get_datatable_lksa();
+                }
+                jQuery('#wrap-loading').hide();
+            }
+        });
+    }
 </script>

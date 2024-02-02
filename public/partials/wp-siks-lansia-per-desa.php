@@ -80,6 +80,9 @@ $default_location = $this->getSearchLocation($desa);
                 }).DataTable({
                     "processing": true,
                     "serverSide": true,
+                    "search": {
+                        return: true
+                    },
                     "ajax": {
                         url: '<?php echo $url ?>',
                         type: 'POST',
@@ -98,6 +101,13 @@ $default_location = $this->getSearchLocation($desa);
                         [0, 'asc']
                     ],
                     "drawCallback": function(settings) {
+                        var api = this.api();
+                        api.rows( {page:'current'} ).data().map(function(b, i){
+                            if(b.lat && b.lng){
+                                var data = b.aksi.split(", true, '")[1].split("')")[0];
+                                setCenterSiks(b.lat, b.lng, true, data, true);
+                            }
+                        });
                         jQuery("#wrap-loading").hide();
                     },
                     "columns": [{

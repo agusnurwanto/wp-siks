@@ -73,6 +73,9 @@ $default_location = $this->getSearchLocation($desa);
                 }).DataTable({
                     "processing": true,
                     "serverSide": true,
+                    "search": {
+                        return: true
+                    },
                     "ajax": {
                         url: '<?php echo $url ?>',
                         type: 'POST',
