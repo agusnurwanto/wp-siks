@@ -3842,71 +3842,83 @@ class Wp_Siks_Public
 	{
 		global $wpdb;
 		$ret = array(
-			'status'	=> 'success',
-			'message'	=> 'Berhasil get data lansia!'
+			'status'    => 'success',
+			'message'   => 'Berhasil get data calon p3ke!'
 		);
 		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 			$params = $columns = $totalRecords = $data = array();
 			$params = $_REQUEST;
 			$columns = array(
-				1 => 'id',
-				2 => 'id_kpm',
-				3 => 'nik_kk',
-				4 => 'nik_pkk',
-				5 => 'nama_kk',
-				6 => 'nama_pkk',
-				7 => 'nama_anak',
-				8 => 'nik_anak',
-				9 => 'alamat',
-				10 => 'nama_rt',
-				11 => 'nama_rw',
-				12 => 'desa_kelurahan',
-				13 => 'kecamatan',
-				14 => 'kabkot',
-				15 => 'district',
-				16 => 'sumber',
-				17 => 'desil_p3ke',
-				18 => 'lat',
-				19 => 'lng',
-				20 => 'tahun_anggaran',
+				'data_p3ke_siks.nik as nik_p3ke',
+				'data_calon_p3ke_siks.nik_kk',
+				'data_calon_p3ke_siks.nik_pkk',
+				'data_calon_p3ke_siks.nama_kk',
+				'data_calon_p3ke_siks.nama_pkk',
+				'data_calon_p3ke_siks.nama_anak',
+				'data_calon_p3ke_siks.nik_anak',
+				'data_calon_p3ke_siks.alamat',
+				'data_calon_p3ke_siks.nama_rt',
+				'data_calon_p3ke_siks.nama_rw',
+				'data_calon_p3ke_siks.desa_kelurahan',
+				'data_calon_p3ke_siks.kecamatan',
+				'data_calon_p3ke_siks.kabkot',
+				'data_calon_p3ke_siks.district',
+				'data_calon_p3ke_siks.sumber',
+				'data_calon_p3ke_siks.desil_p3ke',
+				'data_calon_p3ke_siks.lat',
+				'data_calon_p3ke_siks.lng',
+				'data_calon_p3ke_siks.tahun_anggaran',
+				'data_calon_p3ke_siks.id',
+				'data_calon_p3ke_siks.id_kpm'
 			);
 			$where = $sqlTot = $sqlRec = "";
+
+			// check search value exist
+			if (!empty($params['search']['value'])) {
+				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+
+				$where .= " AND (
+					data_calon_p3ke_siks.kecamatan LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.alamat LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.nama_kk LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.nama_pkk LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.nama_anak LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.nik_anak LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.desa_kelurahan LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.kecamatan LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.kabkot LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.district LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.sumber LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.desil_p3ke LIKE " . $search_value . " OR
+					data_calon_p3ke_siks.tahun_anggaran LIKE " . $search_value . "
+				)";
+			}
 
 			if (!empty($params['desa'])) {
 				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);
 			}
-			// check search value exist
-			if (!empty($params['search']['value'])) {
-				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-				$where .= " AND (kecamatan LIKE " . $search_value;
-				$where .= " OR nama_kk LIKE " . $search_value;
-				$where .= " OR nama_anak LIKE " . $search_value;
-				$where .= " OR nama_pkk LIKE " . $search_value;
-				$where .= " OR nik_pkk LIKE " . $search_value;
-				$where .= " OR nik_anak LIKE " . $search_value;
-				$where .= " OR nik_kk LIKE " . $search_value;
-				$where .= " OR alamat LIKE " . $search_value . ")";
-			}
 
-			// getting total number records without any search
-			$sql_tot = "SELECT count(id) as jml FROM `data_calon_p3ke_siks`";
-			$sql = "SELECT " . implode(', ', $columns) . " FROM `data_calon_p3ke_siks`";
-			$where_first = " WHERE 1=1 AND active = 1";
-			$sqlTot .= $sql_tot . $where_first;
-			$sqlRec .= $sql . $where_first;
-			if (isset($where) && $where != '') {
-				$sqlTot .= $where;
-				$sqlRec .= $where;
-			}
+			//not exist table p3ke_siks
+			$sqlTot = "SELECT COUNT(data_calon_p3ke_siks.id) as jml FROM `data_calon_p3ke_siks`";
+			$sqlTot .= " WHERE 1=1 AND data_calon_p3ke_siks.active = 1" . $where;
+			$sqlRec = "
+				SELECT 
+					" . implode(', ', $columns) . " 
+				FROM `data_calon_p3ke_siks`
+				LEFT JOIN data_p3ke_siks on data_calon_p3ke_siks.nik_kk = data_p3ke_siks.nik
+					AND data_p3ke_siks.active=1
+			";
+			$sqlRec .= " WHERE 1=1 AND data_calon_p3ke_siks.active = 1" . $where;
+
+			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
+			$totalRecords = $queryTot[0]['jml'];
 
 			$limit = '';
 			if ($params['length'] != -1) {
 				$limit = "  LIMIT " . $wpdb->prepare('%d', $params['start']) . " ," . $wpdb->prepare('%d', $params['length']);
 			}
-			$sqlRec .= " ORDER BY update_at DESC" . $limit;
+			$sqlRec .= " ORDER BY data_calon_p3ke_siks.update_at DESC" . $limit;
 
-			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
-			$totalRecords = $queryTot[0]['jml'];
 			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
 
 			foreach ($queryRecords as $recKey => $recVal) {
@@ -3918,6 +3930,10 @@ class Wp_Siks_Public
 					if (!empty($recVal['lat'])) {
 						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
 					}
+				}
+				$queryRecords[$recKey]['status_p3ke'] = '-';
+				if(!empty($recVal['nik_p3ke'])){
+					$queryRecords[$recKey]['status_p3ke'] = 'Terdaftar';
 				}
 				$queryRecords[$recKey]['aksi'] = $btn;
 			}
@@ -3934,11 +3950,12 @@ class Wp_Siks_Public
 		} else {
 			$ret = array(
 				'status' => 'error',
-				'message'	=> 'Format tidak sesuai!'
+				'message'   => 'Format tidak sesuai!'
 			);
 		}
 		die(json_encode($ret));
 	}
+
 
 	public function tambah_data_calon_p3ke()
 	{
@@ -4147,4 +4164,5 @@ class Wp_Siks_Public
 
 		die(json_encode($ret));
 	}
+	
 }
