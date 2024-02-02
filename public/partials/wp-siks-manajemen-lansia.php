@@ -103,39 +103,39 @@ $maps_all = $this->get_polygon();
                 </div>
                 <div class="form-group">
                     <label for='status_tempat_tinggal' style='display:inline-block'>Status Tempat Tinggal</label>
-                    <input type="text" id='status_tempat_tinggal' name="status_tempat_tinggal" class="form-control" placeholder=''/>
+                    <input type="text" id='status_tempat_tinggal' name="status_tempat_tinggal" class="form-control" placeholder='' />
                 </div>
                 <div class="form-group">
                     <label for='status_pemenuhan_kebutuhan' style='display:inline-block'>Status Pemenuhan Kebutuhan</label>
-                    <input type="text" id='status_pemenuhan_kebutuhan' name="status_pemenuhan_kebutuhan" class="form-control" placeholder=''/>
+                    <input type="text" id='status_pemenuhan_kebutuhan' name="status_pemenuhan_kebutuhan" class="form-control" placeholder='' />
                 </div>
                 <div class="form-group">
                     <label for='status_kehidupan_rumah_tangga' style='display:inline-block'>Status Kehidupan Rumah Tangga</label>
-                    <input type="text" id='status_kehidupan_rumah_tangga' name="status_kehidupan_rumah_tangga" class="form-control" placeholder=''/>
+                    <input type="text" id='status_kehidupan_rumah_tangga' name="status_kehidupan_rumah_tangga" class="form-control" placeholder='' />
                 </div>
                 <div class="form-group">
                     <label for='status_dtks' style='display:inline-block'>Status DTKS</label>
-                    <input type="text" id='status_dtks' name="status_dtks" class="form-control" placeholder=''/>
+                    <input type="text" id='status_dtks' name="status_dtks" class="form-control" placeholder='' />
                 </div>
                 <div class="form-group">
                     <label for='status_kepersertaan_program_bansos' style='display:inline-block'>Status Kepersertaan Program Bansos</label>
-                    <input type="text" id='status_kepersertaan_program_bansos' name="status_kepersertaan_program_bansos" class="form-control" placeholder=''/>
+                    <input type="text" id='status_kepersertaan_program_bansos' name="status_kepersertaan_program_bansos" class="form-control" placeholder='' />
                 </div>
                 <div class="form-group">
                     <label for='rekomendasi_pendata_lama' style='display:inline-block'>Rekomendasi Pendata Lama</label>
-                    <input type="text" id='rekomendasi_pendata_lama' name="rekomendasi_pendata_lama" class="form-control" placeholder=''/>
+                    <input type="text" id='rekomendasi_pendata_lama' name="rekomendasi_pendata_lama" class="form-control" placeholder='' />
                 </div>
                 <div class="form-group">
                     <label for='keterangan_lainnya_lama' style='display:inline-block'>Keterangan Lainnya Lama</label>
-                    <input type="text" id='keterangan_lainnya_lama' name="keterangan_lainnya_lama" class="form-control" placeholder=''/>
+                    <input type="text" id='keterangan_lainnya_lama' name="keterangan_lainnya_lama" class="form-control" placeholder='' />
                 </div>
                 <div class="form-group">
                     <label for='rekomendasi_pendata' style='display:inline-block'>Rekomendasi Pendata</label>
-                    <input type="text" id='rekomendasi_pendata' name="rekomendasi_pendata" class="form-control" placeholder=''/>
+                    <input type="text" id='rekomendasi_pendata' name="rekomendasi_pendata" class="form-control" placeholder='' />
                 </div>
                 <div class="form-group">
                     <label for='keterangan_lainnya' style='display:inline-block'>Keterangan Lainnya </label>
-                    <input type="text" id='keterangan_lainnya' name="keterangan_lainnya" class="form-control" placeholder=''/>
+                    <input type="text" id='keterangan_lainnya' name="keterangan_lainnya" class="form-control" placeholder='' />
                 </div>
                 <div class="form-group">
                     <label>Tahun Anggaran</label>
@@ -173,151 +173,154 @@ $maps_all = $this->get_polygon();
 </div>
 <script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
-window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/lansia/'; ?>";
-window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
-window.maps_center_siks = <?php echo json_encode($center); ?>;
-jQuery(document).ready(function() {
-    get_data_lansia();
-});
+    window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/lansia/'; ?>";
+    window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
+    window.maps_center_siks = <?php echo json_encode($center); ?>;
+    jQuery(document).ready(function() {
+        get_data_lansia();
+    });
 
-function get_data_lansia() {
-    if (typeof tableLansia === 'undefined') {
-        window.tableLansia = jQuery('#tableManajemenLansia').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                url: '<?php echo $url?>',
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    'action': 'get_datatable_lansia',
-                    'api_key': '<?php echo $api_key ?>',
-                }
-            },
-            lengthMenu: [
-                [20, 50, 100, -1],
-                [20, 50, 100, "All"]
-            ],
-            order: [
-                [0, 'asc']
-            ],
-            "drawCallback": function(settings) {
-                jQuery("#wraploading").hide();
-            },
-            "columns": [{
-                    "data": 'nik',
-                    className: "text-center"
+    function get_data_lansia() {
+        if (typeof tableLansia === 'undefined') {
+            window.tableLansia = jQuery('#tableManajemenLansia').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "search": {
+                    return: true
                 },
-                {
-                    "data": 'nama',
-                    className: "text-center"
+                "ajax": {
+                    url: '<?php echo $url ?>',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'action': 'get_datatable_lansia',
+                        'api_key': '<?php echo $api_key ?>',
+                    }
                 },
-                {
-                    "data": 'provinsi',
-                    className: "text-center"
+                lengthMenu: [
+                    [20, 50, 100, -1],
+                    [20, 50, 100, "All"]
+                ],
+                order: [
+                    [0, 'asc']
+                ],
+                "drawCallback": function(settings) {
+                    jQuery("#wraploading").hide();
                 },
-                {
-                    "data": 'kabkot',
-                    className: "text-center"
-                },
-                {
-                    "data": 'desa',
-                    className: "text-center"
-                },
-                {
-                    "data": 'kecamatan',
-                    className: "text-center"
-                },
-                {
-                    "data": 'alamat',
-                    className: "text-center"
-                },
-                {
-                    "data": 'tanggal_lahir',
-                    className: "text-center"
-                },
-                {
-                    "data": 'usia',
-                    className: "text-center"
-                },
-                {
-                    "data": 'dokumen_kependudukan',
-                    className: "text-center"
-                },
-                {
-                    "data": 'status_tempat_tinggal',
-                    className: "text-center"
-                },
-                {
-                    "data": 'status_pemenuhan_kebutuhan',
-                    className: "text-center"
-                },
-                {
-                    "data": 'status_kehidupan_rumah_tangga',
-                    className: "text-center"
-                },
-                {
-                    "data": 'status_dtks',
-                    className: "text-center"
-                },
-                {
-                    "data": 'status_kepersertaan_program_bansos',
-                    className: "text-center"
-                },
-                {
-                    "data": 'rekomendasi_pendata_lama',
-                    className: "text-center"
-                },
-                {
-                    "data": 'keterangan_lainnya_lama',
-                    className: "text-center"
-                },
-                {
-                    "data": 'rekomendasi_pendata',
-                    className: "text-center"
-                },
-                {
-                    "data": 'keterangan_lainnya',
-                    className: "text-center"
-                },
-                {
-                    "data": 'file_lampiran',
-                    className: "text-center"
-                },
-                {
-                    "data": 'tahun_anggaran',
-                    className: "text-center"
-                },
-                {
-                    "data": 'aksi',
-                    className: "text-center"
-                },
+                "columns": [{
+                        "data": 'nik',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'nama',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'provinsi',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'kabkot',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'desa',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'kecamatan',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'alamat',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'tanggal_lahir',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'usia',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'dokumen_kependudukan',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'status_tempat_tinggal',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'status_pemenuhan_kebutuhan',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'status_kehidupan_rumah_tangga',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'status_dtks',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'status_kepersertaan_program_bansos',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'rekomendasi_pendata_lama',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'keterangan_lainnya_lama',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'rekomendasi_pendata',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'keterangan_lainnya',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'file_lampiran',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'tahun_anggaran',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'aksi',
+                        className: "text-center"
+                    },
 
-            ]
-        });
-    } else {
-        tableLansia.draw();
+                ]
+            });
+        } else {
+            tableLansia.draw();
+        }
     }
-}
 
-function hapus_data(id){
+    function hapus_data(id) {
         let confirmDelete = confirm("Apakah anda yakin akan menghapus data ini?");
-        if(confirmDelete){
+        if (confirmDelete) {
             jQuery('#wrap-loading').show();
             jQuery.ajax({
                 url: '<?php echo admin_url('admin-ajax.php'); ?>',
-                type:'post',
-                data:{
-                    'action' : 'hapus_data_lansia_by_id',
+                type: 'post',
+                data: {
+                    'action': 'hapus_data_lansia_by_id',
                     'api_key': '<?php echo get_option(SIKS_APIKEY); ?>',
-                    'id'     : id
+                    'id': id
                 },
                 dataType: 'json',
-                success:function(response){
+                success: function(response) {
                     jQuery('#wrap-loading').hide();
-                    if(response.status == 'success'){
-                        get_data_lansia(); 
-                    }else{
+                    if (response.status == 'success') {
+                        get_data_lansia();
+                    } else {
                         alert(`GAGAL! \n${response.message}`);
                     }
                 }
@@ -325,228 +328,228 @@ function hapus_data(id){
         }
     }
 
-function edit_data(_id){
-    jQuery('#wrap-loading').show();
-    jQuery.ajax({
-        method: 'post',
-        url: '<?php echo admin_url('admin-ajax.php'); ?>',
-        dataType: 'json',
-        data:{
-            'action': 'get_data_lansia_by_id',
-            'api_key': '<?php echo get_option(SIKS_APIKEY); ?>',
-            'id': _id,
-        },
-        success: function(res){
-            if(res.status == 'success'){
+    function edit_data(_id) {
+        jQuery('#wrap-loading').show();
+        jQuery.ajax({
+            method: 'post',
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+            dataType: 'json',
+            data: {
+                'action': 'get_data_lansia_by_id',
+                'api_key': '<?php echo get_option(SIKS_APIKEY); ?>',
+                'id': _id,
+            },
+            success: function(res) {
+                if (res.status == 'success') {
 
-                // Lokasi Center Map
-                if(
-                    !res.data.lat
-                    || !res.data.lng
-                ){
-                    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
-                }else{
-                    var lokasi_center = new google.maps.LatLng(res.data.lat, res.data.lng);
+                    // Lokasi Center Map
+                    if (
+                        !res.data.lat ||
+                        !res.data.lng
+                    ) {
+                        var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+                    } else {
+                        var lokasi_center = new google.maps.LatLng(res.data.lat, res.data.lng);
+                    }
+
+                    if (typeof evm != 'undefined') {
+                        evm.setMap(null);
+                    }
+
+                    // Menampilkan Marker
+                    window.evm = new google.maps.Marker({
+                        position: lokasi_center,
+                        map,
+                        draggable: true,
+                        title: 'Lokasi Map'
+                    });
+
+                    window.infoWindow = new google.maps.InfoWindow({
+                        content: JSON.stringify(res.data)
+                    });
+
+                    google.maps.event.addListener(evm, 'click', function(event) {
+                        infoWindow.setPosition(event.latLng);
+                        infoWindow.open(map);
+                    });
+
+                    google.maps.event.addListener(evm, 'mouseup', function(event) {
+                        jQuery('input[name="latitude"]').val(event.latLng.lat());
+                        jQuery('input[name="longitude"]').val(event.latLng.lng());
+                    });
+                    jQuery('#id_data').val(res.data.id);
+                    jQuery('#nama').val(res.data.nama);
+                    jQuery('#nik').val(res.data.nik);
+                    jQuery('#provinsi').val(res.data.provinsi);
+                    jQuery('#kabkot').val(res.data.kabkot);
+                    jQuery('#kecamatan').val(res.data.kecamatan);
+                    jQuery('#desa').val(res.data.desa);
+                    jQuery('#alamat').val(res.data.alamat);
+                    jQuery('#tanggal_lahir').val(res.data.tanggal_lahir);
+                    jQuery('#usia').val(res.data.usia);
+                    jQuery('#dokumen_kependudukan').val(res.data.dokumen_kependudukan);
+                    jQuery('#status_tempat_tinggal').val(res.data.status_tempat_tinggal);
+                    jQuery('#status_pemenuhan_kebutuhan').val(res.data.status_pemenuhan_kebutuhan);
+                    jQuery('#status_kehidupan_rumah_tangga').val(res.data.status_kehidupan_rumah_tangga);
+                    jQuery('#status_kepersertaan_program_bansos').val(res.data.status_kepersertaan_program_bansos);
+                    jQuery('#status_dtks').val(res.data.status_dtks);
+                    jQuery('#rekomendasi_pendata_lama').val(res.data.rekomendasi_pendata_lama);
+                    jQuery('#keterangan_lainnya_lama').val(res.data.keterangan_lainnya_lama);
+                    jQuery('#rekomendasi_pendata').val(res.data.rekomendasi_pendata);
+                    jQuery('#keterangan_lainnya').val(res.data.keterangan_lainnya);
+                    jQuery('#tahun_anggaran').val(res.data.tahun_anggaran);
+                    jQuery('#latitude').val(res.data.lat);
+                    jQuery('#longitude').val(res.data.lng);
+                    jQuery('#lampiran').val('').show();
+                    jQuery('#file_lampiran_existing').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran).show();
+                    jQuery('#modalTambahDataLansia .send_data').show();
+                    jQuery('#modalTambahDataLansia').modal('show');
+                } else {
+                    alert(res.message);
                 }
-
-                if(typeof evm != 'undefined'){
-                    evm.setMap(null);
-                }
-
-                // Menampilkan Marker
-                window.evm = new google.maps.Marker({
-                    position: lokasi_center,
-                    map,
-                    draggable: true,
-                    title: 'Lokasi Map'
-                });
-
-                window.infoWindow = new google.maps.InfoWindow({
-                    content: JSON.stringify(res.data)
-                });
-
-                google.maps.event.addListener(evm, 'click', function(event) {
-                    infoWindow.setPosition(event.latLng);
-                    infoWindow.open(map);
-                });
-
-                google.maps.event.addListener(evm, 'mouseup', function(event) {
-                    jQuery('input[name="latitude"]').val(event.latLng.lat());
-                    jQuery('input[name="longitude"]').val(event.latLng.lng());
-                });
-                jQuery('#id_data').val(res.data.id);
-                jQuery('#nama').val(res.data.nama);
-                jQuery('#nik').val(res.data.nik);
-                jQuery('#provinsi').val(res.data.provinsi);
-                jQuery('#kabkot').val(res.data.kabkot);
-                jQuery('#kecamatan').val(res.data.kecamatan);
-                jQuery('#desa').val(res.data.desa);
-                jQuery('#alamat').val(res.data.alamat);
-                jQuery('#tanggal_lahir').val(res.data.tanggal_lahir);
-                jQuery('#usia').val(res.data.usia);
-                jQuery('#dokumen_kependudukan').val(res.data.dokumen_kependudukan);
-                jQuery('#status_tempat_tinggal').val(res.data.status_tempat_tinggal);
-                jQuery('#status_pemenuhan_kebutuhan').val(res.data.status_pemenuhan_kebutuhan);
-                jQuery('#status_kehidupan_rumah_tangga').val(res.data.status_kehidupan_rumah_tangga);
-                jQuery('#status_kepersertaan_program_bansos').val(res.data.status_kepersertaan_program_bansos);
-                jQuery('#status_dtks').val(res.data.status_dtks);
-                jQuery('#rekomendasi_pendata_lama').val(res.data.rekomendasi_pendata_lama);
-                jQuery('#keterangan_lainnya_lama').val(res.data.keterangan_lainnya_lama);
-                jQuery('#rekomendasi_pendata').val(res.data.rekomendasi_pendata);
-                jQuery('#keterangan_lainnya').val(res.data.keterangan_lainnya);
-                jQuery('#tahun_anggaran').val(res.data.tahun_anggaran);
-                jQuery('#latitude').val(res.data.lat);
-                jQuery('#longitude').val(res.data.lng);
-                jQuery('#lampiran').val('').show();
-                jQuery('#file_lampiran_existing').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran).show();
-                jQuery('#modalTambahDataLansia .send_data').show();
-                jQuery('#modalTambahDataLansia').modal('show');
-            }else{
-                alert(res.message);
+                jQuery('#wrap-loading').hide();
             }
-            jQuery('#wrap-loading').hide();
+        });
+    }
+
+    function tambah_data_lansia() {
+        var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+
+        if (typeof evm != 'undefined') {
+            evm.setMap(null);
         }
-    });
-}
 
-function tambah_data_lansia() {
-    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+        // Menampilkan Marker
+        window.evm = new google.maps.Marker({
+            position: lokasi_center,
+            map,
+            draggable: true,
+            title: 'Lokasi Map'
+        });
 
-    if(typeof evm != 'undefined'){
-        evm.setMap(null);
+        google.maps.event.addListener(evm, 'mouseup', function(event) {
+            jQuery('input[name="latitude"]').val(event.latLng.lat());
+            jQuery('input[name="longitude"]').val(event.latLng.lng());
+        });
+
+        jQuery('#longitude').val(maps_center_siks['lng']).show();
+        jQuery('#latitude').val(maps_center_siks['lat']).show();
+        jQuery('#nik').val('').show();
+        jQuery('#nama').val('').show();
+        jQuery('#provinsi').val('').show();
+        jQuery('#kabkot').val('').show();
+        jQuery('#desa').val('').show();
+        jQuery('#kecamatan').val('').show();
+        jQuery('#alamat').val('').show();
+        jQuery('#tanggal_lahir').val('').show();
+        jQuery('#usia').val('').show();
+        jQuery('#dokumen_kependudukan').val('').show();
+        jQuery('#status_tempat_tinggal').val('').show();
+        jQuery('#status_pemenuhan_kebutuhan').val('').show();
+        jQuery('#status_kehidupan_rumah_tangga').val('').show();
+        jQuery('#status_kepersertaan_program_bansos').val('').show();
+        jQuery('#status_dtks').val('').show();
+        jQuery('#rekomendasi_pendata_lama').val('').show();
+        jQuery('#keterangan_lainnya_lama').val('').show();
+        jQuery('#rekomendasi_pendata').val('').show();
+        jQuery('#keterangan_lainnya').val('').show();
+        jQuery('#tahun_anggaran').val('').show();
+        jQuery('#lampiran').val('').show();
+        jQuery('#file_lampiran_existing').hide();
+        jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
+        jQuery('#modalTambahDataLansia').modal('show');
     }
 
-    // Menampilkan Marker
-    window.evm = new google.maps.Marker({
-        position: lokasi_center,
-        map,
-        draggable: true,
-        title: 'Lokasi Map'
-    });
-
-    google.maps.event.addListener(evm, 'mouseup', function(event) {
-        jQuery('input[name="latitude"]').val(event.latLng.lat());
-        jQuery('input[name="longitude"]').val(event.latLng.lng());
-    });
-
-    jQuery('#longitude').val(maps_center_siks['lng']).show();
-    jQuery('#latitude').val(maps_center_siks['lat']).show();
-    jQuery('#nik').val('').show();
-    jQuery('#nama').val('').show();
-    jQuery('#provinsi').val('').show();
-    jQuery('#kabkot').val('').show();
-    jQuery('#desa').val('').show();
-    jQuery('#kecamatan').val('').show();
-    jQuery('#alamat').val('').show();
-    jQuery('#tanggal_lahir').val('').show();
-    jQuery('#usia').val('').show();
-    jQuery('#dokumen_kependudukan').val('').show();
-    jQuery('#status_tempat_tinggal').val('').show();
-    jQuery('#status_pemenuhan_kebutuhan').val('').show();
-    jQuery('#status_kehidupan_rumah_tangga').val('').show();
-    jQuery('#status_kepersertaan_program_bansos').val('').show();
-    jQuery('#status_dtks').val('').show();
-    jQuery('#rekomendasi_pendata_lama').val('').show();
-    jQuery('#keterangan_lainnya_lama').val('').show();
-    jQuery('#rekomendasi_pendata').val('').show();
-    jQuery('#keterangan_lainnya').val('').show();
-    jQuery('#tahun_anggaran').val('').show();
-    jQuery('#lampiran').val('').show();
-    jQuery('#file_lampiran_existing').hide();
-    jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
-    jQuery('#modalTambahDataLansia').modal('show');
-}
-
-function submitDataLansia(){
-    var id_data = jQuery('#id_data').val();
-    var nama = jQuery('#nama').val();
-    if(nama == ''){
-        return alert('Data Nama tidak boleh kosong!');
-    }
-    var nik = jQuery('#nik').val();
-    if(nik == ''){
-        return alert('Data NIK tidak boleh kosong!');
-    }
-    var tanggal_lahir = jQuery('#tanggal_lahir').val();
-    if(tanggal_lahir == ''){
-        return alert('Data Tanggal Lahir tidak boleh kosong!');
-    }
-    var provinsi = jQuery('#provinsi').val();
-    if(provinsi == ''){
-        return alert('Data Provinsi tidak boleh kosong!');
-    }
-    var kabkot = jQuery('#kabkot').val();
-    if(kabkot == ''){
-        return alert('Data Kabupaten / Kota tidak boleh kosong!');
-    }
-    var kecamatan = jQuery('#kecamatan').val();
-    if(kecamatan == ''){
-        return alert('Data Kecamatan tidak boleh kosong!');
-    }
-    var desa = jQuery('#desa').val();
-    if(desa == ''){
-        return alert('Data Desa tidak boleh kosong!');
-    }
-    var alamat = jQuery('#alamat').val();
-    if(alamat == ''){
-        return alert('Data Alamat tidak boleh kosong!');
-    }
-    var usia = jQuery('#usia').val();
-    if(usia == ''){
-        return alert('Data Usia tidak boleh kosong!');
-    }
-    var dokumen_kependudukan = jQuery('#dokumen_kependudukan').val();
-    if(dokumen_kependudukan == ''){
-        return alert('Data Dokumen Kependudukan tidak boleh kosong!');
-    }
-    var status_tempat_tinggal = jQuery('#status_tempat_tinggal').val();
-    if(status_tempat_tinggal == ''){
-        return alert('Data status Tempat Tinggal tidak boleh kosong!');
-    }
-    var status_pemenuhan_kebutuhan = jQuery('#status_pemenuhan_kebutuhan').val();
-    if(status_pemenuhan_kebutuhan == ''){
-        return alert('Data status Pemenuhan Kebutuhan tidak boleh kosong!');
-    }
-    var status_kehidupan_rumah_tangga = jQuery('#status_kehidupan_rumah_tangga').val();
-    if(status_kehidupan_rumah_tangga == ''){
-        return alert('Data status Kehidupan Rumah Tangga tidak boleh kosong!');
-    }
-    var status_dtks = jQuery('#status_dtks').val();
-    if(status_dtks == ''){
-        return alert('Data status DTKS tidak boleh kosong!');
-    }
-    var status_kepersertaan_program_bansos = jQuery('#status_kepersertaan_program_bansos').val();
-    if(status_kepersertaan_program_bansos == ''){
-        return alert('Data status Kepersertaan Program Bansos tidak boleh kosong!');
-    }
-    var rekomendasi_pendata_lama = jQuery('#rekomendasi_pendata_lama').val();
-    if(rekomendasi_pendata_lama == ''){
-        return alert('Data rekomendasi Pendata Lama tidak boleh kosong!');
-    }
-    var rekomendasi_pendata = jQuery('#rekomendasi_pendata').val();
-    if(rekomendasi_pendata == ''){
-        return alert('Data rekomendasi Pendata tidak boleh kosong!');
-    }
-    var keterangan_lainnya_lama = jQuery('#keterangan_lainnya_lama').val();
-    if(keterangan_lainnya_lama == ''){
-        return alert('Data keterangan Lainnya Lama tidak boleh kosong!');
-    }
-    var keterangan_lainnya = jQuery('#keterangan_lainnya').val();
-    if(keterangan_lainnya == ''){
-        return alert('Data keterangan Lainnya tidak boleh kosong!');
-    }
-    var tahun_anggaran = jQuery('#tahun_anggaran').val();
-    if(tahun_anggaran == ''){
-        return alert('Data Tahun Anggaran tidak boleh kosong!');
-    }
-    var lampiran = jQuery('#lampiran')[0].files[0];
-    if (id_data == '') {
-        if (typeof lampiran == 'undefined') {
-            return alert('Upload file lampiran dulu!');
+    function submitDataLansia() {
+        var id_data = jQuery('#id_data').val();
+        var nama = jQuery('#nama').val();
+        if (nama == '') {
+            return alert('Data Nama tidak boleh kosong!');
         }
-    }
-    
-    let tempData = new FormData();
+        var nik = jQuery('#nik').val();
+        if (nik == '') {
+            return alert('Data NIK tidak boleh kosong!');
+        }
+        var tanggal_lahir = jQuery('#tanggal_lahir').val();
+        if (tanggal_lahir == '') {
+            return alert('Data Tanggal Lahir tidak boleh kosong!');
+        }
+        var provinsi = jQuery('#provinsi').val();
+        if (provinsi == '') {
+            return alert('Data Provinsi tidak boleh kosong!');
+        }
+        var kabkot = jQuery('#kabkot').val();
+        if (kabkot == '') {
+            return alert('Data Kabupaten / Kota tidak boleh kosong!');
+        }
+        var kecamatan = jQuery('#kecamatan').val();
+        if (kecamatan == '') {
+            return alert('Data Kecamatan tidak boleh kosong!');
+        }
+        var desa = jQuery('#desa').val();
+        if (desa == '') {
+            return alert('Data Desa tidak boleh kosong!');
+        }
+        var alamat = jQuery('#alamat').val();
+        if (alamat == '') {
+            return alert('Data Alamat tidak boleh kosong!');
+        }
+        var usia = jQuery('#usia').val();
+        if (usia == '') {
+            return alert('Data Usia tidak boleh kosong!');
+        }
+        var dokumen_kependudukan = jQuery('#dokumen_kependudukan').val();
+        if (dokumen_kependudukan == '') {
+            return alert('Data Dokumen Kependudukan tidak boleh kosong!');
+        }
+        var status_tempat_tinggal = jQuery('#status_tempat_tinggal').val();
+        if (status_tempat_tinggal == '') {
+            return alert('Data status Tempat Tinggal tidak boleh kosong!');
+        }
+        var status_pemenuhan_kebutuhan = jQuery('#status_pemenuhan_kebutuhan').val();
+        if (status_pemenuhan_kebutuhan == '') {
+            return alert('Data status Pemenuhan Kebutuhan tidak boleh kosong!');
+        }
+        var status_kehidupan_rumah_tangga = jQuery('#status_kehidupan_rumah_tangga').val();
+        if (status_kehidupan_rumah_tangga == '') {
+            return alert('Data status Kehidupan Rumah Tangga tidak boleh kosong!');
+        }
+        var status_dtks = jQuery('#status_dtks').val();
+        if (status_dtks == '') {
+            return alert('Data status DTKS tidak boleh kosong!');
+        }
+        var status_kepersertaan_program_bansos = jQuery('#status_kepersertaan_program_bansos').val();
+        if (status_kepersertaan_program_bansos == '') {
+            return alert('Data status Kepersertaan Program Bansos tidak boleh kosong!');
+        }
+        var rekomendasi_pendata_lama = jQuery('#rekomendasi_pendata_lama').val();
+        if (rekomendasi_pendata_lama == '') {
+            return alert('Data rekomendasi Pendata Lama tidak boleh kosong!');
+        }
+        var rekomendasi_pendata = jQuery('#rekomendasi_pendata').val();
+        if (rekomendasi_pendata == '') {
+            return alert('Data rekomendasi Pendata tidak boleh kosong!');
+        }
+        var keterangan_lainnya_lama = jQuery('#keterangan_lainnya_lama').val();
+        if (keterangan_lainnya_lama == '') {
+            return alert('Data keterangan Lainnya Lama tidak boleh kosong!');
+        }
+        var keterangan_lainnya = jQuery('#keterangan_lainnya').val();
+        if (keterangan_lainnya == '') {
+            return alert('Data keterangan Lainnya tidak boleh kosong!');
+        }
+        var tahun_anggaran = jQuery('#tahun_anggaran').val();
+        if (tahun_anggaran == '') {
+            return alert('Data Tahun Anggaran tidak boleh kosong!');
+        }
+        var lampiran = jQuery('#lampiran')[0].files[0];
+        if (id_data == '') {
+            if (typeof lampiran == 'undefined') {
+                return alert('Upload file lampiran dulu!');
+            }
+        }
+
+        let tempData = new FormData();
         tempData.append('action', 'tambah_data_lansia');
         tempData.append('api_key', '<?php echo get_option(SIKS_APIKEY); ?>');
         tempData.append('id_data', id_data);
@@ -570,31 +573,31 @@ function submitDataLansia(){
         tempData.append('status_pemenuhan_kebutuhan', status_pemenuhan_kebutuhan);
         tempData.append('rekomendasi_pendata_lama', rekomendasi_pendata_lama);
         tempData.append('tahun_anggaran', tahun_anggaran);
-        tempData.append('lat',jQuery('input[name="latitude"]').val());
-        tempData.append('lng',jQuery('input[name="longitude"]').val());
-   
-    if (typeof lampiran != 'undefined') {
-            tempData.append('lampiran', lampiran);
-    }
-    tempData.append('lampiran', lampiran);
+        tempData.append('lat', jQuery('input[name="latitude"]').val());
+        tempData.append('lng', jQuery('input[name="longitude"]').val());
 
-    jQuery('#wrap-loading').show();
-    jQuery.ajax({
-        method: 'post',
-        url: '<?php echo admin_url('admin-ajax.php'); ?>',
-        dataType: 'json',
-        data: tempData,
-        processData: false,
-        contentType: false,
-        cache: false,
-        success: function(res) {
-            alert(res.message);
-            if (res.status == 'success') {
-                jQuery('#modalTambahDataLansia').modal('hide');
-                get_data_lansia();
-            }   
-            jQuery('#wrap-loading').hide();
+        if (typeof lampiran != 'undefined') {
+            tempData.append('lampiran', lampiran);
         }
-    });
-}
+        tempData.append('lampiran', lampiran);
+
+        jQuery('#wrap-loading').show();
+        jQuery.ajax({
+            method: 'post',
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+            dataType: 'json',
+            data: tempData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(res) {
+                alert(res.message);
+                if (res.status == 'success') {
+                    jQuery('#modalTambahDataLansia').modal('hide');
+                    get_data_lansia();
+                }
+                jQuery('#wrap-loading').hide();
+            }
+        });
+    }
 </script>

@@ -168,10 +168,10 @@ $maps_all = $this->get_polygon();
 </div>
 <script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
-window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/anak_terlantar/'; ?>";
-window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
-window.maps_center_siks = <?php echo json_encode($center); ?>;
-jQuery(document).ready(function() {
+    window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/anak_terlantar/'; ?>";
+    window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
+    window.maps_center_siks = <?php echo json_encode($center); ?>;
+    jQuery(document).ready(function() {
         get_data_anak_terlantar();
     });
 
@@ -180,6 +180,9 @@ jQuery(document).ready(function() {
             window.tableAnakTerlantar = jQuery('#tableManajemenAnakTerlantar').DataTable({
                 "processing": true,
                 "serverSide": true,
+                "search": {
+                    return: true
+                },
                 "ajax": {
                     url: '<?php echo $url ?>',
                     type: 'POST',
@@ -265,7 +268,7 @@ jQuery(document).ready(function() {
 
     function edit_data(_id) {
         jQuery('#wrap-loading').show();
-        jQuery.ajax({ 
+        jQuery.ajax({
             method: 'POST',
             url: '<?php echo $url; ?>',
             dataType: 'json',
@@ -277,41 +280,41 @@ jQuery(document).ready(function() {
             success: function(res) {
                 if (res.status == 'success') {
 
-                // Lokasi Center Map
-                if(
-                    !res.data.lat
-                    || !res.data.lng
-                ){
-                    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
-                }else{
-                    var lokasi_center = new google.maps.LatLng(res.data.lat, res.data.lng);
-                }
+                    // Lokasi Center Map
+                    if (
+                        !res.data.lat ||
+                        !res.data.lng
+                    ) {
+                        var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+                    } else {
+                        var lokasi_center = new google.maps.LatLng(res.data.lat, res.data.lng);
+                    }
 
-                if(typeof evm != 'undefined'){
-                    evm.setMap(null);
-                }
+                    if (typeof evm != 'undefined') {
+                        evm.setMap(null);
+                    }
 
-                // Menampilkan Marker
-                window.evm = new google.maps.Marker({
-                    position: lokasi_center,
-                    map,
-                    draggable: true,
-                    title: 'Lokasi Map'
-                });
+                    // Menampilkan Marker
+                    window.evm = new google.maps.Marker({
+                        position: lokasi_center,
+                        map,
+                        draggable: true,
+                        title: 'Lokasi Map'
+                    });
 
-                window.infoWindow = new google.maps.InfoWindow({
-                    content: JSON.stringify(res.data)
-                });
+                    window.infoWindow = new google.maps.InfoWindow({
+                        content: JSON.stringify(res.data)
+                    });
 
-                google.maps.event.addListener(evm, 'click', function(event) {
-                    infoWindow.setPosition(event.latLng);
-                    infoWindow.open(map);
-                });
+                    google.maps.event.addListener(evm, 'click', function(event) {
+                        infoWindow.setPosition(event.latLng);
+                        infoWindow.open(map);
+                    });
 
-                google.maps.event.addListener(evm, 'mouseup', function(event) {
-                    jQuery('input[name="latitude"]').val(event.latLng.lat());
-                    jQuery('input[name="longitude"]').val(event.latLng.lng());
-                });
+                    google.maps.event.addListener(evm, 'mouseup', function(event) {
+                        jQuery('input[name="latitude"]').val(event.latLng.lat());
+                        jQuery('input[name="longitude"]').val(event.latLng.lng());
+                    });
                     jQuery('#id_data').val(res.data.id);
                     jQuery('#tahun_anggaran').val(res.data.tahun_anggaran);
                     jQuery('#nama').val(res.data.nama);
@@ -370,49 +373,49 @@ jQuery(document).ready(function() {
             });
         }
     }
-    
-function tambah_data_anak_terlantar() {
-    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
 
-    if(typeof evm != 'undefined'){
-        evm.setMap(null);
+    function tambah_data_anak_terlantar() {
+        var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+
+        if (typeof evm != 'undefined') {
+            evm.setMap(null);
+        }
+
+        // Menampilkan Marker
+        window.evm = new google.maps.Marker({
+            position: lokasi_center,
+            map,
+            draggable: true,
+            title: 'Lokasi Map'
+        });
+
+        google.maps.event.addListener(evm, 'mouseup', function(event) {
+            jQuery('input[name="latitude"]').val(event.latLng.lat());
+            jQuery('input[name="longitude"]').val(event.latLng.lng());
+        });
+
+        jQuery('#longitude').val(maps_center_siks['lng']).show();
+        jQuery('#latitude').val(maps_center_siks['lat']).show();
+        jQuery('#tahun_anggaran').val('').show()
+        jQuery('#nama').val('').show()
+        jQuery('#kk').val('').show()
+        jQuery('#nik').val('').show()
+        jQuery('#status_jk').val('').show()
+        jQuery('#tanggal_Lahir').val('').show()
+        jQuery('#usia').val('').show()
+        jQuery('#pendidikan').val('').show()
+        jQuery('#usia').val('').show()
+        jQuery('#provinsi').val('').show()
+        jQuery('#alamat').val('').show()
+        jQuery('#kabkot').val('').show()
+        jQuery('#desa_kelurahan').val('').show()
+        jQuery('#kecamatan').val('').show();
+        jQuery('#lampiran').val('').show();
+
+        jQuery('#file_lampiran_existing').hide();
+        jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
+        jQuery('#modalTambahDataAnakTerlantar').modal('show');
     }
-
-    // Menampilkan Marker
-    window.evm = new google.maps.Marker({
-        position: lokasi_center,
-        map,
-        draggable: true,
-        title: 'Lokasi Map'
-    });
-
-    google.maps.event.addListener(evm, 'mouseup', function(event) {
-        jQuery('input[name="latitude"]').val(event.latLng.lat());
-        jQuery('input[name="longitude"]').val(event.latLng.lng());
-    });
-
-    jQuery('#longitude').val(maps_center_siks['lng']).show();
-    jQuery('#latitude').val(maps_center_siks['lat']).show();
-    jQuery('#tahun_anggaran').val('').show()
-    jQuery('#nama').val('').show()
-    jQuery('#kk').val('').show()
-    jQuery('#nik').val('').show()
-    jQuery('#status_jk').val('').show()
-    jQuery('#tanggal_Lahir').val('').show()
-    jQuery('#usia').val('').show()
-    jQuery('#pendidikan').val('').show()
-    jQuery('#usia').val('').show()
-    jQuery('#provinsi').val('').show()
-    jQuery('#alamat').val('').show()
-    jQuery('#kabkot').val('').show()
-    jQuery('#desa_kelurahan').val('').show()        
-    jQuery('#kecamatan').val('').show();
-    jQuery('#lampiran').val('').show();
-
-    jQuery('#file_lampiran_existing').hide();
-    jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
-    jQuery('#modalTambahDataAnakTerlantar').modal('show');
-}
 
     function submitDataAnakTerlantar(that) {
         let id_data = jQuery('#id_data').val();
@@ -445,50 +448,50 @@ function tambah_data_anak_terlantar() {
                 return alert('Upload file lampiran dulu!');
             }
         }
-        
+
         let tempData = new FormData();
-            tempData.append('action', 'tambah_data_anak_terlantar');
-            tempData.append('api_key', '<?php echo $api_key; ?>');
-            tempData.append('id', ' id_data');
-            tempData.append('nama', ' nama');
-            tempData.append('kk', ' kk');
-            tempData.append('nik', ' nik');
-            tempData.append('tahun_anggaran', ' tahun_anggaran');
-            tempData.append('kabkot', ' kabkot');
-            tempData.append('alamat', ' alamat');
-            tempData.append('jenisKelamin', ' jenisKelamin');
-            tempData.append('tanggal_Lahir', ' tanggal_Lahir');
-            tempData.append('usia', ' usia');
-            tempData.append('desa_kelurahan', ' desa_kelurahan');
-            tempData.append('pendidikan', ' pendidikan');
-            tempData.append('provinsi', ' provinsi');
-            tempData.append('kecamatan', ' kecamatan');
-            tempData.append('kelembagaan', ' status_lembaga');
-            tempData.append('lat',jQuery('input[name="latitude"]').val());
-            tempData.append('lng',jQuery('input[name="longitude"]').val());
-  
+        tempData.append('action', 'tambah_data_anak_terlantar');
+        tempData.append('api_key', '<?php echo $api_key; ?>');
+        tempData.append('id', ' id_data');
+        tempData.append('nama', ' nama');
+        tempData.append('kk', ' kk');
+        tempData.append('nik', ' nik');
+        tempData.append('tahun_anggaran', ' tahun_anggaran');
+        tempData.append('kabkot', ' kabkot');
+        tempData.append('alamat', ' alamat');
+        tempData.append('jenisKelamin', ' jenisKelamin');
+        tempData.append('tanggal_Lahir', ' tanggal_Lahir');
+        tempData.append('usia', ' usia');
+        tempData.append('desa_kelurahan', ' desa_kelurahan');
+        tempData.append('pendidikan', ' pendidikan');
+        tempData.append('provinsi', ' provinsi');
+        tempData.append('kecamatan', ' kecamatan');
+        tempData.append('kelembagaan', ' status_lembaga');
+        tempData.append('lat', jQuery('input[name="latitude"]').val());
+        tempData.append('lng', jQuery('input[name="longitude"]').val());
+
         if (typeof lampiran != 'undefined') {
-                tempData.append('lampiran', lampiran);
+            tempData.append('lampiran', lampiran);
         }
         tempData.append('lampiran', lampiran);
 
-    jQuery('#wrap-loading').show();
-    jQuery.ajax({
-        method: 'post',
-        url: '<?php echo admin_url('admin-ajax.php'); ?>',
-        dataType: 'json',
-        data: tempData,
-        processData: false,
-        contentType: false,
-        cache: false,
-        success: function(res) {
-            alert(res.message);
-            if (res.status == 'success') {
-                jQuery('#modalTambahDataAnakTerlantar').modal('hide');
-                get_data_anak_terlantar();
-            }   
-            jQuery('#wrap-loading').hide();
-        }
-    });
-}
+        jQuery('#wrap-loading').show();
+        jQuery.ajax({
+            method: 'post',
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+            dataType: 'json',
+            data: tempData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(res) {
+                alert(res.message);
+                if (res.status == 'success') {
+                    jQuery('#modalTambahDataAnakTerlantar').modal('hide');
+                    get_data_anak_terlantar();
+                }
+                jQuery('#wrap-loading').hide();
+            }
+        });
+    }
 </script>

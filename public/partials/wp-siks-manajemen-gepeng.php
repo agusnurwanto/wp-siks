@@ -94,6 +94,9 @@ $api_key = get_option(SIKS_APIKEY);
             window.tableGepeng = jQuery('#tableManajemenGepeng').DataTable({
                 "processing": true,
                 "serverSide": true,
+                "search": {
+                    return: true
+                },
                 "ajax": {
                     url: '',
                     type: 'POST',

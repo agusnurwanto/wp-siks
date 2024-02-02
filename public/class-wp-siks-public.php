@@ -3890,7 +3890,6 @@ class Wp_Siks_Public
 					data_calon_p3ke_siks.kabkot LIKE " . $search_value . " OR
 					data_calon_p3ke_siks.district LIKE " . $search_value . " OR
 					data_calon_p3ke_siks.sumber LIKE " . $search_value . " OR
-					data_calon_p3ke_siks.desil_p3ke LIKE " . $search_value . " OR
 					data_calon_p3ke_siks.tahun_anggaran LIKE " . $search_value . "
 				)";
 			}
@@ -3910,16 +3909,35 @@ class Wp_Siks_Public
 					AND data_p3ke_siks.active=1
 			";
 			$sqlRec .= " WHERE 1=1 AND data_calon_p3ke_siks.active = 1" . $where;
-
 			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
 			$totalRecords = $queryTot[0]['jml'];
 
+			$orderBy = '';
+			if (!empty($params['order'])) {
+				$orderByColumnIndex = $params['order'][0]['column'];
+				$orderByDirection = $params['order'][0]['dir'];
+				if (
+					strtolower($orderByDirection) == 'asc'
+					|| strtolower($orderByDirection) == 'desc'
+				){
+					if ($orderByColumnIndex == 0) {
+						$orderBy = "ORDER BY data_p3ke_siks.nik $orderByDirection";
+					} else {
+						$orderByColumn = $columns[$orderByColumnIndex];
+						$orderBy = "ORDER BY $orderByColumn $orderByDirection";
+					}
+				}
+			}
+
 			$limit = '';
 			if ($params['length'] != -1) {
-				$limit = "  LIMIT " . $wpdb->prepare('%d', $params['start']) . " ," . $wpdb->prepare('%d', $params['length']);
+				$limit = "LIMIT " . $wpdb->prepare('%d', $params['start']) . ", " . $wpdb->prepare('%d', $params['length']);
 			}
-			$sqlRec .= " ORDER BY data_calon_p3ke_siks.update_at DESC" . $limit;
 
+			$sqlRec .= " $orderBy";
+			$sqlRec .= " $limit";
+			$totalRecords = $queryTot[0]['jml'];
+			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
 			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
 
 			foreach ($queryRecords as $recKey => $recVal) {
@@ -3933,7 +3951,7 @@ class Wp_Siks_Public
 					}
 				}
 				$queryRecords[$recKey]['status_p3ke'] = '<span class="btn btn-warning btn-sm">Belum Terdaftar</span>';
-				if(!empty($recVal['nik_p3ke'])){
+				if (!empty($recVal['nik_p3ke'])) {
 					$queryRecords[$recKey]['status_p3ke'] = '<span class="btn btn-success btn-sm">Terdaftar</span>';
 				}
 				$queryRecords[$recKey]['aksi'] = $btn;
@@ -3946,7 +3964,6 @@ class Wp_Siks_Public
 				"data"            => $queryRecords,
 				"sql"             => $sqlRec
 			);
-
 			die(json_encode($json_data));
 		} else {
 			$ret = array(
@@ -4102,51 +4119,52 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-cek-nik.php';
 	}
 
-	function cari_nik_siks(){
+	function cari_nik_siks()
+	{
 		global $wpdb;
 		$ret = array(
 			'status' => 'success',
 			'message' => 'Berhasil get data!',
 			'data' => array()
 		);
-		if(strlen($_POST['nik']) >=3){
-			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
+		if (strlen($_POST['nik']) >= 3) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 				$data_p3ke = $wpdb->get_results($wpdb->prepare("
 					SELECT
 						*
 					FROM data_p3ke_siks
 					WHERE nik like %s
-				", '%'.$_POST['nik'].'%'));
+				", '%' . $_POST['nik'] . '%'));
 				$data_anak_terlantar = $wpdb->get_results($wpdb->prepare("
 					SELECT
 						*
 					FROM data_anak_terlantar_siks
 					WHERE nik like %s
-				", '%' .$_POST['nik'].'%'));
+				", '%' . $_POST['nik'] . '%'));
 				$data_bunda_kasih = $wpdb->get_results($wpdb->prepare("
 					SELECT
 						*
 					FROM data_bunda_kasih_siks
 					WHERE nik like %s
-				", '%' .$_POST['nik'].'%'));
+				", '%' . $_POST['nik'] . '%'));
 				$data_disabilitas = $wpdb->get_results($wpdb->prepare("
 					SELECT
 						*
 					FROM data_disabilitas_siks
 					WHERE nik like %s
-				", '%' .$_POST['nik'].'%'));
+				", '%' . $_POST['nik'] . '%'));
 				$data_lansia = $wpdb->get_results($wpdb->prepare("
 					SELECT
 						*
 					FROM data_lansia_siks
 					WHERE nik like %s
-				", '%' .$_POST['nik'].'%'));
+				", '%' . $_POST['nik'] . '%'));
 				$data_odgj = $wpdb->get_results($wpdb->prepare("
 					SELECT
 						*
 					FROM data_odgj_siks
 					WHERE nik like %s
-				", '%' .$_POST['nik'].'%'));
+				", '%' . $_POST['nik'] . '%'));
 
 				$ret['data']['p3ke'] = $data_p3ke;
 				$ret['data']['anak_terlantar'] = $data_anak_terlantar;
@@ -4154,16 +4172,15 @@ class Wp_Siks_Public
 				$ret['data']['disabilitas'] = $data_disabilitas;
 				$ret['data']['lansia'] = $data_lansia;
 				$ret['data']['odgj'] = $data_odgj;
-			}else{
+			} else {
 				$ret['status']	= 'error';
 				$ret['message']	= 'Api key tidak ditemukan!';
 			}
-		}else{
+		} else {
 			$ret['status']	= 'error';
 			$ret['message']	= 'Format Salah!';
 		}
 
 		die(json_encode($ret));
 	}
-	
 }
