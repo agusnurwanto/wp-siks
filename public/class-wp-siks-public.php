@@ -3931,9 +3931,9 @@ class Wp_Siks_Public
 						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
 					}
 				}
-				$queryRecords[$recKey]['status_p3ke'] = '-';
+				$queryRecords[$recKey]['status_p3ke'] = '<span class="btn btn-warning btn-sm">Belum Terdaftar</span>';
 				if(!empty($recVal['nik_p3ke'])){
-					$queryRecords[$recKey]['status_p3ke'] = 'Terdaftar';
+					$queryRecords[$recKey]['status_p3ke'] = '<span class="btn btn-success btn-sm">Terdaftar</span>';
 				}
 				$queryRecords[$recKey]['aksi'] = $btn;
 			}

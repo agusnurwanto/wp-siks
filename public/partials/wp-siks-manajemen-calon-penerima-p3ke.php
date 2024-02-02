@@ -39,9 +39,9 @@ $jumlah_tidak_terdaftar = $calon_terdaftar['jml']-$terdaftar['jml'];
 </style>
 <div style="padding: 10px;margin:0 0 3rem 0;">
     <h1 class="text-center" style="margin:3rem;">Manajemen Data Calon Penerima P3KE</h1>
-    <h2 class="text-center">Total Calon Penerima P3KE = <?php echo $jumlah_calon_terdaftar; ?></h2>
-    <h2 class="text-center">Jumlah Terdaftar P3KE = <?php echo $jumlah_terdaftar; ?></h2>
-    <h2 class="text-center">Jumlah Tidak Terdaftar P3KE = <?php echo $jumlah_tidak_terdaftar; ?></h2>
+    <h2 class="text-center">Total Calon Penerima P3KE <?php echo $jumlah_calon_terdaftar; ?> Orang</h2>
+    <h2 class="text-center">Jumlah Terdaftar P3KE <?php echo $jumlah_terdaftar; ?> Orang</h2>
+    <h2 class="text-center">Jumlah Belum Terdaftar P3KE <?php echo $jumlah_tidak_terdaftar; ?> Orang</h2>
     <div style="margin-bottom: 25px;">
         <button class="btn btn-primary" onclick="tambah_data_calon_p3ke();"><i class="dashicons dashicons-plus"></i>Tambah Data</button>
     </div>
