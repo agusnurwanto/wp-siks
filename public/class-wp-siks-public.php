@@ -4092,7 +4092,7 @@ class Wp_Siks_Public
 			'data' => array()
 		);
 		if(strlen($_POST['nik']) >=3){
-			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SATSET_APIKEY )) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option( SIKS_APIKEY )) {
 				$data_p3ke = $wpdb->get_results($wpdb->prepare("
 					SELECT
 						*
