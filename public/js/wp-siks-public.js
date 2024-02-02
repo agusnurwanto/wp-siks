@@ -15,6 +15,11 @@ function cari_alamat_siks(text) {
     }else{
         var alamat = jQuery('#cari-alamat-siks-input').val();
     }
+    if(typeof google == 'undefined'){
+        return setTimeout(function(){
+            cari_alamat_siks(text);
+        }, 1000)
+    }
     geocoder = new google.maps.Geocoder();
     geocoder.geocode( { 'address': alamat}, function(results, status) {
         if (status == 'OK') {
@@ -30,34 +35,47 @@ function cari_alamat_siks(text) {
     });
 }
 
-function setCenterSiks(lng, ltd, maker=false, data){
+function setCenterSiks(lng, ltd, maker=false, data, noCenter=false){
     var lokasi_aset = new google.maps.LatLng(lng, ltd);
-    map.setCenter(lokasi_aset);
-    map.setZoom(15);
-    jQuery([document.documentElement, document.body]).animate({
-        scrollTop: jQuery("#map-canvas-siks").offset().top
-    }, 500);
+
+    // center lokasi
+    if(!noCenter){
+        map.setCenter(lokasi_aset);
+        map.setZoom(15);
+        jQuery([document.documentElement, document.body]).animate({
+            scrollTop: jQuery("#map-canvas-siks").offset().top
+        }, 500);
+    }
+
+    // menampilkan maker
     if(maker){
-        if(typeof evm != 'undefined'){
-            evm.setMap(null);
+        if(typeof evm == 'undefined'){
+            window.evm = {};
+        }
+        if(typeof data == 'object'){
+            data = JSON.stringify(data);
+        }
+        if(typeof evm[data] != 'undefined'){
+            evm[data].setMap(null);
         }
         // Menampilkan Marker
-        window.evm = new google.maps.Marker({
+        evm[data] = new google.maps.Marker({
             position: lokasi_aset,
             map,
             draggable: false,
             title: 'Lokasi Map'
         });
-        if(typeof data == 'object'){
-            data = JSON.stringify(data);
+
+        if(typeof infoWindow == 'undefined'){
+            window.infoWindow = {};
         }
-        window.infoWindow = new google.maps.InfoWindow({
+        infoWindow[data] = new google.maps.InfoWindow({
             content: data
         });
 
-        google.maps.event.addListener(evm, 'click', function(event) {
-            infoWindow.setPosition(event.latLng);
-            infoWindow.open(map);
+        google.maps.event.addListener(evm[data], 'click', function(event) {
+            infoWindow[data].setPosition(event.latLng);
+            infoWindow[data].open(map);
         });
     }
 }

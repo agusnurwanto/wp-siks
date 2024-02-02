@@ -868,11 +868,12 @@ class Wp_Siks_Public
 			", ARRAY_A);
 		}
 		$new_data = array();
-		foreach ($data as $val) {
+		foreach ($data as $k => $val) {
 			$coordinate = json_decode($val['polygon'], true);
 			if (!empty($coordinate)) {
 				unset($val['polygon']);
 				$new_data[] = array(
+					'index' => $k,
 					'coor' => $coordinate,
 					'data' => $val,
 					'html' => json_encode($val),

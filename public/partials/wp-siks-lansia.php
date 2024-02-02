@@ -33,6 +33,7 @@ foreach ($bunda_kasih_all as $data) {
 }
 
 $total_all = 0;
+$total_bunda_kasih_all = 0;
 $body =  '';
 foreach ($maps_all as $i => $desa) {
     $index = strtolower($desa['data']['provinsi']) . '.' . strtolower($desa['data']['kab_kot']) . '.' . strtolower($desa['data']['kecamatan']) . '.' . strtolower($desa['data']['desa']);
@@ -55,6 +56,12 @@ foreach ($maps_all as $i => $desa) {
         $maps_all[$i]['color'] = '#fff70a';
     } else if ($total_lansia > 40) {
         $maps_all[$i]['color'] = '#ff0000';
+    } elseif ($total_bunda_kasih <= 15) {
+        $maps_all[$i]['color'] = '#0cbf00';
+    } else if ($total_bunda_kasih <= 40) {
+        $maps_all[$i]['color'] = '#fff70a';
+    } else if ($total_bunda_kasih > 40) {
+        $maps_all[$i]['color'] = '#ff0000';
     }
     $maps_all[$i]['index'] = $i;
 
@@ -64,12 +71,15 @@ foreach ($maps_all as $i => $desa) {
                 <td><b>Total Lansia</b></td>
                 <td><b>' . $this->number_format($total_lansia) . ' Orang</b></td>
             </tr>
+            <tr>
+                <td><b>Total Bunda Kasih</b></td>
+                <td><b>' . $this->number_format($total_bunda_kasih) . ' Orang</b></td>
+            </tr>
     ';
     foreach ($desa['data'] as $k => $v) {
         $html .= '
             <tr>
                 <td><b>' . $k . '</b></td>
-                <td>' . $v . '</td>
             </tr>
         ';
     }
