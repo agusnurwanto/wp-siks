@@ -3796,38 +3796,56 @@ class Wp_Siks_Public
 					SELECT
 						*
 					FROM data_p3ke_siks
-					WHERE nik like %s
-				", '%' . $_POST['nik'] . '%'));
+					WHERE nik like %s OR
+							nama like %s OR
+							kk like %s
+				", '%'.$_POST['nik'].'%', '%'.$_POST['nik'].'%', '%'.$_POST['nik'].'%'));
+
 				$data_anak_terlantar = $wpdb->get_results($wpdb->prepare("
 					SELECT
 						*
 					FROM data_anak_terlantar_siks
-					WHERE nik like %s
-				", '%' . $_POST['nik'] . '%'));
+
+					WHERE nik like %s OR
+							nama like %s OR
+							kk like %s
+				", '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%'));
+
 				$data_bunda_kasih = $wpdb->get_results($wpdb->prepare("
 					SELECT
 						*
 					FROM data_bunda_kasih_siks
-					WHERE nik like %s
-				", '%' . $_POST['nik'] . '%'));
+
+					WHERE nik like %s OR
+							nama like %s OR
+							kk like %s
+				", '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%'));
+
 				$data_disabilitas = $wpdb->get_results($wpdb->prepare("
 					SELECT
 						*
 					FROM data_disabilitas_siks
-					WHERE nik like %s
-				", '%' . $_POST['nik'] . '%'));
+					WHERE nik like %s OR
+							nama like %s OR
+							nomor_kk like %s
+				", '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%'));
+
 				$data_lansia = $wpdb->get_results($wpdb->prepare("
 					SELECT
 						*
 					FROM data_lansia_siks
-					WHERE nik like %s
-				", '%' . $_POST['nik'] . '%'));
+					WHERE nik like %s OR
+							nama like %s
+				", '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%'));
+
 				$data_odgj = $wpdb->get_results($wpdb->prepare("
 					SELECT
 						*
 					FROM data_odgj_siks
-					WHERE nik like %s
-				", '%' . $_POST['nik'] . '%'));
+					WHERE nik like %s OR
+							nama like %s OR
+							kk like %s
+				", '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%'));
 
 				$ret['data']['p3ke'] = $data_p3ke;
 				$ret['data']['anak_terlantar'] = $data_anak_terlantar;
