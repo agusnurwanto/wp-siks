@@ -1078,10 +1078,6 @@ class Wp_Siks_Public
 					$ret['status'] = 'error';
 					$ret['message'] = 'Status tidak boleh kosong!';
 				}
-				if ($ret['status'] != 'error' && empty($_POST['dokumen_kewarganegaraan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Dokumen Kewarganegaraan tidak boleh kosong!';
-				}
 				if ($ret['status'] != 'error' && empty($_POST['nik'])) {
 					$ret['status'] = 'error';
 					$ret['message'] = 'NIK tidak boleh kosong!';
@@ -1117,266 +1113,6 @@ class Wp_Siks_Public
 				if ($ret['status'] != 'error' && empty($_POST['no_hp'])) {
 					$ret['status'] = 'error';
 					$ret['message'] = 'Nomor HP tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['pendidikan_terakhir'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Pendidikan Terakhir tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['nama_sekolah'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Nama Sekolah tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['keterangan_lulus'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Keterangan Lulus tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['jenis_disabilitas'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Jenis Disabilitas tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['keterangan_disabilitas'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Keterangan Disabilitas tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['sebab_disabilitas'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Sebab Disabilitas tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['diagnosa_medis'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Diagnosa Medis tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['penyakit_lain'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Penyakit Lain tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['tempat_pengobatan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Tempat Pengobatan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['perawat'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Perawat tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['aktivitas'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Aktivitas tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['aktivitas_bantuan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Aktivitas Bantuan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['perlu_bantu'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Perlu Bantu tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['alat_bantu'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Alat Bantu tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['alat_yang_dimiliki'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Alat Yang Dimiliki tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['kondisi_alat'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Kondisi Alat tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['jaminan_kesehatan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Jaminan Kesehatan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['cara_menggunakan_jamkes'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Cara Menggunakan Jamkes tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['jaminan_sosial'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Jaminan Sosial tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['pekerjaan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Pekerjaan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['lokasi_bekerja'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Lokasi Bekerja tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['alasan_tidak_bekerja'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Alasan Tidak Bekerja tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['pendapatan_bulan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Pendapatan Bulan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['pengeluaran_bulan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Pengeluaran Bulan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['pendapatan_lain'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Pendapatan Lain tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['minat_kerja'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Minat Kerja tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['keterampilan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Keterampilan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['pelatihan_yang_diikuti'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Pelatihan Yang Diikuti tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['pelatihan_yang_diminat'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Pelatihan Yang Diminat tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['status_rumah'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Status Rumah tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['lantai'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Lantai tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['kamar_mandi'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Kamar Mandi tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['wc'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'WC tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['akses_ke_lingkungan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Nama tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['dinding'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Dinding tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['sarana_air'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Sarana Air tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['penerangan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Penerangan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['desa_paud'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Desa Paud tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['tk_di_desa'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'TK Di Desa tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['kecamatan_slb'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Kecamatan SLB tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['sd_menerima_abk'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'SD Menerima Abk tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['smp_menerima_abk'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'SMP Menerima Abk tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['jumlah_posyandu'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Jumlah Posyandu tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['kader_posyandu'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Kader Posyandu tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['layanan_kesehatan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Layanan Kesehatan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['sosialitas_ke_tetangga'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Sosialitas Ke Tetangga tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['keterlibatan_berorganisasi'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Keterlibatan Berorganisasi tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['kegiatan_kemasyarakatan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Kegiatan Kemasyarakatan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['keterlibatan_musrembang'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Keterlibatan Musrembang tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['alat_bantu_bantuan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Alat Bantu Bantuan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['asal_alat_bantu'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Asal Alat Bantu tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['tahun_pemberian'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Tahun Pemberian tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['bantuan_uep'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Bantuan UEP tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['asal_uep'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Asal UEP tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['tahun'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Tahun tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['lainnya'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Lainnya tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['rehabilitas'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Rehabilitas tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['lokasi_rehabilitas'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Lokasi Rehabilitas tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['tahun_rehabilitas'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Tahun Rehabilitas tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['keahlian_khusus'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Keahlian Khusus tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['prestasi'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Prestasi tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['nama_perawat_wali'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Nama Perawat Wali tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['hubungan_dengan_pd'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Hubungan Dengan PD tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['nomor_hp'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Nomor HP tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['kelayakan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Kelayakan tidak boleh kosong!';
 				}
 				if ($ret['status'] != 'error' && empty($_POST['tahun_anggaran'])) {
 					$ret['status'] = 'error';
@@ -1727,13 +1463,15 @@ class Wp_Siks_Public
 				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
 			}
 			// check search value exist
-			if (!empty($params['search']['value'])) {
-				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-				$where .= " AND (kecamatan LIKE " . $search_value;
-				$where .= " OR nama LIKE " . $search_value;
-				$where .= " OR nik LIKE " . $search_value;
-				$where .= " OR alamat LIKE " . $search_value . ")";
-			}
+            if( !empty($params['search']['value']) ) {
+                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( nomor_kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( desa LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+            }
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_disabilitas_siks`";
@@ -1886,46 +1624,6 @@ class Wp_Siks_Public
 				if ($ret['status'] != 'error' && empty($_POST['nik'])) {
 					$ret['status'] = 'error';
 					$ret['message'] = 'Data NIK tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['dokumen_kependudukan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Data Dokumen Kependudukan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['status_tempat_tinggal'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Data Status Tempat Tinggal tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['status_pemenuhan_kebutuhan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Data Status Pemenuhan Kebutuhan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['status_kehidupan_rumah_tangga'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Data Status Pemenuhan Kebutuhan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['status_dtks'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Data Status DTKS tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['status_kepersertaan_program_bansos'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Data Status Kepersertaan Program Bansos tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['rekomendasi_pendata_lama'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Data Rekomendasi Pendeta Lama tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['keterangan_lainnya_lama'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Data Keterangan Lainnya Lama tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['rekomendasi_pendata'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Data Rekomendasi Pendeta tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['keterangan_lainnya'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Data Keterangan Lainnya tidak boleh kosong!';
 				}
 				if ($ret['status'] != 'error' && empty($_POST['tahun_anggaran'])) {
 					$ret['status'] = 'error';
@@ -2109,12 +1807,13 @@ class Wp_Siks_Public
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-				$where .= " AND (kecamatan LIKE " . $search_value;
-				$where .= " OR nama LIKE " . $search_value;
-				$where .= " OR nik LIKE " . $search_value;
-				$where .= " OR alamat LIKE " . $search_value . ")";
-			}
+                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( desa LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+            }
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_lansia_siks`";
@@ -2400,12 +2099,14 @@ class Wp_Siks_Public
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-				$where .= " AND (kecamatan LIKE " . $search_value;
-				$where .= " OR nama LIKE " . $search_value;
-				$where .= " OR nik LIKE " . $search_value;
-				$where .= " OR alamat LIKE " . $search_value . ")";
-			}
+                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( desa LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+            }
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_bunda_kasih_siks`";
@@ -2431,7 +2132,7 @@ class Wp_Siks_Public
 			foreach ($queryRecords as $recKey => $recVal) {
 				if (empty($params['desa'])) {
 					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
-					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+					$btn .= '<a style="margin-left: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				} else {
 					$btn = '-';
 					if (!empty($recVal['lat'])) {
@@ -2558,26 +2259,6 @@ class Wp_Siks_Public
 				if ($ret['status'] != 'error' && empty($_POST['kk'])) {
 					$ret['status'] = 'error';
 					$ret['message'] = 'KK tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['jenis_kelamin'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Jenis Kelamin tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['nama_ortu'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Nama Orang Tua tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['pengobatan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Pengobatan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['usia'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Usia tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['keterangan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Keterangan tidak boleh kosong!';
 				}
 				if ($ret['status'] != 'error' && empty($_POST['tahun_anggaran'])) {
 					$ret['status'] = 'error';
@@ -2745,12 +2426,14 @@ class Wp_Siks_Public
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-				$where .= " AND (kecamatan LIKE " . $search_value;
-				$where .= " OR nama LIKE " . $search_value;
-				$where .= " OR nik LIKE " . $search_value;
-				$where .= " OR alamat LIKE " . $search_value . ")";
-			}
+                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( desa LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+            }
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_odgj_siks`";
@@ -3017,11 +2700,12 @@ class Wp_Siks_Public
 
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-				$where .= " AND ( nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
-				$where .= " OR kabkot LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
-				$where .= " OR ketua LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
-			}
+                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( ketua LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+            }
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_lksa_siks`";
@@ -3268,12 +2952,14 @@ class Wp_Siks_Public
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-				$where .= " AND (kecamatan LIKE " . $search_value;
-				$where .= " OR nama LIKE " . $search_value;
-				$where .= " OR nik LIKE " . $search_value;
-				$where .= " OR alamat LIKE " . $search_value . ")";
-			}
+                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+	            $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+	            $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+	            $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+	            $where .=" OR ( desa_kelurahan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+            }	
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_anak_terlantar_siks`";
@@ -3592,26 +3278,6 @@ class Wp_Siks_Public
 					$ret['status'] = 'error';
 					$ret['message'] = 'KK tidak boleh kosong!';
 				}
-				if ($ret['status'] != 'error' && empty($_POST['pekerjaan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Pekerjaan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['alamat'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Alamat tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['program'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Program tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['penghasilan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Penghasilan tidak boleh kosong!';
-				}
-				if ($ret['status'] != 'error' && empty($_POST['keterangan'])) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'Keterangan tidak boleh kosong!';
-				}
 				if ($ret['status'] != 'error' && empty($_POST['tahun_anggaran'])) {
 					$ret['status'] = 'error';
 					$ret['message'] = 'Tahun Anggaran tidak boleh kosong!';
@@ -3778,12 +3444,16 @@ class Wp_Siks_Public
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-				$where .= " AND (kecamatan LIKE " . $search_value;
-				$where .= " OR nama LIKE " . $search_value;
-				$where .= " OR nik LIKE " . $search_value;
-				$where .= " OR alamat LIKE " . $search_value . ")";
-			}
+                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( desa LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( rt LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( rw LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+            }
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_p3ke_siks`";
@@ -3876,23 +3546,16 @@ class Wp_Siks_Public
 
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-				$search_value = $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-
-				$where .= " AND (
-					data_calon_p3ke_siks.kecamatan LIKE " . $search_value . " OR
-					data_calon_p3ke_siks.alamat LIKE " . $search_value . " OR
-					data_calon_p3ke_siks.nama_kk LIKE " . $search_value . " OR
-					data_calon_p3ke_siks.nama_pkk LIKE " . $search_value . " OR
-					data_calon_p3ke_siks.nama_anak LIKE " . $search_value . " OR
-					data_calon_p3ke_siks.nik_anak LIKE " . $search_value . " OR
-					data_calon_p3ke_siks.desa_kelurahan LIKE " . $search_value . " OR
-					data_calon_p3ke_siks.kecamatan LIKE " . $search_value . " OR
-					data_calon_p3ke_siks.kabkot LIKE " . $search_value . " OR
-					data_calon_p3ke_siks.district LIKE " . $search_value . " OR
-					data_calon_p3ke_siks.sumber LIKE " . $search_value . " OR
-					data_calon_p3ke_siks.tahun_anggaran LIKE " . $search_value . "
-				)";
-			}
+                $where .=" AND ( nama_kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( nama_pkk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( nama_anak LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( nik_anak LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( nik_p3ke LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( id_kpm LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+                $where .=" OR ( desa_kelurahan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+            }
 
 			if (!empty($params['desa'])) {
 				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);

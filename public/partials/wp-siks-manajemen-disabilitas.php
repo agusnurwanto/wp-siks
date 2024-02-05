@@ -1194,265 +1194,73 @@ $maps_all = $this->get_polygon();
             return alert('Data No Handphone tidak boleh kosong!');
         }
         var pendidikan_terakhir = jQuery('#pendidikan_terakhir').val();
-        if (pendidikan_terakhir == '') {
-            return alert('Data Pendidikan Terakhir tidak boleh kosong!');
-        }
         var nama_sekolah = jQuery('#nama_sekolah').val();
-        if (nama_sekolah == '') {
-            return alert('Data Nama Sekolah tidak boleh kosong!');
-        }
         var keterangan_lulus = jQuery('#keterangan_lulus').val();
-        if (keterangan_lulus == '') {
-            return alert('Data Keterangan Lulus tidak boleh kosong!');
-        }
         var jenis_disabilitas = jQuery('#jenis_disabilitas').val();
-        if (jenis_disabilitas == '') {
-            return alert('Data jenis disabilitas tidak boleh kosong!');
-        }
         var keterangan_disabilitas = jQuery('#keterangan_disabilitas').val();
-        if (keterangan_disabilitas == '') {
-            return alert('Data Keterangan Disabilitas tidak boleh kosong!');
-        }
         var sebab_disabilitas = jQuery('#sebab_disabilitas').val();
-        if (sebab_disabilitas == '') {
-            return alert('Data Sebab Disabilitas tidak boleh kosong!');
-        }
         var diagnosa_medis = jQuery('#diagnosa_medis').val();
-        if (diagnosa_medis == '') {
-            return alert('Data Diagnosa Medis tidak boleh kosong!');
-        }
         var penyakit_lain = jQuery('#penyakit_lain').val();
-        if (penyakit_lain == '') {
-            return alert('Data Penyakit Lain tidak boleh kosong!');
-        }
         var tempat_pengobatan = jQuery('#tempat_pengobatan').val();
-        if (tempat_pengobatan == '') {
-            return alert('Data Tempat Pengobatan tidak boleh kosong!');
-        }
         var perawat = jQuery('#perawat').val();
-        if (perawat == '') {
-            return alert('Data Perawat tidak boleh kosong!');
-        }
         var aktivitas = jQuery('#aktivitas').val();
-        if (aktivitas == '') {
-            return alert('Data Aktivitas tidak boleh kosong!');
-        }
         var aktivitas_bantuan = jQuery('#aktivitas_bantuan').val();
-        if (aktivitas_bantuan == '') {
-            return alert('Data Aktivitas Bantuan tidak boleh kosong!');
-        }
         var perlu_bantu = jQuery('#perlu_bantu').val();
-        if (perlu_bantu == '') {
-            return alert('Data Perlu Bantu tidak boleh kosong!');
-        }
         var alat_bantu = jQuery('#alat_bantu').val();
-        if (alat_bantu == '') {
-            return alert('Data Alat Bantu tidak boleh kosong!');
-        }
         var alat_yang_dimiliki = jQuery('#alat_yang_dimiliki').val();
-        if (alat_yang_dimiliki == '') {
-            return alert('Data Alat yang Dimiliki tidak boleh kosong!');
-        }
         var kondisi_alat = jQuery('#kondisi_alat').val();
-        if (kondisi_alat == '') {
-            return alert('Data Kondisi Alat tidak boleh kosong!');
-        }
         var jaminan_kesehatan = jQuery('#jaminan_kesehatan').val();
-        if (jaminan_kesehatan == '') {
-            return alert('Data Jaminan Kesehatan tidak boleh kosong!');
-        }
         var cara_menggunakan_jamkes = jQuery('#cara_menggunakan_jamkes').val();
-        if (cara_menggunakan_jamkes == '') {
-            return alert('Data Cara Menggunakan Jamkes tidak boleh kosong!');
-        }
         var jaminan_sosial = jQuery('#jaminan_sosial').val();
-        if (jaminan_sosial == '') {
-            return alert('Data Jaminan Sosial tidak boleh kosong!');
-        }
         var pekerjaan = jQuery('#pekerjaan').val();
-        if (pekerjaan == '') {
-            return alert('Data Pekerjaan tidak boleh kosong!');
-        }
         var lokasi_bekerja = jQuery('#lokasi_bekerja').val();
-        if (lokasi_bekerja == '') {
-            return alert('Data Lokasi Bekerja tidak boleh kosong!');
-        }
         var alasan_tidak_bekerja = jQuery('#alasan_tidak_bekerja').val();
-        if (alasan_tidak_bekerja == '') {
-            return alert('Data Alasan Tidak Bekerja tidak boleh kosong!');
-        }
         var pendapatan_bulan = jQuery('#pendapatan_bulan').val();
-        if (pendapatan_bulan == '') {
-            return alert('Data Pendapatan Bulan tidak boleh kosong!');
-        }
         var pengeluaran_bulan = jQuery('#pengeluaran_bulan').val();
-        if (pengeluaran_bulan == '') {
-            return alert('Data Pengeluaran Bulan tidak boleh kosong!');
-        }
         var pendapatan_lain = jQuery('#pendapatan_lain').val();
-        if (pendapatan_lain == '') {
-            return alert('Data Pendapatan Lain tidak boleh kosong!');
-        }
         var minat_kerja = jQuery('#minat_kerja').val();
-        if (minat_kerja == '') {
-            return alert('Data Minat Kerja tidak boleh kosong!');
-        }
         var keterampilan = jQuery('#keterampilan').val();
-        if (keterampilan == '') {
-            return alert('Data Keterampilan tidak boleh kosong!');
-        }
         var pelatihan_yang_diikuti = jQuery('#pelatihan_yang_diikuti').val();
-        if (pelatihan_yang_diikuti == '') {
-            return alert('Data Pelatihan yang Diikuti tidak boleh kosong!');
-        }
         var pelatihan_yang_diminat = jQuery('#pelatihan_yang_diminat').val();
-        if (pelatihan_yang_diminat == '') {
-            return alert('Data Pelatihan yang Diminat tidak boleh kosong!');
-        }
         var status_rumah = jQuery('#status_rumah').val();
-        if (status_rumah == '') {
-            return alert('Data Status Rumah tidak boleh kosong!');
-        }
         var lantai = jQuery('#lantai').val();
-        if (lantai == '') {
-            return alert('Data Lantai tidak boleh kosong!');
-        }
         var kamar_mandi = jQuery('#kamar_mandi').val();
-        if (kamar_mandi == '') {
-            return alert('Data Kamar Mandi tidak boleh kosong!');
-        }
         var wc = jQuery('#wc').val();
-        if (wc == '') {
-            return alert('Data WC tidak boleh kosong!');
-        }
         var akses_ke_lingkungan = jQuery('#akses_ke_lingkungan').val();
-        if (akses_ke_lingkungan == '') {
-            return alert('Data Akses ke Lingkungan tidak boleh kosong!');
-        }
         var dinding = jQuery('#dinding').val();
-        if (dinding == '') {
-            return alert('Data Dinding tidak boleh kosong!');
-        }
         var sarana_air = jQuery('#sarana_air').val();
-        if (sarana_air == '') {
-            return alert('Data Sarana Air tidak boleh kosong!');
-        }
         var penerangan = jQuery('#penerangan').val();
-        if (penerangan == '') {
-            return alert('Data Penerangan tidak boleh kosong!');
-        }
         var desa_paud = jQuery('#desa_paud').val();
-        if (desa_paud == '') {
-            return alert('Data Desa PAUD tidak boleh kosong!');
-        }
         var tk_di_desa = jQuery('#tk_di_desa').val();
-        if (tk_di_desa == '') {
-            return alert('Data TK di Desa tidak boleh kosong!');
-        }
         var kecamatan_slb = jQuery('#kecamatan_slb').val();
-        if (kecamatan_slb == '') {
-            return alert('Data Kecamatan SLB tidak boleh kosong!');
-        }
         var sd_menerima_abk = jQuery('#sd_menerima_abk').val();
-        if (sd_menerima_abk == '') {
-            return alert('Data SD Menerima ABK tidak boleh kosong!');
-        }
         var smp_menerima_abk = jQuery('#smp_menerima_abk').val();
-        if (smp_menerima_abk == '') {
-            return alert('Data SMP Menerima ABK tidak boleh kosong!');
-        }
         var jumlah_posyandu = jQuery('#jumlah_posyandu').val();
-        if (jumlah_posyandu == '') {
-            return alert('Data Jumlah Posyandu tidak boleh kosong!');
-        }
         var kader_posyandu = jQuery('#kader_posyandu').val();
-        if (kader_posyandu == '') {
-            return alert('Data Kader Posyandu tidak boleh kosong!');
-        }
         var layanan_kesehatan = jQuery('#layanan_kesehatan').val();
-        if (layanan_kesehatan == '') {
-            return alert('Data Layanan Kesehatan tidak boleh kosong!');
-        }
         var sosialitas_ke_tetangga = jQuery('#sosialitas_ke_tetangga').val();
-        if (sosialitas_ke_tetangga == '') {
-            return alert('Data Sosialitas ke Tetangga tidak boleh kosong!');
-        }
         var keterlibatan_berorganisasi = jQuery('#keterlibatan_berorganisasi').val();
-        if (keterlibatan_berorganisasi == '') {
-            return alert('Data Keterlibatan Berorganisasi tidak boleh kosong!');
-        }
         var kegiatan_kemasyarakatan = jQuery('#kegiatan_kemasyarakatan').val();
-        if (kegiatan_kemasyarakatan == '') {
-            return alert('Data Kegiatan Kemasyarakatan tidak boleh kosong!');
-        }
         var keterlibatan_musrembang = jQuery('#keterlibatan_musrembang').val();
-        if (keterlibatan_musrembang == '') {
-            return alert('Data Keterlibatan Musrembang tidak boleh kosong!');
-        }
         var alat_bantu_bantuan = jQuery('#alat_bantu_bantuan').val();
-        if (alat_bantu_bantuan == '') {
-            return alert('Data Alat Bantu Bantuan tidak boleh kosong!');
-        }
         var asal_alat_bantu = jQuery('#asal_alat_bantu').val();
-        if (asal_alat_bantu == '') {
-            return alert('Data Asal Alat Bantu tidak boleh kosong!');
-        }
         var tahun_pemberian = jQuery('#tahun_pemberian').val();
-        if (tahun_pemberian == '') {
-            return alert('Data Tahun Pemberian tidak boleh kosong!');
-        }
         var bantuan_uep = jQuery('#bantuan_uep').val();
-        if (bantuan_uep == '') {
-            return alert('Data Bantuan UEP tidak boleh kosong!');
-        }
         var asal_uep = jQuery('#asal_uep').val();
-        if (asal_uep == '') {
-            return alert('Data Asal UEP tidak boleh kosong!');
-        }
         var tahun = jQuery('#tahun').val();
-        if (tahun == '') {
-            return alert('Data Tahun tidak boleh kosong!');
-        }
         var lainnya = jQuery('#lainnya').val();
-        if (lainnya == '') {
-            return alert('Data Lainnya tidak boleh kosong!');
-        }
         var rehabilitas = jQuery('#rehabilitas').val();
-        if (rehabilitas == '') {
-            return alert('Data Rehabilitas tidak boleh kosong!');
-        }
         var lokasi_rehabilitas = jQuery('#lokasi_rehabilitas').val();
-        if (lokasi_rehabilitas == '') {
-            return alert('Data Lokasi Rehabilitas tidak boleh kosong!');
-        }
         var tahun_rehabilitas = jQuery('#tahun_rehabilitas').val();
-        if (tahun_rehabilitas == '') {
-            return alert('Data Tahun Rehabilitas tidak boleh kosong!');
-        }
         var keahlian_khusus = jQuery('#keahlian_khusus').val();
-        if (keahlian_khusus == '') {
-            return alert('Data Keahlian Khusus tidak boleh kosong!');
-        }
         var prestasi = jQuery('#prestasi').val();
-        if (prestasi == '') {
-            return alert('Data Prestasi tidak boleh kosong!');
-        }
         var nama_perawat_wali = jQuery('#nama_perawat_wali').val();
-        if (nama_perawat_wali == '') {
-            return alert('Data Nama Perawat Wali tidak boleh kosong!');
-        }
         var hubungan_dengan_pd = jQuery('#hubungan_dengan_pd').val();
-        if (hubungan_dengan_pd == '') {
-            return alert('Data Hubungan Dengan PD tidak boleh kosong!');
-        }
         var nomor_hp = jQuery('#nomor_hp').val();
         if (nomor_hp == '') {
             return alert('Data Nomor Handphone PD tidak boleh kosong!');
         }
         var kelayakan = jQuery('#kelayakan').val();
-        if (kelayakan == '') {
-            return alert('Data Kelayakan tidak boleh kosong!');
-        }
         var tahun_anggaran = jQuery('#tahun_anggaran').val();
         if (tahun_anggaran == '') {
             return alert('Data Tahun Anggaran tidak boleh kosong!');
