@@ -11,6 +11,7 @@ $anak_terlantar_luar_magetan = array();
 $last_update_terlantar_dalam = null;
 $last_update_terlantar_luar = null;
 $last_update_lksa = null;
+$url_all_kec = array();
 
 // Pengolahan data dalam Magetan
 foreach ($anak_terlantar_dalam as $data) {
@@ -157,11 +158,20 @@ foreach ($anak_terlantar_luar_magetan as $index => $data_luar) {
 foreach ($data_all_lksa as $index => $lksa_data) {
     $total_lksa = array_sum(array_column($lksa_data, 'jml'));
     foreach ($lksa_data as $data) {
+    $url_lksa = add_query_arg('nama', urlencode($data['nama']), home_url('/lksa-per-desa/'));
+    $nama_lksa = str_replace('kabkot ', '', strtolower($data['nama']));
+    $url_all_lksa[$nama_lksa] = $url_lksa;
+
+    $nama_lksa_all = $nama_lksa;
+
+    if (is_user_logged_in()) {
+        $nama_lksa_all = "<a href='".$url_all_lksa[$nama_lksa]."' target='_blank'>".$nama_lksa."</a>";
+    }
         $body_lksa .= "
             <tr>
-                <td class='text-center' style='text-transform:uppercase'>" . $data['nama'] . "</td>
-                <td class='text-center' style='text-transform:uppercase'>" . $data['kabkot'] . "</td>
-                <td class='text-center' style='text-transform:uppercase'>" . $data['alamat'] . "</td>
+                <td class='text-left' style='text-transform:uppercase'>" . $nama_lksa_all . "</td>
+                <td class='text-left' style='text-transform:uppercase'>" . $data['kabkot'] . "</td>
+                <td class='text-left' style='text-transform:uppercase'>" . $data['alamat'] . "</td>
                 <td class='text-center' style='text-transform:uppercase'>" . $data['anak_dalam_lksa'] . "</td>
                 <td class='text-center' style='text-transform:uppercase'>" . $data['anak_luar_lksa'] . "</td>
                 <td class='text-center' style='text-transform:uppercase'>" . $data['total_anak'] . "</td>

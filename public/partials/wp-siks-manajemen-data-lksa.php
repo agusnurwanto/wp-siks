@@ -11,24 +11,14 @@ $maps_all = $this->get_polygon();
         max-height: 100vh;
         width: 100%;
     }
-
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    input[type=number] {
-        -moz-appearance: textfield;
-    }
 </style>
 <div style="padding: 10px;margin:0 0 3rem 0;">
-    <h1 class="text-center" style="margin:3rem;">Manajemen Data Lembaga Kesejahteraan Sosial Anak (LKSA)</h1>
+    <h1 class="text-center" style="margin:3rem;">Manajemen Data LKSA</h1>
     <div style="margin-bottom: 25px;">
-        <button class="btn btn-primary" onclick="tambahDataLksa();"><i class="dashicons dashicons-plus"></i> Tambah Data</button>
+        <button class="btn btn-primary" onclick="tambah_data_lksa();"><i class="dashicons dashicons-plus"></i> Tambah Data</button>
     </div>
     <div class="wrap-table">
-        <table id="tableManajemenLksa" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
+        <table id="tableManajemenLKSA" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
             <thead>
                 <tr>
                     <th class="text-center">Nama Lembaga</th>
@@ -41,6 +31,7 @@ $maps_all = $this->get_polygon();
                     <th class="text-center">Anak Luar LKSA</th>
                     <th class="text-center">Total Anak LKSA</th>
                     <th class="text-center">Lampiran</th>
+                    <th class="text-center">Tahun Anggaran</th>
                     <th class="text-center">Aksi</th>
                 </tr>
             </thead>
@@ -49,17 +40,17 @@ $maps_all = $this->get_polygon();
         </table>
     </div>
 </div>
-<div class="modal fade mt-4" id="modalTambahDataLksa" tabindex="-1" role="dialog" aria-labelledby="modalTambahDataLksaLabel" aria-hidden="true">
+<div class="modal fade mt-4" id="modalTambahDataLKSA" tabindex="-1" role="dialog" aria-labelledby="modalTambahDataLKSALabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTambahDataLksaLabel">Tambah Data LKSA</h5>
+                <h5 class="modal-title" id="modalTambahDataLKSALabel">Tambah Data LKSA</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <input type='hidden' id='id_data' name="id_data">
+                <input type='hidden' id='id_data' name="id_data" placeholder=''>
                 <div class="form-group">
                     <label>Tahun Anggaran</label>
                     <input type="text" class="form-control" id="tahun_anggaran" placeholder="Masukkan Tahun Anggaran">
@@ -90,11 +81,11 @@ $maps_all = $this->get_polygon();
                 </div>
                 <div class="form-group">
                     <label>Anak dalam LKSA</label>
-                    <input type="number" class="form-control" id="dalam_lksa" placeholder="Masukkan Jumlah Anak dalam LKSA">
+                    <input type="number" class="form-control" id="anak_dalam_lksa" placeholder="Masukkan Jumlah Anak dalam LKSA">
                 </div>
                 <div class="form-group">
                     <label>Anak luar LKSA</label>
-                    <input type="number" class="form-control" id="luar_lksa" placeholder="Masukkan Jumlah Anak luar LKSA">
+                    <input type="number" class="form-control" id="anak_luar_lksa" placeholder="Masukkan Jumlah Anak luar LKSA">
                 </div>
                 <div class="form-group">
                     <label>Total Anak LKSA</label>
@@ -124,7 +115,7 @@ $maps_all = $this->get_polygon();
                 <div><small>Upload file maksimal 1 Mb, berformat .pdf .png .jpg .jpeg</small></div>
             </div>
             <div class="modal-footer">
-                <button type="submit" onclick="submitDataLksa(this);" class="btn btn-primary send_data">Simpan</button>
+                <button type="submit" onclick="submitDataLKSA(this);" class="btn btn-primary send_data">Simpan</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Tutup</button>
             </div>
         </div>
@@ -136,35 +127,35 @@ $maps_all = $this->get_polygon();
     window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
     window.maps_center_siks = <?php echo json_encode($center); ?>;
     jQuery(document).ready(function() {
-        get_datatable_lksa();
+        get_data_lksa();
 
         function hitungTotalAnak() {
-            let dalamLksa = parseInt(jQuery('#dalam_lksa').val()) || 0;
-            let luarLksa = parseInt(jQuery('#luar_lksa').val()) || 0;
+            let dalamLksa = parseInt(jQuery('#anak_dalam_lksa').val()) || 0;
+            let luarLksa = parseInt(jQuery('#anak_luar_lksa').val()) || 0;
             let total = dalamLksa + luarLksa;
             jQuery('#total_anak').val(total);
         }
-        jQuery('#dalam_lksa, #luar_lksa').on('input', function() {
+        jQuery('#anak_dalam_lksa, #anak_luar_lksa').on('input', function() {
             hitungTotalAnak();
         });
         jQuery('#total_anak').prop('disabled', true);
     });
 
-    function get_datatable_lksa() {
-        if (typeof tableLksa === 'undefined') {
-            window.tableLksa = jQuery('#tableManajemenLksa').DataTable({
+    function get_data_lksa() {
+        if (typeof tableLKSA === 'undefined') {
+            window.tableLKSA = jQuery('#tableManajemenLKSA').DataTable({
                 "processing": true,
                 "serverSide": true,
                 "search": {
                     return: true
                 },
                 "ajax": {
-                    url: '<?php echo $url; ?>',
+                    url: '<?php echo $url ?>',
                     type: 'POST',
                     dataType: 'json',
                     data: {
                         'action': 'get_datatable_lksa',
-                        'api_key': '<?php echo $api_key; ?>',
+                        'api_key': '<?php echo $api_key ?>',
                     }
                 },
                 lengthMenu: [
@@ -218,13 +209,18 @@ $maps_all = $this->get_polygon();
                         className: "text-center"
                     },
                     {
+                        "data": 'tahun_anggaran',
+                        className: "text-center"
+                    },
+                    {
                         "data": 'aksi',
                         className: "text-center"
                     },
+
                 ]
             });
         } else {
-            tableLksa.draw();
+            tableLKSA.draw();
         }
     }
 
@@ -233,19 +229,18 @@ $maps_all = $this->get_polygon();
         if (confirmDelete) {
             jQuery('#wrap-loading').show();
             jQuery.ajax({
-                url: '<?php echo $url ?>',
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
                 type: 'post',
                 data: {
-                    'action': 'hapus_lksa_by_id',
-                    'api_key': '<?php echo $api_key ?>',
+                    'action': 'hapus_data_lksa_by_id',
+                    'api_key': '<?php echo get_option(SIKS_APIKEY); ?>',
                     'id': id
                 },
                 dataType: 'json',
                 success: function(response) {
                     jQuery('#wrap-loading').hide();
                     if (response.status == 'success') {
-                        alert("Berhasil Hapus Data!");
-                        get_datatable_lksa();
+                        get_data_lksa();
                     } else {
                         alert(`GAGAL! \n${response.message}`);
                     }
@@ -258,11 +253,11 @@ $maps_all = $this->get_polygon();
         jQuery('#wrap-loading').show();
         jQuery.ajax({
             method: 'post',
-            url: '<?php echo $url; ?>',
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
             dataType: 'json',
             data: {
-                'action': 'get_lksa_by_id',
-                'api_key': '<?php echo $api_key; ?>',
+                'action': 'get_data_lksa_by_id',
+                'api_key': '<?php echo get_option(SIKS_APIKEY); ?>',
                 'id': _id,
             },
             success: function(res) {
@@ -311,14 +306,15 @@ $maps_all = $this->get_polygon();
                     jQuery('#ketua').val(res.data.ketua);
                     jQuery('#no_hp').val(res.data.no_hp);
                     jQuery('#akreditasi').val(res.data.akreditasi);
-                    jQuery('#dalam_lksa').val(res.data.anak_dalam_lksa);
-                    jQuery('#luar_lksa').val(res.data.anak_luar_lksa);
+                    jQuery('#anak_dalam_lksa').val(res.data.anak_dalam_lksa);
+                    jQuery('#anak_luar_lksa').val(res.data.anak_luar_lksa);
                     jQuery('#total_anak').val(res.data.total_anak);
                     jQuery('#latitude').val(res.data.lat);
                     jQuery('#longitude').val(res.data.lng);
                     jQuery('#lampiran').val('').show();
                     jQuery('#file_lampiran_existing').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran).show();
-                    jQuery('#modalTambahDataLksa').modal('show');
+                    jQuery('#modalTambahDataLKSA .send_data').show();
+                    jQuery('#modalTambahDataLKSA').modal('show');
                 } else {
                     alert(res.message);
                 }
@@ -327,7 +323,7 @@ $maps_all = $this->get_polygon();
         });
     }
 
-    function tambahDataLksa() {
+    function tambah_data_lksa() {
         var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
 
         if (typeof evm != 'undefined') {
@@ -356,38 +352,68 @@ $maps_all = $this->get_polygon();
         jQuery('#ketua').val('').show();
         jQuery('#no_hp').val('').show();
         jQuery('#akreditasi').val('').show();
-        jQuery('#dalam_lksa').val('').show();
-        jQuery('#luar_lksa').val('').show();
+        jQuery('#anak_dalam_lksa').val('');
+        jQuery('#anak_luar_lksa').val('');
         jQuery('#total_anak').val('').show();
         jQuery('#lampiran').val('').show();
-
         jQuery('#file_lampiran_existing').hide();
         jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
-        jQuery('#modalTambahDataLksa').modal('show');
+        jQuery('#modalTambahDataLKSA').modal('show');
     }
 
-    function submitDataLksa(that) {
-        let id_data = jQuery('#id_data').val();
-        let nama = jQuery('#nama').val();
-        let tahun_anggaran = jQuery('#tahun_anggaran').val();
-        let kabkot = jQuery('#kabkot').val();
-        let alamat = jQuery('#alamat').val();
-        let ketua = jQuery('#ketua').val();
-        let no_hp = jQuery('#no_hp').val();
-        let akreditasi = jQuery('#akreditasi').val();
-        let dalam_lksa = jQuery('#dalam_lksa').val();
-        let luar_lksa = jQuery('#luar_lksa').val();
-        let total_anak = jQuery('#total_anak').val();
-        var lampiran = jQuery('#lampiran')[0].files[0];
-        if (id_data == '') {
-            if (typeof lampiran == 'undefined') {
-                return alert('Upload file lampiran dulu!');
-            }
+    function submitDataLKSA() {
+        var id_data = jQuery('#id_data').val();
+        var nama = jQuery('#nama').val();
+        if (nama == '') {
+            return alert('Data Nama tidak boleh kosong!');
         }
+        var ketua = jQuery('#ketua').val();
+        if (ketua == '') {
+            return alert('Data Ketua tidak boleh kosong!');
+        }
+        var akreditasi = jQuery('#akreditasi').val();
+        if (akreditasi == '') {
+            return alert('Data akreditasi tidak boleh kosong!');
+        }
+        var alamat = jQuery('#alamat').val();
+        if (alamat == '') {
+            return alert('Data alamat tidak boleh kosong!');
+        }
+        var kabkot = jQuery('#kabkot').val();
+        if (kabkot == '') {
+            return alert('Data Kabupaten / Kota tidak boleh kosong!');
+        }
+        var no_hp = jQuery('#no_hp').val();
+        if (no_hp == '') {
+            return alert('Data No HP tidak boleh kosong!');
+        }
+        var anak_dalam_lksa = jQuery('#anak_dalam_lksa').val();
+        if (anak_dalam_lksa == '') {
+            return alert('Data Dalam Lksa tidak boleh kosong!');
+        }
+        var anak_luar_lksa = jQuery('#anak_luar_lksa').val();
+        if (anak_luar_lksa == '') {
+            return alert('Data Luar Lksa tidak boleh kosong!');
+        }
+        var total_anak = jQuery('#total_anak').val();
+        if (total_anak == '') {
+            return alert('Data Total Anak tidak boleh kosong!');
+        }
+        var tahun_anggaran = jQuery('#tahun_anggaran').val();
+        if (tahun_anggaran == '') {
+            return alert('Data Tahun Anggaran tidak boleh kosong!');
+        }
+        var lampiran = jQuery('#lampiran')[0].files[0];
+        // if (id_data == '') {
+        //     if (typeof lampiran == 'undefined') {
+        //         return alert('Upload file lampiran dulu!');
+        //     }
+        // }
+
         let tempData = new FormData();
         tempData.append('action', 'tambah_data_lksa');
-        tempData.append('api_key', '<?php echo $api_key; ?>');
-        tempData.append('id', id_data);
+        tempData.append('api_key', '<?php echo get_option(SIKS_APIKEY); ?>');
+        tempData.append('id_data', id_data);
         tempData.append('nama', nama);
         tempData.append('tahun_anggaran', tahun_anggaran);
         tempData.append('kabkot', kabkot);
@@ -395,9 +421,9 @@ $maps_all = $this->get_polygon();
         tempData.append('ketua', ketua);
         tempData.append('no_hp', no_hp);
         tempData.append('akreditasi', akreditasi);
-        tempData.append('dalam_lksa', dalam_lksa);
-        tempData.append('luar_lksa', luar_lksa);
-        tempData.append('total_anak', total_anak);
+        tempData.append('anak_dalam_lksa', anak_dalam_lksa);
+        tempData.append('anak_luar_lksa', anak_luar_lksa);
+        // tempData.append('total_anak', total_anak);
         tempData.append('lat', jQuery('input[name="latitude"]').val());
         tempData.append('lng', jQuery('input[name="longitude"]').val());
 
@@ -418,8 +444,8 @@ $maps_all = $this->get_polygon();
             success: function(res) {
                 alert(res.message);
                 if (res.status == 'success') {
-                    jQuery('#modalTambahDataLksa').modal('hide');
-                    get_datatable_lksa();
+                    jQuery('#modalTambahDataLKSA').modal('hide');
+                    get_data_lksa();
                 }
                 jQuery('#wrap-loading').hide();
             }

@@ -4,7 +4,6 @@ $url = admin_url('admin-ajax.php');
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
 
-
 ?>
 <style type="text/css">
     .wrap-table {
@@ -12,19 +11,9 @@ $maps_all = $this->get_polygon();
         max-height: 100vh;
         width: 100%;
     }
-
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    input[type=number] {
-        -moz-appearance: textfield;
-    }
 </style>
 <div style="padding: 10px;margin:0 0 3rem 0;">
-    <h1 class="text-center" style="margin:3rem;">Manajemen Data Anak Terlantar</h1>
+    <h1 class="text-center" style="margin:3rem;">Manajemen Data AnakTerlantar</h1>
     <div style="margin-bottom: 25px;">
         <button class="btn btn-primary" onclick="tambah_data_anak_terlantar();"><i class="dashicons dashicons-plus"></i> Tambah Data</button>
     </div>
@@ -45,6 +34,7 @@ $maps_all = $this->get_polygon();
                     <th class="text-center">Desa/Kelurahan</th>
                     <th class="text-center">Alamat</th>
                     <th class="text-center">Lampiran</th>
+                    <th class="text-center">Tahun Anggaran</th>
                     <th class="text-center" style="width: 100px;">Aksi</th>
                 </tr>
             </thead>
@@ -57,7 +47,7 @@ $maps_all = $this->get_polygon();
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTambahDataAnakTerlantarLabel">Tambah Data Anak Terlantar</h5>
+                <h5 class="modal-title" id="modalTambahDataAnakTerlantarLabel">Tambah Data AnakTerlantar</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -125,15 +115,13 @@ $maps_all = $this->get_polygon();
                     <label>Desa/Kelurahan</label>
                     <input type="text" class="form-control" id="desa_kelurahan" placeholder="Masukkan Desa/Kelurahan">
                 </div>
-                <div class="form-group" id="status_kelembagaan">
-                    <label>Status Lembaga</label><br>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="status_lembaga" id="dalam_lembaga" value="1">
-                        <label class="form-check-label" for="dalam_lembaga">Dalam Lembaga</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="status_lembaga" id="luar_lembaga" value="0">
-                        <label class="form-check-label" for="luar_lembaga">Luar Lembaga</label>
+                <div class="row form-group">
+                    <label for='status_lembaga' class="col-md-12">Status Lembaga <span class="required">*</span></label>
+                    <div class="col-md-12">
+                        <input type='radio' id='dalam_lembaga' name='status_lembaga' value='1' checked>
+                        <label class='mr-4' for='dalam_lembaga'>Dalam Lembaga</label>
+                        <input type='radio' id='luar_lembaga' name='status_lembaga' value='0'>
+                        <label for='luar_lembaga'>Luar Lembaga</label>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -255,6 +243,10 @@ $maps_all = $this->get_polygon();
                         className: "text-center"
                     },
                     {
+                        "data": 'tahun_anggaran',
+                        className: "text-center"
+                    },
+                    {
                         "data": 'aksi',
                         className: "text-center"
                     },
@@ -266,15 +258,40 @@ $maps_all = $this->get_polygon();
         }
     }
 
+    function hapus_data(id) {
+        let confirmDelete = confirm("Apakah anda yakin akan menghapus data ini?");
+        if (confirmDelete) {
+            jQuery('#wrap-loading').show();
+            jQuery.ajax({
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                type: 'post',
+                data: {
+                    'action': 'hapus_data_anak_terlantar_by_id',
+                    'api_key': '<?php echo get_option(SIKS_APIKEY); ?>',
+                    'id': id
+                },
+                dataType: 'json',
+                success: function(response) {
+                    jQuery('#wrap-loading').hide();
+                    if (response.status == 'success') {
+                        get_data_anak_terlantar();
+                    } else {
+                        alert(`GAGAL! \n${response.message}`);
+                    }
+                }
+            });
+        }
+    }
+
     function edit_data(_id) {
         jQuery('#wrap-loading').show();
         jQuery.ajax({
-            method: 'POST',
-            url: '<?php echo $url; ?>',
+            method: 'post',
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
             dataType: 'json',
             data: {
                 'action': 'get_anak_terlantar_by_id',
-                'api_key': '<?php echo $api_key; ?>',
+                'api_key': '<?php echo get_option(SIKS_APIKEY); ?>',
                 'id': _id,
             },
             success: function(res) {
@@ -319,9 +336,9 @@ $maps_all = $this->get_polygon();
                     jQuery('#tahun_anggaran').val(res.data.tahun_anggaran);
                     jQuery('#nama').val(res.data.nama);
                     jQuery('#kk').val(res.data.kk);
-                    jQuery('#nik').val(res.data.nik);
-                    jQuery('#jenisKelamin').val(res.data.jenis_kelamin);
-                    jQuery('#tanggal_Lahir').val(res.data.tanggal_lahir);
+                    jQuery('#nik').val(res.data.nik).trigger('change').prop('disabled', false);
+                    jQuery('#jenisKelamin').val(res.data.jenis_kelamin).trigger('change').prop('disabled', false);
+                    jQuery('#tanggal_lahir').val(res.data.tanggal_lahir).trigger('change').prop('disabled', false);
                     jQuery('#usia').val(res.data.usia);
                     jQuery('#pendidikan').val(res.data.pendidikan);
                     jQuery('#provinsi').val(res.data.provinsi);
@@ -329,9 +346,9 @@ $maps_all = $this->get_polygon();
                     jQuery('#kabkot').val(res.data.kabkot);
                     jQuery('#kecamatan').val(res.data.kecamatan);
                     jQuery('#desa_kelurahan').val(res.data.desa_kelurahan);
-                    if (res.data.kelembagaan === '1') {
+                    if (res.data.status_lembaga === '1') {
                         jQuery('#dalam_lembaga').prop('checked', true);
-                    } else if (res.data.kelembagaan === '0') {
+                    } else if (res.data.status_lembaga === '0') {
                         jQuery('#luar_lembaga').prop('checked', true);
                     }
                     jQuery('#latitude').val(res.data.lat);
@@ -345,33 +362,6 @@ $maps_all = $this->get_polygon();
                 jQuery('#wrap-loading').hide();
             }
         });
-    }
-
-
-    function hapus_data(id) {
-        let confirmDelete = confirm("Apakah anda yakin akan menghapus data ini?");
-        if (confirmDelete) {
-            jQuery('#wrap-loading').show();
-            jQuery.ajax({
-                url: '<?php echo $url ?>',
-                type: 'POST',
-                data: {
-                    'action': 'hapus_anak_terlantar_by_id',
-                    'api_key': '<?php echo $api_key ?>',
-                    'id': id
-                },
-                dataType: 'json',
-                success: function(response) {
-                    jQuery('#wrap-loading').hide();
-                    if (response.status == 'success') {
-                        alert("Berhasil Hapus Data!");
-                        get_data_anak_terlantar();
-                    } else {
-                        alert(`GAGAL! \n${response.message}`);
-                    }
-                }
-            });
-        }
     }
 
     function tambah_data_anak_terlantar() {
@@ -396,19 +386,20 @@ $maps_all = $this->get_polygon();
 
         jQuery('#longitude').val(maps_center_siks['lng']).show();
         jQuery('#latitude').val(maps_center_siks['lat']).show();
-        jQuery('#tahun_anggaran').val('').show()
-        jQuery('#nama').val('').show()
-        jQuery('#kk').val('').show()
-        jQuery('#nik').val('').show()
-        jQuery('#status_jk').val('').show()
-        jQuery('#tanggal_Lahir').val('').show()
-        jQuery('#usia').val('').show()
-        jQuery('#pendidikan').val('').show()
-        jQuery('#usia').val('').show()
-        jQuery('#provinsi').val('').show()
-        jQuery('#alamat').val('').show()
-        jQuery('#kabkot').val('').show()
-        jQuery('#desa_kelurahan').val('').show()
+        jQuery('#tahun_anggaran').val('').show();
+        jQuery('#nama').val('').show();
+        jQuery('#kk').val('').show();
+        jQuery('#nik').val('').show();
+        jQuery('#tanggal_lahir').prop('disabled', false);
+        jQuery('#jenisKelamin').val('').prop('disabled', false);
+        jQuery('#usia').val('').show();
+        jQuery('#pendidikan').val('').show();
+        jQuery('#usia').val('').show();
+        jQuery('input[name="status_lembaga"]').prop('disabled', false);
+        jQuery('#provinsi').val('').show();
+        jQuery('#alamat').val('').show();
+        jQuery('#kabkot').val('').show();
+        jQuery('#desa_kelurahan').val('').show();
         jQuery('#kecamatan').val('').show();
         jQuery('#lampiran').val('').show();
 
@@ -417,31 +408,66 @@ $maps_all = $this->get_polygon();
         jQuery('#modalTambahDataAnakTerlantar').modal('show');
     }
 
-    function submitDataAnakTerlantar(that) {
-        let id_data = jQuery('#id_data').val();
-        let nama = jQuery('#nama').val();
-        let kk = jQuery('#kk').val().toString();
-        if (kk.length > 16) {
-            alert("Input KK maksimal 16 digit");
-            return;
+    function submitDataAnakTerlantar() {
+        var id_data = jQuery('#id_data').val();
+        var nama = jQuery('#nama').val();
+        if (nama == '') {
+            return alert('Data Nama tidak boleh kosong!');
         }
-        let nik = jQuery('#nik').val().toString();
+        var nik = jQuery('#nik').val().toString();
         if (nik.length > 16) {
             alert("Input NIK maksimal 16 digit");
             return;
         }
-        let tahun_anggaran = jQuery('#tahun_anggaran').val();
-        let kabkot = jQuery('#kabkot').val();
-        let alamat = jQuery('#alamat').val();
-        let jenisKelamin = jQuery('#jenisKelamin').val();
-        let tanggal_Lahir = jQuery('#tanggal_Lahir').val();
-        let usia = jQuery('#usia').val();
-        let pendidikan = jQuery('#pendidikan').val();
-        let provinsi = jQuery('#provinsi').val();
-        let kecamatan = jQuery('#kecamatan').val();
-        let desa_kelurahan = jQuery('#desa_kelurahan').val();
-        let status_lembaga = jQuery('input[name="status_lembaga"]:checked').val();
-
+        var kk = jQuery('#kk').val().toString();
+        if (kk.length > 16) {
+            alert("Input KK maksimal 16 digit");
+            return;
+        }
+        var tanggal_lahir = jQuery('#tanggal_lahir').val();
+        if (tanggal_lahir == '') {
+            return alert('Data Tanggal Lahir tidak boleh kosong!');
+        }
+        var provinsi = jQuery('#provinsi').val();
+        if (provinsi == '') {
+            return alert('Data Provinsi tidak boleh kosong!');
+        }
+        var kabkot = jQuery('#kabkot').val();
+        if (kabkot == '') {
+            return alert('Data Kabupaten / Kota tidak boleh kosong!');
+        }
+        var kecamatan = jQuery('#kecamatan').val();
+        if (kecamatan == '') {
+            return alert('Data Kecamatan tidak boleh kosong!');
+        }
+        var desa_kelurahan = jQuery('#desa_kelurahan').val();
+        if (desa_kelurahan == '') {
+            return alert('Data Desa tidak boleh kosong!');
+        }
+        var alamat = jQuery('#alamat').val();
+        if (alamat == '') {
+            return alert('Data Alamat tidak boleh kosong!');
+        }
+        var usia = jQuery('#usia').val();
+        if (usia == '') {
+            return alert('Data Usia tidak boleh kosong!');
+        }
+        var status_lembaga = jQuery('input[name="status_lembaga"]:checked').val();
+        if (status_lembaga == '') {
+            return alert('Data Status Lembaga tidak boleh kosong!');
+        }
+        var jenisKelamin = jQuery('#jenis_kelamin').val();
+        if (jenisKelamin == '') {
+            return alert('Data Jenis Kelamin tidak boleh kosong!');
+        }
+        var pendidikan = jQuery('#pendidikan').val();
+        if (pendidikan == '') {
+            return alert('Data  Pendidikan tidak boleh kosong!');
+        }
+        var tahun_anggaran = jQuery('#tahun_anggaran').val();
+        if (tahun_anggaran == '') {
+            return alert('Data Tahun Anggaran tidak boleh kosong!');
+        }
         var lampiran = jQuery('#lampiran')[0].files[0];
         if (id_data == '') {
             if (typeof lampiran == 'undefined') {
@@ -451,22 +477,22 @@ $maps_all = $this->get_polygon();
 
         let tempData = new FormData();
         tempData.append('action', 'tambah_data_anak_terlantar');
-        tempData.append('api_key', '<?php echo $api_key; ?>');
-        tempData.append('id', ' id_data');
-        tempData.append('nama', ' nama');
-        tempData.append('kk', ' kk');
-        tempData.append('nik', ' nik');
-        tempData.append('tahun_anggaran', ' tahun_anggaran');
-        tempData.append('kabkot', ' kabkot');
-        tempData.append('alamat', ' alamat');
-        tempData.append('jenisKelamin', ' jenisKelamin');
-        tempData.append('tanggal_Lahir', ' tanggal_Lahir');
-        tempData.append('usia', ' usia');
-        tempData.append('desa_kelurahan', ' desa_kelurahan');
-        tempData.append('pendidikan', ' pendidikan');
-        tempData.append('provinsi', ' provinsi');
-        tempData.append('kecamatan', ' kecamatan');
-        tempData.append('kelembagaan', ' status_lembaga');
+        tempData.append('api_key', '<?php echo get_option(SIKS_APIKEY); ?>');
+        tempData.append('id_data', id_data);
+        tempData.append('nama', nama);
+        tempData.append('kk', kk);
+        tempData.append('nik', nik);
+        tempData.append('tanggal_lahir', tanggal_lahir);
+        tempData.append('jenis_kelamin', jenisKelamin);
+        tempData.append('provinsi', provinsi);
+        tempData.append('kabkot', kabkot);
+        tempData.append('kecamatan', kecamatan);
+        tempData.append('desa_kelurahan', desa_kelurahan);
+        tempData.append('alamat', alamat);
+        tempData.append('usia', usia);
+        tempData.append('pendidikan', pendidikan);
+        tempData.append('kelembagaan', status_lembaga);
+        tempData.append('tahun_anggaran', tahun_anggaran);
         tempData.append('lat', jQuery('input[name="latitude"]').val());
         tempData.append('lng', jQuery('input[name="longitude"]').val());
 

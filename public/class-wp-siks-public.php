@@ -135,6 +135,15 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-disabilitas-per-desa.php';
 	}
 
+	public function lksa_per_desa()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-lksa-per-desa.php';
+	}
+
 	public function bunda_kasih_per_desa()
 	{
 		// untuk disable render shortcode di halaman edit page/post
@@ -2189,6 +2198,62 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
+	public function get_data_anak_terlantar_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil get data!',
+			'data' => array()
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->get_row($wpdb->prepare('
+                    SELECT 
+                        *
+                    FROM data_anak_terlantar_siks
+                    WHERE id=%d
+                ', $_POST['id']), ARRAY_A);
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
+	public function get_data_lksa_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil get data!',
+			'data' => array()
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->get_row($wpdb->prepare('
+                    SELECT 
+                        *
+                    FROM data_lksa_siks
+                    WHERE id=%d
+                ', $_POST['id']), ARRAY_A);
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
 	public function hapus_data_odgj_by_id()
 	{
 		global $wpdb;
@@ -2676,35 +2741,36 @@ class Wp_Siks_Public
 		global $wpdb;
 		$ret = array(
 			'status'	=> 'success',
-			'message'	=> 'Berhasil get data lansia!'
+			'message'	=> 'Berhasil get data lksa!'
 		);
 		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 			$params = $columns = $totalRecords = $data = array();
 			$params = $_REQUEST;
 			$columns = array(
-				1 => 'id',
-				2 => 'nama',
-				3 => 'kabkot',
-				4 => 'alamat',
-				5 => 'ketua',
-				6 => 'no_hp',
-				7 => 'akreditasi',
-				8 => 'anak_dalam_lksa',
-				9 => 'anak_luar_lksa',
-				10 => 'total_anak',
-				11 => 'file_lampiran',
-				12 => 'lat',
-				13 => 'lng',
+				0 => 'nama',
+				1 => 'kabkot',
+				2 => 'alamat',
+				3 => 'ketua',
+				4 => 'no_hp',
+				5 => 'akreditasi',
+				6 => 'anak_dalam_lksa',
+				7 => 'anak_luar_lksa',
+				8 => 'total_anak',
+				9 => 'file_lampiran',
+				10 => 'tahun_anggaran',
+				11 => 'lat',
+				12 => 'lng',
+				13 => 'id'
 			);
 			$where = $sqlTot = $sqlRec = "";
 
+			if (!empty($params['nama'])) {
+				$where .= $wpdb->prepare(' AND nama=%s', $params['nama']);
+			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( ketua LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
                 $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
                 $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
             }
 
 			// getting total number records without any search
@@ -2729,9 +2795,9 @@ class Wp_Siks_Public
 			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
 
 			foreach ($queryRecords as $recKey => $recVal) {
-				if (empty($params['desa'])) {
+				if (empty($params['nama'])) {
 					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
-					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
+					$btn .= '<a class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				} else {
 					$btn = '-';
 					if (!empty($recVal['lat'])) {
@@ -2823,38 +2889,84 @@ class Wp_Siks_Public
 		);
 		if (!empty($_POST)) {
 			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				if ($ret['status'] != 'error' && empty($_POST['nama'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Nama tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['alamat'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Alamat tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['kabkot'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Kabupaten / Kota tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['ketua'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Ketua tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['no_hp'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'No HP tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['akreditasi'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'akreditasi tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['tahun_anggaran'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Tahun Anggaran tidak boleh kosong!';
+				}
+				if (empty($_POST['id_data'])) {
+					if ($ret['status'] != 'error' && !empty($_FILES['lampiran'])) {
+						$lampiran = $_FILES['lampiran'];
+					} 
+				}
 				if ($ret['status'] != 'error') {
-					$id_data = sanitize_text_field($_POST['id']);
-					$tahun_anggaran = sanitize_text_field($_POST['tahun_anggaran']);
-					$nama = sanitize_text_field($_POST['nama']);
-					$kabkot = sanitize_text_field($_POST['kabkot']);
-					$alamat = sanitize_text_field($_POST['alamat']);
-					$ketua = sanitize_text_field($_POST['ketua']);
-					$no_hp = sanitize_text_field($_POST['no_hp']);
-					$akreditasi = sanitize_text_field($_POST['akreditasi']);
-					$dalam_lksa = sanitize_text_field($_POST['dalam_lksa']);
-					$luar_lksa = sanitize_text_field($_POST['luar_lksa']);
-					$total_anak = sanitize_text_field($_POST['total_anak']);
-
+					$alamat = $_POST['alamat'];
+					$kabkot = $_POST['kabkot'];
+					$ketua = $_POST['ketua'];
+					$no_hp = $_POST['no_hp'];
+					$akreditasi = $_POST['akreditasi'];
+					$anak_dalam_lksa = $_POST['anak_dalam_lksa'];
+					$anak_luar_lksa = $_POST['anak_luar_lksa'];
+					$total_anak = $_POST['total_anak'];
+					$tahun_anggaran = $_POST['tahun_anggaran'];
+					$nama = $_POST['nama'];
 					$latitude = $_POST['lat'];
 					$longitude = $_POST['lng'];
 					$data = array(
 						'lng' => $longitude,
 						'lat' => $latitude,
-						'tahun_anggaran' => $tahun_anggaran,
 						'nama' => $nama,
-						'kabkot' => $kabkot,
 						'alamat' => $alamat,
-						'ketua' => $ketua,
 						'no_hp' => $no_hp,
+						'ketua' => $ketua,
 						'akreditasi' => $akreditasi,
-						'anak_dalam_lksa' => $dalam_lksa,
-						'anak_luar_lksa' => $luar_lksa,
+						'kabkot' => $kabkot,
+						'anak_dalam_lksa' => $anak_dalam_lksa,
+						'anak_luar_lksa' => $anak_luar_lksa,
 						'total_anak' => $total_anak,
+						'tahun_anggaran' => $tahun_anggaran,
 						'active' => 1,
 						'update_at' => current_time('mysql')
 					);
 					$path = SIKS_PLUGIN_PATH . 'public/media/lksa/';
+
+					$cek_file = array();
+					if (
+						$ret['status'] != 'error'
+						&& !empty($_FILES['lampiran'])
+					) {
+						$upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
+						if ($upload['status'] == true) {
+							$data['file_lampiran'] = $upload['filename'];
+							$cek_file['file_lampiran'] = $data['file_lampiran'];
+						} else {
+							$ret['status'] = 'error';
+							$ret['message'] = $upload['message'];
+						}
+					}
 
 					$cek_file = array();
 					if (
@@ -2888,7 +3000,6 @@ class Wp_Siks_Public
                                 FROM data_lksa_siks
                                 WHERE id=%d
                             ', $_POST['id_data']), ARRAY_A);
-
 							if (
 								$file_lama['file_lampiran'] != $data['file_lampiran']
 								&& is_file($path . $file_lama['file_lampiran'])
@@ -2901,7 +3012,7 @@ class Wp_Siks_Public
 							));
 							$ret['message'] = 'Berhasil update data!';
 						} else {
-							$wpdb->insert('data_lksa_siks', $data);
+							$wpdb->SKDJKFDSJLDKSFJKDS('data_lksa_siks', $data);
 						}
 					}
 				}
@@ -2942,24 +3053,22 @@ class Wp_Siks_Public
 				12 => 'desa_kelurahan',
 				13 => 'alamat',
 				14 => 'file_lampiran',
-				15 => 'lat',
-				16 => 'lng',
+				15 => 'tahun_anggaran',
+				16 => 'lat',
+				17 => 'lng',
 			);
 			$where = $sqlTot = $sqlRec = "";
 
-			if (!empty($params['desa'])) {
-				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);
+			if (!empty($params['desa_kelurahan'])) {
+				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa_kelurahan']);
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
                 $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
                 $where .=" OR ( kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
                 $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-	            $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-	            $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-	            $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-	            $where .=" OR ( desa_kelurahan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-            }	
+                $where .=" OR ( desa_kelurahan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
+            }
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_anak_terlantar_siks`";
@@ -2983,7 +3092,7 @@ class Wp_Siks_Public
 			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
 
 			foreach ($queryRecords as $recKey => $recVal) {
-				if (empty($params['desa'])) {
+				if (empty($params['desa_kelurahan'])) {
 					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-trash"></i></a>';
 				} else {
@@ -3077,46 +3186,99 @@ class Wp_Siks_Public
 		);
 		if (!empty($_POST)) {
 			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				if ($ret['status'] != 'error' && empty($_POST['nama'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Nama tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['provinsi'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Provinsi tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['kabkot'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Kabupaten / Kota tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['kecamatan'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Kecamatan tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['desa_kelurahan'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Desa tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['nik'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'NIK tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['kk'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'KK tidak boleh kosong!';
+				}
+				if ($ret['status'] != 'error' && empty($_POST['tahun_anggaran'])) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Tahun Anggaran tidak boleh kosong!';
+				}
+				if (empty($_POST['id_data'])) {
+					if ($ret['status'] != 'error' && !empty($_FILES['lampiran'])) {
+						$lampiran = $_FILES['lampiran'];
+					} elseif ($ret['status'] != 'error') {
+						$ret['status'] = 'error';
+						$ret['message'] = 'Lampiran tidak boleh kosong!';
+					}
+				}
 				if ($ret['status'] != 'error') {
-					$id_data = sanitize_text_field($_POST['id']);
-					$tahun_anggaran = sanitize_text_field($_POST['tahun_anggaran']);
-					$nama = sanitize_text_field($_POST['nama']);
-					$kk = sanitize_text_field($_POST['kk']);
-					$nik = sanitize_text_field($_POST['nik']);
-					$jenis_kelamin = sanitize_text_field($_POST['jenisKelamin']);
-					$tanggal_lahir = sanitize_text_field($_POST['tanggal_Lahir']);
-					$usia = sanitize_text_field($_POST['usia']);
-					$pendidikan = sanitize_text_field($_POST['pendidikan']);
-					$provinsi = sanitize_text_field($_POST['provinsi']);
-					$kabkot = sanitize_text_field($_POST['kabkot']);
-					$kecamatan = sanitize_text_field($_POST['kecamatan']);
-					$desa_kelurahan = sanitize_text_field($_POST['desa_kelurahan']);
-					$alamat = sanitize_text_field($_POST['alamat']);
-					$status_lembaga = sanitize_text_field($_POST['kelembagaan']);
-
+					$provinsi = $_POST['provinsi'];
+					$kabkot = $_POST['kabkot'];
+					$kecamatan = $_POST['kecamatan'];
+					$desa_kelurahan = $_POST['desa_kelurahan'];
+					$nik = $_POST['nik'];
+					$kk = $_POST['kk'];
+					$jenisKelamin = $_POST['jenis_kelamin'];
+					$usia = $_POST['usia'];
+					$tahun_anggaran = $_POST['tahun_anggaran'];
+					$nama = $_POST['nama'];
+					$pendidikan = $_POST['pendidikan'];
+					$tanggal_lahir = $_POST['tanggal_lahir'];
+					$status_lembaga = $_POST['kelembagaan'];
+					$alamat = $_POST['alamat'];
 					$latitude = $_POST['lat'];
 					$longitude = $_POST['lng'];
 					$data = array(
 						'lng' => $longitude,
 						'lat' => $latitude,
-						'tahun_anggaran' => $tahun_anggaran,
 						'nama' => $nama,
-						'kk' => $kk,
+						'provinsi' => $provinsi,
+						'desa_kelurahan' => $desa_kelurahan,
+						'kecamatan' => $kecamatan,
 						'nik' => $nik,
-						'jenis_kelamin' => $jenis_kelamin,
+						'kk' => $kk,
+						'kabkot' => $kabkot,
+						'alamat' => $alamat,
 						'tanggal_lahir' => $tanggal_lahir,
+						'jenis_kelamin' => $jenisKelamin,
 						'usia' => $usia,
 						'pendidikan' => $pendidikan,
-						'provinsi' => $provinsi,
-						'kabkot' => $kabkot,
-						'kecamatan' => $kecamatan,
-						'desa_kelurahan' => $desa_kelurahan,
-						'alamat' => $alamat,
 						'kelembagaan' => $status_lembaga,
+						'tahun_anggaran' => $tahun_anggaran,
 						'active' => 1,
 						'update_at' => current_time('mysql')
 					);
 					$path = SIKS_PLUGIN_PATH . 'public/media/anak_terlantar/';
+
+					$cek_file = array();
+					if (
+						$ret['status'] != 'error'
+						&& !empty($_FILES['lampiran'])
+					) {
+						$upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
+						if ($upload['status'] == true) {
+							$data['file_lampiran'] = $upload['filename'];
+							$cek_file['file_lampiran'] = $data['file_lampiran'];
+						} else {
+							$ret['status'] = 'error';
+							$ret['message'] = $upload['message'];
+						}
+					}
 
 					$cek_file = array();
 					if (
@@ -3150,7 +3312,6 @@ class Wp_Siks_Public
                                 FROM data_anak_terlantar_siks
                                 WHERE id=%d
                             ', $_POST['id_data']), ARRAY_A);
-
 							if (
 								$file_lama['file_lampiran'] != $data['file_lampiran']
 								&& is_file($path . $file_lama['file_lampiran'])

@@ -164,6 +164,14 @@ class Wp_Siks_Admin
 			'post_status' => 'publish'
 		));
 		
+		$lksa_per_desa = $this->functions->generatePage(array(
+			'nama_page' => 'LKSA Per Desa',
+			'content' => '[lksa_per_desa]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+		
 		$lansia_per_desa = $this->functions->generatePage(array(
 			'nama_page' => 'Lansia Per Desa',
 			'content' => '[lansia_per_desa]',
