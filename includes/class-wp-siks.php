@@ -172,6 +172,7 @@ class Wp_Siks {
   		$this->loader->add_action( 'wp_ajax_import_excel_lksa',  $plugin_admin, 'import_excel_lksa');
   		$this->loader->add_action( 'wp_ajax_import_excel_odgj',  $plugin_admin, 'import_excel_odgj');
   		$this->loader->add_action( 'wp_ajax_import_excel_p3ke_siks',  $plugin_admin, 'import_excel_p3ke_siks');
+  		$this->loader->add_action( 'wp_ajax_import_excel_calon_p3ke_siks',  $plugin_admin, 'import_excel_calon_p3ke_siks');
   		$this->loader->add_action( 'wp_ajax_get_data_dtks_siks',  $plugin_admin, 'get_data_dtks_siks');
   		$this->loader->add_action( 'wp_ajax_export_excel_data_dtks_siks',  $plugin_admin, 'export_excel_data_dtks_siks');
   		$this->loader->add_action( 'wp_ajax_get_data_kecamatan_siks',  $plugin_admin, 'get_data_kecamatan_siks');
@@ -231,6 +232,7 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_hapus_data_odgj_by_id', $plugin_public, 'hapus_data_odgj_by_id');
 		$this->loader->add_action('wp_ajax_get_datatable_lksa', $plugin_public, 'get_datatable_lksa');
 		$this->loader->add_action('wp_ajax_get_lksa_by_id', $plugin_public, 'get_lksa_by_id');
+		$this->loader->add_action('wp_ajax_get_data_lksa_by_id', $plugin_public, 'get_data_lksa_by_id');
 		$this->loader->add_action('wp_ajax_hapus_lksa_by_id', $plugin_public, 'hapus_lksa_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_lksa', $plugin_public, 'tambah_data_lksa');
 		$this->loader->add_action('wp_ajax_get_datatable_anak_terlantar', $plugin_public, 'get_datatable_anak_terlantar');
@@ -244,6 +246,11 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_get_data_p3ke_by_id',  $plugin_public, 'get_data_p3ke_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_p3ke',  $plugin_public, 'tambah_data_p3ke');
 		$this->loader->add_action('wp_ajax_hapus_data_p3ke_by_id', $plugin_public, 'hapus_data_p3ke_by_id');
+		$this->loader->add_action('wp_ajax_get_data_calon_p3ke_by_id', $plugin_public, 'get_data_calon_p3ke_by_id');
+		$this->loader->add_action('wp_ajax_tambah_data_calon_p3ke', $plugin_public, 'tambah_data_calon_p3ke');
+		$this->loader->add_action('wp_ajax_get_datatable_calon_p3ke', $plugin_public, 'get_datatable_calon_p3ke');
+		$this->loader->add_action('wp_ajax_hapus_data_calon_p3ke_by_id', $plugin_public, 'hapus_data_calon_p3ke_by_id');
+		$this->loader->add_action('wp_ajax_cari_nik_siks', $plugin_public, 'cari_nik_siks');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 		add_shortcode('peta_desa_siks', array($plugin_public, 'peta_desa_siks'));
@@ -257,12 +264,23 @@ class Wp_Siks {
 		add_shortcode('management_data_odgj', array($plugin_public, 'management_data_odgj'));
 		add_shortcode('management_data_lksa', array($plugin_public, 'management_data_lksa'));
 		add_shortcode('management_data_p3ke', array($plugin_public, 'management_data_p3ke'));
+		add_shortcode('disabilitas_per_desa', array($plugin_public, 'disabilitas_per_desa'));
+		add_shortcode('anak_terlantar_per_desa', array($plugin_public, 'anak_terlantar_per_desa'));
+		add_shortcode('lansia_per_desa', array($plugin_public, 'lansia_per_desa'));
+		add_shortcode('gepeng_per_desa', array($plugin_public, 'gepeng_per_desa'));
+		add_shortcode('dtks_per_desa', array($plugin_public, 'dtks_per_desa'));
+		add_shortcode('bunda_kasih_per_desa', array($plugin_public, 'bunda_kasih_per_desa'));
+		add_shortcode('p3ke_per_desa', array($plugin_public, 'p3ke_per_desa'));
+		add_shortcode('lksa_per_desa', array($plugin_public, 'lksa_per_desa'));
 		add_shortcode('data_lansia_siks', array($plugin_public, 'data_lansia_siks'));
 		add_shortcode('data_disabilitas_siks', array($plugin_public, 'data_disabilitas_siks'));
 		add_shortcode('data_bunda_kasih_siks', array($plugin_public, 'data_bunda_kasih_siks'));
 		add_shortcode('data_anak_terlantar_siks', array($plugin_public, 'data_anak_terlantar_siks'));
 		add_shortcode('data_gepeng_siks', array($plugin_public, 'data_gepeng_siks'));
 		add_shortcode('data_p3ke_siks', array($plugin_public, 'data_p3ke_siks'));
+		add_shortcode('data_calon_p3ke', array($plugin_public, 'data_calon_p3ke'));
+		add_shortcode('management_calon_p3ke', array($plugin_public, 'management_calon_p3ke'));
+		add_shortcode('cek_nik_siks', array($plugin_public, 'cek_nik_siks'));
 
 		// untuk menjalankan conjob refresh session
 		$this->loader->add_action('siks_conjob',  $plugin_public, 'refresh_token');

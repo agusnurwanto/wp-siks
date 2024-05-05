@@ -67,6 +67,9 @@
 	});
 
     function getDtks(){
+
+        jQuery("#wrap-loading").show();
+
         return new Promise(function(resolve, reject){
             dataDtks = jQuery('#management_data_table').DataTable({
                 "searchDelay": 500,
@@ -130,7 +133,12 @@
                                     responseType: 'blob'
                                 },
                                 data:data,
+                                beforeSend:function(){
+                                    jQuery("#wrap-loading").show();
+                                },
                                 success:function(response){
+
+                                    jQuery("#wrap-loading").hide();
                                     let link = document.createElement('a');
                                     link.href = window.URL.createObjectURL(response);
                                     link.download = `Export Data DTKS`;
@@ -140,7 +148,10 @@
                         },
                     } 
                 ],
-                initComplete: function (settings, json) {                    
+                initComplete: function (settings, json) {
+                    
+                    jQuery("#wrap-loading").hide();              
+                    
                     let html_filter = ""
                     +"<div class='row col-lg-12'>"
                         +"<div class='col-lg-12'>"
@@ -191,6 +202,7 @@
 
 
                     jQuery('#search_filter_kecamatan_action').on('change', function () {
+                        
                         var nama_kecamatan = jQuery(this).val();
 
                         jQuery.ajax({

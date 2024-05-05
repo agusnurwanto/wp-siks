@@ -33,6 +33,7 @@ foreach ($bunda_kasih_all as $data) {
 }
 
 $total_all = 0;
+$total_bunda_kasih_all = 0;
 $body =  '';
 foreach ($maps_all as $i => $desa) {
     $index = strtolower($desa['data']['provinsi']) . '.' . strtolower($desa['data']['kab_kot']) . '.' . strtolower($desa['data']['kecamatan']) . '.' . strtolower($desa['data']['desa']);
@@ -55,6 +56,12 @@ foreach ($maps_all as $i => $desa) {
         $maps_all[$i]['color'] = '#fff70a';
     } else if ($total_lansia > 40) {
         $maps_all[$i]['color'] = '#ff0000';
+    } elseif ($total_bunda_kasih <= 15) {
+        $maps_all[$i]['color'] = '#0cbf00';
+    } else if ($total_bunda_kasih <= 40) {
+        $maps_all[$i]['color'] = '#fff70a';
+    } else if ($total_bunda_kasih > 40) {
+        $maps_all[$i]['color'] = '#ff0000';
     }
     $maps_all[$i]['index'] = $i;
 
@@ -64,16 +71,23 @@ foreach ($maps_all as $i => $desa) {
                 <td><b>Total Lansia</b></td>
                 <td><b>' . $this->number_format($total_lansia) . ' Orang</b></td>
             </tr>
+            <tr>
+                <td><b>Total Bunda Kasih</b></td>
+                <td><b>' . $this->number_format($total_bunda_kasih) . ' Orang</b></td>
+            </tr>
     ';
     foreach ($desa['data'] as $k => $v) {
         $html .= '
             <tr>
                 <td><b>' . $k . '</b></td>
-                <td>' . $v . '</td>
             </tr>
         ';
     }
     $html .= '</table>';
+    $link_per_desa = '';
+    if (is_user_logged_in()) {
+        $link_per_desa = add_query_arg('desa', urlencode($desa['data']['desa']), home_url('/lansia-per-desa/'));
+    }
     $maps_all[$i]['html'] = $html;
 
     $search = $this->getSearchLocation($desa['data']);
@@ -83,7 +97,13 @@ foreach ($maps_all as $i => $desa) {
             <td class='text-center'>" . $desa['data']['provinsi'] . "</td>
             <td class='text-center'>" . $desa['data']['kab_kot'] . "</td>
             <td class='text-center'>" . $desa['data']['kecamatan'] . "</td>
-            <td class='text-center'>" . $desa['data']['desa'] . "</td>
+            <td class='text-center'>";
+    if (!empty($link_per_desa)) {
+        $body .= "<a href='" . esc_url($link_per_desa) . "'>" . esc_html($desa['data']['desa']) . "</a>";
+    } else {
+        $body .= esc_html($desa['data']['desa']);
+    }
+    $body .= "</td>
             <td class='text-center'>" . $total_lansia . "</td>
             <td class='text-center'>" . $total_bunda_kasih . "</td>
             <td class='text-center'><a style='margin-bottom: 5px;' onclick='cari_alamat_siks(\"" . $search . "\"); return false;' href='#' class='btn btn-danger'>Map</a></td>

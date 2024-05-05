@@ -104,6 +104,10 @@ foreach ($maps_all as $i => $desa) {
         ';
     }
     $html .= '</table>';
+    $link_per_desa = '';
+    if (is_user_logged_in()) {
+        $link_per_desa = add_query_arg('desa', urlencode($desa['data']['desa']), home_url('/dtks-per-desa/'));
+    }
     $maps_all[$i]['html'] = $html;
 
     $search = $this->getSearchLocation($desa['data']);
@@ -113,7 +117,13 @@ foreach ($maps_all as $i => $desa) {
             <td class='text-center'>" . $desa['data']['provinsi'] . "</td>
             <td class='text-center'>" . $desa['data']['kab_kot'] . "</td>
             <td class='text-center'>" . $desa['data']['kecamatan'] . "</td>
-            <td class='text-center'>" . $desa['data']['desa'] . "</td>
+            <td class='text-center'>";
+    if (!empty($link_per_desa)) {
+        $body .= "<a href='" . esc_url($link_per_desa) . "'>" . esc_html($desa['data']['desa']) . "</a>";
+    } else {
+        $body .= esc_html($desa['data']['desa']);
+    }
+    $body .= "</td>
             <td class='text-center'>" . $total_dtks . "</td>
             <td>" . implode('<hr>', $total_blt) . "</td>
             <td>" . implode('<hr>', $total_blt_bbm) . "</td>
@@ -141,30 +151,30 @@ foreach ($maps_all as $i => $desa) {
         <li><b>PBI-JK</b> (Penerima Bantuan Iuran Jaminan Kesehatan) adalah peserta jaminan kesehatan yang tergolong fakir miskin dan orang tidak mampu yang iuran BPJS Kesehatannya dibayarkan oleh pemerintah.</li>
     </ol>
     <h1 class="text-center">Tabel Data DTKS<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
-    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_dtks ;?></h3>
-        <div style="width: 100%; overflow: auto; height: 100vh;">
-            <table class="table table-bordered" id="table-data">
-                <thead>
-                    <tr>
-                        <th class='text-center'>Kode Desa</th>
-                        <th class='text-center'>Provinsi</th>
-                        <th class='text-center'>Kabupaten/Kota</th>
-                        <th class='text-center'>Kecamatan</th>
-                        <th class='text-center'>Desa</th>
-                        <th class='text-center'>Total DTKS</th>
-                        <th class='text-center'>BLT</th>
-                        <th class='text-center'>BLT BBM</th>
-                        <th class='text-center'>BPNT</th>
-                        <th class='text-center'>PKH</th>
-                        <th class='text-center'>PBI</th>
-                        <th class='text-center'>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php echo $body; ?>
-                </tbody>
-            </table>
-        </div>
+    <h3 class="text-center">Terakhir diupdate <?php echo $last_update_dtks; ?></h3>
+    <div style="width: 100%; overflow: auto; height: 100vh;">
+        <table class="table table-bordered" id="table-data">
+            <thead>
+                <tr>
+                    <th class='text-center'>Kode Desa</th>
+                    <th class='text-center'>Provinsi</th>
+                    <th class='text-center'>Kabupaten/Kota</th>
+                    <th class='text-center'>Kecamatan</th>
+                    <th class='text-center'>Desa</th>
+                    <th class='text-center'>Total DTKS</th>
+                    <th class='text-center'>BLT</th>
+                    <th class='text-center'>BLT BBM</th>
+                    <th class='text-center'>BPNT</th>
+                    <th class='text-center'>PKH</th>
+                    <th class='text-center'>PBI</th>
+                    <th class='text-center'>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php echo $body; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 <script type="text/javascript">
     window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
