@@ -173,6 +173,7 @@ class Wp_Siks {
   		$this->loader->add_action( 'wp_ajax_import_excel_odgj',  $plugin_admin, 'import_excel_odgj');
   		$this->loader->add_action( 'wp_ajax_import_excel_p3ke_siks',  $plugin_admin, 'import_excel_p3ke_siks');
   		$this->loader->add_action( 'wp_ajax_import_excel_calon_p3ke_siks',  $plugin_admin, 'import_excel_calon_p3ke_siks');
+  		$this->loader->add_action( 'wp_ajax_import_excel_data_wrse_siks',  $plugin_admin, 'import_excel_data_wrse_siks');
   		$this->loader->add_action( 'wp_ajax_get_data_dtks_siks',  $plugin_admin, 'get_data_dtks_siks');
   		$this->loader->add_action( 'wp_ajax_export_excel_data_dtks_siks',  $plugin_admin, 'export_excel_data_dtks_siks');
   		$this->loader->add_action( 'wp_ajax_get_data_kecamatan_siks',  $plugin_admin, 'get_data_kecamatan_siks');
@@ -280,6 +281,7 @@ class Wp_Siks {
 		add_shortcode('data_p3ke_siks', array($plugin_public, 'data_p3ke_siks'));
 		add_shortcode('data_calon_p3ke', array($plugin_public, 'data_calon_p3ke'));
 		add_shortcode('management_calon_p3ke', array($plugin_public, 'management_calon_p3ke'));
+		add_shortcode('management_wrse', array($plugin_public, 'management_wrse'));
 		add_shortcode('cek_nik_siks', array($plugin_public, 'cek_nik_siks'));
 
 		// untuk menjalankan conjob refresh session

@@ -216,6 +216,15 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-calon-penerima-p3ke.php';
 	}
 
+	public function management_wrse()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-wrse.php';
+	}
+
 	public function data_calon_p3ke()
 	{
 		// untuk disable render shortcode di halaman edit page/post

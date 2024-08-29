@@ -361,3 +361,45 @@ CREATE TABLE `data_calon_p3ke_siks` (
     `update_at` datetime DEFAULT current_timestamp,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE `data_hibah_siks` (
+    `id` INT AUTO_INCREMENT,
+    `kode` VARCHAR(255),
+    `penerima` VARCHAR(255),
+    `alamat` VARCHAR(255),
+    `kecamatan` VARCHAR(255),
+    `nama_ketua` VARCHAR(255),
+    `nik_ketua` VARCHAR(50),
+    `anggaran_no_nphd` VARCHAR(100),
+    `tgl_nphd` DATE,
+    `no_spm` VARCHAR(100),
+    `tanggal_spm` DATE,
+    `no_sp2d` VARCHAR(100),
+    `tanggal_sp2d` DATE,
+    `peruntukan` TEXT,
+    `jenis_data` ENUM('Induk', 'PAK') NOT NULL,
+    `tahun_anggaran` YEAR(4),
+    `create_at` datetime,
+    `update_at` datetime DEFAULT current_timestamp,
+    `active` tinyint(4) DEFAULT 1,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE `data_wrse_siks` (
+    `id` INT AUTO_INCREMENT,
+    `nama` VARCHAR(255) NOT NULL,
+    `usia` INT NOT NULL,
+    `alamat` TEXT,
+    `desa_kel` VARCHAR(100),
+    `kecamatan` VARCHAR(100),
+    `status_dtks` ENUM('Terdaftar', 'Tidak Terdaftar') DEFAULT 'Tidak Terdaftar',
+    `status_pernikahan` ENUM('Belum Menikah', 'Menikah', 'Janda') DEFAULT 'Belum Menikah',
+    `mempunyai_usaha` ENUM('Ya', 'Tidak') DEFAULT 'Tidak',
+    `keterangan` TEXT,
+    `jenis_data` ENUM('Induk', 'PAK') DEFAULT 'Induk',
+    `tahun_anggaran` YEAR(4),
+    `create_at` datetime,
+    `update_at` datetime DEFAULT current_timestamp,
+    `active` tinyint(4) DEFAULT 1,
+    PRIMARY KEY (id)
+);

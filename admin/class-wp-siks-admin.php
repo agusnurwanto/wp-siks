@@ -147,7 +147,7 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
-		
+
 		$disabilitas_per_desa = $this->functions->generatePage(array(
 			'nama_page' => 'Disabilitas Per Desa',
 			'content' => '[disabilitas_per_desa]',
@@ -155,7 +155,7 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
-		
+
 		$anak_terlantar_per_desa = $this->functions->generatePage(array(
 			'nama_page' => 'Anak Terlantar Per Desa',
 			'content' => '[anak_terlantar_per_desa]',
@@ -163,7 +163,7 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
-		
+
 		$lksa_per_desa = $this->functions->generatePage(array(
 			'nama_page' => 'LKSA Per Desa',
 			'content' => '[lksa_per_desa]',
@@ -171,7 +171,7 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
-		
+
 		$lansia_per_desa = $this->functions->generatePage(array(
 			'nama_page' => 'Lansia Per Desa',
 			'content' => '[lansia_per_desa]',
@@ -179,7 +179,7 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
-		
+
 		$p3ke_per_desa = $this->functions->generatePage(array(
 			'nama_page' => 'P3KE Per Desa',
 			'content' => '[p3ke_per_desa]',
@@ -187,7 +187,7 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
-		
+
 		$bunda_kasih_per_desa = $this->functions->generatePage(array(
 			'nama_page' => 'Bunda Kasih Per Desa',
 			'content' => '[bunda_kasih_per_desa]',
@@ -203,7 +203,7 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
-		
+
 		$dtks_per_desa = $this->functions->generatePage(array(
 			'nama_page' => 'DTKS Per Desa',
 			'content' => '[dtks_per_desa]',
@@ -211,7 +211,7 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
-		
+
 		$data_calon_p3ke = $this->functions->generatePage(array(
 			'nama_page' => 'Calon Penerima P3KE',
 			'content' => '[data_calon_p3ke]',
@@ -219,7 +219,15 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
-		
+
+		$management_wrse = $this->functions->generatePage(array(
+			'nama_page' => 'Manajemen WRSE',
+			'content' => '[management_wrse]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
 		$management_calon_p3ke = $this->functions->generatePage(array(
 			'nama_page' => 'Manajemen Calon Penerima P3KE',
 			'content' => '[management_calon_p3ke]',
@@ -655,6 +663,37 @@ class Wp_Siks_Admin
 				Field::make('html', 'crb_calon_p3ke_save_button')
 					->set_html('<a onclick="import_excel_calon_penerima_p3ke_siks(); return false" href="javascript:void(0);" class="button button-primary">Import Calon P3KE</a>')
 			));
+
+		Container::make('theme_options', __('Data WRSE'))
+			->set_page_parent($basic_options_container)
+			->add_fields(
+				array(
+					Field::make('html', 'crb_wrse_hide_sidebar')
+						->set_html('
+		        		<style>
+		        			.postbox-container { display: none; }
+		        			#poststuff #post-body.columns-2 { margin: 0 !important; }
+		        		</style>
+		        	'),
+					Field::make('html', 'crb_siks_halaman_terkait_wrse')
+						->set_html('
+					<h5>HALAMAN TERKAIT</h5>
+	            	<ol>
+	            		<li><a target="_blank" href="' . $management_wrse['url'] . '">' . $management_wrse['title'] . '</a></li>
+	            	</ol>
+		        	'),
+					Field::make('html', 'crb_wrse_upload_html')
+						->set_html('<h3>Import EXCEL data WRSE</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
+	            		Contoh format file excel untuk <b>WRSE</b> bisa <a target="_blank" href="' . SIKS_PLUGIN_URL . 'excel/contoh_data_wrse.xlsx">download di sini</a>.<br>
+	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
+	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
+	            		Sheet file excel yang akan diimport harus diberi nama <b>data</b>. Untuk kolom nilai angka ditulis tanpa tanda titik.<br>'),
+					Field::make('html', 'crb_wrse_siks')
+						->set_html('Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>'),
+					Field::make('html', 'crb_wrse_save_button')
+						->set_html('<a onclick="import_excel_wrse_siks(); return false" href="javascript:void(0);" class="button button-primary">Import WRSE</a>')
+				)
+			);
 	}
 
 	function sql_migrate_siks()
@@ -1426,7 +1465,7 @@ class Wp_Siks_Admin
 					'active' => 1,
 					'update_at' => current_time('mysql')
 				);
-				
+
 
 				$wpdb->last_error = "";
 
@@ -1453,6 +1492,105 @@ class Wp_Siks_Admin
 
 				if (!empty($wpdb->last_error)) {
 					$ret['data']['error'][] = array($wpdb->last_error, $data_db);
+				};
+			}
+		} else {
+			$ret['status'] = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+		die(json_encode($ret));
+	}
+
+	function import_excel_data_wrse_siks()
+	{
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil import excel!'
+		);
+
+		if (!empty($_POST)) {
+
+			$table_data = 'data_wrse_siks';
+
+			if (
+				!empty($_POST['update_active'])
+				&& $_POST['page'] == 1
+			) {
+				$wpdb->query(
+					$wpdb->prepare(
+						"UPDATE $table_data SET active=0, update_at='" . date('Y-m-d H:i:s') . "'"
+					)
+				);
+			}
+
+			$ret['data'] = array(
+				'insert' => 0,
+				'update' => 0,
+				'error' => array()
+			);
+
+			foreach ($_POST['data'] as $k => $data) {
+
+				$newData = array();
+
+				foreach ($data as $kk => $vv) {
+					$newData[trim(preg_replace('/\s+/', ' ', $kk))] = trim(preg_replace('/\s+/', ' ', $vv));
+				}
+
+				$data_db = array(
+					'nama' => $newData['nama'],
+					'usia' => $newData['usia'],
+					'alamat' => $newData['alamat'],
+					'desa_kel' => $newData['desa_kel'],
+					'kecamatan' => $newData['kecamatan'],
+					'status_dtks' => $newData['status_dtks'],
+					'status_pernikahan' => $newData['status_pernikahan'],
+					'mempunyai_usaha' => $newData['mempunyai_usaha'],
+					'keterangan' => $newData['keterangan'],
+					'jenis_data' => $newData['jenis_data'],
+					'tahun_anggaran' => $newData['tahun_anggaran'],
+					'create_at' => current_time('mysql'),
+					'update_at' => current_time('mysql'),
+					'active' => 1
+				);
+
+				$wpdb->last_error = "";
+
+				$cek_id = $wpdb->get_var(
+					$wpdb->prepare("
+						SELECT 
+							id 
+						FROM $table_data 
+						WHERE tahun_anggaran=%d
+						  AND nama=%s
+						  AND usia=%s
+						  AND alamat=%s
+						", $newData['tahun_anggaran'], $newData['nama'], $newData['usia'], $newData['alamat'])
+				);
+
+				if (empty($cek_id)) {
+					$wpdb->insert(
+						$table_data,
+						$data_db
+					);
+					$ret['data']['insert']++;
+				} else {
+					$wpdb->update(
+						$table_data,
+						$data_db,
+						array(
+							"id" => $cek_id
+						)
+					);
+					$ret['data']['update']++;
+				}
+
+				if (!empty($wpdb->last_error)) {
+					$ret['data']['error'][] = array(
+						$wpdb->last_error,
+						$data_db
+					);
 				};
 			}
 		} else {
@@ -1507,34 +1645,34 @@ class Wp_Siks_Admin
 					);
 					$where = $sqlTot = $sqlRec = "";
 
-		 			if( !empty($params['search']['value']) ) {
-		 				$where .=" AND (";
-		 				$where .=" NIK LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
-				 		$where .=" OR Nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
-				 		$where .=" OR Alamat LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
-				 		$where .=" OR NOKK LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%");
-		 				$where .=")";
-		 			}
+					if (!empty($params['search']['value'])) {
+						$where .= " AND (";
+						$where .= " NIK LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+						$where .= " OR Nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+						$where .= " OR Alamat LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+						$where .= " OR NOKK LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
+						$where .= ")";
+					}
 
-		 			if(!empty($params['columns'][1]['search']['value']) && $params['columns'][1]['search']['value']=='kk_kosong'){
-		 				$where .=" AND NOKK = '' ";
-		 			}
+					if (!empty($params['columns'][1]['search']['value']) && $params['columns'][1]['search']['value'] == 'kk_kosong') {
+						$where .= " AND NOKK = '' ";
+					}
 
-		 			if(!empty($params['columns'][1]['search']['value']) && $params['columns'][1]['search']['value']=='nik_atau_kk_kosong'){
-		 				$where .=" AND ( NIK = '' OR NOKK = '' )";
-		 			}
+					if (!empty($params['columns'][1]['search']['value']) && $params['columns'][1]['search']['value'] == 'nik_atau_kk_kosong') {
+						$where .= " AND ( NIK = '' OR NOKK = '' )";
+					}
 
-		 			if(!empty($params['columns'][2]['search']['value']) && $params['columns'][2]['search']['value']=='nik_kosong'){
-		 				$where .=" AND NIK = '' ";
-		 			}
+					if (!empty($params['columns'][2]['search']['value']) && $params['columns'][2]['search']['value'] == 'nik_kosong') {
+						$where .= " AND NIK = '' ";
+					}
 
-		 			if(!empty($params['columns'][7]['search']['value'])){
-		 				$where .=" AND kecamatan LIKE '".$params['columns'][7]['search']['value']."%' ";
-		 			}
+					if (!empty($params['columns'][7]['search']['value'])) {
+						$where .= " AND kecamatan LIKE '" . $params['columns'][7]['search']['value'] . "%' ";
+					}
 
-		 			if(!empty($params['columns'][8]['search']['value'])){
-		 				$where .=" AND desa_kelurahan LIKE '".$params['columns'][8]['search']['value']."%' ";
-		 			}
+					if (!empty($params['columns'][8]['search']['value'])) {
+						$where .= " AND desa_kelurahan LIKE '" . $params['columns'][8]['search']['value'] . "%' ";
+					}
 
 					$sql_tot = "SELECT count(id) as jml FROM `data_dtks`";
 					$sql = "SELECT " . implode(', ', $columns) . " FROM `data_dtks`";
@@ -1578,7 +1716,8 @@ class Wp_Siks_Admin
 		}
 	}
 
-	function export_excel_data_dtks_siks(){
+	function export_excel_data_dtks_siks()
+	{
 		global $wpdb;
 
 		try {
@@ -1586,38 +1725,38 @@ class Wp_Siks_Admin
 				if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 
 					$where = '';
-					if( !empty($_POST['search_value']) ) {
-		 				$where .=" AND (";
-		 				$where .=" NIK LIKE ".$wpdb->prepare('%s', "%".$_POST['search_value']."%");
-				 		$where .=" OR Nama LIKE ".$wpdb->prepare('%s', "%".$_POST['search_value']."%");
-				 		$where .=" OR Alamat LIKE ".$wpdb->prepare('%s', "%".$_POST['search_value']."%");
-				 		$where .=" OR NOKK LIKE ".$wpdb->prepare('%s', "%".$_POST['search_value']."%");
-		 				$where .=")";
-		 			}
+					if (!empty($_POST['search_value'])) {
+						$where .= " AND (";
+						$where .= " NIK LIKE " . $wpdb->prepare('%s', "%" . $_POST['search_value'] . "%");
+						$where .= " OR Nama LIKE " . $wpdb->prepare('%s', "%" . $_POST['search_value'] . "%");
+						$where .= " OR Alamat LIKE " . $wpdb->prepare('%s', "%" . $_POST['search_value'] . "%");
+						$where .= " OR NOKK LIKE " . $wpdb->prepare('%s', "%" . $_POST['search_value'] . "%");
+						$where .= ")";
+					}
 
-		 			if(!empty($_POST['filter_kriteria']=='nik_kosong')){
-		 				$where .=" AND NIK = ''";
-		 			}
+					if (!empty($_POST['filter_kriteria'] == 'nik_kosong')) {
+						$where .= " AND NIK = ''";
+					}
 
-		 			if(!empty($_POST['filter_kriteria']=='kk_kosong')){
-		 				$where .=" AND NOKK = ''";
-		 			}
+					if (!empty($_POST['filter_kriteria'] == 'kk_kosong')) {
+						$where .= " AND NOKK = ''";
+					}
 
-		 			if(!empty($_POST['filter_kriteria']=='nik_atau_kk_kosong')){
-		 				$where .=" AND ( NIK = '' OR NOKK = '' )";
-		 			}
+					if (!empty($_POST['filter_kriteria'] == 'nik_atau_kk_kosong')) {
+						$where .= " AND ( NIK = '' OR NOKK = '' )";
+					}
 
-		 			if(!empty($_POST['filter_kecamatan'])){
-		 				$where .=" AND kecamatan LIKE '".$_POST['filter_kecamatan']."%' ";
-		 			}
+					if (!empty($_POST['filter_kecamatan'])) {
+						$where .= " AND kecamatan LIKE '" . $_POST['filter_kecamatan'] . "%' ";
+					}
 
-		 			if(!empty($_POST['filter_desa'])){
-		 				$where .=" AND desa_kelurahan LIKE '".$_POST['filter_desa']."%' ";
-		 			}
+					if (!empty($_POST['filter_desa'])) {
+						$where .= " AND desa_kelurahan LIKE '" . $_POST['filter_desa'] . "%' ";
+					}
 
-		 			$data = $wpdb->get_results($wpdb->prepare("SELECT * FROM data_dtks WHERE 1=1 AND is_nonaktif = 1" . $where . " ORDER BY id"), ARRAY_A);
+					$data = $wpdb->get_results($wpdb->prepare("SELECT * FROM data_dtks WHERE 1=1 AND is_nonaktif = 1" . $where . " ORDER BY id"), ARRAY_A);
 
-		 			$html = '<table><thead>
+					$html = '<table><thead>
 		 						<tr>
 		 							<th>Nama</th>
 		 							<th>NIK</th>
@@ -1645,41 +1784,40 @@ class Wp_Siks_Admin
 		 					</thead>
 		 					<tbody>';
 
-		 					foreach ($data as $key => $value) {
-		 						$nik = !empty($value['NIK']) ? "`".$value['NIK'] : '';
-		 						$nokk = !empty($value['NOKK']) ? "`".$value['NOKK'] : '';
-		 						$html.='<tr>
-		 							<td>'.$value['Nama'].'</td>
-		 							<td>'.$nik.'</td>
-		 							<td>'.$nokk.'</td>
-		 							<td>'.$value['Alamat'].'</td>
-		 							<td>'.$value['provinsi'].'</td>
-		 							<td>'.$value['kabupaten'].'</td>
-		 							<td>'.$value['kecamatan'].'</td>
-		 							<td>'.$value['desa_kelurahan'].'</td>
-		 							<td>'.$value['ATENSI'].'</td>
-		 							<td>'.$value['BLT'].'</td>
-		 							<td>'.$value['BLT_BBM'].'</td>
-		 							<td>'.$value['BNPT_PPKM'].'</td>
-		 							<td>'.$value['BPNT'].'</td>
-		 							<td>'.$value['BST'].'</td>
-		 							<td>'.$value['FIRST_SK'].'</td>
-		 							<td>'.$value['PBI'].'</td>
-		 							<td>'.$value['PENA'].'</td>
-		 							<td>'.$value['PERMAKANAN'].'</td>
-		 							<td>'.$value['PKH'].'</td>
-		 							<td>'.$value['RUTILAHU'].'</td>
-		 							<td>'.$value['SEMBAKO_ADAPTIF'].'</td>
-		 							<td>'.$value['YAPI'].'</td>
+					foreach ($data as $key => $value) {
+						$nik = !empty($value['NIK']) ? "`" . $value['NIK'] : '';
+						$nokk = !empty($value['NOKK']) ? "`" . $value['NOKK'] : '';
+						$html .= '<tr>
+		 							<td>' . $value['Nama'] . '</td>
+		 							<td>' . $nik . '</td>
+		 							<td>' . $nokk . '</td>
+		 							<td>' . $value['Alamat'] . '</td>
+		 							<td>' . $value['provinsi'] . '</td>
+		 							<td>' . $value['kabupaten'] . '</td>
+		 							<td>' . $value['kecamatan'] . '</td>
+		 							<td>' . $value['desa_kelurahan'] . '</td>
+		 							<td>' . $value['ATENSI'] . '</td>
+		 							<td>' . $value['BLT'] . '</td>
+		 							<td>' . $value['BLT_BBM'] . '</td>
+		 							<td>' . $value['BNPT_PPKM'] . '</td>
+		 							<td>' . $value['BPNT'] . '</td>
+		 							<td>' . $value['BST'] . '</td>
+		 							<td>' . $value['FIRST_SK'] . '</td>
+		 							<td>' . $value['PBI'] . '</td>
+		 							<td>' . $value['PENA'] . '</td>
+		 							<td>' . $value['PERMAKANAN'] . '</td>
+		 							<td>' . $value['PKH'] . '</td>
+		 							<td>' . $value['RUTILAHU'] . '</td>
+		 							<td>' . $value['SEMBAKO_ADAPTIF'] . '</td>
+		 							<td>' . $value['YAPI'] . '</td>
 		 						</tr>';
-		 					}
-		 					$html.='</tbody></table>';
-
-		 			$this->generateExcel($html);
-
-				}else {
-						throw new Exception('Api key tidak sesuai');
 					}
+					$html .= '</tbody></table>';
+
+					$this->generateExcel($html);
+				} else {
+					throw new Exception('Api key tidak sesuai');
+				}
 			} else {
 				throw new Exception('Format tidak sesuai');
 			}
@@ -1692,14 +1830,16 @@ class Wp_Siks_Admin
 		}
 	}
 
-	function generateExcel($html = ''){
-		header("Content-Disposition: attachment;"); 
+	function generateExcel($html = '')
+	{
+		header("Content-Disposition: attachment;");
 		header("Content-Type: application/vnd.ms-excel");
 
 		die($html);
 	}
 
-	function get_data_kecamatan_siks(){
+	function get_data_kecamatan_siks()
+	{
 		global $wpdb;
 
 		try {
@@ -1712,10 +1852,10 @@ class Wp_Siks_Admin
 						"status"	=> true,
 						"data"		=> $data
 					)));
-				}else{
+				} else {
 					throw new Exception('Api key tidak sesuai');
 				}
-			}else{
+			} else {
 				throw new Exception('Format tidak sesuai');
 			}
 		} catch (Exception $e) {
@@ -1727,23 +1867,24 @@ class Wp_Siks_Admin
 		}
 	}
 
-	function get_data_desa_siks(){
+	function get_data_desa_siks()
+	{
 		global $wpdb;
 
 		try {
 			if (!empty($_POST)) {
 				if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 
-					$data = $wpdb->get_results($wpdb->prepare("SELECT desa FROM `data_batas_desa_siks` WHERE kecamatan LIKE %s ORDER BY kecno", $_POST['kecamatan']."%"), ARRAY_A);
+					$data = $wpdb->get_results($wpdb->prepare("SELECT desa FROM `data_batas_desa_siks` WHERE kecamatan LIKE %s ORDER BY kecno", $_POST['kecamatan'] . "%"), ARRAY_A);
 
 					exit(json_encode(array(
 						"status"	=> true,
 						"data"		=> $data
 					)));
-				}else{
+				} else {
 					throw new Exception('Api key tidak sesuai');
 				}
-			}else{
+			} else {
 				throw new Exception('Format tidak sesuai');
 			}
 		} catch (Exception $e) {
