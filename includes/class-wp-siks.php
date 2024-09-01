@@ -215,42 +215,61 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_nopriv_proses_captcha',  $plugin_public, 'proses_captcha');
 		$this->loader->add_action('wp_ajax_singkronisasi_dtks',  $plugin_public, 'singkronisasi_dtks');
 		$this->loader->add_action('wp_ajax_nopriv_singkronisasi_dtks',  $plugin_public, 'singkronisasi_dtks');
+
 		$this->loader->add_action('wp_ajax_get_datatable_lansia',  $plugin_public, 'get_datatable_lansia');
 		$this->loader->add_action('wp_ajax_get_data_lansia_by_id',  $plugin_public, 'get_data_lansia_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_lansia',  $plugin_public, 'tambah_data_lansia');
 		$this->loader->add_action('wp_ajax_hapus_data_lansia_by_id', $plugin_public, 'hapus_data_lansia_by_id');
+
 		$this->loader->add_action('wp_ajax_get_datatable_disabilitas',  $plugin_public, 'get_datatable_disabilitas');
 		$this->loader->add_action('wp_ajax_get_data_disabilitas_by_id',  $plugin_public, 'get_data_disabilitas_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_disabilitas',  $plugin_public, 'tambah_data_disabilitas');
 		$this->loader->add_action('wp_ajax_hapus_data_disabilitas_by_id', $plugin_public, 'hapus_data_disabilitas_by_id');
+
 		$this->loader->add_action('wp_ajax_get_datatable_bunda_kasih',  $plugin_public, 'get_datatable_bunda_kasih');
 		$this->loader->add_action('wp_ajax_get_data_bunda_kasih_by_id',  $plugin_public, 'get_data_bunda_kasih_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_bunda_kasih',  $plugin_public, 'tambah_data_bunda_kasih');
 		$this->loader->add_action('wp_ajax_hapus_data_bunda_kasih_by_id', $plugin_public, 'hapus_data_bunda_kasih_by_id');
+
 		$this->loader->add_action('wp_ajax_get_datatable_odgj',  $plugin_public, 'get_datatable_odgj');
 		$this->loader->add_action('wp_ajax_get_data_odgj_by_id',  $plugin_public, 'get_data_odgj_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_odgj',  $plugin_public, 'tambah_data_odgj');
 		$this->loader->add_action('wp_ajax_hapus_data_odgj_by_id', $plugin_public, 'hapus_data_odgj_by_id');
+
 		$this->loader->add_action('wp_ajax_get_datatable_lksa', $plugin_public, 'get_datatable_lksa');
 		$this->loader->add_action('wp_ajax_get_lksa_by_id', $plugin_public, 'get_lksa_by_id');
 		$this->loader->add_action('wp_ajax_get_data_lksa_by_id', $plugin_public, 'get_data_lksa_by_id');
 		$this->loader->add_action('wp_ajax_hapus_lksa_by_id', $plugin_public, 'hapus_lksa_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_lksa', $plugin_public, 'tambah_data_lksa');
+		$this->loader->add_action('wp_ajax_get_lksa', $plugin_public, 'get_lksa');
+
 		$this->loader->add_action('wp_ajax_get_datatable_anak_terlantar', $plugin_public, 'get_datatable_anak_terlantar');
 		$this->loader->add_action('wp_ajax_get_anak_terlantar', $plugin_public, 'get_anak_terlantar');
 		$this->loader->add_action('wp_ajax_get_anak_terlantar_luar_magetan', $plugin_public, 'get_anak_terlantar_luar_magetan');
-		$this->loader->add_action('wp_ajax_get_lksa', $plugin_public, 'get_lksa');
 		$this->loader->add_action('wp_ajax_get_anak_terlantar_by_id', $plugin_public, 'get_anak_terlantar_by_id');
-		$this->loader->add_action('wp_ajax_hapus_anak_terlantar_by_id', $plugin_public, 'hapus_anak_terlantar_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_anak_terlantar', $plugin_public, 'tambah_data_anak_terlantar');
+		$this->loader->add_action('wp_ajax_hapus_anak_terlantar_by_id', $plugin_public, 'hapus_anak_terlantar_by_id');
+
 		$this->loader->add_action('wp_ajax_get_datatable_p3ke',  $plugin_public, 'get_datatable_p3ke');
 		$this->loader->add_action('wp_ajax_get_data_p3ke_by_id',  $plugin_public, 'get_data_p3ke_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_p3ke',  $plugin_public, 'tambah_data_p3ke');
 		$this->loader->add_action('wp_ajax_hapus_data_p3ke_by_id', $plugin_public, 'hapus_data_p3ke_by_id');
+
+		$this->loader->add_action('wp_ajax_get_datatable_calon_p3ke', $plugin_public, 'get_datatable_calon_p3ke');
 		$this->loader->add_action('wp_ajax_get_data_calon_p3ke_by_id', $plugin_public, 'get_data_calon_p3ke_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_calon_p3ke', $plugin_public, 'tambah_data_calon_p3ke');
-		$this->loader->add_action('wp_ajax_get_datatable_calon_p3ke', $plugin_public, 'get_datatable_calon_p3ke');
 		$this->loader->add_action('wp_ajax_hapus_data_calon_p3ke_by_id', $plugin_public, 'hapus_data_calon_p3ke_by_id');
+		
+		$this->loader->add_action('wp_ajax_get_datatable_data_wrse', $plugin_public, 'get_datatable_data_wrse');
+		$this->loader->add_action('wp_ajax_get_data_wrse_by_id', $plugin_public, 'get_data_wrse_by_id');
+		$this->loader->add_action('wp_ajax_tambah_data_wrse', $plugin_public, 'tambah_data_wrse');
+		$this->loader->add_action('wp_ajax_hapus_data_wrse_by_id', $plugin_public, 'hapus_data_wrse_by_id');
+		
+		$this->loader->add_action('wp_ajax_get_datatable_data_hibah', $plugin_public, 'get_datatable_data_hibah');
+		$this->loader->add_action('wp_ajax_get_data_hibah_by_id', $plugin_public, 'get_data_hibah_by_id');
+		$this->loader->add_action('wp_ajax_tambah_data_hibah', $plugin_public, 'tambah_data_hibah');
+		$this->loader->add_action('wp_ajax_hapus_data_hibah_by_id', $plugin_public, 'hapus_data_hibah_by_id');
+
 		$this->loader->add_action('wp_ajax_cari_nik_siks', $plugin_public, 'cari_nik_siks');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
@@ -258,6 +277,7 @@ class Wp_Siks {
 		add_shortcode('peta_data_terpadu_siks', array($plugin_public, 'peta_data_terpadu_siks'));
 		add_shortcode('peta_kecamatan_siks', array($plugin_public, 'peta_kecamatan_siks'));
 		add_shortcode('data_dtks_siks', array($plugin_public, 'data_dtks_siks'));
+		
 		add_shortcode('management_data_lansia', array($plugin_public, 'management_data_lansia'));
 		add_shortcode('management_data_disabilitas', array($plugin_public, 'management_data_disabilitas'));
 		add_shortcode('management_data_bunda_kasih', array($plugin_public, 'management_data_bunda_kasih'));
@@ -265,6 +285,10 @@ class Wp_Siks {
 		add_shortcode('management_data_odgj', array($plugin_public, 'management_data_odgj'));
 		add_shortcode('management_data_lksa', array($plugin_public, 'management_data_lksa'));
 		add_shortcode('management_data_p3ke', array($plugin_public, 'management_data_p3ke'));
+		add_shortcode('management_wrse', array($plugin_public, 'management_wrse'));
+		add_shortcode('management_hibah', array($plugin_public, 'management_hibah'));
+		add_shortcode('management_calon_p3ke', array($plugin_public, 'management_calon_p3ke'));
+		
 		add_shortcode('disabilitas_per_desa', array($plugin_public, 'disabilitas_per_desa'));
 		add_shortcode('anak_terlantar_per_desa', array($plugin_public, 'anak_terlantar_per_desa'));
 		add_shortcode('lansia_per_desa', array($plugin_public, 'lansia_per_desa'));
@@ -274,14 +298,13 @@ class Wp_Siks {
 		add_shortcode('p3ke_per_desa', array($plugin_public, 'p3ke_per_desa'));
 		add_shortcode('lksa_per_desa', array($plugin_public, 'lksa_per_desa'));
 		add_shortcode('data_lansia_siks', array($plugin_public, 'data_lansia_siks'));
+		
 		add_shortcode('data_disabilitas_siks', array($plugin_public, 'data_disabilitas_siks'));
 		add_shortcode('data_bunda_kasih_siks', array($plugin_public, 'data_bunda_kasih_siks'));
 		add_shortcode('data_anak_terlantar_siks', array($plugin_public, 'data_anak_terlantar_siks'));
 		add_shortcode('data_gepeng_siks', array($plugin_public, 'data_gepeng_siks'));
 		add_shortcode('data_p3ke_siks', array($plugin_public, 'data_p3ke_siks'));
 		add_shortcode('data_calon_p3ke', array($plugin_public, 'data_calon_p3ke'));
-		add_shortcode('management_calon_p3ke', array($plugin_public, 'management_calon_p3ke'));
-		add_shortcode('management_wrse', array($plugin_public, 'management_wrse'));
 		add_shortcode('cek_nik_siks', array($plugin_public, 'cek_nik_siks'));
 
 		// untuk menjalankan conjob refresh session

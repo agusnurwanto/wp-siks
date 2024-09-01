@@ -228,6 +228,14 @@ class Wp_Siks_Admin
 			'post_status' => 'publish'
 		));
 
+		$management_hibah = $this->functions->generatePage(array(
+			'nama_page' => 'Manajemen Hibah',
+			'content' => '[management_hibah]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
 		$management_calon_p3ke = $this->functions->generatePage(array(
 			'nama_page' => 'Manajemen Calon Penerima P3KE',
 			'content' => '[management_calon_p3ke]',
@@ -692,6 +700,37 @@ class Wp_Siks_Admin
 						->set_html('Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>'),
 					Field::make('html', 'crb_wrse_save_button')
 						->set_html('<a onclick="import_excel_wrse_siks(); return false" href="javascript:void(0);" class="button button-primary">Import WRSE</a>')
+				)
+			);
+
+		Container::make('theme_options', __('Data Hibah'))
+			->set_page_parent($basic_options_container)
+			->add_fields(
+				array(
+					Field::make('html', 'crb_hibah_hide_sidebar')
+						->set_html('
+		        		<style>
+		        			.postbox-container { display: none; }
+		        			#poststuff #post-body.columns-2 { margin: 0 !important; }
+		        		</style>
+		        	'),
+					Field::make('html', 'crb_siks_halaman_terkait_hibah')
+						->set_html('
+					<h5>HALAMAN TERKAIT</h5>
+	            	<ol>
+	            		<li><a target="_blank" href="' . $management_hibah['url'] . '">' . $management_hibah['title'] . '</a></li>
+	            	</ol>
+		        	'),
+					Field::make('html', 'crb_hibah_upload_html')
+						->set_html('<h3>Import EXCEL data Hibah</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
+	            		Contoh format file excel untuk <b>Hibah</b> bisa <a target="_blank" href="' . SIKS_PLUGIN_URL . 'excel/contoh_data_hibah.xlsx">download di sini</a>.<br>
+	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
+	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
+	            		Sheet file excel yang akan diimport harus diberi nama <b>data</b>. Untuk kolom nilai angka ditulis tanpa tanda titik.<br>'),
+					Field::make('html', 'crb_hibah_siks')
+						->set_html('Data JSON : <textarea id="data-excel" class="cf-select__input"></textarea>'),
+					Field::make('html', 'crb_hibah_save_button')
+						->set_html('<a onclick="import_excel_hibah_siks(); return false" href="javascript:void(0);" class="button button-primary">Import Hibah</a>')
 				)
 			);
 	}
@@ -1502,6 +1541,107 @@ class Wp_Siks_Admin
 	}
 
 	function import_excel_data_wrse_siks()
+	{
+		global $wpdb;
+		$ret = array(
+			'status'	=> 'success',
+			'message'	=> 'Berhasil import excel!'
+		);
+
+		if (!empty($_POST)) {
+
+			$table_data = 'data_hibah_siks';
+
+			if (
+				!empty($_POST['update_active'])
+				&& $_POST['page'] == 1
+			) {
+				$wpdb->query(
+					$wpdb->prepare(
+						"UPDATE $table_data SET active=0, update_at='" . date('Y-m-d H:i:s') . "'"
+					)
+				);
+			}
+
+			$ret['data'] = array(
+				'insert' => 0,
+				'update' => 0,
+				'error' => array()
+			);
+
+			foreach ($_POST['data'] as $k => $data) {
+
+				$newData = array();
+
+				foreach ($data as $kk => $vv) {
+					$newData[trim(preg_replace('/\s+/', ' ', $kk))] = trim(preg_replace('/\s+/', ' ', $vv));
+				}
+
+				$data_db = array(
+					'kode' => $newData['kode'],
+					'penerima' => $newData['penerima'],
+					'alamat' => $newData['alamat'],
+					'kecamatan' => $newData['kecamatan'],
+					'nama_ketua' => $newData['nama_ketua'],
+					'nik_ketua' => $newData['nik_ketua'],
+					'anggaran_no_nphd' => $newData['anggaran_no_nphd'],
+					'no_spm' => $newData['no_spm'],
+					'tanggal_spm' => $newData['tanggal_spm'],
+					'no_sp2d' => $newData['no_sp2d'],
+					'tanggal_sp2d' => $newData['tanggal_sp2d'],
+					'peruntukan' => $newData['peruntukan'],
+					'jenis_data' => $newData['jenis_data'],
+					'tahun_anggaran' => $newData['tahun_anggaran'],
+					'create_at' => current_time('mysql'),
+					'update_at' => current_time('mysql'),
+					'active' => 1
+				);
+
+				$wpdb->last_error = "";
+
+				$cek_id = $wpdb->get_var(
+					$wpdb->prepare("
+						SELECT 
+							id 
+						FROM $table_data 
+						WHERE tahun_anggaran=%d
+						  AND kode=%s
+						  AND penerima=%s
+						", $newData['tahun_anggaran'], $newData['kode'], $newData['penerima'])
+				);
+
+				if (empty($cek_id)) {
+					$wpdb->insert(
+						$table_data,
+						$data_db
+					);
+					$ret['data']['insert']++;
+				} else {
+					$wpdb->update(
+						$table_data,
+						$data_db,
+						array(
+							"id" => $cek_id
+						)
+					);
+					$ret['data']['update']++;
+				}
+
+				if (!empty($wpdb->last_error)) {
+					$ret['data']['error'][] = array(
+						$wpdb->last_error,
+						$data_db
+					);
+				};
+			}
+		} else {
+			$ret['status'] = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+		die(json_encode($ret));
+	}
+
+	function import_excel_data_hibah_siks()
 	{
 		global $wpdb;
 		$ret = array(

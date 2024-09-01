@@ -1,27 +1,27 @@
-jQuery(document).ready(function(){
+jQuery(document).ready(function () {
     var loading = ''
-        +'<div id="wrap-loading">'
-            +'<div class="lds-hourglass"></div>'
-            +'<div id="persen-loading"></div>'
-        +'</div>';
-    if(jQuery('#wrap-loading').length == 0){
+        + '<div id="wrap-loading">'
+        + '<div class="lds-hourglass"></div>'
+        + '<div id="persen-loading"></div>'
+        + '</div>';
+    if (jQuery('#wrap-loading').length == 0) {
         jQuery('body').prepend(loading);
     }
 });
 
 function cari_alamat_siks(text) {
-    if(text){
+    if (text) {
         var alamat = text;
-    }else{
+    } else {
         var alamat = jQuery('#cari-alamat-siks-input').val();
     }
-    if(typeof google == 'undefined'){
-        return setTimeout(function(){
+    if (typeof google == 'undefined') {
+        return setTimeout(function () {
             cari_alamat_siks(text);
         }, 1000)
     }
     geocoder = new google.maps.Geocoder();
-    geocoder.geocode( { 'address': alamat}, function(results, status) {
+    geocoder.geocode({ 'address': alamat }, function (results, status) {
         if (status == 'OK') {
             console.log('results', results);
             map.setCenter(results[0].geometry.location);
@@ -35,11 +35,11 @@ function cari_alamat_siks(text) {
     });
 }
 
-function setCenterSiks(lng, ltd, maker=false, data, noCenter=false){
+function setCenterSiks(lng, ltd, maker = false, data, noCenter = false) {
     var lokasi_aset = new google.maps.LatLng(lng, ltd);
 
     // center lokasi
-    if(!noCenter){
+    if (!noCenter) {
         map.setCenter(lokasi_aset);
         map.setZoom(15);
         jQuery([document.documentElement, document.body]).animate({
@@ -48,14 +48,14 @@ function setCenterSiks(lng, ltd, maker=false, data, noCenter=false){
     }
 
     // menampilkan maker
-    if(maker){
-        if(typeof evm == 'undefined'){
+    if (maker) {
+        if (typeof evm == 'undefined') {
             window.evm = {};
         }
-        if(typeof data == 'object'){
+        if (typeof data == 'object') {
             data = JSON.stringify(data);
         }
-        if(typeof evm[data] != 'undefined'){
+        if (typeof evm[data] != 'undefined') {
             evm[data].setMap(null);
         }
         // Menampilkan Marker
@@ -66,30 +66,60 @@ function setCenterSiks(lng, ltd, maker=false, data, noCenter=false){
             title: 'Lokasi Map'
         });
 
-        if(typeof infoWindow == 'undefined'){
+        if (typeof infoWindow == 'undefined') {
             window.infoWindow = {};
         }
         infoWindow[data] = new google.maps.InfoWindow({
             content: data
         });
 
-        google.maps.event.addListener(evm[data], 'click', function(event) {
+        google.maps.event.addListener(evm[data], 'click', function (event) {
             infoWindow[data].setPosition(event.latLng);
             infoWindow[data].open(map);
         });
     }
 }
 
-jQuery(document).ready(function(){
+function validateForm(fields) {
+    const formData = {};
+
+    for (const [name, message] of Object.entries(fields)) {
+        const $field = jQuery(`[name="${name}"]`);
+
+        if ($field.is(':radio')) {
+            const checkedValue = jQuery(`[name="${name}"]:checked`).val();
+            if (!checkedValue) {
+                return { error: message };
+            }
+            formData[name] = checkedValue;
+        } else if ($field.is(':checkbox')) {
+            const isChecked = $field.is(':checked');
+            if (!isChecked) {
+                return { error: message };
+            }
+            formData[name] = isChecked;
+        } else if ($field.is('select') || $field.is('textarea') || $field.is(':input')) {
+            const value = $field.val().trim();
+            if (value === '') {
+                return { error: message };
+            }
+            formData[name] = value;
+        }
+    }
+
+    return { error: null, data: formData };
+}
+
+jQuery(document).ready(function () {
     var search = ''
-        +'<div class="input-group" style="margin-bottom: 5px; display: block;">'
-            +'<div class="input-group-prepend">'
-                +'<input class="form-control" id="cari-alamat-siks-input" type="text" placeholder="Kotak pencarian alamat">'
-                +'<button class="btn btn-success" id="cari-alamat-siks" type="button"><i class="dashicons dashicons-search"></i></button>'
-            +'</div>'
-        +'</div>';
+        + '<div class="input-group" style="margin-bottom: 5px; display: block;">'
+        + '<div class="input-group-prepend">'
+        + '<input class="form-control" id="cari-alamat-siks-input" type="text" placeholder="Kotak pencarian alamat">'
+        + '<button class="btn btn-success" id="cari-alamat-siks" type="button"><i class="dashicons dashicons-search"></i></button>'
+        + '</div>'
+        + '</div>';
     jQuery("#map-canvas-siks").before(search);
-    jQuery("#cari-alamat-siks").on('click', function(){
+    jQuery("#cari-alamat-siks").on('click', function () {
         cari_alamat_siks();
     });
     jQuery("#cari-alamat-siks-input").on('keyup', function (e) {
@@ -117,9 +147,9 @@ function initMapSiks() {
     window.infoWindow = {};
 
     // Membuat Shape
-    maps_all_siks.map(function(data, i){
+    maps_all_siks.map(function (data, i) {
         // console.log(data.coor);
-        data.coor.map(function(coor, ii){
+        data.coor.map(function (coor, ii) {
             var bidang1 = new google.maps.Polygon({
                 map: map,
                 paths: coor,
@@ -138,15 +168,15 @@ function initMapSiks() {
             infoWindow[index] = new google.maps.InfoWindow({
                 content: contentString
             });
-            google.maps.event.addListener(bidang1, 'click', function(event) {
+            google.maps.event.addListener(bidang1, 'click', function (event) {
                 infoWindow[index].setPosition(event.latLng);
                 infoWindow[index].open(map);
 
-                var id = "chart-"+index;
-                if(!chartRenderWindow[id]){
+                var id = "chart-" + index;
+                if (!chartRenderWindow[id]) {
                     // menampilkan chart
-                    setTimeout(function(){
-                        if(!chartWindow[index]){
+                    setTimeout(function () {
+                        if (!chartWindow[index]) {
                             return;
                         }
 
@@ -188,8 +218,8 @@ function initMapSiks() {
                                             dataArr.map(data => {
                                                 sum += data;
                                             });
-                                            let percentage = ((value / sum) * 100).toFixed(2)+"%";
-                                            console.log('percentage, dataArr',value, percentage, dataArr);
+                                            let percentage = ((value / sum) * 100).toFixed(2) + "%";
+                                            console.log('percentage, dataArr', value, percentage, dataArr);
                                             return percentage;
                                         },
                                         color: '#000',
@@ -199,15 +229,15 @@ function initMapSiks() {
                             plugins: [ChartDataLabels]
                         });
                     }, 500);
-                }else{
+                } else {
                     chartRenderWindow[id].update();
                 }
 
-                var id_dtks = "chart-dtks-"+index;
-                if(!chartRenderWindowDtks[id_dtks]){
+                var id_dtks = "chart-dtks-" + index;
+                if (!chartRenderWindowDtks[id_dtks]) {
                     // menampilkan chart
-                    setTimeout(function(){
-                        if(!chartWindowDtks[index]){
+                    setTimeout(function () {
+                        if (!chartWindowDtks[index]) {
                             return;
                         }
 
@@ -249,8 +279,8 @@ function initMapSiks() {
                                             dataArr.map(data => {
                                                 sum += data;
                                             });
-                                            let percentage = ((value / sum) * 100).toFixed(2)+"%";
-                                            console.log('percentage, dataArr',value, percentage, dataArr);
+                                            let percentage = ((value / sum) * 100).toFixed(2) + "%";
+                                            console.log('percentage, dataArr', value, percentage, dataArr);
                                             return percentage;
                                         },
                                         color: '#000',
@@ -260,7 +290,7 @@ function initMapSiks() {
                             plugins: [ChartDataLabels]
                         });
                     }, 500);
-                }else{
+                } else {
                     chartRenderWindowDtks[id_dtks].update();
                 }
             });

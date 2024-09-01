@@ -85,6 +85,7 @@ class Wp_Siks_Public
 		wp_enqueue_style($this->plugin_name . 'bootstrap', plugin_dir_url(__FILE__) . 'css/bootstrap.min.css', array(), $this->version, 'all');
 		wp_enqueue_style($this->plugin_name . 'datatables', plugin_dir_url(__FILE__) . 'css/jquery.dataTables.min.css', array(), $this->version, 'all');
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/wp-siks-public.css', array(), $this->version, 'all');
+		wp_enqueue_style('dashicons');
 	}
 
 	/**
@@ -113,7 +114,8 @@ class Wp_Siks_Public
 		wp_enqueue_script($this->plugin_name . 'chart', plugin_dir_url(__FILE__) . 'js/chart.min.js', array('jquery'), $this->version, false);
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/wp-siks-public.js', array('jquery'), $this->version, false);
 		wp_localize_script($this->plugin_name, 'ajax', array(
-			'url' => admin_url('admin-ajax.php')
+			'url' => admin_url('admin-ajax.php'),
+			'apikey' => get_option(SIKS_APIKEY)
 		));
 	}
 
@@ -223,6 +225,15 @@ class Wp_Siks_Public
 			return '';
 		}
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-wrse.php';
+	}
+
+	public function management_hibah()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-manajemen-hibah.php';
 	}
 
 	public function data_calon_p3ke()
@@ -1481,15 +1492,15 @@ class Wp_Siks_Public
 				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
 			}
 			// check search value exist
-            if( !empty($params['search']['value']) ) {
-                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( nomor_kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( desa LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-            }
+			if (!empty($params['search']['value'])) {
+				$where .= " AND ( nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( nomor_kk LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( provinsi LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kabkot LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kecamatan LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( desa LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+			}
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_disabilitas_siks`";
@@ -1825,13 +1836,13 @@ class Wp_Siks_Public
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( desa LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-            }
+				$where .= " AND ( nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( provinsi LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kabkot LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kecamatan LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( desa LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+			}
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_lansia_siks`";
@@ -2117,14 +2128,14 @@ class Wp_Siks_Public
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( desa LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-            }
+				$where .= " AND ( nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kk LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( provinsi LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kabkot LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kecamatan LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( desa LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+			}
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_bunda_kasih_siks`";
@@ -2500,14 +2511,14 @@ class Wp_Siks_Public
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( desa LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-            }
+				$where .= " AND ( nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kk LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( provinsi LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kabkot LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kecamatan LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( desa LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+			}
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_odgj_siks`";
@@ -2778,9 +2789,9 @@ class Wp_Siks_Public
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-            }
+				$where .= " OR ( nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kabkot LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+			}
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_lksa_siks`";
@@ -2929,7 +2940,7 @@ class Wp_Siks_Public
 				if (empty($_POST['id_data'])) {
 					if ($ret['status'] != 'error' && !empty($_FILES['lampiran'])) {
 						$lampiran = $_FILES['lampiran'];
-					} 
+					}
 				}
 				if ($ret['status'] != 'error') {
 					$alamat = $_POST['alamat'];
@@ -3073,11 +3084,11 @@ class Wp_Siks_Public
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( desa_kelurahan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-            }
+				$where .= " AND ( nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kk LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( desa_kelurahan LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+			}
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_anak_terlantar_siks`";
@@ -3614,16 +3625,16 @@ class Wp_Siks_Public
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-                $where .=" AND ( nik LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( nama LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( provinsi LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( desa LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( rt LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( rw LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-            }
+				$where .= " AND ( nik LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kk LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( provinsi LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kabkot LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kecamatan LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( desa LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( rt LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( rw LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+			}
 
 			// getting total number records without any search
 			$sql_tot = "SELECT count(id) as jml FROM `data_p3ke_siks`";
@@ -3716,16 +3727,16 @@ class Wp_Siks_Public
 
 			// check search value exist
 			if (!empty($params['search']['value'])) {
-                $where .=" AND ( nama_kk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( nama_pkk LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( nama_anak LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( nik_anak LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( nik_p3ke LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( id_kpm LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kabkot LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( kecamatan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-                $where .=" OR ( desa_kelurahan LIKE ".$wpdb->prepare('%s', "%".$params['search']['value']."%").")";
-            }
+				$where .= " AND ( nama_kk LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( nama_pkk LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( nama_anak LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( nik_anak LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( nik_p3ke LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( id_kpm LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kabkot LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( kecamatan LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+				$where .= " OR ( desa_kelurahan LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%") . ")";
+			}
 
 			if (!empty($params['desa'])) {
 				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);
@@ -3752,7 +3763,7 @@ class Wp_Siks_Public
 				if (
 					strtolower($orderByDirection) == 'asc'
 					|| strtolower($orderByDirection) == 'desc'
-				){
+				) {
 					if ($orderByColumnIndex == 0) {
 						$orderBy = "ORDER BY data_p3ke_siks.nik $orderByDirection";
 					} else {
@@ -3807,6 +3818,105 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
+	function get_datatable_data_wrse()
+	{
+		global $wpdb;
+
+		$ret = [
+			'status' => 'success',
+			'message' => 'Berhasil get data!'
+		];
+
+		if (!empty($_POST['api_key']) && $_POST['api_key'] === get_option(SIKS_APIKEY)) {
+			$params = $_REQUEST;
+
+			// Define columns
+			$columns = [
+				'nama',
+				'usia',
+				'alamat',
+				'desa_kel',
+				'kecamatan',
+				'status_dtks',
+				'status_pernikahan',
+				'mempunyai_usaha',
+				'keterangan',
+				'jenis_data',
+				'tahun_anggaran',
+				'create_at',
+				'update_at',
+				'id'
+			];
+
+			$where = 'WHERE 1=1 AND active = 1';
+			$searchValue = !empty($params['search']['value']) ? $params['search']['value'] : '';
+
+			// Search filter
+			if ($searchValue) {
+				$where .= $wpdb->prepare(
+					" AND (nama LIKE %s OR alamat LIKE %s OR desa_kel LIKE %s OR kecamatan LIKE %s OR status_dtks LIKE %s OR status_pernikahan LIKE %s OR mempunyai_usaha LIKE %s OR keterangan LIKE %s OR jenis_data LIKE %s)",
+					"%$searchValue%",
+					"%$searchValue%",
+					"%$searchValue%",
+					"%$searchValue%",
+					"%$searchValue%",
+					"%$searchValue%",
+					"%$searchValue%",
+					"%$searchValue%",
+					"%$searchValue%"
+				);
+			}
+
+			// Total records
+			$sqlTot = "SELECT COUNT(id) as jml FROM data_wrse_siks $where";
+			$totalRecords = $wpdb->get_var($sqlTot);
+
+			// Sorting
+			$orderBy = '';
+			if (!empty($params['order'])) {
+				$orderByColumnIndex = $params['order'][0]['column'];
+				$orderByDirection = strtoupper($params['order'][0]['dir']);
+				if ($orderByDirection === 'ASC' || $orderByDirection === 'DESC') {
+					$orderByColumn = $columns[$orderByColumnIndex] ?? 'id';
+					$orderBy = "ORDER BY $orderByColumn $orderByDirection";
+				}
+			}
+
+			// Pagination
+			$limit = '';
+			if ($params['length'] != -1) {
+				$limit = $wpdb->prepare(
+					"LIMIT %d, %d",
+					$params['start'],
+					$params['length']
+				);
+			}
+
+			// Query records
+			$sqlRec = "SELECT " . implode(', ', $columns) . " FROM data_wrse_siks $where $orderBy $limit";
+			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
+
+			// Format data
+			foreach ($queryRecords as &$record) {
+				$record['aksi'] = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $record['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
+				$record['aksi'] .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $record['id'] . '\'); return false;" href="#" title="Delete Data"><i class="dashicons dashicons-trash"></i></a>';
+			}
+
+			$json_data = [
+				"draw" => intval($params['draw']),
+				"recordsTotal" => intval($totalRecords),
+				"recordsFiltered" => intval($totalRecords),
+				"data" => $queryRecords
+			];
+			die(json_encode($json_data));
+		} else {
+			$ret = array(
+				'status' => 'error',
+				'message'   => 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
 
 	public function tambah_data_calon_p3ke()
 	{
@@ -3890,6 +4000,77 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
+	public function tambah_data_wrse()
+	{
+		global $wpdb;
+
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil simpan data!',
+			'data' => array()
+		);
+
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				if ($ret['status'] != 'error') {
+					// Mengambil data dari form
+					$id_data = !empty($_POST['id_data']) ? sanitize_text_field($_POST['id_data']) : null;
+					$tahun_anggaran = sanitize_text_field($_POST['tahunAnggaran']);
+					$nama = sanitize_text_field($_POST['nama']);
+					$usia = sanitize_text_field($_POST['usia']);
+					$alamat = sanitize_text_field($_POST['alamat']);
+					$desa = sanitize_text_field($_POST['desaKel']);
+					$kecamatan = sanitize_text_field($_POST['kecamatan']);
+					$statusDtks = sanitize_text_field($_POST['statusDtks']);
+					$statusPernikahan = sanitize_text_field($_POST['statusPernikahan']);
+					$statusUsaha = sanitize_text_field($_POST['statusUsaha']);
+					$keterangan = sanitize_text_field($_POST['keterangan']);
+					$jenisData = sanitize_text_field($_POST['jenisData']);
+
+					// Data yang akan disimpan atau diperbarui
+					$data = array(
+						'tahun_anggaran' => $tahun_anggaran,
+						'nama' => $nama,
+						'usia' => $usia,
+						'alamat' => $alamat,
+						'desa_kel' => $desa,
+						'kecamatan' => $kecamatan,
+						'status_dtks' => $statusDtks,
+						'status_pernikahan' => $statusPernikahan,
+						'mempunyai_usaha' => $statusUsaha,
+						'keterangan' => $keterangan,
+						'jenis_data' => $jenisData,
+						'create_at' => current_time('mysql'),
+						'update_at' => current_time('mysql'),
+						'active' => 1
+					);
+
+					// Jika `id_data` ada, lakukan pembaruan data, jika tidak, tambahkan data baru
+					if ($id_data) {
+						$wpdb->update(
+							'data_wrse_siks',
+							$data,
+							array('id' => $id_data)
+						);
+						$ret['message'] = 'Berhasil update data!';
+					} else {
+						$wpdb->insert(
+							'data_wrse_siks',
+							$data
+						);
+					}
+				}
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
 
 	public function get_data_calon_p3ke_by_id()
 	{
@@ -3907,6 +4088,37 @@ class Wp_Siks_Public
                     FROM data_calon_p3ke_siks
                     WHERE id=%d
                 ', $_POST['id']), ARRAY_A);
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
+	public function get_data_wrse_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil get data!',
+			'data' => array()
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->get_row(
+					$wpdb->prepare('
+						SELECT 
+							*
+						FROM data_wrse_siks
+						WHERE id=%d
+                	', $_POST['id']),
+					ARRAY_A
+				);
 			} else {
 				$ret['status']  = 'error';
 				$ret['message'] = 'Api key tidak ditemukan!';
@@ -3944,6 +4156,35 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
+	public function hapus_data_wrse_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil hapus data!',
+			'data' => array()
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->update(
+					'data_wrse_siks',
+					array('active' => 0),
+					array(
+						'id' => $_POST['id']
+					)
+				);
+			} else {
+				$ret['status']	= 'error';
+				$ret['message']	= 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']	= 'error';
+			$ret['message']	= 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
 	function cek_nik_siks()
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -3969,7 +4210,7 @@ class Wp_Siks_Public
 					WHERE nik like %s OR
 							nama like %s OR
 							kk like %s
-				", '%'.$_POST['nik'].'%', '%'.$_POST['nik'].'%', '%'.$_POST['nik'].'%'));
+				", '%' . $_POST['nik'] . '%', '%' . $_POST['nik'] . '%', '%' . $_POST['nik'] . '%'));
 
 				$data_anak_terlantar = $wpdb->get_results($wpdb->prepare("
 					SELECT
@@ -3979,7 +4220,7 @@ class Wp_Siks_Public
 					WHERE nik like %s OR
 							nama like %s OR
 							kk like %s
-				", '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%'));
+				", '%' . $_POST['nik'] . '%', '%' . $_POST['nik'] . '%', '%' . $_POST['nik'] . '%'));
 
 				$data_bunda_kasih = $wpdb->get_results($wpdb->prepare("
 					SELECT
@@ -3989,7 +4230,7 @@ class Wp_Siks_Public
 					WHERE nik like %s OR
 							nama like %s OR
 							kk like %s
-				", '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%'));
+				", '%' . $_POST['nik'] . '%', '%' . $_POST['nik'] . '%', '%' . $_POST['nik'] . '%'));
 
 				$data_disabilitas = $wpdb->get_results($wpdb->prepare("
 					SELECT
@@ -3998,7 +4239,7 @@ class Wp_Siks_Public
 					WHERE nik like %s OR
 							nama like %s OR
 							nomor_kk like %s
-				", '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%'));
+				", '%' . $_POST['nik'] . '%', '%' . $_POST['nik'] . '%', '%' . $_POST['nik'] . '%'));
 
 				$data_lansia = $wpdb->get_results($wpdb->prepare("
 					SELECT
@@ -4006,7 +4247,7 @@ class Wp_Siks_Public
 					FROM data_lansia_siks
 					WHERE nik like %s OR
 							nama like %s
-				", '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%'));
+				", '%' . $_POST['nik'] . '%', '%' . $_POST['nik'] . '%'));
 
 				$data_odgj = $wpdb->get_results($wpdb->prepare("
 					SELECT
@@ -4015,7 +4256,7 @@ class Wp_Siks_Public
 					WHERE nik like %s OR
 							nama like %s OR
 							kk like %s
-				", '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%', '%' .$_POST['nik'].'%'));
+				", '%' . $_POST['nik'] . '%', '%' . $_POST['nik'] . '%', '%' . $_POST['nik'] . '%'));
 
 				$ret['data']['p3ke'] = $data_p3ke;
 				$ret['data']['anak_terlantar'] = $data_anak_terlantar;

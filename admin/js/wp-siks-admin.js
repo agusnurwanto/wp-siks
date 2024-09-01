@@ -144,7 +144,14 @@ function import_excel_calon_penerima_p3ke_siks() {
 function import_excel_wrse_siks() {
 	import_excel(
 		"import_excel_data_wrse_siks",
-		"Success import data Calon Penerima P3KE dari excel!"
+		"Success import data WRSE dari excel!"
+	);
+}
+
+function import_excel_hibah() {
+	import_excel(
+		"import_excel_data_hibah",
+		"Success import data Hibah dari excel!"
 	);
 }
 
