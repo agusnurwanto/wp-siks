@@ -1,15 +1,19 @@
 .text_tengah {
     text-align: center !important;
 }
+
 .text_kiri {
     text-align: left !important;
 }
+
 .text_kanan {
     text-align: right !important;
 }
+
 .text_blok {
     font-weight: bold !important;
 }
+
 #wrap-loading {
     display: none;
     width: 100%;
@@ -19,6 +23,7 @@
     background: #00000073;
     top: 0;
 }
+
 .lds-hourglass {
     position: fixed;
     width: 64px;
@@ -28,6 +33,7 @@
     z-index: 99999;
     margin-left: -32px;
 }
+
 .lds-hourglass:after {
     content: " ";
     display: block;
@@ -40,18 +46,21 @@
     border-color: #fff transparent #fff transparent;
     animation: lds-hourglass 1.2s infinite;
 }
-@keyframes    lds-hourglass {
-  0% {
-    transform: rotate(0);
-    animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
-  }
-  50% {
-    transform: rotate(900deg);
-    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-  }
-  100% {
-    transform: rotate(1800deg);
-  }
+
+@keyframes lds-hourglass {
+    0% {
+        transform: rotate(0);
+        animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    }
+
+    50% {
+        transform: rotate(900deg);
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    100% {
+        transform: rotate(1800deg);
+    }
 }
 
 .edit-label {
@@ -61,6 +70,7 @@
     color: #2196F3;
     cursor: pointer;
 }
+
 .edit-label:hover {
     background: #00BCD4;
     color: #fff;
@@ -73,15 +83,17 @@
     color: #f32121;
     cursor: pointer;
 }
+
 .hapus-label:hover {
     background: #f32121;
     color: #fff;
 }
+
 #dokumentasi li {
     list-style: initial;
 }
 
-#persen-loading{
+#persen-loading {
     text-align: center;
     position: fixed;
     height: 64px;
@@ -95,4 +107,8 @@
     width: 100vw;
     margin-left: -50vw;
     line-height: 1;
+}
+
+a {
+    text-decoration: none !important;
 }

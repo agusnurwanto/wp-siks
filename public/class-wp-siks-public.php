@@ -3939,6 +3939,7 @@ class Wp_Siks_Public
 				'nama_nik_ketua',
 				'anggaran',
 				'status_realisasi',
+				'keterangan',
 				'no_nphd',
 				'tgl_nphd',
 				'no_spm',
@@ -3997,6 +3998,10 @@ class Wp_Siks_Public
 
 			// Format data
 			foreach ($queryRecords as &$record) {
+				$record['no_nphd'] = $record['no_nphd'] . "<br>" . $record['tgl_nphd'];
+				$record['no_spm'] = $record['no_spm'] . "<br>" . $record['tgl_spm'];
+				$record['no_sp2d'] = $record['no_sp2d'] . "<br>" . $record['tgl_sp2d'];
+
 				$record['aksi'] = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $record['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
 				$record['aksi'] .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $record['id'] . '\'); return false;" href="#" title="Delete Data"><i class="dashicons dashicons-trash"></i></a>';
 			}
@@ -4187,30 +4192,38 @@ class Wp_Siks_Public
 					// Mengambil data dari form
 					$id_data = !empty($_POST['id_data']) ? sanitize_text_field($_POST['id_data']) : null;
 					$tahun_anggaran = sanitize_text_field($_POST['tahunAnggaran']);
-					$nama = sanitize_text_field($_POST['nama']);
-					$usia = sanitize_text_field($_POST['usia']);
+					$jenis_data = sanitize_text_field($_POST['jenisData']);
+					$anggaran = sanitize_text_field($_POST['anggaran']);
+					$status_realisasi = sanitize_text_field($_POST['statusRealisasi']);
+					$penerima = sanitize_text_field($_POST['penerima']);
+					$nama_nik_ketua = sanitize_text_field($_POST['nama_nik_ketua']);
 					$alamat = sanitize_text_field($_POST['alamat']);
-					$desa = sanitize_text_field($_POST['desaKel']);
 					$kecamatan = sanitize_text_field($_POST['kecamatan']);
-					$statusDtks = sanitize_text_field($_POST['statusDtks']);
-					$statusPernikahan = sanitize_text_field($_POST['statusPernikahan']);
-					$statusUsaha = sanitize_text_field($_POST['statusUsaha']);
-					$keterangan = sanitize_text_field($_POST['keterangan']);
-					$jenisData = sanitize_text_field($_POST['jenisData']);
+					$no_nphd = sanitize_text_field($_POST['nphd']);
+					$tgl_nphd = sanitize_text_field($_POST['tglNphd']);
+					$no_spm = sanitize_text_field($_POST['spm']);
+					$tgl_spm = sanitize_text_field($_POST['tglSpm']);
+					$no_sp2d = sanitize_text_field($_POST['sp2d']);
+					$tgl_sp2d = sanitize_text_field($_POST['tglSp2d']);
+					$peruntukan = sanitize_textarea_field($_POST['peruntukan']);
 
 					// Data yang akan disimpan atau diperbarui
 					$data = array(
 						'tahun_anggaran' => $tahun_anggaran,
-						'nama' => $nama,
-						'usia' => $usia,
+						'jenis_data' => $jenis_data,
+						'anggaran' => $anggaran,
+						'status_realisasi' => $status_realisasi,
+						'penerima' => $penerima,
+						'nama_nik_ketua' => $nama_nik_ketua,
 						'alamat' => $alamat,
-						'desa_kel' => $desa,
 						'kecamatan' => $kecamatan,
-						'status_dtks' => $statusDtks,
-						'status_pernikahan' => $statusPernikahan,
-						'mempunyai_usaha' => $statusUsaha,
-						'keterangan' => $keterangan,
-						'jenis_data' => $jenisData,
+						'no_nphd' => $no_nphd,
+						'tgl_nphd' => $tgl_nphd,
+						'no_spm' => $no_spm,
+						'tgl_spm' => $tgl_spm,
+						'no_sp2d' => $no_sp2d,
+						'tgl_sp2d' => $tgl_sp2d,
+						'peruntukan' => $peruntukan,
 						'create_at' => current_time('mysql'),
 						'update_at' => current_time('mysql'),
 						'active' => 1
@@ -4242,6 +4255,7 @@ class Wp_Siks_Public
 
 		die(json_encode($ret));
 	}
+
 
 	public function get_data_calon_p3ke_by_id()
 	{

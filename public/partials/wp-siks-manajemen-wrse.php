@@ -2,12 +2,6 @@
 global $wpdb;
 ?>
 <style type="text/css">
-    .wrap-table {
-        overflow: auto;
-        max-height: 100vh;
-        width: 100%;
-    }
-
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -25,7 +19,7 @@ global $wpdb;
         <button class="btn btn-primary" onclick="showModalTambahData();"><span class="dashicons dashicons-plus"></span> Tambah Data</button>
     </div>
     <div class="wrap-table">
-        <table id="tableData" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
+        <table id="tableData" class="table table-bordered">
             <thead>
                 <tr>
                     <th class="text-center">Nama</th>
@@ -70,7 +64,7 @@ global $wpdb;
                 <div class="form-group">
                     <label for="jenisData">Jenis Data</label>
                     <select class="form-control" aria-label="Pilih Jenis Data" id="jenisData" name="jenisData">
-                        <option selected>Pilih Jenis Data</option>
+                        <option value="">Pilih Jenis Data</option>
                         <option value="Induk">Induk</option>
                         <option value="PAK">PAK</option>
                     </select>
@@ -177,6 +171,9 @@ global $wpdb;
             }).DataTable({
                 "processing": true,
                 "serverSide": true,
+                "scrollX": true, // Enables horizontal scrolling
+                "scrollY": '600px',
+                "scrollCollapse": true,
                 "search": {
                     return: true
                 },
@@ -199,7 +196,7 @@ global $wpdb;
                 },
                 "columns": [{
                         "data": 'nama',
-                        className: "text-center"
+                        className: "text-left"
                     },
                     {
                         "data": 'usia',
@@ -207,7 +204,7 @@ global $wpdb;
                     },
                     {
                         "data": 'alamat',
-                        className: "text-center"
+                        className: "text-left"
                     },
                     {
                         "data": 'desa_kel',
@@ -231,7 +228,7 @@ global $wpdb;
                     },
                     {
                         "data": 'keterangan',
-                        className: "text-center"
+                        className: "text-left"
                     },
                     {
                         "data": 'jenis_data',

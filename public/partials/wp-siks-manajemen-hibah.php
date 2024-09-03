@@ -2,12 +2,6 @@
 global $wpdb;
 ?>
 <style type="text/css">
-    .wrap-table {
-        overflow: auto;
-        max-height: 100vh;
-        width: 100%;
-    }
-
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -24,7 +18,7 @@ global $wpdb;
         <button class="btn btn-primary" onclick="showModalTambahData();"><span class="dashicons dashicons-plus"></span> Tambah Data</button>
     </div>
     <div class="wrap-table">
-        <table id="tableData" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
+        <table id="tableData" class="table table-bordered">
             <thead>
                 <tr>
                     <th class="text-center">Kode</th>
@@ -40,6 +34,7 @@ global $wpdb;
                     <th class="text-center">Peruntukan</th>
                     <th class="text-center">Tahun Anggaran</th>
                     <th class="text-center">Jenis Data</th>
+                    <th class="text-center">Keterangan</th>
                     <th class="text-center">Dibuat Pada</th>
                     <th class="text-center">Terakhir Diperbarui</th>
                     <th class="text-center">Aksi</th>
@@ -71,21 +66,25 @@ global $wpdb;
                 <div class="form-group">
                     <label for="jenisData">Jenis Data</label>
                     <select class="form-control" aria-label="Pilih Jenis Data" id="jenisData" name="jenisData">
-                        <option selected>Pilih Jenis Data</option>
+                        <option value="">Pilih Jenis Data</option>
                         <option value="Induk">Induk</option>
                         <option value="PAK">PAK</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="statusRealisasi">Status Realisasi</label>
-                    <select class="form-control" aria-label="Pilih Status Realisasi" id="jenisData" name="jenisData">
-                        <option selected>Pilih Status Realisasi</option>
+                    <select class="form-control" aria-label="Pilih Status Realisasi" id="statusRealisasi" name="statusRealisasi">
+                        <option value="">Pilih Status Realisasi</option>
                         <option value="Realisasi">Realisasi</option>
                         <option value="Tidak Realisasi">Tidak Realisasi</option>
                         <option value="Proses">Proses</option>
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <label for="anggaran">Anggaran</label>
+                    <input type="number" name="anggaran" class="form-control" id="anggaran" placeholder="Masukkan Jumlah Anggaran">
+                </div>
                 <div class="card bg-light p-3 mb-3">
                     <div class="form-row">
                         <div class="form-group col-md-6">
@@ -166,6 +165,9 @@ global $wpdb;
             }).DataTable({
                 "processing": true,
                 "serverSide": true,
+                "scrollX": true, // Enables horizontal scrolling
+                "scrollY": '600px', // Enables vertical scrolling
+                "scrollCollapse": true,
                 "search": {
                     return: true
                 },
@@ -192,11 +194,11 @@ global $wpdb;
                     },
                     {
                         "data": 'penerima',
-                        className: "text-center"
+                        className: "text-left"
                     },
                     {
                         "data": 'alamat',
-                        className: "text-center"
+                        className: "text-left"
                     },
                     {
                         "data": 'kecamatan',
@@ -208,7 +210,7 @@ global $wpdb;
                     },
                     {
                         "data": 'anggaran',
-                        className: "text-center"
+                        className: "text-right"
                     },
                     {
                         "data": 'status_realisasi',
@@ -228,7 +230,7 @@ global $wpdb;
                     },
                     {
                         "data": 'peruntukan',
-                        className: "text-center"
+                        className: "text-left"
                     },
                     {
                         "data": 'tahun_anggaran',
@@ -237,6 +239,10 @@ global $wpdb;
                     {
                         "data": 'jenis_data',
                         className: "text-center"
+                    },
+                    {
+                        "data": 'keterangan',
+                        className: "text-left"
                     },
                     {
                         "data": 'create_at',
@@ -298,51 +304,20 @@ global $wpdb;
                 jQuery('#judulmodalTambahData').hide();
                 jQuery('#id_data').val(res.data.id);
                 jQuery('#tahunAnggaran').val(res.data.tahun_anggaran);
-                jQuery('#jenisData').val(res.data.jenis_data).trigger('change').prop('selected', false);
-                jQuery('#nama').val(res.data.nama);
-                jQuery('#usia').val(res.data.usia);
-                jQuery('#usia').val(res.data.usia);
+                jQuery('#jenisData').val(res.data.jenis_data).trigger('change');
+                jQuery('#statusRealisasi').val(res.data.status_realisasi).trigger('change');
+                jQuery('#anggaran').val(res.data.anggaran).val(res.data.anggaran);
+                jQuery('#penerima').val(res.data.penerima);
+                jQuery('#nama_nik_ketua').val(res.data.nama_nik_ketua);
                 jQuery('#alamat').val(res.data.alamat);
-                jQuery('#desaKel').val(res.data.desa_kel);
                 jQuery('#kecamatan').val(res.data.kecamatan);
-
-                jQuery('input[name="statusDtks"]').prop('checked', false);
-                jQuery('input[name="statusPernikahan"]').prop('checked', false);
-                jQuery('input[name="statusUsaha"]').prop('checked', false);
-                switch (res.data.status_dtks) {
-                    case 'Terdaftar':
-                        jQuery('#terdaftar').prop('checked', true);
-                        break;
-                    case 'Tidak Terdaftar':
-                        jQuery('#tidakTerdaftar').prop('checked', true);
-                        break;
-                    default:
-                        jQuery('input[name="statusDtks"]').prop('checked', false);
-                }
-                switch (res.data.status_pernikahan) {
-                    case 'Menikah':
-                        jQuery('#menikah').prop('checked', true);
-                        break;
-                    case 'Belum Menikah':
-                        jQuery('#belumMenikah').prop('checked', true);
-                        break;
-                    case 'Janda':
-                        jQuery('#janda').prop('checked', true);
-                        break;
-                    default:
-                        jQuery('input[name="statusPernikahan"]').prop('checked', false);
-                }
-                switch (res.data.mempunyai_usaha) {
-                    case 'Ya':
-                        jQuery('#ya').prop('checked', true);
-                        break;
-                    case 'Tidak':
-                        jQuery('#tidak').prop('checked', true);
-                        break;
-                    default:
-                        jQuery('input[name="statusUsaha"]').prop('checked', false);
-                }
-                jQuery('#keterangan').text(res.data.keterangan);
+                jQuery('#nphd').val(res.data.no_nphd);
+                jQuery('#spm').val(res.data.no_spm);
+                jQuery('#sp2d').val(res.data.no_sp2d);
+                jQuery('#tglNphd').val(res.data.tgl_nphd);
+                jQuery('#tglSpm').val(res.data.tgl_spm);
+                jQuery('#tglSp2d').val(res.data.tgl_sp2d);
+                jQuery('#peruntukan').val(res.data.peruntukan);
 
                 jQuery('#judulModalEdit').show();
                 jQuery('#judulmodalTambahData').hide();
@@ -358,36 +333,43 @@ global $wpdb;
     function showModalTambahData() {
         jQuery('#id_data').val('');
         jQuery('#tahunAnggaran').val('');
+        jQuery('#anggaran').val('');
         jQuery('#jenisData').val('');
-        jQuery('#nama').val('');
-        jQuery('#usia').val('');
+        jQuery('#statusRealisasi').val('');
+        jQuery('#penerima').val('');
+        jQuery('#nama_nik_ketua').val('');
         jQuery('#alamat').val('');
-        jQuery('#desaKel').val('');
         jQuery('#kecamatan').val('');
-        jQuery('input[name="statusDtks"]').prop('checked', false);
-        jQuery('input[name="statusPernikahan"]').prop('checked', false);
-        jQuery('input[name="statusUsaha"]').prop('checked', false);
-        jQuery('#keterangan').text('');
+        jQuery('#nphd').val('');
+        jQuery('#spm').val('');
+        jQuery('#sp2d').val('');
+        jQuery('#tglNphd').val('');
+        jQuery('#tglSpm').val('');
+        jQuery('#tglSp2d').val('');
+        jQuery('#peruntukan').val('');
+
         jQuery('#judulmodalTambahData').show();
         jQuery('#judulModalEdit').hide();
         jQuery('#modalTambahData').modal('show');
     }
 
-
     function submitData() {
         const validationRules = {
-            'nama': 'Data Nama tidak boleh kosong!',
-            'usia': 'Data Usia tidak boleh kosong!',
-            'alamat': 'Data Alamat tidak boleh kosong!',
-            'desaKel': 'Data Desa tidak boleh kosong!',
-            'kecamatan': 'Data Kecamatan tidak boleh kosong!',
             'tahunAnggaran': 'Data Tahun Anggaran tidak boleh kosong!',
-            'statusDtks': 'Pilih Status DTKS!',
-            'statusPernikahan': 'Pilih Status Pernikahan!',
-            'statusUsaha': 'Pilih Status Usaha!',
             'jenisData': 'Pilih Jenis Data!',
-            'keterangan': 'Keterangan tidak boleh kosong!',
-            // Tambahkan field lain jika diperlukan
+            'statusRealisasi': 'Pilih Status Realisasi!',
+            'anggaran': 'Anggaran tidak boleh kosong!',
+            'penerima': 'Data Penerima tidak boleh kosong!',
+            'nama_nik_ketua': 'Nama dan NIK Ketua tidak boleh kosong!',
+            'alamat': 'Data Alamat tidak boleh kosong!',
+            'kecamatan': 'Data Kecamatan tidak boleh kosong!',
+            'nphd': 'No NPHD tidak boleh kosong!',
+            'spm': 'No SPM tidak boleh kosong!',
+            'sp2d': 'No SP2D tidak boleh kosong!',
+            'tglNphd': 'Tanggal NPHD tidak boleh kosong!',
+            'tglSpm': 'Tanggal SPM tidak boleh kosong!',
+            'tglSp2d': 'Tanggal SP2D tidak boleh kosong!',
+            'peruntukan': 'Peruntukan tidak boleh kosong!',
         };
 
         const {
@@ -399,7 +381,6 @@ global $wpdb;
         }
 
         const id_data = jQuery('#id_data').val();
-
         const tempData = new FormData();
         tempData.append('action', 'tambah_data_hibah');
         tempData.append('api_key', ajax.apikey);

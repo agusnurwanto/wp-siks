@@ -1649,7 +1649,7 @@ class Wp_Siks_Admin
 
 		if (!empty($_POST)) {
 
-			$table_data = 'data_wrse_siks';
+			$table_data = 'data_hibah_siks';
 
 			if (
 				!empty($_POST['update_active'])
@@ -1693,6 +1693,7 @@ class Wp_Siks_Admin
 					'jenis_data' => $newData['jenis_data'],
 					'peruntukan' => $newData['peruntukan'],
 					'tahun_anggaran' => $newData['tahun_anggaran'],
+					'keterangan' => $newData['keterangan'],
 					'create_at' => current_time('mysql'),
 					'update_at' => current_time('mysql'),
 					'active' => 1
@@ -1709,7 +1710,8 @@ class Wp_Siks_Admin
 						  AND penerima=%s
 						  AND nama_nik_ketua=%s
 						  AND alamat=%s
-						", $newData['tahun_anggaran'], $newData['penerima'], $newData['nama_nik_ketua'], $newData['alamat'])
+						  AND anggaran=%d
+						", $newData['tahun_anggaran'], $newData['penerima'], $newData['nama_nik_ketua'], $newData['alamat'], $newData['anggaran'])
 				);
 
 				if (empty($cek_id)) {

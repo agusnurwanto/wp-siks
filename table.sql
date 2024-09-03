@@ -378,6 +378,7 @@ CREATE TABLE `data_hibah_siks` (
     `no_sp2d` VARCHAR(100),
     `tgl_sp2d` DATE,
     `peruntukan` TEXT,
+    `keterangan` TEXT,
     `jenis_data` ENUM('Induk', 'PAK') NOT NULL,
     `tahun_anggaran` YEAR(4),
     `create_at` datetime,
