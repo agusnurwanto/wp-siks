@@ -3918,6 +3918,106 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
+	function get_datatable_data_hibah()
+	{
+		global $wpdb;
+
+		$ret = [
+			'status' => 'success',
+			'message' => 'Berhasil get data!'
+		];
+
+		if (!empty($_POST['api_key']) && $_POST['api_key'] === get_option(SIKS_APIKEY)) {
+			$params = $_REQUEST;
+
+			// Define columns
+			$columns = [
+				'kode',
+				'penerima',
+				'alamat',
+				'kecamatan',
+				'nama_nik_ketua',
+				'anggaran',
+				'status_realisasi',
+				'no_nphd',
+				'tgl_nphd',
+				'no_spm',
+				'tgl_spm',
+				'no_sp2d',
+				'tgl_sp2d',
+				'peruntukan',
+				'jenis_data',
+				'tahun_anggaran',
+				'create_at',
+				'update_at',
+				'id'
+			];
+
+			$where = 'WHERE 1=1 AND active = 1';
+			$searchValue = !empty($params['search']['value']) ? $params['search']['value'] : '';
+
+			// Search filter
+			if ($searchValue) {
+				$where .= $wpdb->prepare(
+					" AND (penerima LIKE %s OR alamat LIKE %s OR kecamatan LIKE %s)",
+					"%$searchValue%",
+					"%$searchValue%",
+					"%$searchValue%"
+				);
+			}
+
+			// Total records
+			$sqlTot = "SELECT COUNT(id) as jml FROM data_hibah_siks $where";
+			$totalRecords = $wpdb->get_var($sqlTot);
+
+			// Sorting
+			$orderBy = '';
+			if (!empty($params['order'])) {
+				$orderByColumnIndex = $params['order'][0]['column'];
+				$orderByDirection = strtoupper($params['order'][0]['dir']);
+				if ($orderByDirection === 'ASC' || $orderByDirection === 'DESC') {
+					$orderByColumn = $columns[$orderByColumnIndex] ?? 'id';
+					$orderBy = "ORDER BY $orderByColumn $orderByDirection";
+				}
+			}
+
+			// Pagination
+			$limit = '';
+			if ($params['length'] != -1) {
+				$limit = $wpdb->prepare(
+					"LIMIT %d, %d",
+					$params['start'],
+					$params['length']
+				);
+			}
+
+			// Query records
+			$sqlRec = "SELECT " . implode(', ', $columns) . " FROM data_hibah_siks $where $orderBy $limit";
+			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
+
+			// Format data
+			foreach ($queryRecords as &$record) {
+				$record['aksi'] = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $record['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
+				$record['aksi'] .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $record['id'] . '\'); return false;" href="#" title="Delete Data"><i class="dashicons dashicons-trash"></i></a>';
+			}
+
+			$json_data = [
+				"draw" => intval($params['draw']),
+				"recordsTotal" => intval($totalRecords),
+				"recordsFiltered" => intval($totalRecords),
+				"data" => $queryRecords
+			];
+			die(json_encode($json_data));
+		} else {
+			$ret = [
+				'status' => 'error',
+				'message'   => 'Format tidak sesuai!'
+			];
+		}
+		die(json_encode($ret));
+	}
+
+
 	public function tambah_data_calon_p3ke()
 	{
 		global $wpdb;
@@ -3925,7 +4025,6 @@ class Wp_Siks_Public
 		$ret = array(
 			'status' => 'success',
 			'message' => 'Berhasil simpan data!',
-			'data' => array()
 		);
 
 		if (!empty($_POST)) {
@@ -4072,6 +4171,78 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
+	public function tambah_data_hibah()
+	{
+		global $wpdb;
+
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil simpan data!',
+			'data' => array()
+		);
+
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				if ($ret['status'] != 'error') {
+					// Mengambil data dari form
+					$id_data = !empty($_POST['id_data']) ? sanitize_text_field($_POST['id_data']) : null;
+					$tahun_anggaran = sanitize_text_field($_POST['tahunAnggaran']);
+					$nama = sanitize_text_field($_POST['nama']);
+					$usia = sanitize_text_field($_POST['usia']);
+					$alamat = sanitize_text_field($_POST['alamat']);
+					$desa = sanitize_text_field($_POST['desaKel']);
+					$kecamatan = sanitize_text_field($_POST['kecamatan']);
+					$statusDtks = sanitize_text_field($_POST['statusDtks']);
+					$statusPernikahan = sanitize_text_field($_POST['statusPernikahan']);
+					$statusUsaha = sanitize_text_field($_POST['statusUsaha']);
+					$keterangan = sanitize_text_field($_POST['keterangan']);
+					$jenisData = sanitize_text_field($_POST['jenisData']);
+
+					// Data yang akan disimpan atau diperbarui
+					$data = array(
+						'tahun_anggaran' => $tahun_anggaran,
+						'nama' => $nama,
+						'usia' => $usia,
+						'alamat' => $alamat,
+						'desa_kel' => $desa,
+						'kecamatan' => $kecamatan,
+						'status_dtks' => $statusDtks,
+						'status_pernikahan' => $statusPernikahan,
+						'mempunyai_usaha' => $statusUsaha,
+						'keterangan' => $keterangan,
+						'jenis_data' => $jenisData,
+						'create_at' => current_time('mysql'),
+						'update_at' => current_time('mysql'),
+						'active' => 1
+					);
+
+					// Jika `id_data` ada, lakukan pembaruan data, jika tidak, tambahkan data baru
+					if ($id_data) {
+						$wpdb->update(
+							'data_hibah_siks',
+							$data,
+							array('id' => $id_data)
+						);
+						$ret['message'] = 'Berhasil update data!';
+					} else {
+						$wpdb->insert(
+							'data_hibah_siks',
+							$data
+						);
+					}
+				}
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
 	public function get_data_calon_p3ke_by_id()
 	{
 		global $wpdb;
@@ -4131,6 +4302,37 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
+	public function get_data_hibah_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil get data!',
+			'data' => array()
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->get_row(
+					$wpdb->prepare('
+						SELECT 
+							*
+						FROM data_hibah_siks
+						WHERE id=%d
+                	', $_POST['id']),
+					ARRAY_A
+				);
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
 	public function hapus_data_calon_p3ke_by_id()
 	{
 		global $wpdb;
@@ -4168,6 +4370,35 @@ class Wp_Siks_Public
 			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 				$ret['data'] = $wpdb->update(
 					'data_wrse_siks',
+					array('active' => 0),
+					array(
+						'id' => $_POST['id']
+					)
+				);
+			} else {
+				$ret['status']	= 'error';
+				$ret['message']	= 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']	= 'error';
+			$ret['message']	= 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
+	public function hapus_data_hibah_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil hapus data!',
+			'data' => array()
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->update(
+					'data_hibah_siks',
 					array('active' => 0),
 					array(
 						'id' => $_POST['id']

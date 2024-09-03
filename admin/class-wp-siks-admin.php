@@ -1550,7 +1550,7 @@ class Wp_Siks_Admin
 
 		if (!empty($_POST)) {
 
-			$table_data = 'data_hibah_siks';
+			$table_data = 'data_wrse_siks';
 
 			if (
 				!empty($_POST['update_active'])
@@ -1578,18 +1578,15 @@ class Wp_Siks_Admin
 				}
 
 				$data_db = array(
-					'kode' => $newData['kode'],
-					'penerima' => $newData['penerima'],
+					'nama' => $newData['nama'],
+					'usia' => $newData['usia'],
 					'alamat' => $newData['alamat'],
+					'desa_kel' => $newData['desa_kel'],
 					'kecamatan' => $newData['kecamatan'],
-					'nama_ketua' => $newData['nama_ketua'],
-					'nik_ketua' => $newData['nik_ketua'],
-					'anggaran_no_nphd' => $newData['anggaran_no_nphd'],
-					'no_spm' => $newData['no_spm'],
-					'tanggal_spm' => $newData['tanggal_spm'],
-					'no_sp2d' => $newData['no_sp2d'],
-					'tanggal_sp2d' => $newData['tanggal_sp2d'],
-					'peruntukan' => $newData['peruntukan'],
+					'status_dtks' => $newData['status_dtks'],
+					'status_pernikahan' => $newData['status_pernikahan'],
+					'mempunyai_usaha' => $newData['mempunyai_usaha'],
+					'keterangan' => $newData['keterangan'],
 					'jenis_data' => $newData['jenis_data'],
 					'tahun_anggaran' => $newData['tahun_anggaran'],
 					'create_at' => current_time('mysql'),
@@ -1605,9 +1602,10 @@ class Wp_Siks_Admin
 							id 
 						FROM $table_data 
 						WHERE tahun_anggaran=%d
-						  AND kode=%s
-						  AND penerima=%s
-						", $newData['tahun_anggaran'], $newData['kode'], $newData['penerima'])
+						  AND nama=%s
+						  AND usia=%s
+						  AND alamat=%s
+						", $newData['tahun_anggaran'], $newData['nama'], $newData['usia'], $newData['alamat'])
 				);
 
 				if (empty($cek_id)) {
@@ -1679,16 +1677,21 @@ class Wp_Siks_Admin
 				}
 
 				$data_db = array(
-					'nama' => $newData['nama'],
-					'usia' => $newData['usia'],
+					'kode' => $newData['kode'],
+					'penerima' => $newData['penerima'],
 					'alamat' => $newData['alamat'],
-					'desa_kel' => $newData['desa_kel'],
 					'kecamatan' => $newData['kecamatan'],
-					'status_dtks' => $newData['status_dtks'],
-					'status_pernikahan' => $newData['status_pernikahan'],
-					'mempunyai_usaha' => $newData['mempunyai_usaha'],
-					'keterangan' => $newData['keterangan'],
+					'nama_nik_ketua' => $newData['nama_nik_ketua'],
+					'anggaran' => $newData['anggaran'],
+					'status_realisasi' => $newData['status_realisasi'],
+					'no_nphd' => $newData['no_nphd'],
+					'tgl_nphd' => $newData['tgl_nphd'],
+					'no_spm' => $newData['no_spm'],
+					'tgl_spm' => $newData['tgl_spm'],
+					'no_sp2d' => $newData['no_sp2d'],
+					'tgl_sp2d' => $newData['tgl_sp2d'],
 					'jenis_data' => $newData['jenis_data'],
+					'peruntukan' => $newData['peruntukan'],
 					'tahun_anggaran' => $newData['tahun_anggaran'],
 					'create_at' => current_time('mysql'),
 					'update_at' => current_time('mysql'),
@@ -1703,10 +1706,10 @@ class Wp_Siks_Admin
 							id 
 						FROM $table_data 
 						WHERE tahun_anggaran=%d
-						  AND nama=%s
-						  AND usia=%s
+						  AND penerima=%s
+						  AND nama_nik_ketua=%s
 						  AND alamat=%s
-						", $newData['tahun_anggaran'], $newData['nama'], $newData['usia'], $newData['alamat'])
+						", $newData['tahun_anggaran'], $newData['penerima'], $newData['nama_nik_ketua'], $newData['alamat'])
 				);
 
 				if (empty($cek_id)) {

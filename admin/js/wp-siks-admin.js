@@ -148,9 +148,9 @@ function import_excel_wrse_siks() {
 	);
 }
 
-function import_excel_hibah() {
+function import_excel_hibah_siks() {
 	import_excel(
-		"import_excel_data_hibah",
+		"import_excel_data_hibah_siks",
 		"Success import data Hibah dari excel!"
 	);
 }
