@@ -245,6 +245,24 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-calon-penerima-p3ke.php';
 	}
 
+	public function data_hibah_siks()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-hibah.php';
+	}
+
+	public function data_wrse_siks()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-wrse.php';
+	}
+
 	public function management_data_disabilitas()
 	{
 		// untuk disable render shortcode di halaman edit page/post
@@ -2723,8 +2741,32 @@ class Wp_Siks_Public
 			GROUP BY provinsi, kabkot, kecamatan, desa
 			ORDER BY  provinsi, kabkot, kecamatan, desa
 		", ARRAY_A);
-		// print_r($data); die($wpdb->last_query);
+		return $data;
+	}
 
+	function get_wrse()
+	{
+		global $wpdb;
+		$prov = get_option('_crb_siks_prop');
+		$where = " provinsi='$prov'";
+		$kab = get_option('_crb_siks_kab');
+		if (!empty($kab)) {
+			$where .= " and kabkot='$kab'";
+		}
+		$data = $wpdb->get_results("
+			SELECT  
+				provinsi,
+				kabkot,
+				MAX(update_at) as last_update,
+				kecamatan,
+				desa,
+				count(id) as jml
+			FROM data_wrse_siks 
+			WHERE $where
+				AND active=1
+			GROUP BY provinsi, kabkot, kecamatan, desa
+			ORDER BY  provinsi, kabkot, kecamatan, desa
+		", ARRAY_A);
 		return $data;
 	}
 
@@ -3835,7 +3877,9 @@ class Wp_Siks_Public
 				'nama',
 				'usia',
 				'alamat',
-				'desa_kel',
+				'provinsi',
+				'kabkot',
+				'desa_kelurahan',
 				'kecamatan',
 				'status_dtks',
 				'status_pernikahan',
@@ -3854,7 +3898,7 @@ class Wp_Siks_Public
 			// Search filter
 			if ($searchValue) {
 				$where .= $wpdb->prepare(
-					" AND (nama LIKE %s OR alamat LIKE %s OR desa_kel LIKE %s OR kecamatan LIKE %s OR status_dtks LIKE %s OR status_pernikahan LIKE %s OR mempunyai_usaha LIKE %s OR keterangan LIKE %s OR jenis_data LIKE %s)",
+					" AND (nama LIKE %s OR alamat LIKE %s OR desa_kelurahan LIKE %s OR kecamatan LIKE %s OR status_dtks LIKE %s OR status_pernikahan LIKE %s OR mempunyai_usaha LIKE %s OR keterangan LIKE %s OR jenis_data LIKE %s)",
 					"%$searchValue%",
 					"%$searchValue%",
 					"%$searchValue%",
@@ -3935,7 +3979,10 @@ class Wp_Siks_Public
 				'kode',
 				'penerima',
 				'alamat',
+				'provinsi',
+				'kabkot',
 				'kecamatan',
+				'desa_kelurahan',
 				'nama_nik_ketua',
 				'anggaran',
 				'status_realisasi',
@@ -4137,7 +4184,7 @@ class Wp_Siks_Public
 						'nama' => $nama,
 						'usia' => $usia,
 						'alamat' => $alamat,
-						'desa_kel' => $desa,
+						'desa_kelurahan' => $desa,
 						'kecamatan' => $kecamatan,
 						'status_dtks' => $statusDtks,
 						'status_pernikahan' => $statusPernikahan,

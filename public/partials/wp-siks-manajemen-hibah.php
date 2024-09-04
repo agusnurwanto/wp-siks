@@ -17,33 +17,34 @@ global $wpdb;
     <div style="margin-bottom: 25px;">
         <button class="btn btn-primary" onclick="showModalTambahData();"><span class="dashicons dashicons-plus"></span> Tambah Data</button>
     </div>
-    <div class="wrap-table">
-        <table id="tableData" class="table table-bordered">
-            <thead>
-                <tr>
-                    <th class="text-center">Kode</th>
-                    <th class="text-center">Penerima</th>
-                    <th class="text-center">Alamat</th>
-                    <th class="text-center">Kecamatan</th>
-                    <th class="text-center">Nama dan NIK Ketua</th>
-                    <th class="text-center">Anggaran</th>
-                    <th class="text-center">Status Realisasi</th>
-                    <th class="text-center">No NPHD</th>
-                    <th class="text-center">No SPM</th>
-                    <th class="text-center">No SP2D</th>
-                    <th class="text-center">Peruntukan</th>
-                    <th class="text-center">Tahun Anggaran</th>
-                    <th class="text-center">Jenis Data</th>
-                    <th class="text-center">Keterangan</th>
-                    <th class="text-center">Dibuat Pada</th>
-                    <th class="text-center">Terakhir Diperbarui</th>
-                    <th class="text-center">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
+    <table id="tableData" class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="text-center" style="width: 6%;">Kode</th>
+                <th class="text-center" style="width: 12%;">Penerima</th>
+                <th class="text-center" style="width: 12%;">Nama dan NIK Ketua</th>
+                <th class="text-center" style="width: 8%;">Provinsi</th>
+                <th class="text-center" style="width: 8%;">Kabupaten/Kota</th>
+                <th class="text-center" style="width: 8%;">Kecamatan</th>
+                <th class="text-center" style="width: 8%;">Desa/Kelurahan</th>
+                <th class="text-center" style="width: 12%;">Alamat</th>
+                <th class="text-center" style="width: 8%;">Anggaran</th>
+                <th class="text-center" style="width: 6%;">Status Realisasi</th>
+                <th class="text-center" style="width: 6%;">No NPHD</th>
+                <th class="text-center" style="width: 6%;">No SPM</th>
+                <th class="text-center" style="width: 6%;">No SP2D</th>
+                <th class="text-center" style="width: 10%;">Peruntukan</th>
+                <th class="text-center" style="width: 6%;">Tahun Anggaran</th>
+                <th class="text-center" style="width: 6%;">Jenis Data</th>
+                <th class="text-center" style="width: 10%;">Keterangan</th>
+                <th class="text-center" style="width: 6%;">Dibuat Pada</th>
+                <th class="text-center" style="width: 6%;">Terakhir Diperbarui</th>
+                <th class="text-center" style="width: 6%;">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 </div>
 <div class="modal fade mt-4" id="modalTambahData" tabindex="-1" role="dialog" aria-labelledby="modalTambahData" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
@@ -101,9 +102,23 @@ global $wpdb;
                             <label for="alamat">Alamat</label>
                             <input type="text" name="alamat" class="form-control" id="alamat" placeholder="Masukkan Alamat">
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-3">
                             <label for="kecamatan">Kecamatan</label>
                             <input type="text" name="kecamatan" class="form-control" id="kecamatan" placeholder="Masukkan Kecamatan">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="desaKel">Desa / Kelurahan</label>
+                            <input type="text" name="desaKel" class="form-control" id="desaKel" placeholder="Masukkan Desa / Kelurahan">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="provinsi">Provinsi</label>
+                            <input type="text" name="provinsi" class="form-control" id="provinsi" placeholder="Masukkan Provinsi">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="kabKot">Kota / Kabupaten</label>
+                            <input type="text" name="kabKot" class="form-control" id="kabKot" placeholder="Masukkan Kota / Kabupaten">
                         </div>
                     </div>
                 </div>
@@ -197,16 +212,28 @@ global $wpdb;
                         className: "text-left"
                     },
                     {
-                        "data": 'alamat',
+                        "data": 'nama_nik_ketua',
                         className: "text-left"
+                    },
+                    {
+                        "data": 'provinsi',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'kabkot',
+                        className: "text-center"
                     },
                     {
                         "data": 'kecamatan',
                         className: "text-center"
                     },
                     {
-                        "data": 'nama_nik_ketua',
+                        "data": 'desa_kelurahan',
                         className: "text-center"
+                    },
+                    {
+                        "data": 'alamat',
+                        className: "text-left"
                     },
                     {
                         "data": 'anggaran',
@@ -301,7 +328,6 @@ global $wpdb;
                 'id': _id,
             },
             success: function(res) {
-                jQuery('#judulmodalTambahData').hide();
                 jQuery('#id_data').val(res.data.id);
                 jQuery('#tahunAnggaran').val(res.data.tahun_anggaran);
                 jQuery('#jenisData').val(res.data.jenis_data).trigger('change');
@@ -309,8 +335,11 @@ global $wpdb;
                 jQuery('#anggaran').val(res.data.anggaran).val(res.data.anggaran);
                 jQuery('#penerima').val(res.data.penerima);
                 jQuery('#nama_nik_ketua').val(res.data.nama_nik_ketua);
-                jQuery('#alamat').val(res.data.alamat);
+                jQuery('#provinsi').val(res.data.provinsi);
                 jQuery('#kecamatan').val(res.data.kecamatan);
+                jQuery('#alamat').val(res.data.alamat);
+                jQuery('#kabKot').val(res.data.kabkot);
+                jQuery('#desaKel').val(res.data.desa_kelurahan);
                 jQuery('#nphd').val(res.data.no_nphd);
                 jQuery('#spm').val(res.data.no_spm);
                 jQuery('#sp2d').val(res.data.no_sp2d);
@@ -319,6 +348,7 @@ global $wpdb;
                 jQuery('#tglSp2d').val(res.data.tgl_sp2d);
                 jQuery('#peruntukan').val(res.data.peruntukan);
 
+                jQuery('#judulmodalTambahData').hide();
                 jQuery('#judulModalEdit').show();
                 jQuery('#judulmodalTambahData').hide();
                 jQuery('#modalTambahData').modal('show');
@@ -340,6 +370,9 @@ global $wpdb;
         jQuery('#nama_nik_ketua').val('');
         jQuery('#alamat').val('');
         jQuery('#kecamatan').val('');
+        jQuery('#provinsi').val('');
+        jQuery('#kabKot').val('');
+        jQuery('#desaKel').val('');
         jQuery('#nphd').val('');
         jQuery('#spm').val('');
         jQuery('#sp2d').val('');
@@ -361,8 +394,11 @@ global $wpdb;
             'anggaran': 'Anggaran tidak boleh kosong!',
             'penerima': 'Data Penerima tidak boleh kosong!',
             'nama_nik_ketua': 'Nama dan NIK Ketua tidak boleh kosong!',
-            'alamat': 'Data Alamat tidak boleh kosong!',
             'kecamatan': 'Data Kecamatan tidak boleh kosong!',
+            'provinsi': 'Data Provinsi tidak boleh kosong!',
+            'kabKot': 'Data Kabupaten / Kecamatan tidak boleh kosong!',
+            'desaKel': 'Data Desa / Kelurahan tidak boleh kosong!',
+            'alamat': 'Data Alamat tidak boleh kosong!',
             'nphd': 'No NPHD tidak boleh kosong!',
             'spm': 'No SPM tidak boleh kosong!',
             'sp2d': 'No SP2D tidak boleh kosong!',

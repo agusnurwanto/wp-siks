@@ -274,10 +274,11 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_cari_nik_siks', $plugin_public, 'cari_nik_siks');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
+		add_shortcode('cek_nik_siks', array($plugin_public, 'cek_nik_siks'));
+
 		add_shortcode('peta_desa_siks', array($plugin_public, 'peta_desa_siks'));
 		add_shortcode('peta_data_terpadu_siks', array($plugin_public, 'peta_data_terpadu_siks'));
 		add_shortcode('peta_kecamatan_siks', array($plugin_public, 'peta_kecamatan_siks'));
-		add_shortcode('data_dtks_siks', array($plugin_public, 'data_dtks_siks'));
 		
 		add_shortcode('management_data_lansia', array($plugin_public, 'management_data_lansia'));
 		add_shortcode('management_data_disabilitas', array($plugin_public, 'management_data_disabilitas'));
@@ -298,15 +299,17 @@ class Wp_Siks {
 		add_shortcode('bunda_kasih_per_desa', array($plugin_public, 'bunda_kasih_per_desa'));
 		add_shortcode('p3ke_per_desa', array($plugin_public, 'p3ke_per_desa'));
 		add_shortcode('lksa_per_desa', array($plugin_public, 'lksa_per_desa'));
-		add_shortcode('data_lansia_siks', array($plugin_public, 'data_lansia_siks'));
 		
+		add_shortcode('data_lansia_siks', array($plugin_public, 'data_lansia_siks'));
+		add_shortcode('data_dtks_siks', array($plugin_public, 'data_dtks_siks'));
 		add_shortcode('data_disabilitas_siks', array($plugin_public, 'data_disabilitas_siks'));
 		add_shortcode('data_bunda_kasih_siks', array($plugin_public, 'data_bunda_kasih_siks'));
 		add_shortcode('data_anak_terlantar_siks', array($plugin_public, 'data_anak_terlantar_siks'));
 		add_shortcode('data_gepeng_siks', array($plugin_public, 'data_gepeng_siks'));
 		add_shortcode('data_p3ke_siks', array($plugin_public, 'data_p3ke_siks'));
 		add_shortcode('data_calon_p3ke', array($plugin_public, 'data_calon_p3ke'));
-		add_shortcode('cek_nik_siks', array($plugin_public, 'cek_nik_siks'));
+		add_shortcode('data_wrse_siks', array($plugin_public, 'data_wrse_siks'));
+		add_shortcode('data_hibah_siks', array($plugin_public, 'data_hibah_siks'));
 
 		// untuk menjalankan conjob refresh session
 		$this->loader->add_action('siks_conjob',  $plugin_public, 'refresh_token');

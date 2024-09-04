@@ -124,6 +124,14 @@ class Wp_Siks_Admin
 			'post_status' => 'publish'
 		));
 
+		$cek_nik_siks = $this->functions->generatePage(array(
+			'nama_page' => 'Cek NIK SIKS',
+			'content' => '[cek_nik_siks]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
 		$peta_desa_siks = $this->functions->generatePage(array(
 			'nama_page' => 'Peta Batas Desa SIKS',
 			'content' => '[peta_desa_siks]',
@@ -148,97 +156,9 @@ class Wp_Siks_Admin
 			'post_status' => 'publish'
 		));
 
-		$disabilitas_per_desa = $this->functions->generatePage(array(
-			'nama_page' => 'Disabilitas Per Desa',
-			'content' => '[disabilitas_per_desa]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
-		$anak_terlantar_per_desa = $this->functions->generatePage(array(
-			'nama_page' => 'Anak Terlantar Per Desa',
-			'content' => '[anak_terlantar_per_desa]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
-		$lksa_per_desa = $this->functions->generatePage(array(
-			'nama_page' => 'LKSA Per Desa',
-			'content' => '[lksa_per_desa]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
-		$lansia_per_desa = $this->functions->generatePage(array(
-			'nama_page' => 'Lansia Per Desa',
-			'content' => '[lansia_per_desa]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
-		$p3ke_per_desa = $this->functions->generatePage(array(
-			'nama_page' => 'P3KE Per Desa',
-			'content' => '[p3ke_per_desa]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
-		$bunda_kasih_per_desa = $this->functions->generatePage(array(
-			'nama_page' => 'Bunda Kasih Per Desa',
-			'content' => '[bunda_kasih_per_desa]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
-		$gepeng_per_desa = $this->functions->generatePage(array(
-			'nama_page' => 'Gepeng Per Desa',
-			'content' => '[gepeng_per_desa]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
-		$dtks_per_desa = $this->functions->generatePage(array(
-			'nama_page' => 'DTKS Per Desa',
-			'content' => '[dtks_per_desa]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
 		$data_calon_p3ke = $this->functions->generatePage(array(
 			'nama_page' => 'Calon Penerima P3KE',
 			'content' => '[data_calon_p3ke]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
-		$management_wrse = $this->functions->generatePage(array(
-			'nama_page' => 'Manajemen WRSE',
-			'content' => '[management_wrse]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
-		$management_hibah = $this->functions->generatePage(array(
-			'nama_page' => 'Manajemen Hibah',
-			'content' => '[management_hibah]',
-			'show_header' => 1,
-			'no_key' => 1,
-			'post_status' => 'publish'
-		));
-
-		$management_calon_p3ke = $this->functions->generatePage(array(
-			'nama_page' => 'Manajemen Calon Penerima P3KE',
-			'content' => '[management_calon_p3ke]',
 			'show_header' => 1,
 			'no_key' => 1,
 			'post_status' => 'publish'
@@ -295,6 +215,22 @@ class Wp_Siks_Admin
 		$data_p3ke = $this->functions->generatePage(array(
 			'nama_page' => 'Data P3KE SIKS',
 			'content' => '[data_p3ke_siks]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+		
+		$data_wrse = $this->functions->generatePage(array(
+			'nama_page' => 'Data WRSE SIKS',
+			'content' => '[data_wrse_siks]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
+		$data_hibah = $this->functions->generatePage(array(
+			'nama_page' => 'Data Hibah SIKS',
+			'content' => '[data_hibah_siks]',
 			'show_header' => 1,
 			'no_key' => 1,
 			'post_status' => 'publish'
@@ -365,9 +301,25 @@ class Wp_Siks_Admin
 			'post_status' => 'private'
 		));
 
-		$cek_nik_siks = $this->functions->generatePage(array(
-			'nama_page' => 'Cek NIK SIKS',
-			'content' => '[cek_nik_siks]',
+		$management_wrse = $this->functions->generatePage(array(
+			'nama_page' => 'Manajemen WRSE',
+			'content' => '[management_wrse]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
+		$management_hibah = $this->functions->generatePage(array(
+			'nama_page' => 'Manajemen Hibah',
+			'content' => '[management_hibah]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
+		$management_calon_p3ke = $this->functions->generatePage(array(
+			'nama_page' => 'Manajemen Calon Penerima P3KE',
+			'content' => '[management_calon_p3ke]',
 			'show_header' => 1,
 			'no_key' => 1,
 			'post_status' => 'publish'
@@ -394,6 +346,8 @@ class Wp_Siks_Admin
 	            		<li><a target="_blank" href="' . $data_bunda_kasih['url'] . '">' . $data_bunda_kasih['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_p3ke['url'] . '">' . $data_p3ke['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_calon_p3ke['url'] . '">' . $data_calon_p3ke['title'] . '</a></li>
+	            		<li><a target="_blank" href="' . $data_wrse['url'] . '">' . $data_wrse['title'] . '</a></li>
+	            		<li><a target="_blank" href="' . $data_hibah['url'] . '">' . $data_hibah['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $cek_nik_siks['url'] . '">' . $cek_nik_siks['title'] . '</a></li>
 	            	</ol>'),
 				Field::make('text', 'crb_apikey_siks', 'API KEY')
@@ -691,7 +645,7 @@ class Wp_Siks_Admin
 	            	</ol>
 		        	'),
 					Field::make('html', 'crb_wrse_upload_html')
-						->set_html('<h3>Import EXCEL data WRSE</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
+						->set_html('<h3>Import EXCEL data WRSE ( Wanita Rawan Sosial Ekonomi )</h3>Pilih file excel .xlsx : <input type="file" id="file-excel" onchange="filePickedSiks(event);"><br>
 	            		Contoh format file excel untuk <b>WRSE</b> bisa <a target="_blank" href="' . SIKS_PLUGIN_URL . 'excel/contoh_data_wrse.xlsx">download di sini</a>.<br>
 	            		Data yang di-import adalah <b>data yang sudah dilakukan verval.</b><br>
 	            		Kolom dengan isian berupa tanggal wajib di ubah dari <b>date</b> ke <b>text</b><br>
@@ -1580,9 +1534,11 @@ class Wp_Siks_Admin
 				$data_db = array(
 					'nama' => $newData['nama'],
 					'usia' => $newData['usia'],
-					'alamat' => $newData['alamat'],
-					'desa_kel' => $newData['desa_kel'],
+					'provinsi' => $newData['provinsi'],
+					'kabkot' => $newData['kabkot'],
 					'kecamatan' => $newData['kecamatan'],
+					'desa_kelurahan' => $newData['desa_kelurahan'],
+					'alamat' => $newData['alamat'],
 					'status_dtks' => $newData['status_dtks'],
 					'status_pernikahan' => $newData['status_pernikahan'],
 					'mempunyai_usaha' => $newData['mempunyai_usaha'],
@@ -1604,8 +1560,9 @@ class Wp_Siks_Admin
 						WHERE tahun_anggaran=%d
 						  AND nama=%s
 						  AND usia=%s
+						  AND desa_kelurahan=%s
 						  AND alamat=%s
-						", $newData['tahun_anggaran'], $newData['nama'], $newData['usia'], $newData['alamat'])
+						", $newData['tahun_anggaran'], $newData['nama'], $newData['usia'], $newData['desa_kelurahan'], $newData['alamat'])
 				);
 
 				if (empty($cek_id)) {
@@ -1679,9 +1636,12 @@ class Wp_Siks_Admin
 				$data_db = array(
 					'kode' => $newData['kode'],
 					'penerima' => $newData['penerima'],
-					'alamat' => $newData['alamat'],
+					'provinsi' => $newData['provinsi'],
+					'kabkot' => $newData['kabkot'],
 					'kecamatan' => $newData['kecamatan'],
+					'desa_kelurahan' => $newData['desa_kelurahan'],
 					'nama_nik_ketua' => $newData['nama_nik_ketua'],
+					'alamat' => $newData['alamat'],
 					'anggaran' => $newData['anggaran'],
 					'status_realisasi' => $newData['status_realisasi'],
 					'no_nphd' => $newData['no_nphd'],
@@ -1709,9 +1669,9 @@ class Wp_Siks_Admin
 						WHERE tahun_anggaran=%d
 						  AND penerima=%s
 						  AND nama_nik_ketua=%s
-						  AND alamat=%s
+						  AND desa_kelurahan=%s
 						  AND anggaran=%d
-						", $newData['tahun_anggaran'], $newData['penerima'], $newData['nama_nik_ketua'], $newData['alamat'], $newData['anggaran'])
+						", $newData['tahun_anggaran'], $newData['penerima'], $newData['nama_nik_ketua'], $newData['desa_kelurahan'], $newData['anggaran'])
 				);
 
 				if (empty($cek_id)) {
