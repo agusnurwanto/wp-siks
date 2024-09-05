@@ -146,6 +146,24 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-lksa-per-desa.php';
 	}
 
+	public function wrse_per_desa()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-wrse-per-desa.php';
+	}
+
+	public function hibah_per_desa()
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-hibah-per-desa.php';
+	}
+
 	public function bunda_kasih_per_desa()
 	{
 		// untuk disable render shortcode di halaman edit page/post
@@ -2759,13 +2777,39 @@ class Wp_Siks_Public
 				kabkot,
 				MAX(update_at) as last_update,
 				kecamatan,
-				desa,
+				desa_kelurahan,
 				count(id) as jml
 			FROM data_wrse_siks 
 			WHERE $where
 				AND active=1
-			GROUP BY provinsi, kabkot, kecamatan, desa
-			ORDER BY  provinsi, kabkot, kecamatan, desa
+			GROUP BY provinsi, kabkot, kecamatan, desa_kelurahan
+			ORDER BY  provinsi, kabkot, kecamatan, desa_kelurahan
+		", ARRAY_A);
+		return $data;
+	}
+
+	function get_hibah()
+	{
+		global $wpdb;
+		$prov = get_option('_crb_siks_prop');
+		$where = " provinsi='$prov'";
+		$kab = get_option('_crb_siks_kab');
+		if (!empty($kab)) {
+			$where .= " and kabkot='$kab'";
+		}
+		$data = $wpdb->get_results("
+			SELECT  
+				provinsi,
+				kabkot,
+				MAX(update_at) as last_update,
+				kecamatan,
+				desa_kelurahan,
+				count(id) as jml
+			FROM data_hibah_siks 
+			WHERE $where
+				AND active=1
+			GROUP BY provinsi, kabkot, kecamatan, desa_kelurahan
+			ORDER BY  provinsi, kabkot, kecamatan, desa_kelurahan
 		", ARRAY_A);
 		return $data;
 	}

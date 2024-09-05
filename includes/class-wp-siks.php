@@ -299,6 +299,8 @@ class Wp_Siks {
 		add_shortcode('bunda_kasih_per_desa', array($plugin_public, 'bunda_kasih_per_desa'));
 		add_shortcode('p3ke_per_desa', array($plugin_public, 'p3ke_per_desa'));
 		add_shortcode('lksa_per_desa', array($plugin_public, 'lksa_per_desa'));
+		add_shortcode('wrse_per_desa', array($plugin_public, 'wrse_per_desa'));
+		add_shortcode('hibah_per_desa', array($plugin_public, 'hibah_per_desa'));
 		
 		add_shortcode('data_lansia_siks', array($plugin_public, 'data_lansia_siks'));
 		add_shortcode('data_dtks_siks', array($plugin_public, 'data_dtks_siks'));

@@ -2,11 +2,14 @@
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
 $dtks_all = $this->get_dtks();
+$this->functions->generatePage(array(
+    'nama_page' => 'DTKS Per Desa',
+    'content' => '[dtks_per_desa]',
+    'show_header' => 1,
+    'no_key' => 1,
+    'post_status' => 'publish'
+));
 
-// print_r(get_option('_crb_google_map_center_satset'));die();
-// print_r(get_option('_crb_google_api_siks'));die();
-// print_r(get_option('_crb_google_api_satset'));die();
-// print_r(get_option('_crb_google_map_id'));die();
 $last_update_dtks = null;
 $dtks_all_desa = array();
 foreach ($dtks_all as $data) {
@@ -119,7 +122,7 @@ foreach ($maps_all as $i => $desa) {
             <td class='text-center'>" . $desa['data']['kecamatan'] . "</td>
             <td class='text-center'>";
     if (!empty($link_per_desa)) {
-        $body .= "<a href='" . esc_url($link_per_desa) . "'>" . esc_html($desa['data']['desa']) . "</a>";
+        $body .= "<a href='" . esc_url($link_per_desa) . "' target='_blank'>" . esc_html($desa['data']['desa']) . "</a>";
     } else {
         $body .= esc_html($desa['data']['desa']);
     }

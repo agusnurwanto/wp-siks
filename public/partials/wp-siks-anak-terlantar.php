@@ -4,6 +4,13 @@ $maps_all = $this->get_polygon();
 $data_lksa = $this->get_lksa();
 $anak_terlantar_dalam = $this->get_anak_terlantar();
 $anak_terlantar_luar = $this->get_anak_terlantar_luar_magetan();
+$this->functions->generatePage(array(
+    'nama_page' => 'Anak Terlantar Per Desa',
+    'content' => '[anak_terlantar_per_desa]',
+    'show_header' => 1,
+    'no_key' => 1,
+    'post_status' => 'publish'
+));
 
 $data_all_lksa = array();
 $anak_terlantar_dalam_magetan = array();
@@ -125,7 +132,7 @@ foreach ($maps_all as $i => $desa) {
             <td class='text-center'>" . $desa['data']['kecamatan'] . "</td>
             <td class='text-center'>";
     if (!empty($link_per_desa)) {
-        $body_dalam .= "<a href='" . esc_url($link_per_desa) . "'>" . esc_html($desa['data']['desa']) . "</a>";
+        $body_dalam .= "<a href='" . esc_url($link_per_desa) . "' target='_blank'>" . esc_html($desa['data']['desa']) . "</a>";
     } else {
         $body_dalam .= esc_html($desa['data']['desa']);
     }
