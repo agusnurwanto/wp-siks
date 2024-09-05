@@ -3939,6 +3939,10 @@ class Wp_Siks_Public
 			$where = 'WHERE 1=1 AND active = 1';
 			$searchValue = !empty($params['search']['value']) ? $params['search']['value'] : '';
 
+			if (!empty($_POST['desa'])) {
+				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);
+			}
+
 			// Search filter
 			if ($searchValue) {
 				$where .= $wpdb->prepare(
@@ -3985,9 +3989,17 @@ class Wp_Siks_Public
 			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
 
 			// Format data
-			foreach ($queryRecords as &$record) {
-				$record['aksi'] = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $record['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
-				$record['aksi'] .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $record['id'] . '\'); return false;" href="#" title="Delete Data"><i class="dashicons dashicons-trash"></i></a>';
+			foreach ($queryRecords as $record => $recVal) {
+				if (empty($_POST['desa'])) {
+					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
+					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Delete Data"><i class="dashicons dashicons-trash"></i></a>';
+				} else {
+					$btn = '-';
+					if (!empty($recVal['lat'])) {
+						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					}
+				}
+				$queryRecords[$record]['aksi'] = $btn;
 			}
 
 			$json_data = [
@@ -4048,6 +4060,10 @@ class Wp_Siks_Public
 			$where = 'WHERE 1=1 AND active = 1';
 			$searchValue = !empty($params['search']['value']) ? $params['search']['value'] : '';
 
+			if (!empty($params['desa'])) {
+				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);
+			}
+
 			// Search filter
 			if ($searchValue) {
 				$where .= $wpdb->prepare(
@@ -4088,13 +4104,17 @@ class Wp_Siks_Public
 			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
 
 			// Format data
-			foreach ($queryRecords as &$record) {
-				$record['no_nphd'] = $record['no_nphd'] . "<br>" . $record['tgl_nphd'];
-				$record['no_spm'] = $record['no_spm'] . "<br>" . $record['tgl_spm'];
-				$record['no_sp2d'] = $record['no_sp2d'] . "<br>" . $record['tgl_sp2d'];
-
-				$record['aksi'] = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $record['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
-				$record['aksi'] .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $record['id'] . '\'); return false;" href="#" title="Delete Data"><i class="dashicons dashicons-trash"></i></a>';
+			foreach ($queryRecords as $record => $recVal) {
+				if (empty($params['desa'])) {
+					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
+					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Delete Data"><i class="dashicons dashicons-trash"></i></a>';
+				} else {
+					$btn = '-';
+					if (!empty($recVal['lat'])) {
+						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
+					}
+				}
+				$queryRecords[$record]['aksi'] = $btn;
 			}
 
 			$json_data = [
