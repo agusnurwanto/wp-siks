@@ -4234,6 +4234,8 @@ class Wp_Siks_Public
 					$nama = sanitize_text_field($_POST['nama']);
 					$usia = sanitize_text_field($_POST['usia']);
 					$alamat = sanitize_text_field($_POST['alamat']);
+					$provinsi = sanitize_text_field($_POST['provinsi']);
+					$kabKot = sanitize_text_field($_POST['kabKot']);
 					$desa = sanitize_text_field($_POST['desaKel']);
 					$kecamatan = sanitize_text_field($_POST['kecamatan']);
 					$statusDtks = sanitize_text_field($_POST['statusDtks']);
@@ -4241,13 +4243,19 @@ class Wp_Siks_Public
 					$statusUsaha = sanitize_text_field($_POST['statusUsaha']);
 					$keterangan = sanitize_text_field($_POST['keterangan']);
 					$jenisData = sanitize_text_field($_POST['jenisData']);
+					$lat = sanitize_textarea_field($_POST['latitude']);
+					$long = sanitize_textarea_field($_POST['longitude']);
 
 					// Data yang akan disimpan atau diperbarui
 					$data = array(
 						'tahun_anggaran' => $tahun_anggaran,
 						'nama' => $nama,
+						'lat' => $lat,
+						'lng' => $long,
 						'usia' => $usia,
 						'alamat' => $alamat,
+						'provinsi' => $provinsi,
+						'kabkot' => $kabKot,
 						'desa_kelurahan' => $desa,
 						'kecamatan' => $kecamatan,
 						'status_dtks' => $statusDtks,
@@ -4317,6 +4325,8 @@ class Wp_Siks_Public
 					$no_sp2d = sanitize_text_field($_POST['sp2d']);
 					$tgl_sp2d = sanitize_text_field($_POST['tglSp2d']);
 					$peruntukan = sanitize_textarea_field($_POST['peruntukan']);
+					$lat = sanitize_textarea_field($_POST['latitude']);
+					$long = sanitize_textarea_field($_POST['longitude']);
 
 					// Data yang akan disimpan atau diperbarui
 					$data = array(
@@ -4335,6 +4345,8 @@ class Wp_Siks_Public
 						'no_sp2d' => $no_sp2d,
 						'tgl_sp2d' => $tgl_sp2d,
 						'peruntukan' => $peruntukan,
+						'lat' => $lat,
+						'lng' => $long,
 						'create_at' => current_time('mysql'),
 						'update_at' => current_time('mysql'),
 						'active' => 1

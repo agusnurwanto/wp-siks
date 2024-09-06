@@ -1,8 +1,33 @@
 <?php
 global $wpdb;
 
+$center = $this->get_center();
+$maps_all = $this->get_polygon();
+
+foreach ($maps_all as $i => $desa) {
+    $html = '
+        <table>
+    ';
+    foreach ($desa['data'] as $k => $v) {
+        $html .= '
+            <tr>
+                <td><b>' . $k . '</b></td>
+                <td>' . $v . '</td></a>
+            </tr>
+        ';
+    }
+    $html .= '</table>';
+    $maps_all[$i]['html'] = $html;
+}
+
 ?>
 <style type="text/css">
+    .wrap-table {
+        overflow: auto;
+        max-height: 100vh;
+        width: 100%;
+    }
+
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -19,30 +44,32 @@ global $wpdb;
     <div style="margin-bottom: 25px;">
         <button class="btn btn-primary" onclick="showModalTambahData();"><span class="dashicons dashicons-plus"></span> Tambah Data</button>
     </div>
-    <table id="tableData" class="table table-bordered">
-        <thead>
-            <tr>
-                <th class="text-center">Nama</th>
-                <th class="text-center">Usia</th>
-                <th class="text-center">Provinsi</th>
-                <th class="text-center">Kota / Kabupaten</th>
-                <th class="text-center">Kecamatan</th>
-                <th class="text-center">Desa / Kelurahan</th>
-                <th class="text-center">Alamat</th>
-                <th class="text-center">Status DTKS</th>
-                <th class="text-center">Status Pernikahan</th>
-                <th class="text-center">Mempunyai Usaha</th>
-                <th class="text-center">Keterangan</th>
-                <th class="text-center">Jenis Data</th>
-                <th class="text-center">Tahun Anggaran</th>
-                <th class="text-center">Dibuat Pada</th>
-                <th class="text-center">Terakhir Diperbarui</th>
-                <th class="text-center">Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div class="wrap-table">
+        <table id="tableData" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width: 12%;">Nama</th>
+                    <th class="text-center" style="width: 5%;">Usia</th>
+                    <th class="text-center" style="width: 8%;">Provinsi</th>
+                    <th class="text-center" style="width: 10%;">Kota / Kabupaten</th>
+                    <th class="text-center" style="width: 10%;">Kecamatan</th>
+                    <th class="text-center" style="width: 10%;">Desa / Kelurahan</th>
+                    <th class="text-center" style="width: 15%;">Alamat</th>
+                    <th class="text-center" style="width: 7%;">Status DTKS</th>
+                    <th class="text-center" style="width: 8%;">Status Pernikahan</th>
+                    <th class="text-center" style="width: 8%;">Mempunyai Usaha</th>
+                    <th class="text-center" style="width: 10%;">Keterangan</th>
+                    <th class="text-center" style="width: 7%;">Jenis Data</th>
+                    <th class="text-center" style="width: 7%;">Tahun Anggaran</th>
+                    <th class="text-center" style="width: 8%;">Dibuat Pada</th>
+                    <th class="text-center" style="width: 8%;">Terakhir Diperbarui</th>
+                    <th class="text-center" style="width: 8%;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 </div>
 <div class="modal fade mt-4" id="modalTambahData" tabindex="-1" role="dialog" aria-labelledby="modalTambahData" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
@@ -155,10 +182,34 @@ global $wpdb;
                     </div>
                 </div>
 
-
                 <div class="form-group">
                     <label for="keterangan">Keterangan</label>
                     <textarea name="keterangan" class="form-control" id="keterangan"></textarea>
+                </div>
+
+                <div class="card bg-light p-3 mb-3">
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <div class="pl-4">
+                                <label for="latitude">Koordinat Latitude</label>
+                                <input type="text" class="form-control" id="latitude" name="latitude" placeholder="0" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="pl-4">
+                                <label for="longitude">Koordinat Longitude</label>
+                                <input type="text" class="form-control" id="longitude" name="longitude" placeholder="0" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row mt-4">
+                        <div class="col-md-12">
+                            <div class="pl-4">
+                                <label for="map-canvas-siks">Map</label>
+                                <div style="height:600px; width: 100%;" id="map-canvas-siks"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -169,8 +220,10 @@ global $wpdb;
         </div>
     </div>
 </div>
-
+<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
+    window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
+    window.maps_center_siks = <?php echo json_encode($center); ?>;
     jQuery(document).ready(function() {
         getDataTable();
     });
@@ -182,9 +235,6 @@ global $wpdb;
             }).DataTable({
                 "processing": true,
                 "serverSide": true,
-                "scrollX": true, // Enables horizontal scrolling
-                "scrollY": '600px',
-                "scrollCollapse": true,
                 "search": {
                     return: true
                 },
@@ -314,6 +364,39 @@ global $wpdb;
                 'id': _id,
             },
             success: function(res) {
+                // Lokasi Center Map
+                if (!res.data.lat || !res.data.lng) {
+                    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+                } else {
+                    var lokasi_center = new google.maps.LatLng(res.data.lat, res.data.lng);
+                }
+
+                if (typeof evm != 'undefined') {
+                    evm.setMap(null);
+                }
+
+                // Menampilkan Marker
+                window.evm = new google.maps.Marker({
+                    position: lokasi_center,
+                    map,
+                    draggable: true,
+                    title: 'Lokasi Map'
+                });
+
+                window.infoWindow = new google.maps.InfoWindow({
+                    content: JSON.stringify(res.data)
+                });
+
+                google.maps.event.addListener(evm, 'click', function(event) {
+                    infoWindow.setPosition(event.latLng);
+                    infoWindow.open(map);
+                });
+
+                google.maps.event.addListener(evm, 'mouseup', function(event) {
+                    jQuery('input[name="latitude"]').val(event.latLng.lat());
+                    jQuery('input[name="longitude"]').val(event.latLng.lng());
+                });
+
                 jQuery('#judulmodalTambahData').hide();
                 jQuery('#id_data').val(res.data.id);
                 jQuery('#tahunAnggaran').val(res.data.tahun_anggaran);
@@ -326,6 +409,8 @@ global $wpdb;
                 jQuery('#kecamatan').val(res.data.kecamatan);
                 jQuery('#provinsi').val(res.data.provinsi);
                 jQuery('#kabKot').val(res.data.kabkot);
+                jQuery('#latitude').val(res.data.lat);
+                jQuery('#longitude').val(res.data.lng);
 
                 jQuery('input[name="statusDtks"]').prop('checked', false);
                 jQuery('input[name="statusPernikahan"]').prop('checked', false);
@@ -377,6 +462,28 @@ global $wpdb;
     }
 
     function showModalTambahData() {
+        let lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+
+        if (typeof evm != 'undefined') {
+            evm.setMap(null);
+        }
+
+        // Menampilkan Marker
+        window.evm = new google.maps.Marker({
+            position: lokasi_center,
+            map,
+            draggable: true,
+            title: 'Lokasi Map'
+        });
+
+        google.maps.event.addListener(evm, 'mouseup', function(event) {
+            jQuery('input[name="latitude"]').val(event.latLng.lat());
+            jQuery('input[name="longitude"]').val(event.latLng.lng());
+        });
+
+        jQuery('#longitude').val(maps_center_siks['lng']).show();
+        jQuery('#latitude').val(maps_center_siks['lat']).show();
+
         jQuery('#id_data').val('');
         jQuery('#tahunAnggaran').val('');
         jQuery('#jenisData').val('');
@@ -412,6 +519,8 @@ global $wpdb;
             'statusUsaha': 'Pilih Status Usaha!',
             'jenisData': 'Pilih Jenis Data!',
             'keterangan': 'Keterangan tidak boleh kosong!',
+            'longitude': 'Longitude tidak boleh kosong!',
+            'latitude': 'Latitude tidak boleh kosong!',
             // Tambahkan field lain jika diperlukan
         };
 

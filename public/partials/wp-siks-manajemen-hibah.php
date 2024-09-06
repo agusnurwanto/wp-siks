@@ -1,7 +1,30 @@
 <?php
 global $wpdb;
+$center = $this->get_center();
+$maps_all = $this->get_polygon();
+foreach ($maps_all as $i => $desa) {
+    $html = '
+        <table>
+    ';
+    foreach ($desa['data'] as $k => $v) {
+        $html .= '
+            <tr>
+                <td><b>' . $k . '</b></td>
+                <td>' . $v . '</td></a>
+            </tr>
+        ';
+    }
+    $html .= '</table>';
+    $maps_all[$i]['html'] = $html;
+}
 ?>
 <style type="text/css">
+    .wrap-table {
+        overflow: auto;
+        max-height: 100vh;
+        width: 100%;
+    }
+
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -17,34 +40,36 @@ global $wpdb;
     <div style="margin-bottom: 25px;">
         <button class="btn btn-primary" onclick="showModalTambahData();"><span class="dashicons dashicons-plus"></span> Tambah Data</button>
     </div>
-    <table id="tableData" class="table table-bordered">
-        <thead>
-            <tr>
-                <th class="text-center" style="width: 6%;">Kode</th>
-                <th class="text-center" style="width: 12%;">Penerima</th>
-                <th class="text-center" style="width: 12%;">Nama dan NIK Ketua</th>
-                <th class="text-center" style="width: 8%;">Provinsi</th>
-                <th class="text-center" style="width: 8%;">Kabupaten/Kota</th>
-                <th class="text-center" style="width: 8%;">Kecamatan</th>
-                <th class="text-center" style="width: 8%;">Desa/Kelurahan</th>
-                <th class="text-center" style="width: 12%;">Alamat</th>
-                <th class="text-center" style="width: 8%;">Anggaran</th>
-                <th class="text-center" style="width: 6%;">Status Realisasi</th>
-                <th class="text-center" style="width: 6%;">No NPHD</th>
-                <th class="text-center" style="width: 6%;">No SPM</th>
-                <th class="text-center" style="width: 6%;">No SP2D</th>
-                <th class="text-center" style="width: 10%;">Peruntukan</th>
-                <th class="text-center" style="width: 6%;">Tahun Anggaran</th>
-                <th class="text-center" style="width: 6%;">Jenis Data</th>
-                <th class="text-center" style="width: 10%;">Keterangan</th>
-                <th class="text-center" style="width: 6%;">Dibuat Pada</th>
-                <th class="text-center" style="width: 6%;">Terakhir Diperbarui</th>
-                <th class="text-center" style="width: 6%;">Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div class="wrap-table">
+        <table id="tableData" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width: 4%;">Kode</th>
+                    <th class="text-center" style="width: 10%;">Penerima</th>
+                    <th class="text-center" style="width: 12%;">Nama dan NIK Ketua</th>
+                    <th class="text-center" style="width: 6%;">Provinsi</th>
+                    <th class="text-center" style="width: 6%;">Kabupaten/Kota</th>
+                    <th class="text-center" style="width: 6%;">Kecamatan</th>
+                    <th class="text-center" style="width: 6%;">Desa/Kelurahan</th>
+                    <th class="text-center" style="width: 10%;">Alamat</th>
+                    <th class="text-center" style="width: 8%;">Anggaran</th>
+                    <th class="text-center" style="width: 6%;">Status Realisasi</th>
+                    <th class="text-center" style="width: 5%;">No NPHD</th>
+                    <th class="text-center" style="width: 5%;">No SPM</th>
+                    <th class="text-center" style="width: 5%;">No SP2D</th>
+                    <th class="text-center" style="width: 8%;">Peruntukan</th>
+                    <th class="text-center" style="width: 5%;">Tahun Anggaran</th>
+                    <th class="text-center" style="width: 5%;">Jenis Data</th>
+                    <th class="text-center" style="width: 8%;">Keterangan</th>
+                    <th class="text-center" style="width: 6%;">Dibuat Pada</th>
+                    <th class="text-center" style="width: 6%;">Terakhir Diperbarui</th>
+                    <th class="text-center" style="width: 6%;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 </div>
 <div class="modal fade mt-4" id="modalTambahData" tabindex="-1" role="dialog" aria-labelledby="modalTambahData" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
@@ -159,6 +184,31 @@ global $wpdb;
                     <textarea name="peruntukan" class="form-control" id="peruntukan"></textarea>
                 </div>
 
+                <div class="card bg-light p-3 mb-3">
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <div class="pl-4">
+                                <label for="latitude">Koordinat Latitude</label>
+                                <input type="text" class="form-control" id="latitude" name="latitude" placeholder="0" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="pl-4">
+                                <label for="longitude">Koordinat Longitude</label>
+                                <input type="text" class="form-control" id="longitude" name="longitude" placeholder="0" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row mt-4">
+                        <div class="col-md-12">
+                            <div class="pl-4">
+                                <label for="map-canvas-siks">Map</label>
+                                <div style="height:600px; width: 100%;" id="map-canvas-siks"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="modal-footer">
                     <button type="submit" onclick="submitData();" class="btn btn-primary">Simpan</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Tutup</button>
@@ -167,8 +217,10 @@ global $wpdb;
         </div>
     </div>
 </div>
-
+<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
+    window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
+    window.maps_center_siks = <?php echo json_encode($center); ?>;
     jQuery(document).ready(function() {
         getDataTable();
     });
@@ -180,9 +232,6 @@ global $wpdb;
             }).DataTable({
                 "processing": true,
                 "serverSide": true,
-                "scrollX": true, // Enables horizontal scrolling
-                "scrollY": '600px', // Enables vertical scrolling
-                "scrollCollapse": true,
                 "search": {
                     return: true
                 },
@@ -328,6 +377,39 @@ global $wpdb;
                 'id': _id,
             },
             success: function(res) {
+                // Lokasi Center Map
+                if (!res.data.lat || !res.data.lng) {
+                    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+                } else {
+                    var lokasi_center = new google.maps.LatLng(res.data.lat, res.data.lng);
+                }
+
+                if (typeof evm != 'undefined') {
+                    evm.setMap(null);
+                }
+
+                // Menampilkan Marker
+                window.evm = new google.maps.Marker({
+                    position: lokasi_center,
+                    map,
+                    draggable: true,
+                    title: 'Lokasi Map'
+                });
+
+                window.infoWindow = new google.maps.InfoWindow({
+                    content: JSON.stringify(res.data)
+                });
+
+                google.maps.event.addListener(evm, 'click', function(event) {
+                    infoWindow.setPosition(event.latLng);
+                    infoWindow.open(map);
+                });
+
+                google.maps.event.addListener(evm, 'mouseup', function(event) {
+                    jQuery('input[name="latitude"]').val(event.latLng.lat());
+                    jQuery('input[name="longitude"]').val(event.latLng.lng());
+                });
+
                 jQuery('#id_data').val(res.data.id);
                 jQuery('#tahunAnggaran').val(res.data.tahun_anggaran);
                 jQuery('#jenisData').val(res.data.jenis_data).trigger('change');
@@ -361,6 +443,28 @@ global $wpdb;
     }
 
     function showModalTambahData() {
+        let lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
+
+        if (typeof evm != 'undefined') {
+            evm.setMap(null);
+        }
+
+        // Menampilkan Marker
+        window.evm = new google.maps.Marker({
+            position: lokasi_center,
+            map,
+            draggable: true,
+            title: 'Lokasi Map'
+        });
+
+        google.maps.event.addListener(evm, 'mouseup', function(event) {
+            jQuery('input[name="latitude"]').val(event.latLng.lat());
+            jQuery('input[name="longitude"]').val(event.latLng.lng());
+        });
+
+        jQuery('#longitude').val(maps_center_siks['lng']).show();
+        jQuery('#latitude').val(maps_center_siks['lat']).show();
+
         jQuery('#id_data').val('');
         jQuery('#tahunAnggaran').val('');
         jQuery('#anggaran').val('');
@@ -406,6 +510,10 @@ global $wpdb;
             'tglSpm': 'Tanggal SPM tidak boleh kosong!',
             'tglSp2d': 'Tanggal SP2D tidak boleh kosong!',
             'peruntukan': 'Peruntukan tidak boleh kosong!',
+            'longitude': 'Longitude tidak boleh kosong!',
+            'latitude': 'Latitude tidak boleh kosong!',
+            // Tambahkan field lain jika diperlukan
+
         };
 
         const {

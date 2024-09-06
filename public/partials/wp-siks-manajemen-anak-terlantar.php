@@ -3,7 +3,21 @@ $api_key = get_option(SIKS_APIKEY);
 $url = admin_url('admin-ajax.php');
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
-
+foreach ($maps_all as $i => $desa) {
+    $html = '
+        <table>
+    ';
+    foreach ($desa['data'] as $k => $v) {
+        $html .= '
+            <tr>
+                <td><b>' . $k . '</b></td>
+                <td>' . $v . '</td></a>
+            </tr>
+        ';
+    }
+    $html .= '</table>';
+    $maps_all[$i]['html'] = $html;
+}
 ?>
 <style type="text/css">
     .wrap-table {
@@ -13,7 +27,7 @@ $maps_all = $this->get_polygon();
     }
 </style>
 <div style="padding: 10px;margin:0 0 3rem 0;">
-    <h1 class="text-center" style="margin:3rem;">Manajemen Data AnakTerlantar</h1>
+    <h1 class="text-center" style="margin:3rem;">Manajemen Data Anak Terlantar</h1>
     <div style="margin-bottom: 25px;">
         <button class="btn btn-primary" onclick="tambah_data_anak_terlantar();"><i class="dashicons dashicons-plus"></i> Tambah Data</button>
     </div>

@@ -3,6 +3,21 @@ $api_key = get_option(SIKS_APIKEY);
 $url = admin_url('admin-ajax.php');
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
+foreach ($maps_all as $i => $desa) {
+    $html = '
+        <table>
+    ';
+    foreach ($desa['data'] as $k => $v) {
+        $html .= '
+            <tr>
+                <td><b>' . $k . '</b></td>
+                <td>' . $v . '</td></a>
+            </tr>
+        ';
+    }
+    $html .= '</table>';
+    $maps_all[$i]['html'] = $html;
+}
 
 ?>
 <style type="text/css">
