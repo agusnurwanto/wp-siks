@@ -1559,10 +1559,11 @@ class Wp_Siks_Admin
 						FROM $table_data 
 						WHERE tahun_anggaran=%d
 						  AND nama=%s
-						  AND usia=%s
+						  AND usia=%d
 						  AND desa_kelurahan=%s
 						  AND alamat=%s
-						", $newData['tahun_anggaran'], $newData['nama'], $newData['usia'], $newData['desa_kelurahan'], $newData['alamat'])
+						  AND keterangan=%s
+						", $newData['tahun_anggaran'], $newData['nama'], $newData['usia'], $newData['desa_kelurahan'], $newData['alamat'], $newData['keterangan'])
 				);
 
 				if (empty($cek_id)) {

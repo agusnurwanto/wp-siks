@@ -1,7 +1,18 @@
 <?php
+global $wpdb;
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
 $wrse_all = $this->get_wrse();
+
+$total_data_wrse = 0;
+$total_data_wrse = $wpdb->get_var(
+    $wpdb->prepare("
+       SELECT COUNT(*)
+       FROM data_wrse_siks
+       WHERE active = %d 
+    ", 1)
+);
+
 
 //generate page per desa
 $this->functions->generatePage(array(
@@ -24,18 +35,19 @@ foreach ($wrse_all as $data) {
     }
     $data_all_desa[$index][] = $data;
 }
-
+// die(print_r($maps_all));
+$total_data_kosong = 0;
 $total_all = 0;
 $body =  '';
 foreach ($maps_all as $i => $desa) {
-    // die(print_r($maps_all));
     $index = strtolower($desa['data']['provinsi']) . '.' . strtolower($desa['data']['kab_kot']) . '.' . strtolower($desa['data']['kecamatan']) . '.' . strtolower($desa['data']['desa']);
     $total_all_data = 0;
-    if (!empty($data_all_desa[$index])) {
+    if (!empty($data_all_desa[$index])) { 
         foreach ($data_all_desa[$index] as $orang) {
             $total_all_data += $orang['jml'];
         }
     }
+
     if ($total_all_data <= 5) {
         $maps_all[$i]['color'] = '#0cbf00';
     } else if ($total_all_data <= 10) {
@@ -43,12 +55,13 @@ foreach ($maps_all as $i => $desa) {
     } else if ($total_all_data > 10) {
         $maps_all[$i]['color'] = '#ff0000';
     }
+
     $maps_all[$i]['index'] = $i;
 
     $html = '
         <table>
             <tr>
-                <td><b>Total bunda_kasih</b></td>
+                <td><b>Total WRSE</b></td>
                 <td><b>' . $this->number_format($total_all_data) . ' Orang</b></td>
             </tr>
     ';
@@ -87,6 +100,15 @@ foreach ($maps_all as $i => $desa) {
     ";
     $total_all += $total_all_data;
 }
+
+// Proses tambahan: hitung jumlah WRSE untuk desa dengan 'desa_kelurahan' kosong atau '-'
+// foreach ($data_all_desa as $index => $desa_data) {
+//     foreach ($desa_data as $orang) {
+//         if ($orang['desa_kelurahan'] === '-' || empty($orang['desa_kelurahan'])) {
+//             $total_data_kosong += $orang['jml'];
+//         }
+//     }
+// }
 ?>
 <h1 class="text-center">Peta Sebaran WRSE<br>( Wanita Rawan Sosial Ekonomi )<br><?php echo $this->getNamaDaerah(); ?></h1>
 <div style="width: 95%; margin: 0 auto; min-height: 90vh; padding-bottom: 75px;">
@@ -97,7 +119,7 @@ foreach ($maps_all as $i => $desa) {
         <li>Warna kuning berarti jumlah WRSE antara 5 sampai 10 orang</li>
         <li>Warna merah berarti jumlah WRSE diatas 10 orang</li>
     </ol>
-    <h1 class="text-center">Tabel Data WRSE<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
+    <h1 class="text-center">Tabel Data WRSE<br>Total <?php echo $this->number_format($total_data_wrse); ?> Orang</h1>
     <h3 class="text-center">Terakhir diupdate <?php echo $last_update ?></h3>
     <div style="width: 100%; overflow: auto; height: 100vh;">
         <table class="table table-bordered" id="table-data">

@@ -2775,13 +2775,13 @@ class Wp_Siks_Public
 			SELECT  
 				provinsi,
 				kabkot,
-				MAX(update_at) as last_update,
 				kecamatan,
 				desa_kelurahan,
+				MAX(update_at) as last_update,
 				count(id) as jml
 			FROM data_wrse_siks 
 			WHERE $where
-				AND active=1
+			  AND active = 1
 			GROUP BY provinsi, kabkot, kecamatan, desa_kelurahan
 			ORDER BY  provinsi, kabkot, kecamatan, desa_kelurahan
 		", ARRAY_A);
