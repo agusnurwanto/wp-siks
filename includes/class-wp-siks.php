@@ -163,8 +163,14 @@ class Wp_Siks {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+
 		$this->loader->add_action( 'wp_ajax_sql_migrate_siks', $plugin_admin, 'sql_migrate_siks' );
   		$this->loader->add_action( 'wp_ajax_management_data_dtks_siks',  $plugin_admin, 'management_data_dtks_siks');
+		
+  		$this->loader->add_action( 'wp_ajax_get_data_alamat_dtks_siks',  $plugin_admin, 'get_data_alamat_dtks_siks');
+  		$this->loader->add_action( 'wp_ajax_generate_user_siks',  $plugin_admin, 'generate_user_siks');
+  		$this->loader->add_action( 'wp_ajax_gen_user_siks',  $plugin_admin, 'gen_user_siks');
+
   		$this->loader->add_action( 'wp_ajax_import_excel_lansia',  $plugin_admin, 'import_excel_lansia');
   		$this->loader->add_action( 'wp_ajax_import_excel_disabilitas',  $plugin_admin, 'import_excel_disabilitas');
   		$this->loader->add_action( 'wp_ajax_import_excel_bunda_kasih',  $plugin_admin, 'import_excel_bunda_kasih');
@@ -175,8 +181,9 @@ class Wp_Siks {
   		$this->loader->add_action( 'wp_ajax_import_excel_calon_p3ke_siks',  $plugin_admin, 'import_excel_calon_p3ke_siks');
   		$this->loader->add_action( 'wp_ajax_import_excel_data_wrse_siks',  $plugin_admin, 'import_excel_data_wrse_siks');
   		$this->loader->add_action( 'wp_ajax_import_excel_data_hibah_siks',  $plugin_admin, 'import_excel_data_hibah_siks');
-  		$this->loader->add_action( 'wp_ajax_get_data_dtks_siks',  $plugin_admin, 'get_data_dtks_siks');
   		$this->loader->add_action( 'wp_ajax_export_excel_data_dtks_siks',  $plugin_admin, 'export_excel_data_dtks_siks');
+
+  		$this->loader->add_action( 'wp_ajax_get_data_dtks_siks',  $plugin_admin, 'get_data_dtks_siks');
   		$this->loader->add_action( 'wp_ajax_get_data_kecamatan_siks',  $plugin_admin, 'get_data_kecamatan_siks');
   		$this->loader->add_action( 'wp_ajax_get_data_desa_siks',  $plugin_admin, 'get_data_desa_siks');
 

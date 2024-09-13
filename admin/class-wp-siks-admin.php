@@ -106,10 +106,12 @@ class Wp_Siks_Admin
 		 */
 
 		wp_enqueue_script($this->plugin_name . 'jszip', plugin_dir_url(__FILE__) . 'js/jszip.js', array('jquery'), $this->version, false);
-
 		wp_enqueue_script($this->plugin_name . 'xlsx', plugin_dir_url(__FILE__) . 'js/xlsx.js', array('jquery'), $this->version, false);
-
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/wp-siks-admin.js', array('jquery'), $this->version, false);
+		wp_localize_script($this->plugin_name, 'ajax', array(
+			'url' => admin_url('admin-ajax.php'),
+			'apikey' => get_option(SIKS_APIKEY)
+		));
 	}
 
 	public function crb_attach_siks_options()
@@ -219,7 +221,7 @@ class Wp_Siks_Admin
 			'no_key' => 1,
 			'post_status' => 'publish'
 		));
-		
+
 		$data_wrse = $this->functions->generatePage(array(
 			'nama_page' => 'Data WRSE SIKS',
 			'content' => '[data_wrse_siks]',
@@ -386,6 +388,17 @@ class Wp_Siks_Admin
 					->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.'),
 				Field::make('text', 'crb_siks_pusher_secret', 'PUSHER APP SECRET')
 					->set_help_text('Bisa dilihat di <a href="https://dashboard.pusher.com/apps" target="_blank">https://dashboard.pusher.com/apps</a>.')
+			));
+
+		Container::make('theme_options', __('Pengaturan User Desa & Kecamatan'))
+			->set_page_parent($basic_options_container)
+			->add_fields(array(
+				Field::make('html', 'crb_html_data_dtks_siks')
+					->set_html('<a href="#" class="button button-primary" onclick="get_data_alamat_dtks_siks(); return false;">Tarik Data Master User</a>')
+					->set_help_text('Tombol untuk menarik data master user Desa dan Kecamatan dari tabel data_dtks'),
+				Field::make('html', 'crb_generate_user_siks')
+					->set_html('<a id="generate_user_siks" onclick="return false;" href="#" class="button button-primary button-large">Generate User By DB Lokal</a>')
+					->set_help_text('Data user aktif yang ada di table data_alamat_siks akan digenerate menjadi user wordpress.'),
 			));
 
 		Container::make('theme_options', __('Google Maps'))
@@ -1952,12 +1965,23 @@ class Wp_Siks_Admin
 			if (!empty($_POST)) {
 				if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 
-					$data = $wpdb->get_results($wpdb->prepare("SELECT DISTINCT kecno, kecamatan FROM `data_batas_kecamatan_siks` order by kecno"), ARRAY_A);
+					$data = $wpdb->get_results(
+						$wpdb->prepare("
+							SELECT DISTINCT 
+								kecno, 
+								kecamatan 
+							FROM `data_batas_kecamatan_siks` 
+							ORDER BY kecno
+						"),
+						ARRAY_A
+					);
 
-					exit(json_encode(array(
-						"status"	=> true,
-						"data"		=> $data
-					)));
+					exit(json_encode(
+						array(
+							"status"	=> true,
+							"data"		=> $data
+						)
+					));
 				} else {
 					throw new Exception('Api key tidak sesuai');
 				}
@@ -1976,17 +2000,27 @@ class Wp_Siks_Admin
 	function get_data_desa_siks()
 	{
 		global $wpdb;
-
 		try {
 			if (!empty($_POST)) {
 				if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 
-					$data = $wpdb->get_results($wpdb->prepare("SELECT desa FROM `data_batas_desa_siks` WHERE kecamatan LIKE %s ORDER BY kecno", $_POST['kecamatan'] . "%"), ARRAY_A);
+					$data = $wpdb->get_results(
+						$wpdb->prepare("
+							SELECT 
+								desa 
+							FROM `data_batas_desa_siks` 
+							WHERE kecamatan LIKE %s 
+							ORDER BY kecno
+							", $_POST['kecamatan'] . "%"),
+						ARRAY_A
+					);
 
-					exit(json_encode(array(
-						"status"	=> true,
-						"data"		=> $data
-					)));
+					exit(json_encode(
+						array(
+							"status"	=> true,
+							"data"		=> $data
+						)
+					));
 				} else {
 					throw new Exception('Api key tidak sesuai');
 				}
@@ -1999,6 +2033,224 @@ class Wp_Siks_Admin
 				'message' => $e->getMessage()
 			]);
 			exit;
+		}
+	}
+
+	function generate_user_siks()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil Generate User Wordpress dari DB Lokal'
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option('_crb_apikey_siks')) {
+				$data_kecamatan = $wpdb->get_results(
+					$wpdb->prepare("
+						SELECT 
+							*
+						FROM data_alamat_siks 
+						WHERE id_desa IS NULL
+						  AND active = 1
+					"),
+					ARRAY_A
+				);
+				$data_desa_kel = $wpdb->get_results(
+					$wpdb->prepare("
+						SELECT 
+							*
+						FROM data_alamat_siks 
+						WHERE id_desa IS NOT NULL
+						  AND active = 1
+					"),
+					ARRAY_A
+				);
+
+				$update_pass = false;
+				if (
+					!empty($_POST['update_pass'])
+					&& $_POST['update_pass'] == 'true'
+				) {
+					$update_pass = true;
+				}
+
+				if (!empty($data_kecamatan)) {
+					foreach ($data_kecamatan as $k => $user) {
+						$user['pass'] 			= $_POST['pass'];
+						$user['loginname'] 		= $user['id_kec'];
+						$user['nama'] 			= "Kecamatan " . $user['nama'];
+						$user['id_kecamatan'] 	= $user['id_kec'];
+						$user['jabatan'] 		= 'Kecamatan';
+						$this->gen_user_siks($user, $update_pass);
+					}
+				}
+
+				if (!empty($data_desa_kel)) {
+					foreach ($data_desa_kel as $k => $user) {
+						$user['pass'] 			= $_POST['pass'];
+						$user['loginname'] 		= $user['id_desa'];
+						$user['nama'] 			= "Desa " . $user['nama'];
+						$user['id_desa'] 		= $user['id_desa'];
+						$user['jabatan'] 		= 'Desa';
+						$this->gen_user_siks($user, $update_pass);
+					}
+				}
+			} else {
+				$ret['status'] = 'error';
+				$ret['message'] = 'APIKEY tidak sesuai!';
+			}
+		} else {
+			$ret['status'] = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+		die(json_encode($ret));
+	}
+
+	function get_data_alamat_dtks_siks()
+	{
+		global $wpdb;
+		$ret = array(
+			'status'  => 'success',
+			'message' => 'Berhasil tarik data master user!'
+		);
+
+		$data_kecamatan = $wpdb->get_results(
+			$wpdb->prepare("
+				SELECT 
+					id_kec,
+					kecamatan
+				FROM data_dtks
+				WHERE active = %d
+				GROUP BY id_kec
+			", 1),
+			ARRAY_A
+		);
+
+		$data_desa_kel = $wpdb->get_results(
+			$wpdb->prepare("
+			SELECT 
+				id_kec,
+				id_desa,
+				desa_kelurahan
+			FROM data_dtks
+			WHERE active = %d
+			GROUP BY id_desa
+		", 1),
+			ARRAY_A
+		);
+
+		foreach ($data_kecamatan as $kecamatan) {
+			$kecamatans = array(
+				'id_kec'    => $kecamatan['id_kec'],
+				'nama'      => $kecamatan['kecamatan'],
+				'update_at' => current_time('mysql'),
+				'active'    => 1
+			);
+
+			$cek_kecamatan = $wpdb->get_var(
+				$wpdb->prepare("
+					SELECT id
+					FROM data_alamat_siks 
+					WHERE id_kec = %d
+				", $kecamatan['id_kec'])
+			);
+
+			if (empty($cek_kecamatan)) {
+				$wpdb->insert(
+					'data_alamat_siks',
+					$kecamatans
+				);
+			} else {
+				$wpdb->update(
+					'data_alamat_siks',
+					$kecamatans,
+					array('id' => $cek_kecamatan)
+				);
+			}
+		}
+
+		foreach ($data_desa_kel as $desa) {
+			$desas = array(
+				'id_kec'    => $desa['id_kec'],
+				'id_desa'   => $desa['id_desa'],
+				'nama'      => $desa['desa_kelurahan'],
+				'update_at' => current_time('mysql'),
+				'active'    => 1
+			);
+
+			die(print_r($data_desa_kel));
+
+			$cek_desa = $wpdb->get_var(
+				$wpdb->prepare("
+					SELECT id
+					FROM data_alamat_siks 
+					WHERE id_desa = %d
+				", $desa['id_desa'])
+			);
+
+			if (empty($cek_desa)) {
+				$wpdb->insert(
+					'data_alamat_siks',
+					$desas
+				);
+			} else {
+				$wpdb->update(
+					'data_alamat_siks',
+					$desas,
+					array('id' => $cek_desa)
+				);
+			}
+		}
+
+		die(json_encode($ret));
+	}
+
+
+
+	function gen_user_siks($user = array(), $update_pass = false)
+	{
+		if (empty($user)) {
+			return;
+		}
+
+		$username = $user['loginname'];
+		$email = $user['emailteks'] ?? $username . '@sikslocal.com';
+		$jabatan = strtolower($user['jabatan']);
+
+		get_role($jabatan) ?: add_role($jabatan, $jabatan, array(
+			'read' => true,
+			'edit_posts' => false,
+			'delete_posts' => false,
+		));
+
+		$user_id = username_exists($username);
+		if (!$user_id) {
+			$user_id = wp_insert_user(array(
+				'user_login' 	=> $username,
+				'user_pass' 	=> $user['pass'],
+				'user_email' 	=> $email,
+				'first_name' 	=> $user['nama'],
+				'display_name' 	=> $user['nama'],
+				'role' 			=> $jabatan
+			));
+
+			if (is_wp_error($user_id)) {
+				return $user_id;
+			}
+		} else if (!in_array($jabatan, get_userdata($user_id)->roles)) {
+			get_userdata($user_id)->add_role($jabatan);
+		}
+
+		if ($update_pass) {
+			wp_set_password($user['pass'], $user_id);
+		}
+
+		$meta = array_filter(array(
+			'description' 		=> 'User dibuat dari generate sistem aplikasi WP-SIKS',
+		));
+
+		foreach ($meta as $key => $val) {
+			update_user_meta($user_id, $key, $val);
 		}
 	}
 }

@@ -414,3 +414,13 @@ CREATE TABLE `data_wrse_siks` (
     `active` tinyint(4) DEFAULT 1,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE `data_alamat_siks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_kec` int(11) NOT NULL,
+  `id_desa` int(11) DEFAULT NULL,
+  `nama` text NOT NULL,
+  `update_at` datetime DEFAULT current_timestamp,
+  `active` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY  (id)
+);
