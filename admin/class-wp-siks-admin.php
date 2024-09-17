@@ -397,7 +397,7 @@ class Wp_Siks_Admin
 					->set_html('<a href="#" class="button button-primary" onclick="get_data_alamat_dtks_siks(); return false;">Tarik Data Master User</a>')
 					->set_help_text('Tombol untuk menarik data master user Desa dan Kecamatan dari tabel data_dtks'),
 				Field::make('html', 'crb_generate_user_siks')
-					->set_html('<a id="generate_user_siks" onclick="return false;" href="#" class="button button-primary button-large">Generate User By DB Lokal</a>')
+					->set_html('<a id="generate_user_siks" onclick="return false;" href="#" class="button button-primary button-large">Generate User Desa & Kecamatan</a>')
 					->set_help_text('Data user aktif yang ada di table data_alamat_siks akan digenerate menjadi user wordpress.'),
 			));
 
@@ -2078,7 +2078,7 @@ class Wp_Siks_Admin
 					foreach ($data_kecamatan as $k => $user) {
 						$user['pass'] 			= $_POST['pass'];
 						$user['loginname'] 		= $user['id_kec'];
-						$user['nama'] 			= "Kecamatan " . $user['nama'];
+						$user['nama'] 			= $user['nama'];
 						$user['id_kecamatan'] 	= $user['id_kec'];
 						$user['jabatan'] 		= 'Kecamatan';
 						$this->gen_user_siks($user, $update_pass);
@@ -2089,7 +2089,7 @@ class Wp_Siks_Admin
 					foreach ($data_desa_kel as $k => $user) {
 						$user['pass'] 			= $_POST['pass'];
 						$user['loginname'] 		= $user['id_desa'];
-						$user['nama'] 			= "Desa " . $user['nama'];
+						$user['nama'] 			= $user['nama'];
 						$user['id_desa'] 		= $user['id_desa'];
 						$user['jabatan'] 		= 'Desa';
 						$this->gen_user_siks($user, $update_pass);
@@ -2128,13 +2128,13 @@ class Wp_Siks_Admin
 
 		$data_desa_kel = $wpdb->get_results(
 			$wpdb->prepare("
-			SELECT 
-				id_kec,
-				id_desa,
-				desa_kelurahan
-			FROM data_dtks
-			WHERE active = %d
-			GROUP BY id_desa
+				SELECT 
+					id_kec,
+					id_desa,
+					desa_kelurahan
+				FROM data_dtks
+				WHERE active = %d
+				GROUP BY id_desa
 		", 1),
 			ARRAY_A
 		);
@@ -2178,8 +2178,6 @@ class Wp_Siks_Admin
 				'active'    => 1
 			);
 
-			die(print_r($data_desa_kel));
-
 			$cek_desa = $wpdb->get_var(
 				$wpdb->prepare("
 					SELECT id
@@ -2218,27 +2216,43 @@ class Wp_Siks_Admin
 		$jabatan = strtolower($user['jabatan']);
 
 		get_role($jabatan) ?: add_role($jabatan, $jabatan, array(
-			'read' => true,
-			'edit_posts' => false,
-			'delete_posts' => false,
+			'read' 			=> true,
+			'edit_posts' 	=> false,
+			'delete_posts' 	=> false,
 		));
 
 		$user_id = username_exists($username);
 		if (!$user_id) {
-			$user_id = wp_insert_user(array(
+			$user_data = array(
 				'user_login' 	=> $username,
 				'user_pass' 	=> $user['pass'],
 				'user_email' 	=> $email,
 				'first_name' 	=> $user['nama'],
 				'display_name' 	=> $user['nama'],
 				'role' 			=> $jabatan
-			));
+			);
+			$user_insert = wp_insert_user($user_data);
 
-			if (is_wp_error($user_id)) {
-				return $user_id;
+			if (is_wp_error($user_insert)) {
+				return $user_insert;
 			}
-		} else if (!in_array($jabatan, get_userdata($user_id)->roles)) {
-			get_userdata($user_id)->add_role($jabatan);
+		} else {
+			$user_data = array(
+				'ID'          	=> $user_id,
+				'user_email'  	=> $email,
+				'first_name'  	=> $user['nama'],
+				'display_name'	=> $user['nama']
+			);
+			$user_update = wp_update_user($user_data);
+
+			if (is_wp_error($user_update)) {
+				return $user_update;
+			}
+
+			$user_meta = get_userdata($user_id);
+			if (!in_array($jabatan, $user_meta->roles)) {
+				$user_meta->add_role($jabatan);
+			}
 		}
 
 		if ($update_pass) {
@@ -2246,7 +2260,7 @@ class Wp_Siks_Admin
 		}
 
 		$meta = array_filter(array(
-			'description' 		=> 'User dibuat dari generate sistem aplikasi WP-SIKS',
+			'description' => 'User dibuat dari generate sistem aplikasi WP-SIKS'
 		));
 
 		foreach ($meta as $key => $val) {

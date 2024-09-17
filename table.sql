@@ -417,8 +417,8 @@ CREATE TABLE `data_wrse_siks` (
 
 CREATE TABLE `data_alamat_siks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_kec` int(11) NOT NULL,
-  `id_desa` int(11) DEFAULT NULL,
+  `id_kec` text NOT NULL,
+  `id_desa` text DEFAULT NULL,
   `nama` text NOT NULL,
   `update_at` datetime DEFAULT current_timestamp,
   `active` tinyint(4) NOT NULL DEFAULT '1',
