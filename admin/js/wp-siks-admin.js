@@ -290,7 +290,7 @@ jQuery(document).ready(function () {
 				},
 				error: function (e) {
 					console.log(e);
-					return alert(data.message);
+					return alert(e.message);
 				}
 			});
 		}
