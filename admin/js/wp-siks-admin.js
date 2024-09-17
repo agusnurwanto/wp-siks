@@ -23,6 +23,7 @@ function relayAjax(options, retries = 20, delay = 5000, timeout = 9000000) {
 	});
 }
 
+//tarik data user
 function get_data_alamat_dtks_siks() {
 	jQuery("#wrap-loading").show();
 
@@ -270,24 +271,24 @@ jQuery(document).ready(function () {
 		jQuery("body").prepend(loading);
 	}
 
-	jQuery('#generate_user_siks').on('click', function(){
-		if(confirm("Apakah anda yakin akan menggenerate user SIKS ?")){
+	jQuery('#generate_user_siks').on('click', function () {
+		if (confirm("Apakah anda yakin akan menggenerate user SIKS ?")) {
 			jQuery('#wrap-loading').show();
 			jQuery.ajax({
 				url: ajax.url,
-	          	type: "post",
-	          	data: {
-	          		"action": "generate_user_siks",
-	          		"api_key": ajax.apikey,
-	          		"pass": prompt('Masukan password default untuk User yang akan dibuat'),
-	          		"update_pass": confirm("Apakah anda mau mereset password user existing juga?")
-	          	},
-	          	dataType: "json",
-	          	success: function(data){
+				type: "post",
+				data: {
+					"action": "generate_user_siks",
+					"api_key": ajax.apikey,
+					"pass": prompt('Masukan password default untuk User yang akan dibuat'),
+					"update_pass": confirm("Apakah anda mau mereset password user existing juga?")
+				},
+				dataType: "json",
+				success: function (data) {
 					jQuery('#wrap-loading').hide();
 					return alert(data.message);
 				},
-				error: function(e) {
+				error: function (e) {
 					console.log(e);
 					return alert(data.message);
 				}
