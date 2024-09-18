@@ -4643,4 +4643,129 @@ class Wp_Siks_Public
 
 		die(json_encode($ret));
 	}
+
+	function menu_siks()
+	{
+		global $wpdb;
+		$user_data = wp_get_current_user();
+
+		if (in_array('desa', $user_data->roles)) {
+			$id_kecamatan = substr($user_data->user_login, 0, 6);
+			$id_desa = $user_data->user_login;
+			$data_desa = $wpdb->get_results(
+				$wpdb->prepare('
+					SELECT 
+						nama
+					FROM data_alamat_siks
+					WHERE id_desa = %d
+					  AND active = 1
+				', $id_desa),
+				ARRAY_A
+			);
+		} else if (in_array('kecamatan', $user_data->roles)) {
+			$id_kecamatan = $user_data->user_login;
+			$data_desa = $wpdb->get_results(
+				$wpdb->prepare('
+					SELECT 
+						nama
+					FROM data_alamat_siks
+					WHERE id_kec = %d
+					  AND id_desa IS NOT NULL
+					  AND active = 1
+				', $id_kecamatan),
+				ARRAY_A
+			);
+		}
+
+		if (in_array('administrator', $user_data->roles)) {
+			$return = '<h2>Halaman ini hanya ditujukan untuk user Desa/Kecamatan.</h2>';
+		} else {
+			$nama_kecamatan = $wpdb->get_var(
+				$wpdb->prepare('
+					SELECT 
+						nama
+					FROM data_alamat_siks
+					WHERE id_kec = %d
+					  AND id_desa IS NULL
+					  AND active = 1
+				', $id_kecamatan)
+			);
+
+			$pages = array(
+				'Anak Terlantar Per Desa' => '[anak_terlantar_per_desa]',
+				'Bunda Kasih Per Desa'    => '[bunda_kasih_per_desa]',
+				'Gepeng Per Desa'         => '[gepeng_per_desa]',
+				'Hibah Per Desa'          => '[hibah_per_desa]',
+				'P3KE Per Desa'           => '[p3ke_per_desa]',
+				'WRSE Per Desa'           => '[wrse_per_desa]',
+				'DTKS Per Desa'           => '[dtks_per_desa]',
+				'Disabilitas Per Desa'    => '[disabilitas_per_desa]'
+			);
+
+			$return = '<div id="desaAccordion" class="accordion">';
+
+			foreach ($data_desa as $index => $desa) {
+				$params = '?desa=' . mb_strtoupper($desa['nama']);
+
+				$collapseId = 'collapse' . $index;
+				$headingId = 'heading' . $index;
+
+				$return .= '
+					<div class="card">
+						<div class="card-header" id="' . $headingId . '">
+							<h2 class="mb-0">
+								<a class="accordion-toggle d-flex justify-content-between text-dark" data-toggle="collapse" href="#' . $collapseId . '" aria-expanded="false" aria-controls="' . $collapseId . '">
+									' . $desa['nama'] . '
+								</a>
+							</h2>
+						</div>
+	
+						<div id="' . $collapseId . '" class="collapse" aria-labelledby="' . $headingId . '" data-parent="#desaAccordion">
+							<div class="card-body">
+								<div class="row">
+				';
+
+				foreach ($pages as $nama_page => $shortcode) {
+					$gen_page = $this->functions->generatePage(array(
+						'nama_page' => $nama_page,
+						'content' => $shortcode,
+						'show_header' => 1,
+						'no_key' => 1,
+						'post_status' => 'publish'
+					));
+
+					// Add each page inside a card within the accordion body
+					$return .= '
+						<div class="col-md-4 mb-3">
+							<div class="card shadow-sm border-0 rounded-lg text-dark bg-light">
+								<div class="card-body d-flex flex-column shadow-lg">
+									<h5 class="card-title">' . $nama_page . '</h5>
+									<p class="card-text text-muted">Halaman untuk mengakses data ' . $nama_page . '.</p>
+									<div class="mt-auto d-flex justify-content-end">
+										<a href="' . $gen_page['url'] . $params . '" target="_blank"class="btn btn-outline-primary">
+											<span class="dashicons dashicons-controls-forward"></span> Tampilkan
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					';
+				}
+
+				$return .= '
+								</div> 
+							</div>
+						</div>
+					</div>
+				';
+			}
+
+			$return .= '</div>';
+		}
+
+		return '
+		<h2 class="text-center"> Kecamatan ' . $nama_kecamatan . '</h2>
+		<div>' . $return . '</div>
+		';
+	}
 }

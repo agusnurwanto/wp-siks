@@ -21,7 +21,6 @@ $desa = $wpdb->get_row($wpdb->prepare('
 ', $nama_desa), ARRAY_A);
 $default_location = $this->getSearchLocation($desa);
 
-// print_r($desa); die($wpdb->last_query);
 ?>
 <style type="text/css">
     .wrap-table {
