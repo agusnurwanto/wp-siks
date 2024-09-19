@@ -1,24 +1,27 @@
 <?php
-global $wpdb;
-$api_key = get_option(SIKS_APIKEY);
-$url = admin_url('admin-ajax.php');
-$center = $this->get_center();
-$maps_all = $this->get_polygon();
-$nama_desa = null;
-
-if (empty($nama_desa) && is_user_logged_in()) {
-    $nama_desa = $_GET['desa'];
+$validate_user = $this->user_authorization($_GET['desa']);
+if ($validate_user['status'] === 'error') {
+    die($validate_user['message']);
 } else {
-    die('error, coba login ulang');
+    echo "<script>console.log('Debug Objects: " . $validate_user['message'] . "' );</script>";
+    $nama_desa = $validate_user['data'];
 }
 
-$desa = $wpdb->get_row($wpdb->prepare('
-    SELECT
-        *
-    FROM data_batas_desa_siks
-    WHERE desa=%s
-        AND active=1
-', $nama_desa), ARRAY_A);
+global $wpdb;
+$center = $this->get_center();
+$maps_all = $this->get_polygon();
+
+$desa = $wpdb->get_row(
+    $wpdb->prepare('
+        SELECT
+            *
+        FROM data_batas_desa_siks
+        WHERE desa=%s
+          AND kecamatan=%s
+          AND active=1
+', $nama_desa, $validate_user['kecamatan']),
+    ARRAY_A
+);
 $default_location = $this->getSearchLocation($desa);
 ?>
 <style type="text/css">
@@ -144,12 +147,12 @@ $default_location = $this->getSearchLocation($desa);
                         return: true
                     },
                     "ajax": {
-                        url: '<?php echo $url ?>',
+                        url: ajax.url,
                         type: 'POST',
                         dataType: 'json',
                         data: {
                             'action': 'get_datatable_disabilitas',
-                            'api_key': '<?php echo $api_key ?>',
+                            'api_key': ajax.apikey,
                             'desa': '<?php echo $nama_desa ?>'
                         }
                     },
@@ -162,8 +165,10 @@ $default_location = $this->getSearchLocation($desa);
                     ],
                     "drawCallback": function(settings) {
                         var api = this.api();
-                        api.rows( {page:'current'} ).data().map(function(b, i){
-                            if(b.lat && b.lng){
+                        api.rows({
+                            page: 'current'
+                        }).data().map(function(b, i) {
+                            if (b.lat && b.lng) {
                                 var data = b.aksi.split(", true, '")[1].split("')")[0];
                                 setCenterSiks(b.lat, b.lng, true, data, true);
                             }

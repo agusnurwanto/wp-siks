@@ -13,7 +13,6 @@ $total_data_wrse = $wpdb->get_var(
     ", 1)
 );
 
-
 //generate page per desa
 $this->functions->generatePage(array(
     'nama_page' => 'WRSE Per Desa',

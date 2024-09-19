@@ -1,25 +1,25 @@
 <?php
+$validate_user = $this->user_authorization($_GET['desa']);
+if ($validate_user['status'] === 'error') {
+    die($validate_user['message']);
+} else {
+    echo "<script>console.log('Debug Objects: " . $validate_user['message'] . "' );</script>";
+    $nama_desa = $validate_user['data'];
+}
+
 global $wpdb;
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
-$nama_desa = null;
 
-if (
-    !empty($_GET['desa'])
-    && is_user_logged_in()
-) {
-    $nama_desa = $_GET['desa'];
-} else {
-    die('error, coba login ulang');
-}
 $desa = $wpdb->get_row(
     $wpdb->prepare('
         SELECT
             *
         FROM data_batas_desa_siks
         WHERE desa=%s
+          AND kecamatan=%s
           AND active=1
-    ', $nama_desa),
+    ', $nama_desa, $validate_user['kecamatan']),
     ARRAY_A
 );
 $default_location = $this->getSearchLocation($desa);

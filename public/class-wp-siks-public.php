@@ -4716,6 +4716,7 @@ class Wp_Siks_Public
 							<h2 class="mb-0">
 								<a class="accordion-toggle d-flex justify-content-between text-dark" data-toggle="collapse" href="#' . $collapseId . '" aria-expanded="false" aria-controls="' . $collapseId . '">
 									' . $desa['nama'] . '
+								<span class="dashicons dashicons-arrow-down-alt2"></span>
 								</a>
 							</h2>
 						</div>
@@ -4739,7 +4740,7 @@ class Wp_Siks_Public
 						<div class="col-md-4 mb-3">
 							<div class="card shadow-sm border-0 rounded-lg text-dark bg-light">
 								<div class="card-body d-flex flex-column shadow-lg">
-									<h5 class="card-title">' . $nama_page . '</h5>
+									<h5 class="card-title"><span class="dashicons dashicons-admin-page"></span> ' . $nama_page . '</h5>
 									<p class="card-text text-muted">Halaman untuk mengakses data ' . $nama_page . '.</p>
 									<div class="mt-auto d-flex justify-content-end">
 										<a href="' . $gen_page['url'] . $params . '" target="_blank"class="btn btn-outline-primary">
@@ -4767,5 +4768,87 @@ class Wp_Siks_Public
 		<h2 class="text-center"> Kecamatan ' . $nama_kecamatan . '</h2>
 		<div>' . $return . '</div>
 		';
+	}
+
+	function user_authorization($desa)
+	{
+		global $wpdb;
+		$ret = array(
+			'status' 	=> 'success',
+			'message' 	=> 'User Valid!',
+			'data'		=> $desa,
+			'kecamatan'		=> ''
+		);
+
+		// Check if user is logged in
+		if (!is_user_logged_in()) {
+			$ret['status'] = 'error';
+			$ret['message'] = 'Anda belum login!';
+			return $ret;
+		}
+
+		$desa = strtolower($desa);
+		$user_data = wp_get_current_user();
+
+		if (in_array('desa', $user_data->roles)) {
+			$id_kecamatan = substr($user_data->user_login, 0, 6);
+			$id_desa = $user_data->user_login;
+		} else if (in_array('kecamatan', $user_data->roles)) {
+			$id_kecamatan = $user_data->user_login;
+		}
+
+		// User role-specific validation
+		switch (true) {
+			case in_array('kecamatan', $user_data->roles):
+				$all_desa_by_kecamatan = $wpdb->get_col(
+					$wpdb->prepare('
+						SELECT LOWER(nama)
+						FROM data_alamat_siks
+						WHERE id_kec = %d 
+						  AND id_desa IS NOT NULL 
+						  AND active = 1', $id_kecamatan)
+				);
+
+				$ret['kecamatan'] = $user_data->display_name;
+				if (!in_array($desa, $all_desa_by_kecamatan)) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'User kecamatan tidak valid! Desa tidak sesuai.';
+				}
+				break;
+			case in_array('desa', $user_data->roles):
+				$get_desa = $wpdb->get_var(
+					$wpdb->prepare('
+						SELECT LOWER(nama)
+						FROM data_alamat_siks
+						WHERE id_kec = %d 
+						  AND id_desa = %d 
+						  AND active = 1', $id_kecamatan, $id_desa)
+				);
+				$get_kecamatan = $wpdb->get_var(
+					$wpdb->prepare('
+						SELECT nama
+						FROM data_alamat_siks
+						WHERE id_kec = %d 
+						  AND id_desa IS NULL
+						  AND active = 1', $id_kecamatan)
+				);
+
+				$ret['kecamatan'] = $get_kecamatan;
+				if ($desa !== $get_desa) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'User desa tidak valid! Kecamatan atau desa tidak sesuai.';
+				}
+				break;
+			case in_array('administrator', $user_data->roles):
+				$ret['status'] = 'success';
+				$ret['message'] = 'User administrator!';
+				break;
+			default:
+				$ret['status'] = 'error';
+				$ret['message'] = 'Role user tidak valid!';
+				break;
+		}
+
+		return $ret;
 	}
 }
