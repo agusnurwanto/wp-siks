@@ -85,6 +85,7 @@ $default_location = $this->getSearchLocation($desa);
                             'action': 'get_datatable_anak_terlantar',
                             'api_key': ajax.apikey,
                             'desa_kelurahan': '<?php echo $nama_desa ?>'
+                            'kecamatan': '<?php echo $validate_user['kecamatan']; ?>',
                         }
                     },
                     lengthMenu: [

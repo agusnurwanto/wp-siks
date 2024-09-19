@@ -13,7 +13,7 @@
 <div class="cetak">
     <div style="padding: 10px;margin:0 0 3rem 0;">
         <input type="hidden" value="<?php echo get_option( '_crb_api_key_extension' ); ?>" id="api_key">
-        <h1 class="text-center" style="margin:3rem;">Manajemen Data DTKS</h1>
+        <h1 class="text-center" style="margin:3rem;">Manajemen Data DTKS<br>( Data Terpadu Kesejahteraan Sosial )</h1>
         <div class="wrap-table">
         <table id="management_data_table" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
             <thead>

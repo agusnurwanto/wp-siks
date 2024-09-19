@@ -1764,6 +1764,11 @@ class Wp_Siks_Admin
 					);
 					$where = $sqlTot = $sqlRec = "";
 
+					if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
+						$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $_POST['desa']);
+						$where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
+					}
+
 					if (!empty($params['search']['value'])) {
 						$where .= " AND (";
 						$where .= " NIK LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");

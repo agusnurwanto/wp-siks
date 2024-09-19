@@ -81,6 +81,7 @@ $default_location = $this->getSearchLocation($desa);
                         'action': 'get_datatable_data_wrse',
                         'api_key': ajax.apikey,
                         'desa': '<?php echo $nama_desa; ?>',
+                        'kecamatan': '<?php echo $validate_user['kecamatan']; ?>',
                     }
                 },
                 lengthMenu: [
@@ -102,7 +103,7 @@ $default_location = $this->getSearchLocation($desa);
                 },
                 "columns": [{
                         "data": 'aksi',
-                        className: "text-left"
+                        className: "text-center"
                     },
                     {
                         "data": 'nama',

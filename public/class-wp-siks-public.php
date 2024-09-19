@@ -1524,8 +1524,9 @@ class Wp_Siks_Public
 			);
 			$where = $sqlTot = $sqlRec = "";
 
-			if (!empty($params['desa'])) {
-				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
+			if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
+				$where .= $wpdb->prepare(' AND desa=%s', $_POST['desa']);
+				$where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
@@ -1867,8 +1868,9 @@ class Wp_Siks_Public
 			);
 			$where = $sqlTot = $sqlRec = "";
 
-			if (!empty($params['desa'])) {
-				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
+			if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
+				$where .= $wpdb->prepare(' AND desa=%s', $_POST['desa']);
+				$where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
@@ -2159,8 +2161,9 @@ class Wp_Siks_Public
 			);
 			$where = $sqlTot = $sqlRec = "";
 
-			if (!empty($params['desa'])) {
-				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
+			if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
+				$where .= $wpdb->prepare(' AND desa=%s', $_POST['desa']);
+				$where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
@@ -2542,8 +2545,9 @@ class Wp_Siks_Public
 			);
 			$where = $sqlTot = $sqlRec = "";
 
-			if (!empty($params['desa'])) {
-				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
+			if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
+				$where .= $wpdb->prepare(' AND desa=%s', $_POST['desa']);
+				$where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
@@ -2870,8 +2874,9 @@ class Wp_Siks_Public
 			);
 			$where = $sqlTot = $sqlRec = "";
 
-			if (!empty($params['nama'])) {
-				$where .= $wpdb->prepare(' AND nama=%s', $params['nama']);
+			if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
+				$where .= $wpdb->prepare(' AND desa=%s', $_POST['desa']);
+				$where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
@@ -3165,8 +3170,9 @@ class Wp_Siks_Public
 			);
 			$where = $sqlTot = $sqlRec = "";
 
-			if (!empty($params['desa_kelurahan'])) {
-				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa_kelurahan']);
+			if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
+				$where .= $wpdb->prepare(' AND desa=%s', $_POST['desa']);
+				$where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
@@ -3706,8 +3712,9 @@ class Wp_Siks_Public
 			);
 			$where = $sqlTot = $sqlRec = "";
 
-			if (!empty($params['desa'])) {
-				$where .= $wpdb->prepare(' AND desa=%s', $params['desa']);
+			if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
+				$where .= $wpdb->prepare(' AND desa=%s', $_POST['desa']);
+				$where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
 			}
 			// check search value exist
 			if (!empty($params['search']['value'])) {
@@ -3939,8 +3946,9 @@ class Wp_Siks_Public
 			$where = 'WHERE 1=1 AND active = 1';
 			$searchValue = !empty($params['search']['value']) ? $params['search']['value'] : '';
 
-			if (!empty($_POST['desa'])) {
-				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);
+			if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
+				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $_POST['desa']);
+				$where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
 			}
 
 			// Search filter
@@ -4060,8 +4068,9 @@ class Wp_Siks_Public
 			$where = 'WHERE 1=1 AND active = 1';
 			$searchValue = !empty($params['search']['value']) ? $params['search']['value'] : '';
 
-			if (!empty($params['desa'])) {
-				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $params['desa']);
+			if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
+				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $_POST['desa']);
+				$where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
 			}
 
 			// Search filter
@@ -4692,14 +4701,15 @@ class Wp_Siks_Public
 			);
 
 			$pages = array(
-				'Anak Terlantar Per Desa' => '[anak_terlantar_per_desa]',
+				'DTKS Per Desa'           => '[dtks_per_desa]',
 				'Bunda Kasih Per Desa'    => '[bunda_kasih_per_desa]',
+				'Anak Terlantar Per Desa' => '[anak_terlantar_per_desa]',
 				'Gepeng Per Desa'         => '[gepeng_per_desa]',
 				'Hibah Per Desa'          => '[hibah_per_desa]',
 				'P3KE Per Desa'           => '[p3ke_per_desa]',
 				'WRSE Per Desa'           => '[wrse_per_desa]',
-				'DTKS Per Desa'           => '[dtks_per_desa]',
-				'Disabilitas Per Desa'    => '[disabilitas_per_desa]'
+				'Disabilitas Per Desa'    => '[disabilitas_per_desa]',
+				'Lansia Per Desa'    	  => '[lansia_per_desa]'
 			);
 
 			$return = '<div id="desaAccordion" class="accordion">';

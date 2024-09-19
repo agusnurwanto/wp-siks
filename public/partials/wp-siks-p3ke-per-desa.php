@@ -90,6 +90,7 @@ $default_location = $this->getSearchLocation($desa);
                             'action': 'get_datatable_p3ke',
                             'api_key': ajax.apikey,
                             'desa': '<?php echo $nama_desa ?>',
+                            'kecamatan': '<?php echo $validate_user['kecamatan']; ?>',
                         }
                     },
                     lengthMenu: [

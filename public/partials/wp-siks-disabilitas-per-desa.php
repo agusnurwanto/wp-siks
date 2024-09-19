@@ -153,7 +153,8 @@ $default_location = $this->getSearchLocation($desa);
                         data: {
                             'action': 'get_datatable_disabilitas',
                             'api_key': ajax.apikey,
-                            'desa': '<?php echo $nama_desa ?>'
+                            'desa': '<?php echo $nama_desa ?>',
+                            'kecamatan': '<?php echo $validate_user['kecamatan']; ?>',
                         }
                     },
                     lengthMenu: [

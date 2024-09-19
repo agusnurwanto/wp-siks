@@ -83,6 +83,7 @@ $default_location = $this->getSearchLocation($desa);
                             'action': 'get_data_Gepeng',
                             'api_key': ajax.apikey,
                             'desa': '<?php echo $nama_desa ?>',
+                            'kecamatan': '<?php echo $validate_user['kecamatan']; ?>',
                         }
                     },
                     lengthMenu: [
