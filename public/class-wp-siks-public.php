@@ -4684,11 +4684,12 @@ class Wp_Siks_Public
 				', $id_kecamatan),
 				ARRAY_A
 			);
+		} else {
+			$return = '<h2 class="text-center">Halaman ini hanya ditujukan untuk user Desa/Kecamatan!.</h2>';
+			return $return;
 		}
 
-		if (in_array('administrator', $user_data->roles)) {
-			$return = '<h2>Halaman ini hanya ditujukan untuk user Desa/Kecamatan.</h2>';
-		} else {
+		if (!empty($data_desa)) {
 			$nama_kecamatan = $wpdb->get_var(
 				$wpdb->prepare('
 					SELECT 
@@ -4701,19 +4702,46 @@ class Wp_Siks_Public
 			);
 
 			$pages = array(
-				'DTKS Per Desa'           => '[dtks_per_desa]',
-				'Bunda Kasih Per Desa'    => '[bunda_kasih_per_desa]',
-				'Anak Terlantar Per Desa' => '[anak_terlantar_per_desa]',
-				'Gepeng Per Desa'         => '[gepeng_per_desa]',
-				'Hibah Per Desa'          => '[hibah_per_desa]',
-				'P3KE Per Desa'           => '[p3ke_per_desa]',
-				'WRSE Per Desa'           => '[wrse_per_desa]',
-				'Disabilitas Per Desa'    => '[disabilitas_per_desa]',
-				'Lansia Per Desa'    	  => '[lansia_per_desa]'
+				'DTKS' => array(
+					'Usulan DTKS'    => '[usulan_dtks]',
+					'DTKS Per Desa'  => '[dtks_per_desa]',
+				),
+				'Bunda Kasih' => array(
+					'Usulan Bunda Kasih'    => '[usulan_bunda_kasih]',
+					'Bunda Kasih Per Desa'  => '[bunda_kasih_per_desa]',
+				),
+				'Anak Terlantar' => array(
+					'Usulan Anak Terlantar'    => '[usulan_anak_terlantar]',
+					'Anak Terlantar Per Desa'  => '[anak_terlantar_per_desa]',
+				),
+				'Gepeng' => array(
+					'Usulan Gepeng'    => '[usulan_gepeng]',
+					'Gepeng Per Desa'  => '[gepeng_per_desa]',
+				),
+				'Hibah' => array(
+					'Usulan Hibah'    => '[usulan_hibah]',
+					'Hibah Per Desa'  => '[hibah_per_desa]',
+				),
+				'P3KE' => array(
+					'Usulan P3KE'    => '[usulan_p3ke]',
+					'P3KE Per Desa'  => '[p3ke_per_desa]',
+				),
+				'WRSE' => array(
+					'Usulan WRSE'    => '[usulan_wrse]',
+					'WRSE Per Desa'  => '[wrse_per_desa]',
+				),
+				'Disabilitas' => array(
+					'Usulan Disabilitas'    => '[usulan_disabilitas]',
+					'Disabilitas Per Desa'  => '[disabilitas_per_desa]',
+				),
+				'Lansia' => array(
+					'Usulan Lansia'    => '[usulan_lansia]',
+					'Lansia Per Desa'  => '[lansia_per_desa]',
+				),
 			);
 
-			$return = '<div id="desaAccordion" class="accordion">';
 
+			$return = '<div id="desaAccordion" class="accordion">';
 			foreach ($data_desa as $index => $desa) {
 				$params = '?desa=' . mb_strtoupper($desa['nama']);
 
@@ -4730,53 +4758,120 @@ class Wp_Siks_Public
 								</a>
 							</h2>
 						</div>
-	
+
 						<div id="' . $collapseId . '" class="collapse" aria-labelledby="' . $headingId . '" data-parent="#desaAccordion">
 							<div class="card-body">
+								<div class="d-flex justify-content-center mb-4">
+									<button type="button" class="btn btn-info" data-toggle="modal" data-target="#settingModal' . $index . '"><span class="dashicons dashicons-admin-generic"></span> Pengaturan</button>
+								</div>
 								<div class="row">
 				';
 
-				foreach ($pages as $nama_page => $shortcode) {
-					$gen_page = $this->functions->generatePage(array(
-						'nama_page' => $nama_page,
-						'content' => $shortcode,
-						'show_header' => 1,
-						'no_key' => 1,
-						'post_status' => 'publish'
-					));
-
-					// Add each page inside a card within the accordion body
+				foreach ($pages as $jenis_data => $page) {
 					$return .= '
-						<div class="col-md-4 mb-3">
-							<div class="card shadow-sm border-0 rounded-lg text-dark bg-light">
-								<div class="card-body d-flex flex-column shadow-lg">
-									<h5 class="card-title"><span class="dashicons dashicons-admin-page"></span> ' . $nama_page . '</h5>
-									<p class="card-text text-muted">Halaman untuk mengakses data ' . $nama_page . '.</p>
-									<div class="mt-auto d-flex justify-content-end">
-										<a href="' . $gen_page['url'] . $params . '" target="_blank"class="btn btn-outline-primary">
-											<span class="dashicons dashicons-controls-forward"></span> Tampilkan
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
+					<div class="col-md-6 mb-3">
+						<div class="card shadow-sm border-0 rounded-lg text-dark bg-light">
+							<div class="card-body d-flex flex-column shadow-lg">
+								<h5 class="card-title"><span class="dashicons dashicons-admin-page"></span> ' . $jenis_data . '</h5>
+								<div class="d-flex justify-content-between">
 					';
+
+					foreach ($page as $nama_page => $shortcode) {
+						$gen_page = $this->functions->generatePage(array(
+							'nama_page' => $nama_page,
+							'content' => $shortcode,
+							'show_header' => 1,
+							'no_key' => 1,
+							'post_status' => 'publish'
+						));
+
+						if (strpos(strtolower($nama_page), 'usulan') !== false) {
+							// Tombol Usulan
+							$return .= '
+							<a href="' . $gen_page['url'] . $params . '" target="_blank" class="btn btn-warning">
+								<span class="dashicons dashicons-insert"></span> Usulkan Data
+							</a>
+               			';
+						} else {
+							// Tombol Per Desa
+							$return .= '
+							<a href="' . $gen_page['url'] . $params . '" target="_blank" class="btn btn-primary">
+								<span class="dashicons dashicons-arrow-right-alt"></span> Lihat Data
+							</a>
+						';
+						}
+					}
+
+					$return .= '
+                    </div>
+                </div>
+            </div>
+        </div>
+        ';
 				}
 
 				$return .= '
-								</div> 
-							</div>
-						</div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+
+       <!-- Modal untuk Setting -->
+		<div class="modal fade" id="settingModal' . $index . '" tabindex="-1" role="dialog" aria-labelledby="settingModalLabel' . $index . '" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="settingModalLabel' . $index . '">Pengaturan ' . $desa['nama'] . '</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
 					</div>
-				';
+					<div class="modal-body">
+						<form>
+							<div class="form-group">
+								<label for="radioOption">Pilih Kategori</label><br>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="desaRadio" id="desaRadio" value="desa">
+									<label class="form-check-label" for="desaRadio">
+										Desa
+									</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="desaRadio" id="kelurahanRadio" value="kelurahan">
+									<label class="form-check-label" for="kelurahanRadio">
+										Kelurahan
+									</label>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="currentName">Nama Sekarang</label>
+								<input type="text" class="form-control" id="currentName" value="' . $desa['nama'] . '" disabled>
+							</div>
+
+							<div class="form-group">
+								<label for="newName">Nama Baru</label>
+								<input type="text" class="form-control" id="newName">
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+						<button type="button" class="btn btn-primary" onclick="saveChanges()">Simpan perubahan</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+    ';
 			}
 
 			$return .= '</div>';
+		} else {
+			$return = '<h2 class="text-center">Data Desa tidak ditemukan!.</h2>';
 		}
-
 		return '
-		<h2 class="text-center"> Kecamatan ' . $nama_kecamatan . '</h2>
-		<div>' . $return . '</div>
+			<h2 class="text-center"> Kecamatan ' . $nama_kecamatan . '</h2>
+			<div>' . $return . '</div>
 		';
 	}
 
@@ -4797,8 +4892,8 @@ class Wp_Siks_Public
 			return $ret;
 		}
 
-		$desa = strtolower($desa);
 		$user_data = wp_get_current_user();
+		$desa = strtolower($desa);
 
 		if (in_array('desa', $user_data->roles)) {
 			$id_kecamatan = substr($user_data->user_login, 0, 6);
