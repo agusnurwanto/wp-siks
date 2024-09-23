@@ -296,4 +296,50 @@ function initMapSiks() {
             });
         });
     })
+
+    function editDataDesaKel() {
+        const validationRules = {
+            'desaKelRadio': 'Data status desa / kelurahan tidak boleh kosong!',
+            'newName': 'Nama baru tidak boleh kosong!'
+            // Tambahkan field lain jika diperlukan
+        };
+
+        const {
+            error,
+            data
+        } = validateForm(validationRules);
+        if (error) {
+            return alert(error);
+        }
+
+        const id_data = jQuery('#id_data_desa').val();
+
+        const tempData = new FormData();
+        tempData.append('action', 'edit_data_desa_kel');
+        tempData.append('api_key', ajax.apikey);
+        tempData.append('id_data', id_data);
+
+        for (const [key, value] of Object.entries(data)) {
+            tempData.append(key, value);
+        }
+
+        jQuery('#wrap-loading').show();
+
+        jQuery.ajax({
+            method: 'post',
+            url: ajax.url,
+            dataType: 'json',
+            data: tempData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(res) {
+                alert(res.message);
+                if (res.status === 'success') {
+                    jQuery('#settingModal').modal('hide');
+                    menu_siks();
+                }
+            }
+        });
+    }
 }

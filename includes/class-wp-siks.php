@@ -280,6 +280,7 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_hapus_data_hibah_by_id', $plugin_public, 'hapus_data_hibah_by_id');
 
 		$this->loader->add_action('wp_ajax_cari_nik_siks', $plugin_public, 'cari_nik_siks');
+		$this->loader->add_action('wp_ajax_edit_data_desa_kel', $plugin_public, 'edit_data_desa_kel');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 		add_shortcode('cek_nik_siks', array($plugin_public, 'cek_nik_siks'));
@@ -299,6 +300,18 @@ class Wp_Siks {
 		add_shortcode('management_hibah', array($plugin_public, 'management_hibah'));
 		add_shortcode('management_calon_p3ke', array($plugin_public, 'management_calon_p3ke'));
 		
+		add_shortcode('list_verifikasi_usulan', array($plugin_public, 'list_verifikasi_usulan'));
+		
+		add_shortcode('usulan_dtks', array($plugin_public, 'usulan_dtks'));
+		add_shortcode('usulan_lansia', array($plugin_public, 'usulan_lansia'));
+		add_shortcode('usulan_disabilitas', array($plugin_public, 'usulan_disabilitas'));
+		add_shortcode('usulan_bunda_kasih', array($plugin_public, 'usulan_bunda_kasih'));
+		add_shortcode('usulan_anak_terlantar', array($plugin_public, 'usulan_anak_terlantar'));
+		add_shortcode('usulan_odgj', array($plugin_public, 'usulan_odgj'));
+		add_shortcode('usulan_p3ke', array($plugin_public, 'usulan_p3ke'));
+		add_shortcode('usulan_wrse', array($plugin_public, 'usulan_wrse'));
+		add_shortcode('usulan_hibah', array($plugin_public, 'usulan_hibah'));
+
 		add_shortcode('disabilitas_per_desa', array($plugin_public, 'disabilitas_per_desa'));
 		add_shortcode('anak_terlantar_per_desa', array($plugin_public, 'anak_terlantar_per_desa'));
 		add_shortcode('lansia_per_desa', array($plugin_public, 'lansia_per_desa'));

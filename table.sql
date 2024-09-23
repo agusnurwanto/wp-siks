@@ -419,8 +419,33 @@ CREATE TABLE `data_alamat_siks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_kec` text NOT NULL,
   `id_desa` text DEFAULT NULL,
+  `is_kel` int(11) ENUM(0, 1) DEFAULT 0 COMMENT '0 = desa, 1 = kelurahan',
   `nama` text NOT NULL,
   `update_at` datetime DEFAULT current_timestamp,
   `active` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY  (id)
+);
+
+CREATE TABLE `data_usulan_wrse_siks` (
+    `id` INT AUTO_INCREMENT,
+    `nama` VARCHAR(255) NOT NULL,
+    `usia` INT NOT NULL,
+    `provinsi` VARCHAR(100),
+    `kabkot` VARCHAR(100),
+    `kecamatan` VARCHAR(100),
+    `desa_kelurahan` VARCHAR(100),
+    `alamat` TEXT,
+    `status_dtks` ENUM('Terdaftar', 'Tidak Terdaftar') DEFAULT 'Tidak Terdaftar',
+    `status_pernikahan` ENUM('Belum Menikah', 'Menikah', 'Janda') DEFAULT 'Belum Menikah',
+    `mempunyai_usaha` ENUM('Ya', 'Tidak') DEFAULT 'Tidak',
+    `status_data` ENUM(1, 2, 3) NOT NULL COMMENT '1 = usulan, 2 = disetujui, 3 = ditolak',
+    `keterangan` TEXT,
+    `jenis_data` ENUM('Induk', 'PAK') DEFAULT 'Induk',
+    `lat` text DEFAULT NULL,
+    `lng` text DEFAULT NULL,
+    `tahun_anggaran` YEAR(4),
+    `create_at` datetime,
+    `update_at` datetime DEFAULT current_timestamp,
+    `active` tinyint(4) DEFAULT 1,
+    PRIMARY KEY (id)
 );
