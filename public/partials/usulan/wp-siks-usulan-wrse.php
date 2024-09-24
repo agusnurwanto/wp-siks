@@ -1,6 +1,12 @@
 <?php
+$validate_user = $this->user_authorization($_GET['desa']);
+if ($validate_user['status'] === 'error') {
+    die($validate_user['message']);
+} else {
+    echo "<script>console.log('Debug Objects: " . $validate_user['message'] . "' );</script>";
+    $nama_desa = $validate_user['data'];
+}
 global $wpdb;
-
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
 
@@ -22,12 +28,6 @@ foreach ($maps_all as $i => $desa) {
 
 ?>
 <style type="text/css">
-    .wrap-table {
-        overflow: auto;
-        max-height: 100vh;
-        width: 100%;
-    }
-
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -38,39 +38,41 @@ foreach ($maps_all as $i => $desa) {
         -moz-appearance: textfield;
     }
 </style>
-<div style="padding: 10px;margin:0 0 3rem 0;">
-    <h1 class="text-center" style="margin:3rem;">Data Usulan WRSE</h1>
-    <h2 class="text-center" style="margin:3rem;">(Wanita Rawan Sosial Ekonomi)</h2>
-    <div style="margin-bottom: 25px;">
-        <button class="btn btn-primary" onclick="showModalTambahData();"><span class="dashicons dashicons-plus"></span> Tambah Data</button>
-    </div>
-    <div class="wrap-table">
-        <table id="tableData" class="table table-bordered">
-            <thead>
-                <tr>
-                    <th class="text-center" style="width: 12%;">Nama</th>
-                    <th class="text-center" style="width: 5%;">Usia</th>
-                    <th class="text-center" style="width: 8%;">Provinsi</th>
-                    <th class="text-center" style="width: 10%;">Kota / Kabupaten</th>
-                    <th class="text-center" style="width: 10%;">Kecamatan</th>
-                    <th class="text-center" style="width: 10%;">Desa / Kelurahan</th>
-                    <th class="text-center" style="width: 15%;">Alamat</th>
-                    <th class="text-center" style="width: 7%;">Status DTKS</th>
-                    <th class="text-center" style="width: 8%;">Status Pernikahan</th>
-                    <th class="text-center" style="width: 8%;">Mempunyai Usaha</th>
-                    <th class="text-center" style="width: 10%;">Keterangan</th>
-                    <th class="text-center" style="width: 7%;">Jenis Data</th>
-                    <th class="text-center" style="width: 7%;">Tahun Anggaran</th>
-                    <th class="text-center" style="width: 8%;">Dibuat Pada</th>
-                    <th class="text-center" style="width: 8%;">Terakhir Diperbarui</th>
-                    <th class="text-center" style="width: 8%;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+<div class="pb-4 mb-5">
+    <h1 class="text-center my-4">Data Usulan WRSE</h1>
+    <h2 class="text-center my-4">(Wanita Rawan Sosial Ekonomi)</h2>
+    <h2 class="text-center my-4">DESA <?php echo strtoupper($nama_desa); ?></h2>
+    <div class="mb-4">
+        <button class="btn btn-primary" onclick="showModalTambahData();">
+            <span class="dashicons dashicons-plus"></span> Tambah Data
+        </button>
     </div>
 </div>
+<table id="tableData" class="table table-bordered">
+    <thead>
+        <tr>
+            <th class="text-center" style="width: 12%;">Nama</th>
+            <th class="text-center" style="width: 5%;">Usia</th>
+            <th class="text-center" style="width: 8%;">Provinsi</th>
+            <th class="text-center" style="width: 10%;">Kota / Kabupaten</th>
+            <th class="text-center" style="width: 10%;">Kecamatan</th>
+            <th class="text-center" style="width: 10%;">Desa / Kelurahan</th>
+            <th class="text-center" style="width: 15%;">Alamat</th>
+            <th class="text-center" style="width: 7%;">Status DTKS</th>
+            <th class="text-center" style="width: 8%;">Status Pernikahan</th>
+            <th class="text-center" style="width: 8%;">Mempunyai Usaha</th>
+            <th class="text-center" style="width: 10%;">Keterangan</th>
+            <th class="text-center" style="width: 7%;">Jenis Data</th>
+            <th class="text-center" style="width: 7%;">Tahun Anggaran</th>
+            <th class="text-center" style="width: 7%;">Status Verifikasi</th>
+            <th class="text-center" style="width: 8%;">Dibuat Pada</th>
+            <th class="text-center" style="width: 8%;">Terakhir Diperbarui</th>
+            <th class="text-center" style="width: 8%;">Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 <div class="modal fade mt-4" id="modalTambahData" tabindex="-1" role="dialog" aria-labelledby="modalTambahData" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -235,6 +237,7 @@ foreach ($maps_all as $i => $desa) {
             }).DataTable({
                 "processing": true,
                 "serverSide": true,
+                "scrollX": true, // Enable horizontal scroll
                 "search": {
                     return: true
                 },
@@ -305,6 +308,10 @@ foreach ($maps_all as $i => $desa) {
                     },
                     {
                         "data": 'tahun_anggaran',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'status_data',
                         className: "text-center"
                     },
                     {
@@ -538,6 +545,7 @@ foreach ($maps_all as $i => $desa) {
         tempData.append('action', 'tambah_data_usulan_wrse');
         tempData.append('api_key', ajax.apikey);
         tempData.append('id_data', id_data);
+        tempData.append('nama', nama);
 
         for (const [key, value] of Object.entries(data)) {
             tempData.append(key, value);
@@ -555,11 +563,16 @@ foreach ($maps_all as $i => $desa) {
             cache: false,
             success: function(res) {
                 alert(res.message);
+                jQuery('#wrap-loading').hide();
                 if (res.status === 'success') {
                     jQuery('#modalTambahData').modal('hide');
                     getDataTable();
                 }
             }
         });
+    }
+
+    function verifyData(id) {
+        alert('halo ' + id)
     }
 </script>

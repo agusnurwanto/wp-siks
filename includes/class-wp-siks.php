@@ -273,6 +273,11 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_get_data_wrse_by_id', $plugin_public, 'get_data_wrse_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_wrse', $plugin_public, 'tambah_data_wrse');
 		$this->loader->add_action('wp_ajax_hapus_data_wrse_by_id', $plugin_public, 'hapus_data_wrse_by_id');
+
+		$this->loader->add_action('wp_ajax_get_datatable_data_usulan_wrse', $plugin_public, 'get_datatable_data_usulan_wrse');
+		$this->loader->add_action('wp_ajax_get_data_usulan_wrse_by_id', $plugin_public, 'get_data_usulan_wrse_by_id');
+		$this->loader->add_action('wp_ajax_tambah_data_usulan_wrse', $plugin_public, 'tambah_data_usulan_wrse');
+		$this->loader->add_action('wp_ajax_hapus_data_usulan_wrse_by_id', $plugin_public, 'hapus_data_usulan_wrse_by_id');
 		
 		$this->loader->add_action('wp_ajax_get_datatable_data_hibah', $plugin_public, 'get_datatable_data_hibah');
 		$this->loader->add_action('wp_ajax_get_data_hibah_by_id', $plugin_public, 'get_data_hibah_by_id');
@@ -280,7 +285,9 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_hapus_data_hibah_by_id', $plugin_public, 'hapus_data_hibah_by_id');
 
 		$this->loader->add_action('wp_ajax_cari_nik_siks', $plugin_public, 'cari_nik_siks');
+		
 		$this->loader->add_action('wp_ajax_edit_data_desa_kel', $plugin_public, 'edit_data_desa_kel');
+		$this->loader->add_action('wp_ajax_get_table_list_usulan', $plugin_public, 'get_table_list_usulan');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 		add_shortcode('cek_nik_siks', array($plugin_public, 'cek_nik_siks'));

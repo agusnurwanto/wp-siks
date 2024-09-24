@@ -4109,6 +4109,7 @@ class Wp_Siks_Public
 	function get_datatable_data_usulan_wrse()
 	{
 		global $wpdb;
+		$user_data = wp_get_current_user();
 
 		$ret = [
 			'status' => 'success',
@@ -4133,6 +4134,7 @@ class Wp_Siks_Public
 				'keterangan',
 				'jenis_data',
 				'tahun_anggaran',
+				'status_data',
 				'create_at',
 				'update_at',
 				'id'
@@ -4193,15 +4195,23 @@ class Wp_Siks_Public
 
 			// Format data
 			foreach ($queryRecords as $record => $recVal) {
-				if (empty($_POST['desa'])) {
-					$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
-					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Delete Data"><i class="dashicons dashicons-trash"></i></a>';
-				} else {
-					$btn = '-';
-					if (!empty($recVal['lat'])) {
-						$btn = '<td class="text-center"><a style="margin-bottom: 5px;" onclick="setCenterSiks(\'' . $recVal['lat'] . '\', \'' . $recVal['lng'] . '\', true, \'' . htmlentities(json_encode($recVal)) . '\'); return false;" href="#" class="btn btn-danger">Map</a></td>';
-					}
+				$btn = '<a class="btn btn-sm btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><span class="dashicons dashicons-edit"></span></a>';
+				$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Delete Data"><span class="dashicons dashicons-trash"></span></a>';
+				if (in_array('administrator', $user_data->roles)) {
+					$btn .= '<a style="margin-top: 5px;" class="btn btn-sm btn-success" onclick="verifyData(\'' . $recVal['id'] . '\'); return false;" href="#" title="Verify Data"><span class="dashicons dashicons-yes"></span></a>';
 				}
+
+				if ($recVal['status_data'] == 1) {
+					$labelVerify = '<span class="badge badge-pill badge-warning">Belum Diverifikasi</span>';
+				} else if ($recVal['status_data'] == 2) {
+					$labelVerify = '<span class="badge badge-pill badge-success">Terverifikasi</span>';
+				} else if ($recVal['status_data'] == 3) {
+					$labelVerify = '<span class="badge badge-pill badge-danger">Ditolak</span>';
+				} else {
+					$labelVerify = 0;
+				}
+
+				$queryRecords[$record]['status_data'] = $labelVerify;
 				$queryRecords[$record]['aksi'] = $btn;
 			}
 
@@ -4510,68 +4520,80 @@ class Wp_Siks_Public
 
 		if (!empty($_POST)) {
 			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
-				if ($ret['status'] != 'error') {
-					// Mengambil data dari form
-					$id_data = !empty($_POST['id_data']) ? sanitize_text_field($_POST['id_data']) : null;
-					$tahun_anggaran = sanitize_text_field($_POST['tahunAnggaran']);
-					$nama = sanitize_text_field($_POST['nama']);
-					$usia = sanitize_text_field($_POST['usia']);
-					$alamat = sanitize_text_field($_POST['alamat']);
-					$provinsi = sanitize_text_field($_POST['provinsi']);
-					$kabKot = sanitize_text_field($_POST['kabKot']);
-					$desa = sanitize_text_field($_POST['desaKel']);
-					$kecamatan = sanitize_text_field($_POST['kecamatan']);
-					$statusDtks = sanitize_text_field($_POST['statusDtks']);
-					$statusPernikahan = sanitize_text_field($_POST['statusPernikahan']);
-					$statusUsaha = sanitize_text_field($_POST['statusUsaha']);
-					$keterangan = sanitize_text_field($_POST['keterangan']);
-					$jenisData = sanitize_text_field($_POST['jenisData']);
-					$lat = sanitize_textarea_field($_POST['latitude']);
-					$long = sanitize_textarea_field($_POST['longitude']);
+				$postData = $_POST;
 
-					// Data yang akan disimpan atau diperbarui
-					$data = array(
-						'tahun_anggaran' => $tahun_anggaran,
-						'nama' => $nama,
-						'lat' => $lat,
-						'lng' => $long,
-						'usia' => $usia,
-						'alamat' => $alamat,
-						'provinsi' => $provinsi,
-						'kabkot' => $kabKot,
-						'desa_kelurahan' => $desa,
-						'kecamatan' => $kecamatan,
-						'status_dtks' => $statusDtks,
-						'status_pernikahan' => $statusPernikahan,
-						'mempunyai_usaha' => $statusUsaha,
-						'keterangan' => $keterangan,
-						'jenis_data' => $jenisData,
-						'create_at' => current_time('mysql'),
-						'update_at' => current_time('mysql'),
-						'active' => 1
+				// Define validation rules
+				$validationRules = [
+					'tahunAnggaran' => 'required|numeric',
+					'nama' => 'required|string|max:255',
+					'usia' => 'required|numeric',
+					'alamat' => 'string|max:500',
+					'provinsi' => 'string|max:100',
+					'kabKot' => 'string|max:100',
+					'desaKel' => 'string|max:100',
+					'kecamatan' => 'string|max:100',
+					'statusDtks' => 'in:Terdaftar,Tidak Terdaftar',
+					'statusPernikahan' => 'in:Belum Menikah,Menikah,Janda',
+					'statusUsaha' => 'in:Ya,Tidak',
+					'statusData' => 'in:1,2,3',
+					'jenisData' => 'in:Induk,PAK',
+					'latitude' => 'nullable|string',
+					'longitude' => 'nullable|string'
+				];
+
+				// Validate data
+				$errors = $this->validate($postData, $validationRules);
+
+				if (!empty($errors)) {
+					$ret['status'] = 'error';
+					$ret['message'] = implode(" \n ", $errors);
+					die(json_encode($ret));
+				}
+
+				// Data to be saved
+				$id_data = !empty($postData['id_data']) ? sanitize_text_field($postData['id_data']) : null;
+				$data = array(
+					'tahun_anggaran' => sanitize_text_field($postData['tahunAnggaran']),
+					'nama' => sanitize_text_field($postData['nama']),
+					'usia' => sanitize_text_field($postData['usia']),
+					'alamat' => sanitize_text_field($postData['alamat']),
+					'provinsi' => sanitize_text_field($postData['provinsi']),
+					'kabkot' => sanitize_text_field($postData['kabKot']),
+					'desa_kelurahan' => sanitize_text_field($postData['desaKel']),
+					'kecamatan' => sanitize_text_field($postData['kecamatan']),
+					'status_dtks' => sanitize_text_field($postData['statusDtks']),
+					'status_pernikahan' => sanitize_text_field($postData['statusPernikahan']),
+					'mempunyai_usaha' => sanitize_text_field($postData['statusUsaha']),
+					'status_data' => sanitize_text_field($postData['statusData']),
+					'keterangan' => sanitize_textarea_field($postData['keterangan']),
+					'jenis_data' => sanitize_text_field($postData['jenisData']),
+					'lat' => sanitize_textarea_field($postData['latitude']),
+					'lng' => sanitize_textarea_field($postData['longitude']),
+					'create_at' => current_time('mysql'),
+					'update_at' => current_time('mysql'),
+					'active' => 1
+				);
+
+				// Update or insert
+				if ($id_data) {
+					$wpdb->update(
+						'data_usulan_wrse_siks',
+						$data,
+						array('id' => $id_data)
 					);
-
-					// Jika `id_data` ada, lakukan pembaruan data, jika tidak, tambahkan data baru
-					if ($id_data) {
-						$wpdb->update(
-							'data_usulan_wrse_siks',
-							$data,
-							array('id' => $id_data)
-						);
-						$ret['message'] = 'Berhasil update data!';
-					} else {
-						$wpdb->insert(
-							'data_usulan_wrse_siks',
-							$data
-						);
-					}
+					$ret['message'] = 'Berhasil update data!';
+				} else {
+					$wpdb->insert(
+						'data_usulan_wrse_siks',
+						$data
+					);
 				}
 			} else {
-				$ret['status']  = 'error';
+				$ret['status'] = 'error';
 				$ret['message'] = 'Api key tidak ditemukan!';
 			}
 		} else {
-			$ret['status']  = 'error';
+			$ret['status'] = 'error';
 			$ret['message'] = 'Format Salah!';
 		}
 
@@ -5024,47 +5046,83 @@ class Wp_Siks_Public
 			);
 		} else if (in_array('administrator', $user_data->roles)) {
 			$datas = array(
-				'DTKS',
-				'Bunda Kasih',
-				'Anak Terlantar',
-				'Gepeng',
-				'Hibah',
-				'P3KE',
-				'WRSE',
-				'Disabilitas',
-				'Lansia',
+				'DTKS' => array(
+					'Data DTKS SIKS'    => '[data_dtks_siks]',
+				),
+				'Bunda Kasih' => array(
+					'Data Bunda Kasih SIKS'    => '[data_bunda_kasih_siks]',
+				),
+				'Anak Terlantar' => array(
+					'Data Anak Terlantar SIKS'    => '[data_anak_terlantar_siks]',
+				),
+				'Gepeng' => array(
+					'Data Gepeng SIKS'    => '[data_gepeng_siks]',
+				),
+				'Hibah' => array(
+					'Data Hibah SIKS'    => '[data_hibah_siks]',
+				),
+				'P3KE' => array(
+					'Data P3KE SIKS'    => '[data_p3ke_siks]',
+				),
+				'WRSE' => array(
+					'Data WRSE SIKS'    => '[data_wrse_siks]',
+				),
+				'Disabilitas' => array(
+					'Data Disabilitas SIKS'    => '[data_disabilitas_siks]',
+				),
+				'Lansia' => array(
+					'Data Lansia SIKS'    => '[data_lansia_siks]',
+				),
+				//just add, if wanted to add more card for admin page
 			);
-			
 			$return = '<div class="row">';
-			
-			foreach ($datas as $data) {
-				$gen_page = $this->functions->generatePage(array(
-					'nama_page' => 'Halaman Verifikasi Data Usulan',
-					'content' => '[list_verifikasi_usulan]', 
-					'show_header' => 1,
-					'no_key' => 1,
-					'post_status' => 'publish'
-				));
-				$params = '?jenis=' . urlencode($data);
-				$page_url = $gen_page['url'] . $params; 
-				
+
+			foreach ($datas as $jenis_data => $pages) {
 				$return .= '
 					<div class="col-md-4 mb-4">
 						<div class="card shadow-sm border-0 rounded-lg text-dark bg-light">
 							<div class="card-body d-flex flex-column shadow-lg">
-								<h5 class="card-title"><span class="dashicons dashicons-admin-page"></span> ' . $data . '</h5>
-								<div class="mt-auto d-flex justify-content-end">
-									<a href="' . $page_url . '" target="_blank" class="btn btn-primary">
-										<span class="dashicons dashicons-arrow-right-alt"></span>
-										 Ke Halaman Verifikasi
-									</a>
-								</div>
+								<h5 class="card-title"><span class="dashicons dashicons-admin-page"></span> ' . $jenis_data . '</h5>
+								<div class="d-flex justify-content-between">';
+				foreach ($pages as $nama_page => $shortcode) {
+					$page_verifify = $this->functions->generatePage(array(
+						'nama_page' => 'Halaman Verifikasi Data Usulan',
+						'content' => '[list_verifikasi_usulan]',
+						'show_header' => 1,
+						'no_key' => 1,
+						'post_status' => 'publish'
+					));
+					$params = '?jenis=' . urlencode($jenis_data);
+					$page_url = $page_verifify['url'] . $params;
+
+					$return .= '
+						<a href="' . $page_url . '" target="_blank" class="btn btn-warning">
+							<span class="dashicons dashicons-yes-alt"></span>
+							Verifikasi
+						</a>';
+
+					$page_view_data = $this->functions->generatePage(array(
+						'nama_page' => $nama_page,
+						'content' => $shortcode,
+						'show_header' => 1,
+						'no_key' => 1,
+						'post_status' => 'publish'
+					));
+
+					$return .= '
+						<a href="' . $page_view_data['url'] . '" target="_blank" class="btn btn-primary">
+							<span class="dashicons dashicons-arrow-right-alt"></span>
+							Lihat Data
+						</a>';
+				}
+				$return .= '
 							</div>
 						</div>
 					</div>
-				';
+				</div>
+			';
 			}
-			
+
 			$return .= '</div>';
 			return $return;
 		} else {
@@ -5121,6 +5179,7 @@ class Wp_Siks_Public
 					'Usulan Lansia'    => '[usulan_lansia]',
 					'Lansia Per Desa'  => '[lansia_per_desa]',
 				),
+				//just add, if wanted to add more card
 			);
 
 
@@ -5158,7 +5217,7 @@ class Wp_Siks_Public
 
 				foreach ($pages as $jenis_data => $page) {
 					$return .= '
-					<div class="col-md-6 mb-3">
+					<div class="col-md-4  mb-3">
 						<div class="card shadow-sm border-0 rounded-lg text-dark bg-light">
 							<div class="card-body d-flex flex-column shadow-lg">
 								<h5 class="card-title"><span class="dashicons dashicons-admin-page"></span> ' . $jenis_data . '</h5>
@@ -5174,30 +5233,31 @@ class Wp_Siks_Public
 							'post_status' => 'publish'
 						));
 
-						if (strpos(strtolower($nama_page), 'usulan') !== false) {
-							// Tombol Usulan
+						if (in_array('desa', $user_data->roles) && strpos(strtolower($nama_page), 'usulan') !== false) {
 							$return .= '
 							<a href="' . $gen_page['url'] . $params . '" target="_blank" class="btn btn-warning">
 								<span class="dashicons dashicons-insert"></span> Usulkan Data
 							</a>
-               			';
-						} else {
-							// Tombol Per Desa
+							';
+						}
+
+						if (strpos(strtolower($nama_page), 'per desa') !== false) {
 							$return .= '
-							<a href="' . $gen_page['url'] . $params . '" target="_blank" class="btn btn-primary">
+							<a href="' . $gen_page['url'] . $params . '" target="_blank" class="btn btn-primary ml-auto">
 								<span class="dashicons dashicons-arrow-right-alt"></span> Lihat Data
 							</a>
-						';
+							';
 						}
 					}
 
 					$return .= '
-                    </div>
-                </div>
-            </div>
-        </div>
-        ';
+								</div>
+							</div>
+						</div>
+					</div>
+					';
 				}
+
 
 				$return .= '
                     </div> 
@@ -5385,5 +5445,155 @@ class Wp_Siks_Public
 		}
 
 		die(json_encode($ret));
+	}
+
+	function get_table_list_usulan()
+	{
+		global $wpdb;
+		$res = array(
+			'status' => 'success',
+			'message' => 'Berhasil get table!',
+			'data' => array()
+		);
+
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				if (!empty($_POST['jenis_data'])) {
+					$jenis_data = $_POST['jenis_data'];
+				} else {
+					$res['status'] = 'error';
+					$res['message'] = 'Jenis Data kosong!';
+					die(json_encode($res));
+				}
+
+				$shortcode_slug = strtolower(str_replace(' ', '_', $jenis_data));
+				$gen_page = $this->functions->generatePage(array(
+					'nama_page' => 'Usulan ' . $jenis_data,
+					'content' => '[usulan_' . $shortcode_slug . ']',
+					'show_header' => 1,
+					'no_key' => 1,
+					'post_status' => 'publish'
+				));
+
+				// Get kecamatan data
+				$data_kecamatan = $wpdb->get_results(
+					$wpdb->prepare('
+                    SELECT *						
+                    FROM data_alamat_siks
+                    WHERE id_desa IS NULL
+                      AND active = %d
+                ', 1),
+					ARRAY_A
+				);
+
+				$tbody = '';
+				$counterKec = 0;
+				if (!empty($data_kecamatan)) {
+					foreach ($data_kecamatan as $kecamatan) {
+						$counterKec++;
+						$tbody .= "<tr>";
+						$tbody .= "<td class='text-center font-weight-bold bg-light'>" . $counterKec . "</td>";
+						$tbody .= "<td colspan='6' class='font-weight-bold text-uppercase bg-light text-left'>" . $kecamatan['nama'] . "</td>";
+						$tbody .= "</tr>";
+
+						$data_desa = $wpdb->get_results(
+							$wpdb->prepare('
+                            SELECT *						
+                            FROM data_alamat_siks
+                            WHERE id_kec = %d
+							  AND id_desa IS NOT NULL
+                              AND active = 1
+                        ', $kecamatan['id_kec']),
+							ARRAY_A
+						);
+						$counterDesa = 0;
+						if (!empty($data_desa)) {
+							foreach ($data_desa as $desa) {
+								$counterDesa++;
+								$tbody .= "<tr>";
+								$tbody .= "<td></td>";
+								$tbody .= "<td class='text-center'>" . $counterDesa . "</td>";
+								$tbody .= "<td class='text-capitalize text-left'>" . $desa['nama'] . "</td>";
+								$tbody .= "<td class='text-center'>-</td>"; // usulan count
+								$tbody .= "<td class='text-center'>-</td>"; // disetujui count
+								$tbody .= "<td class='text-center'>-</td>"; // ditolak count
+
+								// Action buttons for each desa
+								$btn = '<div class="d-flex justify-content-center">';
+								$btn .= "<button class='btn btn-primary' onclick='toDetailUrl(\"" . $gen_page['url'] . '?desa=' . $desa['nama'] . "\");' title='Verifikasi Usulan Per Desa'><span class='dashicons dashicons-controls-forward'></span></button>";
+								$btn .= '</div>';
+
+								$tbody .= "<td>" . $btn . "</td>";
+								$tbody .= "</tr>";
+							}
+						} else {
+							$tbody .= "<tr><td colspan='6' class='text-center'>Tidak ada data desa tersedia di kecamatan ini.</td></tr>";
+						}
+					}
+
+					$res['data'] = $tbody;
+				} else {
+					$res['data'] = "<tr><td colspan='6' class='text-center'>Tidak ada data tersedia.</td></tr>";
+				}
+			} else {
+				$res = array(
+					'status' => 'error',
+					'message'   => 'Api Key tidak sesuai!'
+				);
+			}
+		} else {
+			$res = array(
+				'status' => 'error',
+				'message'   => 'Format tidak sesuai!'
+			);
+		}
+
+		die(json_encode($res));
+	}
+
+	function validate($data, $rules)
+	{
+		$errors = [];
+
+		foreach ($rules as $field => $ruleSet) {
+			$rulesArray = explode('|', $ruleSet);
+
+			foreach ($rulesArray as $rule) {
+				if ($rule == 'required' && (!isset($data[$field]) || empty($data[$field]))) {
+					$errors[] = "$field is required";
+				}
+
+				if ($rule == 'string' && isset($data[$field]) && !is_string($data[$field])) {
+					$errors[] = "$field must be a string";
+				}
+
+				if ($rule == 'numeric' && isset($data[$field]) && !is_numeric($data[$field])) {
+					$errors[] = "$field must be numeric";
+				}
+
+				if (strpos($rule, 'min:') === 0) {
+					$min = (int)explode(':', $rule)[1];
+					if (isset($data[$field]) && strlen($data[$field]) < $min) {
+						$errors[] = "$field must be at least $min characters";
+					}
+				}
+
+				if (strpos($rule, 'max:') === 0) {
+					$max = (int)explode(':', $rule)[1];
+					if (isset($data[$field]) && strlen($data[$field]) > $max) {
+						$errors[] = "$field cannot exceed $max characters";
+					}
+				}
+
+				if (strpos($rule, 'in:') === 0) {
+					$allowed = explode(',', explode(':', $rule)[1]);
+					if (isset($data[$field]) && !in_array($data[$field], $allowed)) {
+						$errors[] = "$field must be one of: " . implode(', ', $allowed);
+					}
+				}
+			}
+		}
+
+		return $errors;
 	}
 }
