@@ -5022,6 +5022,7 @@ class Wp_Siks_Public
 					SELECT 
 						is_kel,
 						id as id_data,
+						id_desa,
 						nama
 					FROM data_alamat_siks
 					WHERE id_desa = %d
@@ -5036,6 +5037,7 @@ class Wp_Siks_Public
 					SELECT
 						is_kel,
 						id as id_data,
+						id_desa,
 						nama
 					FROM data_alamat_siks
 					WHERE id_kec = %d
@@ -5047,31 +5049,31 @@ class Wp_Siks_Public
 		} else if (in_array('administrator', $user_data->roles)) {
 			$datas = array(
 				'DTKS' => array(
-					'Data DTKS SIKS'    => '[data_dtks_siks]',
+					'Data DTKS SIKS' => '[data_dtks_siks]',
 				),
 				'Bunda Kasih' => array(
-					'Data Bunda Kasih SIKS'    => '[data_bunda_kasih_siks]',
+					'Data Bunda Kasih SIKS' => '[data_bunda_kasih_siks]',
 				),
 				'Anak Terlantar' => array(
-					'Data Anak Terlantar SIKS'    => '[data_anak_terlantar_siks]',
+					'Data Anak Terlantar SIKS' => '[data_anak_terlantar_siks]',
 				),
 				'Gepeng' => array(
-					'Data Gepeng SIKS'    => '[data_gepeng_siks]',
+					'Data Gepeng SIKS' => '[data_gepeng_siks]',
 				),
 				'Hibah' => array(
-					'Data Hibah SIKS'    => '[data_hibah_siks]',
+					'Data Hibah SIKS' => '[data_hibah_siks]',
 				),
 				'P3KE' => array(
-					'Data P3KE SIKS'    => '[data_p3ke_siks]',
+					'Data P3KE SIKS' => '[data_p3ke_siks]',
 				),
 				'WRSE' => array(
-					'Data WRSE SIKS'    => '[data_wrse_siks]',
+					'Data WRSE SIKS' => '[data_wrse_siks]',
 				),
 				'Disabilitas' => array(
-					'Data Disabilitas SIKS'    => '[data_disabilitas_siks]',
+					'Data Disabilitas SIKS' => '[data_disabilitas_siks]',
 				),
 				'Lansia' => array(
-					'Data Lansia SIKS'    => '[data_lansia_siks]',
+					'Data Lansia SIKS' => '[data_lansia_siks]',
 				),
 				//just add, if wanted to add more card for admin page
 			);
@@ -5189,7 +5191,7 @@ class Wp_Siks_Public
 				if ($statusDesa == 0) {
 					$statusDesa = 'Desa';
 				} else if ($statusDesa == 1) {
-					$statusDesa = 'Kecamatan';
+					$statusDesa = 'Kelurahan';
 				}
 				$params = '?desa=' . mb_strtoupper($desa['nama']);
 
@@ -5210,7 +5212,7 @@ class Wp_Siks_Public
 						<div id="' . $collapseId . '" class="collapse" aria-labelledby="' . $headingId . '" data-parent="#desaAccordion">
 							<div class="card-body">
 								<div class="d-flex justify-content-center mb-4">
-									<button type="button" class="btn btn-info" data-toggle="modal" data-target="#settingModal' . $index . '"><span class="dashicons dashicons-admin-generic"></span> Pengaturan</button>
+									<button type="button" id="settingDesaBtn" class="btn btn-info" data-toggle="modal" data-target="#settingModal' . $index . '"><span class="dashicons dashicons-admin-generic"></span> Pengaturan</button>
 								</div>
 								<div class="row">
 				';
@@ -5225,9 +5227,12 @@ class Wp_Siks_Public
 					';
 
 					foreach ($page as $nama_page => $shortcode) {
+						// Tambahkan id_desa ke dalam shortcode
+						$shortcode_with_id_desa = str_replace(']', ' id_desa=' . $desa['id_desa'] . ']', $shortcode);
+
 						$gen_page = $this->functions->generatePage(array(
 							'nama_page' => $nama_page,
-							'content' => $shortcode,
+							'content' => $shortcode_with_id_desa,
 							'show_header' => 1,
 							'no_key' => 1,
 							'post_status' => 'publish'
@@ -5235,7 +5240,7 @@ class Wp_Siks_Public
 
 						if (in_array('desa', $user_data->roles) && strpos(strtolower($nama_page), 'usulan') !== false) {
 							$return .= '
-							<a href="' . $gen_page['url'] . $params . '" target="_blank" class="btn btn-warning">
+							<a href="' . $gen_page['url'] . '" target="_blank" class="btn btn-warning">
 								<span class="dashicons dashicons-insert"></span> Usulkan Data
 							</a>
 							';
@@ -5278,7 +5283,7 @@ class Wp_Siks_Public
 					<div class="modal-body">
 						<form>
 							<div class="form-group">
-								<input type="hidden" id="id_data_desa" value="' . $desa['id_data'] . '">
+								<input type="hidden" name="idDesa" value="' . $desa['id_desa'] . '">
 								<label for="radioOption">Pilih Kategori</label><br>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="desaKelStatus" id="desaRadio" value="0">
@@ -5295,12 +5300,12 @@ class Wp_Siks_Public
 							</div>
 							<div class="form-group">
 								<label for="currentName">Nama Sekarang</label>
-								<input type="text" class="form-control" id="currentName" value="' . $desa['nama'] . '" disabled>
+								<input type="text" class="form-control" name="currentName" id="currentName" value="' . $desa['nama'] . '" disabled>
 							</div>
 
 							<div class="form-group">
 								<label for="newName">Nama Baru</label>
-								<input type="text" class="form-control" id="newName">
+								<input type="text" name="newName" class="form-control" id="newName">
 							</div>
 						</form>
 					</div>
@@ -5419,21 +5424,57 @@ class Wp_Siks_Public
 		if (!empty($_POST)) {
 			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 				if ($ret['status'] != 'error') {
-					$id_data = !empty($_POST['id_data']) ? sanitize_text_field($_POST['id_data']) : null;
-					$new_name = !empty($_POST['newName']) ? sanitize_text_field($_POST['newName']) : null;
-					$desa_kel_status = !empty($_POST['desaKelStatus']) ? sanitize_text_field($_POST['desaKelStatus']) : null;
+					$postData = $_POST;
+
+					$validationRules = [
+						'idDesa' => 'required',
+						'newName' => 'required|string',
+						'desaKelStatus' => 'required|in:0,1|numeric'
+					];
+
+					// Validate data
+					$errors = $this->validate($postData, $validationRules);
+
+					if (!empty($errors)) {
+						$ret['status'] = 'error';
+						$ret['message'] = implode(" \n ", $errors);
+						die(json_encode($ret));
+					}
 
 					$data = array(
-						'nama' => $new_name,
-						'is_kel' => $desa_kel_status,
+						'nama'	 	=> $postData['newName'],
+						'is_kel' 	=> $postData['desaKelStatus'],
 						'update_at' => current_time('mysql')
 					);
 
-					$wpdb->update(
-						'data_hibah_siks',
-						$data,
-						array('id' => $id_data)
+					$cek_id = $wpdb->get_var(
+						$wpdb->prepare('
+							SELECT 
+								id
+							FROM data_alamat_siks
+							WHERE id_desa = %d
+							  AND active = 1
+						', $postData['idDesa'])
 					);
+
+					if (empty($cek_id)) {
+						$ret['status'] = 'error';
+						$ret['message'] = 'Gagal, data tidak ditemukan!.';
+						die(json_encode($ret));
+					}
+
+					$result = $wpdb->update(
+						'data_alamat_siks',
+						$data,
+						array(
+							'id' => $cek_id
+						)
+					);
+					if ($result === false) {
+						$ret['status'] = 'error';
+						$ret['message'] = 'Update data gagal! Silakan coba lagi.';
+						die(json_encode($ret));
+					}
 				}
 			} else {
 				$ret['status']  = 'error';
@@ -5515,7 +5556,7 @@ class Wp_Siks_Public
 									'show_header' => 1,
 									'no_key' => 1,
 									'post_status' => 'publish'
-								));				
+								));
 
 								$counterDesa++;
 								$tbody .= "<tr>";
@@ -5568,7 +5609,7 @@ class Wp_Siks_Public
 			$rulesArray = explode('|', $ruleSet);
 
 			foreach ($rulesArray as $rule) {
-				if ($rule == 'required' && (!isset($data[$field]) || empty($data[$field]))) {
+				if ($rule == 'required' && (!isset($data[$field]))) {
 					$errors[] = "$field is required";
 				}
 
@@ -5686,7 +5727,6 @@ class Wp_Siks_Public
 				if (empty($cek_id)) {
 					$ret['status'] = 'error';
 					$ret['message'] = 'Gagal, data tidak ditemukan!.';
-					print_r($cek_id);
 					die(json_encode($ret));
 				}
 

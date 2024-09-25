@@ -7,6 +7,10 @@ jQuery(document).ready(function () {
     if (jQuery('#wrap-loading').length == 0) {
         jQuery('body').prepend(loading);
     }
+    jQuery('#settingDesaBtn').click(function () {
+        jQuery('input[name="desaKelStatus"]').prop('checked', false);
+        jQuery('input[name="newName"]').val('');
+    });
 });
 
 function cari_alamat_siks(text) {
@@ -109,6 +113,55 @@ function validateForm(fields) {
 
     return { error: null, data: formData };
 }
+
+function editDataDesaKel() {
+    const validationRules = {
+        'desaKelStatus': 'Data status desa / kelurahan tidak boleh kosong!',
+        'newName': 'Nama baru tidak boleh kosong!',
+        'idDesa': 'Id Desa kosong!'
+        //add more if u wanted 
+        //name : message
+    };
+
+    const { error, data } = validateForm(validationRules);
+    if (error) {
+        return alert(error);
+    }
+
+    const tempData = new FormData();
+    tempData.append('action', 'edit_data_desa_kel');
+    tempData.append('api_key', ajax.apikey);
+
+    for (const [key, value] of Object.entries(data)) {
+        tempData.append(key, value);
+    }
+    jQuery('#wrap-loading').show();
+    jQuery.ajax({
+        method: 'post',
+        url: ajax.url,
+        dataType: 'json',
+        data: tempData,
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: function (res) {
+            if (res.status === 'success') {
+                alert(res.message);
+                jQuery('#wrap-loading').hide();
+                jQuery('#settingModal').modal('hide');
+                location.reload();
+            } else {
+                alert(res.message);
+                jQuery('#wrap-loading').hide();
+            }
+        },
+        error: function (e) {
+            alert(e.message);
+            jQuery('#wrap-loading').hide();
+        }
+    });
+}
+
 
 jQuery(document).ready(function () {
     var search = ''
@@ -296,50 +349,4 @@ function initMapSiks() {
             });
         });
     })
-
-    function editDataDesaKel() {
-        const validationRules = {
-            'desaKelRadio': 'Data status desa / kelurahan tidak boleh kosong!',
-            'newName': 'Nama baru tidak boleh kosong!'
-            // Tambahkan field lain jika diperlukan
-        };
-
-        const {
-            error,
-            data
-        } = validateForm(validationRules);
-        if (error) {
-            return alert(error);
-        }
-
-        const id_data = jQuery('#id_data_desa').val();
-
-        const tempData = new FormData();
-        tempData.append('action', 'edit_data_desa_kel');
-        tempData.append('api_key', ajax.apikey);
-        tempData.append('id_data', id_data);
-
-        for (const [key, value] of Object.entries(data)) {
-            tempData.append(key, value);
-        }
-
-        jQuery('#wrap-loading').show();
-
-        jQuery.ajax({
-            method: 'post',
-            url: ajax.url,
-            dataType: 'json',
-            data: tempData,
-            processData: false,
-            contentType: false,
-            cache: false,
-            success: function(res) {
-                alert(res.message);
-                if (res.status === 'success') {
-                    jQuery('#settingModal').modal('hide');
-                    menu_siks();
-                }
-            }
-        });
-    }
 }

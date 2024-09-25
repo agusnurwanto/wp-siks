@@ -46,7 +46,6 @@ foreach ($maps_all as $i => $desa) {
     <h1 class="text-center my-4">Data Usulan WRSE</h1>
     <h2 class="text-center my-4">(Wanita Rawan Sosial Ekonomi)</h2>
     <h2 class="text-center my-4">DESA <?php echo strtoupper($nama_desa); ?></h2>
-    <h2 class="text-center my-4"> <?php echo $input['id_desa']; ?></h2>
     <div class="mb-4">
         <button class="btn btn-primary" onclick="showModalTambahData();">
             <span class="dashicons dashicons-plus"></span> Tambah Data
