@@ -13,6 +13,7 @@ $jenis_data = $_GET['jenis'];
                             <th class="text-center">Jumlah Usulan</th>
                             <th class="text-center">Jumlah Disetujui</th>
                             <th class="text-center">Jumlah Jumlah Ditolak</th>
+                            <th class="text-center">Total</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>

@@ -6,6 +6,10 @@ if ($validate_user['status'] === 'error') {
     echo "<script>console.log('Debug Objects: " . $validate_user['message'] . "' );</script>";
     $nama_desa = $validate_user['data'];
 }
+$input = shortcode_atts(array(
+    'id_desa' => ''
+), $atts);
+
 global $wpdb;
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
@@ -42,6 +46,7 @@ foreach ($maps_all as $i => $desa) {
     <h1 class="text-center my-4">Data Usulan WRSE</h1>
     <h2 class="text-center my-4">(Wanita Rawan Sosial Ekonomi)</h2>
     <h2 class="text-center my-4">DESA <?php echo strtoupper($nama_desa); ?></h2>
+    <h2 class="text-center my-4"> <?php echo $input['id_desa']; ?></h2>
     <div class="mb-4">
         <button class="btn btn-primary" onclick="showModalTambahData();">
             <span class="dashicons dashicons-plus"></span> Tambah Data
@@ -73,6 +78,8 @@ foreach ($maps_all as $i => $desa) {
     <tbody>
     </tbody>
 </table>
+
+<!-- modal tambah data -->
 <div class="modal fade mt-4" id="modalTambahData" tabindex="-1" role="dialog" aria-labelledby="modalTambahData" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -222,6 +229,48 @@ foreach ($maps_all as $i => $desa) {
         </div>
     </div>
 </div>
+
+<!-- Modal Verifikasi -->
+<div class="modal fade" id="verifikasiModal" tabindex="-1" aria-labelledby="verifikasiModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verifikasiModalLabel">Verifikasi Data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formVerifikasi">
+                    <input type="hidden" name="idDataVerifikasi" id="idDataVerifikasi" value="">
+                    <div class="mb-3">
+                        <label for="verifikasiStatus" class="form-label">Status Verifikasi</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="verifikasiStatus" id="statusTerima" value="2">
+                                <label class="form-check-label" for="statusTerima">Terima</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="verifikasiStatus" id="statusTolak" value="3">
+                                <label class="form-check-label" for="statusTolak">Tolak</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="keteranganVerifikasi" class="form-label">Keterangan Verifikasi</label>
+                        <textarea class="form-control" id="keteranganVerifikasi" name="keteranganVerifikasi" rows="3" placeholder="diterima/ditolak karena ..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" onclick="submitVerifikasi()">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
     window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
@@ -510,6 +559,90 @@ foreach ($maps_all as $i => $desa) {
         jQuery('#modalTambahData').modal('show');
     }
 
+    function showModalVerifikasi(id) {
+        jQuery('#wrap-loading').show();
+        jQuery.ajax({
+            method: 'post',
+            url: ajax.url,
+            dataType: 'JSON',
+            data: {
+                'action': 'get_status_verifikasi_usulan',
+                'api_key': ajax.apikey,
+                'id': id,
+                'jenis_data': 'wrse'
+            },
+            success: function(res) {
+                jQuery('#idDataVerifikasi').val(res.data.id);
+                jQuery('#keteranganVerifikasi').text(res.data.keterangan_verifikasi);
+                jQuery('input[name="verifikasiStatus"]').prop('checked', false);
+                if (res.data.status_data) {
+                    switch (res.data.status_data) {
+                        case '1':
+                            jQuery('input[name="verifikasiStatus"]').prop('checked', false);
+                            break;
+                        case '2':
+                            jQuery('#statusTerima').prop('checked', true);
+                            break;
+                        case '3':
+                            jQuery('#statusTolak').prop('checked', true);
+                            break;
+                    }
+                }
+                jQuery('#wrap-loading').hide();
+                jQuery('#verifikasiModal').modal('show');
+            },
+            error: function(e) {
+                alert(e.message);
+                jQuery('#wrap-loading').hide();
+            }
+        });
+    }
+
+    function submitVerifikasi() {
+        const validationRules = {
+            'idDataVerifikasi': 'id kosong!',
+            'verifikasiStatus': 'Status verifikasi tidak boleh kosong!',
+            'keteranganVerifikasi': 'Keterangan verifikasi tidak boleh kosong!',
+            // Tambahkan field lain jika diperlukan
+        };
+
+        const {
+            error,
+            data
+        } = validateForm(validationRules);
+        if (error) {
+            return alert(error);
+        }
+
+        const tempData = new FormData();
+        tempData.append('action', 'submit_status_verifikasi_usulan');
+        tempData.append('api_key', ajax.apikey);
+        tempData.append('jenis_data', 'wrse');
+
+        for (const [key, value] of Object.entries(data)) {
+            tempData.append(key, value);
+        }
+        jQuery('#wrap-loading').show();
+        jQuery.ajax({
+            method: 'post',
+            url: ajax.url,
+            dataType: 'JSON',
+            data: tempData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(res) {
+                alert(res.message);
+                jQuery('#wrap-loading').hide();
+                jQuery('#verifikasiModal').modal('hide');
+                getDataTable();
+            },
+            error: function(e) {
+                alert(e.message);
+                jQuery('#wrap-loading').hide();
+            }
+        });
+    }
 
     function submitData() {
         const validationRules = {
@@ -545,7 +678,6 @@ foreach ($maps_all as $i => $desa) {
         tempData.append('action', 'tambah_data_usulan_wrse');
         tempData.append('api_key', ajax.apikey);
         tempData.append('id_data', id_data);
-        tempData.append('nama', nama);
 
         for (const [key, value] of Object.entries(data)) {
             tempData.append(key, value);
@@ -570,9 +702,5 @@ foreach ($maps_all as $i => $desa) {
                 }
             }
         });
-    }
-
-    function verifyData(id) {
-        alert('halo ' + id)
     }
 </script>
