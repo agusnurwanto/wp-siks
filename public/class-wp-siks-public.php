@@ -128,7 +128,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-cek-bansos.php';
 	}
 
-	public function disabilitas_per_desa()
+	public function disabilitas_per_desa($atts)
 	{
 		// untuk disable render shortcode di halaman edit page/post
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -137,7 +137,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-disabilitas-per-desa.php';
 	}
 
-	public function lksa_per_desa()
+	public function lksa_per_desa($atts)
 	{
 		// untuk disable render shortcode di halaman edit page/post
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -146,7 +146,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-lksa-per-desa.php';
 	}
 
-	public function wrse_per_desa()
+	public function wrse_per_desa($atts)
 	{
 		// untuk disable render shortcode di halaman edit page/post
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -155,7 +155,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-wrse-per-desa.php';
 	}
 
-	public function hibah_per_desa()
+	public function hibah_per_desa($atts)
 	{
 		// untuk disable render shortcode di halaman edit page/post
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -164,7 +164,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-hibah-per-desa.php';
 	}
 
-	public function bunda_kasih_per_desa()
+	public function bunda_kasih_per_desa($atts)
 	{
 		// untuk disable render shortcode di halaman edit page/post
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -173,7 +173,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-bunda-kasih-per-desa.php';
 	}
 
-	public function gepeng_per_desa()
+	public function gepeng_per_desa($atts)
 	{
 		// untuk disable render shortcode di halaman edit page/post
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -182,7 +182,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-gepeng-per-desa.php';
 	}
 
-	public function dtks_per_desa()
+	public function dtks_per_desa($atts)
 	{
 		// untuk disable render shortcode di halaman edit page/post
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -191,7 +191,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-dtks-per-desa.php';
 	}
 
-	public function anak_terlantar_per_desa()
+	public function anak_terlantar_per_desa($atts)
 	{
 		// untuk disable render shortcode di halaman edit page/post
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -200,7 +200,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-anak-terlantar-per-desa.php';
 	}
 
-	public function p3ke_per_desa()
+	public function p3ke_per_desa($atts)
 	{
 		// untuk disable render shortcode di halaman edit page/post
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -209,7 +209,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-p3ke-per-desa.php';
 	}
 
-	public function lansia_per_desa()
+	public function lansia_per_desa($atts)
 	{
 		// untuk disable render shortcode di halaman edit page/post
 		if (!empty($_GET) && !empty($_GET['post'])) {
@@ -415,7 +415,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-gepeng.php';
 	}
 
-	public function usulan_dtks()
+	public function usulan_dtks($atts)
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
@@ -423,7 +423,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/usulan/wp-siks-usulan-dtks.php';
 	}
 
-	public function usulan_lansia()
+	public function usulan_lansia($atts)
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
@@ -431,7 +431,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/usulan/wp-siks-usulan-lansia.php';
 	}
 
-	public function usulan_disabilitas()
+	public function usulan_disabilitas($atts)
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
@@ -439,7 +439,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/usulan/wp-siks-usulan-disabilitas.php';
 	}
 
-	public function usulan_bunda_kasih()
+	public function usulan_bunda_kasih($atts)
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
@@ -447,7 +447,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/usulan/wp-siks-usulan-bunda-kasih.php';
 	}
 
-	public function usulan_anak_terlantar()
+	public function usulan_anak_terlantar($atts)
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
@@ -455,7 +455,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/usulan/wp-siks-usulan-anak-terlantar.php';
 	}
 
-	public function usulan_odgj()
+	public function usulan_odgj($atts)
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
@@ -463,7 +463,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/usulan/wp-siks-usulan-odgj.php';
 	}
 
-	public function usulan_p3ke()
+	public function usulan_p3ke($atts)
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
@@ -480,7 +480,7 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/usulan/wp-siks-usulan-wrse.php';
 	}
 
-	public function usulan_hibah()
+	public function usulan_hibah($atts)
 	{
 		if (!empty($_GET) && !empty($_GET['post'])) {
 			return '';
@@ -5087,7 +5087,7 @@ class Wp_Siks_Public
 								<h5 class="card-title"><span class="dashicons dashicons-admin-page"></span> ' . $jenis_data . '</h5>
 								<div class="d-flex justify-content-between">';
 				foreach ($pages as $nama_page => $shortcode) {
-					$page_verifify = $this->functions->generatePage(array(
+					$page_verify = $this->functions->generatePage(array(
 						'nama_page' => 'Halaman Verifikasi Data Usulan',
 						'content' => '[list_verifikasi_usulan]',
 						'show_header' => 1,
@@ -5095,7 +5095,7 @@ class Wp_Siks_Public
 						'post_status' => 'publish'
 					));
 					$params = '?jenis=' . urlencode($jenis_data);
-					$page_url = $page_verifify['url'] . $params;
+					$page_url = $page_verify['url'] . $params;
 
 					$return .= '
 						<a href="' . $page_url . '" target="_blank" class="btn btn-warning">
@@ -5193,7 +5193,6 @@ class Wp_Siks_Public
 				} else if ($statusDesa == 1) {
 					$statusDesa = 'Kelurahan';
 				}
-				$params = '?desa=' . mb_strtoupper($desa['nama']);
 
 				$collapseId = 'collapse' . $index;
 				$headingId = 'heading' . $index;
@@ -5228,10 +5227,14 @@ class Wp_Siks_Public
 
 					foreach ($page as $nama_page => $shortcode) {
 						// Tambahkan id_desa ke dalam shortcode
-						$shortcode_with_id_desa = str_replace(']', ' id_desa=' . $desa['id_desa'] . ']', $shortcode);
+						$shortcode_with_id_desa = str_replace(
+							']',
+							' id_desa=' . $desa['id_desa'] . ']',
+							$shortcode
+						);
 
 						$gen_page = $this->functions->generatePage(array(
-							'nama_page' => $nama_page,
+							'nama_page' => $nama_page . ' | ' . $desa['nama'],
 							'content' => $shortcode_with_id_desa,
 							'show_header' => 1,
 							'no_key' => 1,
@@ -5248,7 +5251,7 @@ class Wp_Siks_Public
 
 						if (strpos(strtolower($nama_page), 'per desa') !== false) {
 							$return .= '
-							<a href="' . $gen_page['url'] . $params . '" target="_blank" class="btn btn-primary ml-auto">
+							<a href="' . $gen_page['url'] . '" target="_blank" class="btn btn-primary ml-auto">
 								<span class="dashicons dashicons-arrow-right-alt"></span> Lihat Data
 							</a>
 							';
@@ -5330,87 +5333,170 @@ class Wp_Siks_Public
 		';
 	}
 
-	function user_authorization($desa)
+	function user_authorization($id_desa = '', $page_type = 'desa')
 	{
-		global $wpdb;
-		$ret = array(
-			'status' 	=> 'success',
-			'message' 	=> 'User Valid!',
-			'data'		=> $desa,
-			'kecamatan'		=> ''
-		);
-
 		// Check if user is logged in
 		if (!is_user_logged_in()) {
-			$ret['status'] = 'error';
-			$ret['message'] = 'Anda belum login!';
-			return $ret;
+			return array(
+				'status'  => 'error',
+				'message' => 'Anda belum login!'
+			);
+		} else {
+			global $wpdb;
+			$user_data = wp_get_current_user();
 		}
 
-		$user_data = wp_get_current_user();
-		$desa = strtolower($desa);
-
-		if (in_array('desa', $user_data->roles)) {
-			$id_kecamatan = substr($user_data->user_login, 0, 6);
-			$id_desa = $user_data->user_login;
-		} else if (in_array('kecamatan', $user_data->roles)) {
-			$id_kecamatan = $user_data->user_login;
+		//jika user selain admin mencoba akses list usulan desa
+		if (!empty($page_type) && $page_type != 'desa' && !in_array('administrator', $user_data->roles)) {
+			return array(
+				'status'  => 'error',
+				'message' => 'You have no access to this page!'
+			);
 		}
-
-		// User role-specific validation
+		// Role-based authorization logic
 		switch (true) {
-			case in_array('kecamatan', $user_data->roles):
-				$all_desa_by_kecamatan = $wpdb->get_col(
+			case in_array('administrator', $user_data->roles):
+				// list page
+				if (!empty($page_type) && $page_type != 'desa') {
+					$jenis_page = [
+						'WRSE',
+						'Anak Terlantar',
+						'Bunda Kasih',
+						'Hibah',
+						'Gepeng',
+						'DTKS',
+						'Disabilitas',
+						'Lansia',
+						'P3KE'
+						//add more if needed
+					];
+					if (!in_array($page_type, $jenis_page)) {
+						return array(
+							'status'  => 'error',
+							'message' => 'Jenis page tidak diketahui.'
+						);
+					} else {
+						return array(
+							'status'  	 => 'success',
+							'message' 	 => 'User administrator has access to the list page.',
+							'jenis_page' => $page_type
+						);
+					}
+				}
+
+				$get_desa = $wpdb->get_row(
 					$wpdb->prepare('
-						SELECT LOWER(nama)
+						SELECT *
 						FROM data_alamat_siks
-						WHERE id_kec = %d 
-						  AND id_desa IS NOT NULL 
-						  AND active = 1', $id_kecamatan)
+						WHERE id_desa = %d
+						  AND active = 1
+					', $id_desa),
+					ARRAY_A
 				);
 
-				$ret['kecamatan'] = $user_data->display_name;
-				if (!in_array($desa, $all_desa_by_kecamatan)) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'User kecamatan tidak valid! Desa tidak sesuai.';
-				}
-				break;
-			case in_array('desa', $user_data->roles):
-				$get_desa = $wpdb->get_var(
-					$wpdb->prepare('
-						SELECT LOWER(nama)
-						FROM data_alamat_siks
-						WHERE id_kec = %d 
-						  AND id_desa = %d 
-						  AND active = 1', $id_kecamatan, $id_desa)
-				);
-				$get_kecamatan = $wpdb->get_var(
+				$get_kec = $wpdb->get_col(
 					$wpdb->prepare('
 						SELECT nama
 						FROM data_alamat_siks
-						WHERE id_kec = %d 
+						WHERE id_kec = %d
 						  AND id_desa IS NULL
-						  AND active = 1', $id_kecamatan)
+						  AND active = 1
+					', $get_desa['id_kec'])
 				);
 
-				$ret['kecamatan'] = $get_kecamatan;
-				if ($desa !== $get_desa) {
-					$ret['status'] = 'error';
-					$ret['message'] = 'User desa tidak valid! Kecamatan atau desa tidak sesuai.';
+				return array(
+					'status'  	=> 'success',
+					'message' 	=> 'User administrator!',
+					'desa' 		=> $get_desa['nama'],
+					'kecamatan' => $get_kec
+				);
+
+			case in_array('kecamatan', $user_data->roles):
+				// Authorization for kecamatan roles
+				$id_kecamatan = $user_data->user_login;
+
+				$all_desa_by_kecamatan = $wpdb->get_col(
+					$wpdb->prepare('
+						SELECT LOWER(nama) 
+						FROM data_alamat_siks 
+						WHERE id_kec = %d 
+						  AND id_desa IS NOT NULL 
+						  AND active = 1
+					', $id_kecamatan)
+				);
+
+				$get_desa = $wpdb->get_col(
+					$wpdb->prepare('
+						SELECT LOWER(nama)
+						FROM data_alamat_siks
+						WHERE id_desa = %d
+						  AND active = 1
+					', $id_desa)
+				);
+
+				if (!in_array($get_desa, $all_desa_by_kecamatan)) {
+					return array(
+						'status'  	=> 'error',
+						'message' 	=> 'User kecamatan tidak valid! Desa tidak sesuai.'
+					);
+				} else {
+					return array(
+						'status'   => 'success',
+						'message'  => 'User Valid!',
+						'desa'     	=> $get_desa,
+						'kecamatan' => $user_data->display_name
+					);
 				}
 				break;
-			case in_array('administrator', $user_data->roles):
-				$ret['status'] = 'success';
-				$ret['message'] = 'User administrator!';
+
+			case in_array('desa', $user_data->roles):
+				// Authorization for desa roles
+				$id_kecamatan = substr($user_data->user_login, 0, 6);
+
+				$get_desa = $wpdb->get_var(
+					$wpdb->prepare('
+						SELECT LOWER(nama) 
+						FROM data_alamat_siks 
+						WHERE id_kec = %d 
+						  AND id_desa = %d 
+						  AND active = 1
+					', $id_kecamatan, $id_desa)
+				);
+				$get_kecamatan = $wpdb->get_var(
+					$wpdb->prepare('
+						SELECT nama 
+						FROM data_alamat_siks 
+						WHERE id_kec = %d 
+						  AND id_desa IS NULL 
+						  AND active = 1
+					', $id_kecamatan)
+				);
+
+				if (empty($get_desa)) {
+					return array(
+						'status'  => 'error',
+						'message' => 'User desa tidak valid! Kecamatan atau desa tidak sesuai.'
+					);
+				} else {
+					return array(
+						'status'   => 'success',
+						'message'  => 'User Valid!',
+						'desa'     	=> $get_desa,
+						'kecamatan' => $get_kecamatan
+					);
+				}
 				break;
+
 			default:
-				$ret['status'] = 'error';
-				$ret['message'] = 'Role user tidak valid!';
-				break;
+				return array(
+					'status'  => 'error',
+					'message' => 'Role user tidak valid!'
+				);
 		}
 
 		return $ret;
 	}
+
 
 	function edit_data_desa_kel()
 	{
@@ -5519,13 +5605,47 @@ class Wp_Siks_Public
 				// Get kecamatan data
 				$data_kecamatan = $wpdb->get_results(
 					$wpdb->prepare('
-                    SELECT *						
-                    FROM data_alamat_siks
-                    WHERE id_desa IS NULL
-                      AND active = %d
+						SELECT *		
+						FROM data_alamat_siks
+						WHERE id_desa IS NULL
+						  AND active = %d
                 ', 1),
 					ARRAY_A
 				);
+
+				// switch ($postData['jenis_data']) {
+				// 	case 'wrse':
+				// 		$table = 'data_usulan_wrse_siks';
+				// 		break;
+				// 	case 'dtks':
+				// 		$table = 'data_usulan_dtks_siks';
+				// 		break;
+				// 	case 'bunda_kasih':
+				// 		$table = 'data_usulan_bunda_kasih_siks';
+				// 		break;
+				// 	case 'anak_terlantar':
+				// 		$table = 'data_usulan_anak_terlantar_siks';
+				// 		break;
+				// 	case 'gepeng':
+				// 		$table = 'data_usulan_gepeng_siks';
+				// 		break;
+				// 	case 'hibah':
+				// 		$table = 'data_usulan_hibah_siks';
+				// 		break;
+				// 	case 'p3ke':
+				// 		$table = 'data_usulan_p3ke_siks';
+				// 		break;
+				// 	case 'disabilitas':
+				// 		$table = 'data_usulan_disabilitas_siks';
+				// 		break;
+				// 	case 'lansia':
+				// 		$table = 'data_usulan_lansia_siks';
+				// 		break;
+				// 	default:
+				// 		$ret['status'] = 'error';
+				// 		$ret['message'] = 'Jenis data tidak diketahui!';
+				// 		die(json_encode($ret));
+				// }
 
 				$tbody = '';
 				$counterKec = 0;
@@ -5539,24 +5659,35 @@ class Wp_Siks_Public
 
 						$data_desa = $wpdb->get_results(
 							$wpdb->prepare('
-                            SELECT *						
-                            FROM data_alamat_siks
-                            WHERE id_kec = %d
-							  AND id_desa IS NOT NULL
-                              AND active = 1
+								SELECT *			
+								FROM data_alamat_siks
+								WHERE id_kec = %d
+								  AND id_desa IS NOT NULL
+								  AND active = 1
                         ', $kecamatan['id_kec']),
 							ARRAY_A
 						);
+
 						$counterDesa = 0;
 						if (!empty($data_desa)) {
 							foreach ($data_desa as $desa) {
 								$gen_page = $this->functions->generatePage(array(
-									'nama_page' => 'Usulan ' . $postData['jenis_data'],
+									'nama_page' => 'Usulan ' . $postData['jenis_data'] . ' | ' . $desa['nama'],
 									'content' => '[usulan_' . $shortcode_slug . ' id_desa=' . $desa['id_desa'] . ']',
 									'show_header' => 1,
 									'no_key' => 1,
 									'post_status' => 'publish'
 								));
+
+								// $count_usulan = $wpdb->get_results(
+								// 	$wpdb->prepare('
+								// 		SELECT *			
+								// 		FROM ' . $table . '
+								// 		WHERE id_kec = %d
+								// 		  AND id_desa IS NOT NULL
+								// 	', $kecamatan['id_kec']),
+								// 	ARRAY_A
+								// );
 
 								$counterDesa++;
 								$tbody .= "<tr>";
@@ -5570,7 +5701,7 @@ class Wp_Siks_Public
 
 								// Action buttons for each desa
 								$btn = '<div class="d-flex justify-content-center">';
-								$btn .= "<button class='btn btn-primary' onclick='toDetailUrl(\"" . $gen_page['url'] . '?desa=' . $desa['nama'] . "\");' title='Verifikasi Usulan Per Desa'><span class='dashicons dashicons-controls-forward'></span></button>";
+								$btn .= "<button class='btn btn-primary' onclick='toDetailUrl(\"" . $gen_page['url'] . "\");' title='Verifikasi Usulan Per Desa'><span class='dashicons dashicons-controls-forward'></span></button>";
 								$btn .= '</div>';
 
 								$tbody .= "<td>" . $btn . "</td>";

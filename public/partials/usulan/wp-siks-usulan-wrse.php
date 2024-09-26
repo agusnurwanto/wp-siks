@@ -1,14 +1,17 @@
 <?php
-$validate_user = $this->user_authorization($_GET['desa']);
+$input = shortcode_atts(array(
+    'id_desa' => ''
+), $atts);
+if (empty($input['id_desa'])) {
+    die('id_desa kosong');
+}
+
+$validate_user = $this->user_authorization($input['id_desa']);
 if ($validate_user['status'] === 'error') {
     die($validate_user['message']);
 } else {
     echo "<script>console.log('Debug Objects: " . $validate_user['message'] . "' );</script>";
-    $nama_desa = $validate_user['data'];
 }
-$input = shortcode_atts(array(
-    'id_desa' => ''
-), $atts);
 
 global $wpdb;
 $center = $this->get_center();
@@ -45,7 +48,7 @@ foreach ($maps_all as $i => $desa) {
 <div class="pb-4 mb-5">
     <h1 class="text-center my-4">Data Usulan WRSE</h1>
     <h2 class="text-center my-4">(Wanita Rawan Sosial Ekonomi)</h2>
-    <h2 class="text-center my-4">DESA <?php echo strtoupper($nama_desa); ?></h2>
+    <h2 class="text-center my-4">DESA <?php echo strtoupper($validate_user['desa']); ?></h2>
     <div class="mb-4">
         <button class="btn btn-primary" onclick="showModalTambahData();">
             <span class="dashicons dashicons-plus"></span> Tambah Data
@@ -295,7 +298,7 @@ foreach ($maps_all as $i => $desa) {
                     dataType: 'json',
                     data: {
                         'action': 'get_datatable_data_usulan_wrse',
-                        'api_key': ajax.apikey,
+                        'api_key': ajax.apikey
                     }
                 },
                 lengthMenu: [

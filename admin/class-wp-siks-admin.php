@@ -2197,9 +2197,15 @@ class Wp_Siks_Admin
 					$desas
 				);
 			} else {
+				$desas_without_nama = array(
+					'id_kec'    => $desa['id_kec'],
+					'id_desa'   => $desa['id_desa'],
+					'update_at' => current_time('mysql'),
+					'active'    => 1
+				);
 				$wpdb->update(
 					'data_alamat_siks',
-					$desas,
+					$desas_without_nama,
 					array('id' => $cek_desa)
 				);
 			}

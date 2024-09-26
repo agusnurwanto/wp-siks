@@ -1,12 +1,17 @@
 <?php
-$validate_user = $this->user_authorization($_GET['desa']);
+$input = shortcode_atts(array(
+    'id_desa' => ''
+), $atts);
+if (empty($input['id_desa'])) {
+    die('id_desa kosong');
+}
+
+$validate_user = $this->user_authorization($input['id_desa']);
 if ($validate_user['status'] === 'error') {
     die($validate_user['message']);
 } else {
     echo "<script>console.log('Debug Objects: " . $validate_user['message'] . "' );</script>";
-    $nama_desa = $validate_user['data'];
 }
-
 global $wpdb;
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
@@ -19,16 +24,16 @@ $desa = $wpdb->get_row(
         WHERE desa=%s
           AND kecamatan=%s
           AND active=1
-    ', $nama_desa, $validate_user['kecamatan']),
+    ', $validate_user['desa'], $validate_user['kecamatan']),
     ARRAY_A
 );
 $default_location = $this->getSearchLocation($desa);
 ?>
-<h1 class="text-center">Peta Sebaran WRSE<br>( Wanita Rawan Sosial Ekonomi )<br>DESA <?php echo $nama_desa; ?></h1>
+<h1 class="text-center">Peta Sebaran WRSE<br>( Wanita Rawan Sosial Ekonomi )<br>DESA <?php echo $validate_user['desa']; ?></h1>
 
 <div style="padding: 10px;margin:0 0 3rem 0;">
     <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
-    <h1 class="text-center" style="margin:3rem;">Data WRSE<br>DESA <?php echo $nama_desa ?></h1>
+    <h1 class="text-center" style="margin:3rem;">Data WRSE<br>DESA <?php echo $validate_user['desa'] ?></h1>
     <table id="tableData" class="table table-bordered">
         <thead>
             <tr>
@@ -80,7 +85,7 @@ $default_location = $this->getSearchLocation($desa);
                     data: {
                         'action': 'get_datatable_data_wrse',
                         'api_key': ajax.apikey,
-                        'desa': '<?php echo $nama_desa; ?>',
+                        'desa': '<?php echo $validate_user['desa']; ?>',
                         'kecamatan': '<?php echo $validate_user['kecamatan']; ?>',
                     }
                 },

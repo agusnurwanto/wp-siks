@@ -1,5 +1,11 @@
 <?php
-$jenis_data = $_GET['jenis'];
+$validate_user = $this->user_authorization('', $_GET['jenis']);
+if ($validate_user['status'] === 'error') {
+    die($validate_user['message']);
+} else {
+    echo "<script>console.log('Debug Objects: " . $validate_user['message'] . "' );</script>";
+    $jenis_data = $validate_user['jenis_page'];
+}
 ?>
 <div class="container-md">
     <div class="cetak">
@@ -9,12 +15,15 @@ $jenis_data = $_GET['jenis'];
                 <table id="listDesaTable" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
                     <thead>
                         <tr>
-                            <th class="text-center" colspan="3">Kecamatan / Kelurahan / Desa</th>
-                            <th class="text-center">Jumlah Usulan</th>
-                            <th class="text-center">Jumlah Disetujui</th>
-                            <th class="text-center">Jumlah Jumlah Ditolak</th>
+                            <th class="text-center align-middle" colspan="3" rowspan="2">Kecamatan / Kelurahan / Desa</th>
+                            <th class="text-center" colspan="4">Jumlah Data</th>
+                            <th class="text-center align-middle" rowspan="2">Aksi</th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">Belum Disetujui</th>
+                            <th class="text-center">Disetujui</th>
+                            <th class="text-center">Ditolak</th>
                             <th class="text-center">Total</th>
-                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,7 +60,6 @@ $jenis_data = $_GET['jenis'];
             },
             error: function(xhr, status, error) {
                 jQuery('#wrap-loading').hide();
-                console.error(xhr.responseText);
                 alert('Terjadi kesalahan saat memuat tabel!');
             }
         });
