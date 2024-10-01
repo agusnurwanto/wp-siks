@@ -8,28 +8,26 @@ if ($validate_user['status'] === 'error') {
 }
 ?>
 <div class="container-md">
-    <div class="cetak">
-        <div style="padding: 10px;margin:0 0 3rem 0;">
-            <h1 class="text-center">Daftar Data Usulan Per Desa <?php echo $jenis_data; ?></h1>
-            <div class="wrap-table">
-                <table id="listDesaTable" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="text-center align-middle" colspan="3" rowspan="2">Kecamatan / Kelurahan / Desa</th>
-                            <th class="text-center" colspan="4">Jumlah Data</th>
-                            <th class="text-center align-middle" rowspan="2">Aksi</th>
-                        </tr>
-                        <tr>
-                            <th class="text-center">Belum Disetujui</th>
-                            <th class="text-center">Disetujui</th>
-                            <th class="text-center">Ditolak</th>
-                            <th class="text-center">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
+    <div class="m-4">
+        <h1 class="text-center">Daftar Data Usulan Per Desa <?php echo $jenis_data; ?></h1>
+        <div class="wrap-table">
+            <table id="listDesaTable" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center align-middle w-50" colspan="3" rowspan="2">Kecamatan / Kelurahan / Desa</th>
+                        <th class="text-center" colspan="4">Status</th>
+                        <th class="text-center align-middle w-5" rowspan="2">Aksi</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center w-10 align-middle">Menunggu<br>Persetujuan</th>
+                        <th class="text-center w-10 align-middle">Disetujui</th>
+                        <th class="text-center w-10 align-middle">Ditolak</th>
+                        <th class="text-center w-10 align-middle">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

@@ -275,13 +275,19 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_hapus_data_wrse_by_id', $plugin_public, 'hapus_data_wrse_by_id');
 
 		$this->loader->add_action('wp_ajax_get_status_verifikasi_usulan', $plugin_public, 'get_status_verifikasi_usulan');
-		$this->loader->add_action('wp_ajax_submit_status_verifikasi_usulan', $plugin_public, 'submit_status_verifikasi_usulan');
+		$this->loader->add_action('wp_ajax_submit_verifikasi_usulan', $plugin_public, 'submit_verifikasi_usulan');
+		$this->loader->add_action('wp_ajax_submit_usulan', $plugin_public, 'submit_usulan');
 		
 		$this->loader->add_action('wp_ajax_get_datatable_data_usulan_wrse', $plugin_public, 'get_datatable_data_usulan_wrse');
 		$this->loader->add_action('wp_ajax_get_data_usulan_wrse_by_id', $plugin_public, 'get_data_usulan_wrse_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_usulan_wrse', $plugin_public, 'tambah_data_usulan_wrse');
 		$this->loader->add_action('wp_ajax_hapus_data_usulan_wrse_by_id', $plugin_public, 'hapus_data_usulan_wrse_by_id');
 		
+		$this->loader->add_action('wp_ajax_get_datatable_data_usulan_anak_terlantar', $plugin_public, 'get_datatable_data_usulan_anak_terlantar');
+		$this->loader->add_action('wp_ajax_get_data_usulan_anak_terlantar_by_id', $plugin_public, 'get_data_usulan_anak_terlantar_by_id');
+		$this->loader->add_action('wp_ajax_tambah_data_usulan_anak_terlantar', $plugin_public, 'tambah_data_usulan_anak_terlantar');
+		$this->loader->add_action('wp_ajax_hapus_data_usulan_anak_terlantar_by_id', $plugin_public, 'hapus_data_usulan_anak_terlantar_by_id');
+
 		$this->loader->add_action('wp_ajax_get_datatable_data_hibah', $plugin_public, 'get_datatable_data_hibah');
 		$this->loader->add_action('wp_ajax_get_data_hibah_by_id', $plugin_public, 'get_data_hibah_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_hibah', $plugin_public, 'tambah_data_hibah');

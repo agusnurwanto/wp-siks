@@ -12,10 +12,31 @@ if ($validate_user['status'] === 'error') {
 } else {
     echo "<script>console.log('Debug Objects: " . $validate_user['message'] . "' );</script>";
 }
-
 global $wpdb;
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
+
+// auto input alamat
+$provinsi  = get_option(SIKS_PROV);
+$kabkot    = get_option(SIKS_KABKOT);
+
+$get_desa_kel  = $wpdb->get_row(
+    $wpdb->prepare('
+        SELECT 
+            is_kel,
+            nama
+        FROM data_alamat_siks
+        WHERE id_desa = %d
+          AND active = 1
+    ', $input['id_desa']),
+    ARRAY_A
+);
+
+if ($get_desa_kel['is_kel'] == 1) {
+    $nama_desa_kelurahan = 'Kelurahan ' . $get_desa_kel['nama'];
+} else {
+    $nama_desa_kelurahan = 'Desa ' . $get_desa_kel['nama'];
+}
 
 foreach ($maps_all as $i => $desa) {
     $html = '
@@ -48,38 +69,42 @@ foreach ($maps_all as $i => $desa) {
 <div class="pb-4 mb-5">
     <h1 class="text-center my-4">Data Usulan WRSE</h1>
     <h2 class="text-center my-4">(Wanita Rawan Sosial Ekonomi)</h2>
-    <h2 class="text-center my-4">DESA <?php echo strtoupper($validate_user['desa']); ?></h2>
-    <div class="mb-4">
-        <button class="btn btn-primary" onclick="showModalTambahData();">
-            <span class="dashicons dashicons-plus"></span> Tambah Data
-        </button>
-    </div>
+    <h2 class="text-center my-4"><?php echo strtoupper($nama_desa_kelurahan); ?></h2>
+    <?php if ($validate_user['roles'] === 'desa'): ?>
+        <div class="m-4">
+            <button class="btn btn-primary" onclick="showModalTambahData();">
+                <span class="dashicons dashicons-plus"></span> Tambah Data
+            </button>
+        </div>
+    <?php endif; ?>
 </div>
-<table id="tableData" class="table table-bordered">
-    <thead>
-        <tr>
-            <th class="text-center" style="width: 12%;">Nama</th>
-            <th class="text-center" style="width: 5%;">Usia</th>
-            <th class="text-center" style="width: 8%;">Provinsi</th>
-            <th class="text-center" style="width: 10%;">Kota / Kabupaten</th>
-            <th class="text-center" style="width: 10%;">Kecamatan</th>
-            <th class="text-center" style="width: 10%;">Desa / Kelurahan</th>
-            <th class="text-center" style="width: 15%;">Alamat</th>
-            <th class="text-center" style="width: 7%;">Status DTKS</th>
-            <th class="text-center" style="width: 8%;">Status Pernikahan</th>
-            <th class="text-center" style="width: 8%;">Mempunyai Usaha</th>
-            <th class="text-center" style="width: 10%;">Keterangan</th>
-            <th class="text-center" style="width: 7%;">Jenis Data</th>
-            <th class="text-center" style="width: 7%;">Tahun Anggaran</th>
-            <th class="text-center" style="width: 7%;">Status Verifikasi</th>
-            <th class="text-center" style="width: 8%;">Dibuat Pada</th>
-            <th class="text-center" style="width: 8%;">Terakhir Diperbarui</th>
-            <th class="text-center" style="width: 8%;">Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+<div class="wrap-table m-4">
+    <table id="tableData">
+        <thead>
+            <tr>
+                <th class="text-center">Nama</th>
+                <th class="text-center">Usia</th>
+                <th class="text-center">Provinsi</th>
+                <th class="text-center">Kota / Kabupaten</th>
+                <th class="text-center">Kecamatan</th>
+                <th class="text-center">Desa / Kelurahan</th>
+                <th class="text-center">Alamat</th>
+                <th class="text-center">Status DTKS</th>
+                <th class="text-center">Status Pernikahan</th>
+                <th class="text-center">Mempunyai Usaha</th>
+                <th class="text-center">Keterangan</th>
+                <th class="text-center">Jenis Data</th>
+                <th class="text-center">Tahun Anggaran</th>
+                <th class="text-center">Status Verifikasi</th>
+                <th class="text-center">Dibuat Pada</th>
+                <th class="text-center">Terakhir Diperbarui</th>
+                <th class="text-center">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
 
 <!-- modal tambah data -->
 <div class="modal fade mt-4" id="modalTambahData" tabindex="-1" role="dialog" aria-labelledby="modalTambahData" aria-hidden="true">
@@ -87,135 +112,147 @@ foreach ($maps_all as $i => $desa) {
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="judulmodalTambahData">Tambah Data WRSE</h5>
-                <h5 class="modal-title" id="judulModalEdit">Edit Data WRSE</h5>
+                <h5 class="modal-title d-none" id="judulModalEdit">Edit Data WRSE</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <input type="hidden" id="id_data" name="id_data">
             <div class="modal-body">
-                <input type='hidden' id='id_data' name="id_data">
-
-                <div class="form-group">
-                    <label for="tahunAnggaran">Tahun Anggaran</label>
-                    <input type="number" name="tahunAnggaran" class="form-control" id="tahunAnggaran" placeholder="Masukkan Tahun Anggaran">
-                </div>
-
-                <div class="form-group">
-                    <label for="jenisData">Jenis Data</label>
-                    <select class="form-control" aria-label="Pilih Jenis Data" id="jenisData" name="jenisData">
-                        <option value="">Pilih Jenis Data</option>
-                        <option value="Induk">Induk</option>
-                        <option value="PAK">PAK</option>
-                    </select>
-                </div>
-
-                <div class="card bg-light p-3 mb-3">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="nama">Nama</label>
-                            <input type="text" name="nama" class="form-control" id="nama" placeholder="Masukkan Nama">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="usia">Usia</label>
-                            <input type="number" name="usia" class="form-control" id="usia" placeholder="Masukkan Usia">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card bg-light p-3 mb-3">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="alamat">Alamat</label>
-                            <input type="text" name="alamat" class="form-control" id="alamat" placeholder="Masukkan Alamat">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="desaKel">Desa / Kelurahan</label>
-                            <input type="text" name="desaKel" class="form-control" id="desaKel" placeholder="Masukkan Desa / Kelurahan">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="kecamatan">Kecamatan</label>
-                            <input type="text" name="kecamatan" class="form-control" id="kecamatan" placeholder="Masukkan Kecamatan">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="provinsi">Provinsi</label>
-                            <input type="text" name="provinsi" class="form-control" id="provinsi" placeholder="Masukkan Provinsi">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="kabKot">Kota / Kabupaten</label>
-                            <input type="text" name="kabKot" class="form-control" id="kabKot" placeholder="Masukkan Kota / Kabupaten">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card bg-light p-3 mb-3">
-                    <div class="form-row">
-                        <div class="col-md-4">
-                            <label for='statusDtks'>Status DTKS</label>
-                            <div class="pl-4">
-                                <input class="form-check-input" type='radio' id='terdaftar' name='statusDtks' value='Terdaftar'>
-                                <label class='form-check-label' for='terdaftar'>Terdaftar</label>
+                <!-- Card 1: Tahun Anggaran dan Jenis Data -->
+                <div class="card bg-light mb-3">
+                    <div class="card-header">Tahun Anggaran dan Jenis Data</div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="tahunAnggaran">Tahun Anggaran</label>
+                                <input type="number" name="tahunAnggaran" class="form-control" id="tahunAnggaran" placeholder="Masukkan Tahun Anggaran">
                             </div>
-                            <div class="pl-4">
-                                <input class="form-check-input" type='radio' id='tidakTerdaftar' name='statusDtks' value='Tidak Terdaftar'>
-                                <label class='form-check-label' for='tidakTerdaftar'>Tidak Terdaftar</label>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label for='statusPernikahan'>Status Pernikahan</label>
-                            <div class="pl-4">
-                                <input class="form-check-input" type='radio' id='menikah' name='statusPernikahan' value='Menikah'>
-                                <label class='form-check-label' for='menikah'>Menikah</label>
-                            </div>
-                            <div class="pl-4">
-                                <input class="form-check-input" type='radio' id='belumMenikah' name='statusPernikahan' value='Belum Menikah'>
-                                <label class='form-check-label' for='belumMenikah'>Belum Menikah</label>
-                            </div>
-                            <div class="pl-4">
-                                <input class="form-check-input" type='radio' id='janda' name='statusPernikahan' value='Janda'>
-                                <label class='form-check-label' for='janda'>Janda</label>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label for='statusUsaha'>Mempunyai Usaha</label>
-                            <div class="pl-4">
-                                <input class="form-check-input" type='radio' id='ya' name='statusUsaha' value='Ya'>
-                                <label class='form-check-label' for='ya'>Ya</label>
-                            </div>
-                            <div class="pl-4">
-                                <input class="form-check-input" type='radio' id='tidak' name='statusUsaha' value='Tidak'>
-                                <label class='form-check-label' for='tidak'>Tidak</label>
+                            <div class="form-group col-md-6">
+                                <label for="jenisData">Jenis Data</label>
+                                <select class="form-control" id="jenisData" name="jenisData">
+                                    <option value="">Pilih Jenis Data</option>
+                                    <option value="Induk">Induk</option>
+                                    <option value="PAK">PAK</option>
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="keterangan">Keterangan</label>
-                    <textarea name="keterangan" class="form-control" id="keterangan"></textarea>
+                <!-- Card 2: Data Diri -->
+                <div class="card bg-light mb-3">
+                    <div class="card-header">Data Diri</div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="nama">Nama</label>
+                                <input type="text" name="nama" class="form-control" id="nama" placeholder="Masukkan Nama">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="usia">Usia</label>
+                                <input type="number" name="usia" class="form-control" id="usia" placeholder="Masukkan Usia">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>Status DTKS</label>
+                                <div class="pl-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="terdaftar" name="statusDtks" value="Terdaftar">
+                                        <label class="form-check-label" for="terdaftar">Terdaftar</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="tidakTerdaftar" name="statusDtks" value="Tidak Terdaftar">
+                                        <label class="form-check-label" for="tidakTerdaftar">Tidak Terdaftar</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Status Pernikahan</label>
+                                <div class="pl-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="menikah" name="statusPernikahan" value="Menikah">
+                                        <label class="form-check-label" for="menikah">Menikah</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="belumMenikah" name="statusPernikahan" value="Belum Menikah">
+                                        <label class="form-check-label" for="belumMenikah">Belum Menikah</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="janda" name="statusPernikahan" value="Janda">
+                                        <label class="form-check-label" for="janda">Janda</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Mempunyai Usaha</label>
+                                <div class="pl-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="ya" name="statusUsaha" value="Ya">
+                                        <label class="form-check-label" for="ya">Ya</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="tidak" name="statusUsaha" value="Tidak">
+                                        <label class="form-check-label" for="tidak">Tidak</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="keterangan">Keterangan</label>
+                            <textarea name="keterangan" class="form-control" id="keterangan" placeholder="Tambahkan keterangan..."></textarea>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card bg-light p-3 mb-3">
-                    <div class="form-row">
-                        <div class="col-md-6">
-                            <div class="pl-4">
+                <!-- Card 3: Alamat -->
+                <div class="card bg-light mb-3">
+                    <div class="card-header">Alamat</div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="kabKot">Kota / Kabupaten</label>
+                                <input type="text" name="kabKot" class="form-control" id="kabKot" value="<?php echo $kabkot; ?>" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="kecamatan">Kecamatan</label>
+                                <input type="text" name="kecamatan" class="form-control" id="kecamatan" value="<?php echo strtoupper($validate_user['kecamatan']); ?>" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="desaKel">Desa / Kelurahan</label>
+                                <input type="text" name="desaKel" class="form-control" id="desaKel" value="<?php echo strtoupper($validate_user['desa']); ?>" disabled>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="provinsi">Provinsi</label>
+                                <input type="text" name="provinsi" class="form-control" id="provinsi" value="<?php echo $provinsi; ?>" disabled>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="alamat">Alamat</label>
+                                <textarea name="alamat" class="form-control" id="alamat" placeholder="Masukkan Alamat"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Koordinat dan Peta -->
+                <div class="card bg-light mb-3">
+                    <div class="card-header">Koordinat dan Peta</div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
                                 <label for="latitude">Koordinat Latitude</label>
                                 <input type="text" class="form-control" id="latitude" name="latitude" placeholder="0" disabled>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="pl-4">
+                            <div class="form-group col-md-6">
                                 <label for="longitude">Koordinat Longitude</label>
                                 <input type="text" class="form-control" id="longitude" name="longitude" placeholder="0" disabled>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-row mt-4">
-                        <div class="col-md-12">
-                            <div class="pl-4">
+                        <div class="form-row mt-4">
+                            <div class="col-md-12">
                                 <label for="map-canvas-siks">Map</label>
                                 <div style="height:600px; width: 100%;" id="map-canvas-siks"></div>
                             </div>
@@ -223,14 +260,15 @@ foreach ($maps_all as $i => $desa) {
                     </div>
                 </div>
 
-                <div class="modal-footer">
-                    <button type="submit" onclick="submitData();" class="btn btn-primary">Simpan</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Tutup</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" onclick="submitData();" class="btn btn-primary">Simpan</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Tutup</button>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- Modal Verifikasi -->
 <div class="modal fade" id="verifikasiModal" tabindex="-1" aria-labelledby="verifikasiModalLabel" aria-hidden="true">
@@ -277,6 +315,7 @@ foreach ($maps_all as $i => $desa) {
 <script>
     window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
     window.maps_center_siks = <?php echo json_encode($center); ?>;
+    window.id_desa = <?php echo json_encode($input['id_desa']); ?>;
     jQuery(document).ready(function() {
         getDataTable();
     });
@@ -288,7 +327,6 @@ foreach ($maps_all as $i => $desa) {
             }).DataTable({
                 "processing": true,
                 "serverSide": true,
-                "scrollX": true, // Enable horizontal scroll
                 "search": {
                     return: true
                 },
@@ -298,7 +336,8 @@ foreach ($maps_all as $i => $desa) {
                     dataType: 'json',
                     data: {
                         'action': 'get_datatable_data_usulan_wrse',
-                        'api_key': ajax.apikey
+                        'api_key': ajax.apikey,
+                        'id_desa': id_desa
                     }
                 },
                 lengthMenu: [
@@ -461,12 +500,7 @@ foreach ($maps_all as $i => $desa) {
                 jQuery('#jenisData').val(res.data.jenis_data).trigger('change').prop('selected', false);
                 jQuery('#nama').val(res.data.nama);
                 jQuery('#usia').val(res.data.usia);
-                jQuery('#usia').val(res.data.usia);
-                jQuery('#alamat').val(res.data.alamat);
-                jQuery('#desaKel').val(res.data.desa_kelurahan);
-                jQuery('#kecamatan').val(res.data.kecamatan);
-                jQuery('#provinsi').val(res.data.provinsi);
-                jQuery('#kabKot').val(res.data.kabkot);
+                jQuery('#alamat').text(res.data.alamat);
                 jQuery('#latitude').val(res.data.lat);
                 jQuery('#longitude').val(res.data.lng);
 
@@ -547,11 +581,7 @@ foreach ($maps_all as $i => $desa) {
         jQuery('#jenisData').val('');
         jQuery('#nama').val('');
         jQuery('#usia').val('');
-        jQuery('#alamat').val('');
-        jQuery('#desaKel').val('');
-        jQuery('#kecamatan').val('');
-        jQuery('#kabKot').val('');
-        jQuery('#provinsi').val('');
+        jQuery('#alamat').text('');
         jQuery('input[name="statusDtks"]').prop('checked', false);
         jQuery('input[name="statusPernikahan"]').prop('checked', false);
         jQuery('input[name="statusUsaha"]').prop('checked', false);
@@ -617,7 +647,7 @@ foreach ($maps_all as $i => $desa) {
         }
 
         const tempData = new FormData();
-        tempData.append('action', 'submit_status_verifikasi_usulan');
+        tempData.append('action', 'submit_verifikasi_usulan');
         tempData.append('api_key', ajax.apikey);
         tempData.append('jenis_data', 'wrse');
 
@@ -646,15 +676,43 @@ foreach ($maps_all as $i => $desa) {
         });
     }
 
+    function submitUsulan(id) {
+        let confirmSubmitUsulan = confirm("Apakah anda yakin akan mensubmit data ini?");
+        if (confirmSubmitUsulan) {
+            const tempData = new FormData();
+            tempData.append('action', 'submit_usulan');
+            tempData.append('api_key', ajax.apikey);
+            tempData.append('idDataVerifikasi', id);
+            tempData.append('jenis_data', 'wrse');
+
+            jQuery('#wrap-loading').show();
+            jQuery.ajax({
+                method: 'post',
+                url: ajax.url,
+                dataType: 'JSON',
+                data: tempData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function(res) {
+                    alert(res.message);
+                    jQuery('#wrap-loading').hide();
+                    jQuery('#verifikasiModal').modal('hide');
+                    getDataTable();
+                },
+                error: function(e) {
+                    alert(e.message);
+                    jQuery('#wrap-loading').hide();
+                }
+            });
+        }
+    }
+
     function submitData() {
         const validationRules = {
             'nama': 'Data Nama tidak boleh kosong!',
             'usia': 'Data Usia tidak boleh kosong!',
             'alamat': 'Data Alamat tidak boleh kosong!',
-            'desaKel': 'Data Desa tidak boleh kosong!',
-            'kabKot': 'Data Kabupaten / Kota tidak boleh kosong!',
-            'provinsi': 'Data Provinsi tidak boleh kosong!',
-            'kecamatan': 'Data Kecamatan tidak boleh kosong!',
             'tahunAnggaran': 'Data Tahun Anggaran tidak boleh kosong!',
             'statusDtks': 'Pilih Status DTKS!',
             'statusPernikahan': 'Pilih Status Pernikahan!',
@@ -680,6 +738,7 @@ foreach ($maps_all as $i => $desa) {
         tempData.append('action', 'tambah_data_usulan_wrse');
         tempData.append('api_key', ajax.apikey);
         tempData.append('id_data', id_data);
+        tempData.append('id_desa', id_desa);
 
         for (const [key, value] of Object.entries(data)) {
             tempData.append(key, value);

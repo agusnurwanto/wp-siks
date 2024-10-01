@@ -12,7 +12,6 @@ if ($validate_user['status'] === 'error') {
 } else {
     echo "<script>console.log('Debug Objects: " . $validate_user['message'] . "' );</script>";
 }
-
 global $wpdb;
 $maps_all = $this->get_polygon();
 $center = $this->get_center();

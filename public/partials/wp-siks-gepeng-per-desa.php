@@ -1,10 +1,16 @@
 <?php
-$validate_user = $this->user_authorization($_GET['desa']);
+$input = shortcode_atts(array(
+    'id_desa' => ''
+), $atts);
+if (empty($input['id_desa'])) {
+    die('id_desa kosong');
+}
+
+$validate_user = $this->user_authorization($input['id_desa']);
 if ($validate_user['status'] === 'error') {
     die($validate_user['message']);
 } else {
     echo "<script>console.log('Debug Objects: " . $validate_user['message'] . "' );</script>";
-    $nama_desa = $validate_user['data'];
 }
 
 global $wpdb;
@@ -19,7 +25,7 @@ $desa = $wpdb->get_row(
         WHERE desa=%s
           AND kecamatan=%s
           AND active=1
-    ', $nama_desa, $validate_user['kecamatan']),
+    ', $validate_user['desa'], $validate_user['kecamatan']),
     ARRAY_A
 );
 $default_location = $this->getSearchLocation($desa);
@@ -32,11 +38,11 @@ $default_location = $this->getSearchLocation($desa);
     }
 </style>
 
-<h1 class="text-center">Peta Sebaran Gepeng<br>DESA <?php echo $nama_desa; ?></h1>
+<h1 class="text-center">Peta Sebaran Gepeng<br>DESA <?php echo $validate_user['desa']; ?></h1>
 <div style="width: 95%; margin: 0 auto; min-height: 90vh; padding-bottom: 75px;">
     <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
     <div style="padding: 10px;margin:0 0 3rem 0;">
-        <h1 class="text-center" style="margin:3rem;">Data Gepeng<br>DESA <?php echo $nama_desa ?></h1>
+        <h1 class="text-center" style="margin:3rem;">Data Gepeng<br>DESA <?php echo $validate_user['desa']; ?></h1>
         <div class="wrap-table">
             <table id="tableGepengPerDesa" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
                 <thead>
@@ -82,7 +88,7 @@ $default_location = $this->getSearchLocation($desa);
                         data: {
                             'action': 'get_data_Gepeng',
                             'api_key': ajax.apikey,
-                            'desa': '<?php echo $nama_desa ?>',
+                            'desa': '<?php echo $validate_user['desa']; ?>',
                             'kecamatan': '<?php echo $validate_user['kecamatan']; ?>',
                         }
                     },

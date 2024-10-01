@@ -33,6 +33,8 @@ if ( ! defined( 'WPINC' ) ) {
 define( 'SIKS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'SIKS_PLUGIN_PATH', plugin_dir_path(__FILE__) );
 define( 'SIKS_APIKEY', '_crb_apikey_siks' );
+define( 'SIKS_PROV', '_crb_siks_prop' );
+define( 'SIKS_KABKOT', '_crb_siks_kab' );
 
 // ============== https://carbonfields.net/ ================
 if(!defined('Carbon_Fields_Plugin\PLUGIN_FILE')){
