@@ -48,22 +48,22 @@ foreach ($maps_all as $i => $desa) {
         <table id="tableData" class="table table-bordered">
             <thead>
                 <tr>
-                    <th class="text-center" style="width: 12%;">Nama</th>
-                    <th class="text-center" style="width: 5%;">Usia</th>
-                    <th class="text-center" style="width: 8%;">Provinsi</th>
-                    <th class="text-center" style="width: 10%;">Kota / Kabupaten</th>
-                    <th class="text-center" style="width: 10%;">Kecamatan</th>
-                    <th class="text-center" style="width: 10%;">Desa / Kelurahan</th>
-                    <th class="text-center" style="width: 15%;">Alamat</th>
-                    <th class="text-center" style="width: 7%;">Status DTKS</th>
-                    <th class="text-center" style="width: 8%;">Status Pernikahan</th>
-                    <th class="text-center" style="width: 8%;">Mempunyai Usaha</th>
-                    <th class="text-center" style="width: 10%;">Keterangan</th>
-                    <th class="text-center" style="width: 7%;">Jenis Data</th>
-                    <th class="text-center" style="width: 7%;">Tahun Anggaran</th>
-                    <th class="text-center" style="width: 8%;">Dibuat Pada</th>
-                    <th class="text-center" style="width: 8%;">Terakhir Diperbarui</th>
-                    <th class="text-center" style="width: 8%;">Aksi</th>
+                    <th class="text-center">Nama</th>
+                    <th class="text-center">Usia</th>
+                    <th class="text-center">Provinsi</th>
+                    <th class="text-center">Kota / Kabupaten</th>
+                    <th class="text-center">Kecamatan</th>
+                    <th class="text-center">Desa / Kelurahan</th>
+                    <th class="text-center">Alamat</th>
+                    <th class="text-center">Status DTKS</th>
+                    <th class="text-center">Status Pernikahan</th>
+                    <th class="text-center">Mempunyai Usaha</th>
+                    <th class="text-center">Keterangan</th>
+                    <th class="text-center">Jenis Data</th>
+                    <th class="text-center">Tahun Anggaran</th>
+                    <th class="text-center">Dibuat Pada</th>
+                    <th class="text-center">Terakhir Diperbarui</th>
+                    <th class="text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>

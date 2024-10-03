@@ -1,1 +1,1 @@
-<?php echo 'odgj';
+<?php echo 'Maaf Halaman Usulan ODGJ Ini Belum Tersedia';

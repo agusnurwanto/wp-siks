@@ -19,12 +19,6 @@ foreach ($maps_all as $i => $desa) {
 }
 ?>
 <style type="text/css">
-    .wrap-table {
-        overflow: auto;
-        max-height: 100vh;
-        width: 100%;
-    }
-
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -44,26 +38,26 @@ foreach ($maps_all as $i => $desa) {
         <table id="tableData" class="table table-bordered">
             <thead>
                 <tr>
-                    <th class="text-center" style="width: 4%;">Kode</th>
-                    <th class="text-center" style="width: 10%;">Penerima</th>
-                    <th class="text-center" style="width: 12%;">Nama dan NIK Ketua</th>
-                    <th class="text-center" style="width: 6%;">Provinsi</th>
-                    <th class="text-center" style="width: 6%;">Kabupaten/Kota</th>
-                    <th class="text-center" style="width: 6%;">Kecamatan</th>
-                    <th class="text-center" style="width: 6%;">Desa/Kelurahan</th>
-                    <th class="text-center" style="width: 10%;">Alamat</th>
-                    <th class="text-center" style="width: 8%;">Anggaran</th>
-                    <th class="text-center" style="width: 6%;">Status Realisasi</th>
-                    <th class="text-center" style="width: 5%;">No NPHD</th>
-                    <th class="text-center" style="width: 5%;">No SPM</th>
-                    <th class="text-center" style="width: 5%;">No SP2D</th>
-                    <th class="text-center" style="width: 8%;">Peruntukan</th>
-                    <th class="text-center" style="width: 5%;">Tahun Anggaran</th>
-                    <th class="text-center" style="width: 5%;">Jenis Data</th>
-                    <th class="text-center" style="width: 8%;">Keterangan</th>
-                    <th class="text-center" style="width: 6%;">Dibuat Pada</th>
-                    <th class="text-center" style="width: 6%;">Terakhir Diperbarui</th>
-                    <th class="text-center" style="width: 6%;">Aksi</th>
+                    <th class="text-center">Kode</th>
+                    <th class="text-center">Penerima</th>
+                    <th class="text-center">Nama dan NIK Ketua</th>
+                    <th class="text-center">Provinsi</th>
+                    <th class="text-center">Kabupaten/Kota</th>
+                    <th class="text-center">Kecamatan</th>
+                    <th class="text-center">Desa/Kelurahan</th>
+                    <th class="text-center">Alamat</th>
+                    <th class="text-center">Anggaran</th>
+                    <th class="text-center">Status Realisasi</th>
+                    <th class="text-center">No NPHD</th>
+                    <th class="text-center">No SPM</th>
+                    <th class="text-center">No SP2D</th>
+                    <th class="text-center">Peruntukan</th>
+                    <th class="text-center">Tahun Anggaran</th>
+                    <th class="text-center">Jenis Data</th>
+                    <th class="text-center">Keterangan</th>
+                    <th class="text-center">Dibuat Pada</th>
+                    <th class="text-center">Terakhir Diperbarui</th>
+                    <th class="text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -84,124 +78,140 @@ foreach ($maps_all as $i => $desa) {
             <div class="modal-body">
                 <input type='hidden' id='id_data' name="id_data">
 
-                <div class="form-group">
-                    <label for="tahunAnggaran">Tahun Anggaran</label>
-                    <input type="number" name="tahunAnggaran" class="form-control" id="tahunAnggaran" placeholder="Masukkan Tahun Anggaran">
-                </div>
-
-                <div class="form-group">
-                    <label for="jenisData">Jenis Data</label>
-                    <select class="form-control" aria-label="Pilih Jenis Data" id="jenisData" name="jenisData">
-                        <option value="">Pilih Jenis Data</option>
-                        <option value="Induk">Induk</option>
-                        <option value="PAK">PAK</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="statusRealisasi">Status Realisasi</label>
-                    <select class="form-control" aria-label="Pilih Status Realisasi" id="statusRealisasi" name="statusRealisasi">
-                        <option value="">Pilih Status Realisasi</option>
-                        <option value="Realisasi">Realisasi</option>
-                        <option value="Tidak Realisasi">Tidak Realisasi</option>
-                        <option value="Proses">Proses</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="anggaran">Anggaran</label>
-                    <input type="number" name="anggaran" class="form-control" id="anggaran" placeholder="Masukkan Jumlah Anggaran">
-                </div>
-                <div class="card bg-light p-3 mb-3">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="penerima">Penerima</label>
-                            <input type="text" name="penerima" class="form-control" id="penerima" placeholder="Masukkan Penerima">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="nama_nik_ketua">Nama dan NIK Ketua</label>
-                            <input type="text" name="nama_nik_ketua" class="form-control" id="nama_nik_ketua" placeholder="Masukkan Nama dan NIK Ketua">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="alamat">Alamat</label>
-                            <input type="text" name="alamat" class="form-control" id="alamat" placeholder="Masukkan Alamat">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="kecamatan">Kecamatan</label>
-                            <input type="text" name="kecamatan" class="form-control" id="kecamatan" placeholder="Masukkan Kecamatan">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="desaKel">Desa / Kelurahan</label>
-                            <input type="text" name="desaKel" class="form-control" id="desaKel" placeholder="Masukkan Desa / Kelurahan">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="provinsi">Provinsi</label>
-                            <input type="text" name="provinsi" class="form-control" id="provinsi" placeholder="Masukkan Provinsi">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="kabKot">Kota / Kabupaten</label>
-                            <input type="text" name="kabKot" class="form-control" id="kabKot" placeholder="Masukkan Kota / Kabupaten">
+               <div class="card bg-light mb-3">
+                    <div class="card-header">Tahun Anggaran dan Jenis Data</div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="tahunAnggaran">Tahun Anggaran</label>
+                                <input type="number" name="tahunAnggaran" class="form-control" id="tahunAnggaran" placeholder="Masukkan Tahun Anggaran">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="jenisData">Jenis Data</label>
+                                <select class="form-control" id="jenisData" name="jenisData">
+                                    <option value="">Pilih Jenis Data</option>
+                                    <option value="Induk">Induk</option>
+                                    <option value="PAK">PAK</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="card bg-light p-3 mb-3">
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="nphd">No NPHD</label>
-                            <input type="text" name="nphd" class="form-control" id="nphd" placeholder="Masukkan NPHD">
+                <!-- Penerima dan Alamat Section -->
+                <div class="card bg-light mb-3">
+                    <div class="card-header">Data Penerima dan Alamat</div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="penerima">Penerima</label>
+                                <input type="text" name="penerima" class="form-control" id="penerima" placeholder="Masukkan Penerima">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="nama_nik_ketua">Nama dan NIK Ketua</label>
+                                <input type="text" name="nama_nik_ketua" class="form-control" id="nama_nik_ketua" placeholder="Masukkan Nama dan NIK Ketua">
+                            </div>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label for="spm">No SPM</label>
-                            <input type="text" name="spm" class="form-control" id="spm" placeholder="Masukkan SPM">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="alamat">Alamat</label>
+                                <input type="text" name="alamat" class="form-control" id="alamat" placeholder="Masukkan Alamat">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="kecamatan">Kecamatan</label>
+                                <input type="text" name="kecamatan" class="form-control" id="kecamatan" placeholder="Masukkan Kecamatan">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="desaKel">Desa / Kelurahan</label>
+                                <input type="text" name="desaKel" class="form-control" id="desaKel" placeholder="Masukkan Desa / Kelurahan">
+                            </div>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label for="sp2d">No SP2D</label>
-                            <input type="text" name="sp2d" class="form-control" id="sp2d" placeholder="Masukkan SP2D">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="provinsi">Provinsi</label>
+                                <input type="text" name="provinsi" class="form-control" id="provinsi" placeholder="Masukkan Provinsi">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="kabKot">Kota / Kabupaten</label>
+                                <input type="text" name="kabKot" class="form-control" id="kabKot" placeholder="Masukkan Kota / Kabupaten">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="tglNphd">Tanggal NPHD</label>
-                            <input type="date" name="tglNphd" class="form-control" id="tglNphd" placeholder="Masukkan Tanggal NPHD">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="tglSpm">Tanggal SPM</label>
-                            <input type="date" name="tglSpm" class="form-control" id="tglSpm" placeholder="Masukkan Tanggal SPM">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="tglSp2d">Tanggal SP2D</label>
-                            <input type="date" name="tglSp2d" class="form-control" id="tglSp2d" placeholder="Masukkan Tanggal SP2D">
+                        <div class="form-group">
+                            <label for="keterangan">Keterangan Penerima</label>
+                            <textarea name="keterangan" class="form-control" id="keterangan"></textarea>
                         </div>
                     </div>
                 </div>
 
+                <!-- Dokumen Section -->
+                <div class="card bg-light mb-3">
+                    <div class="card-header">Dokumen Hibah</div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="statusRealisasi">Status Realisasi</label>
+                            <select class="form-control" aria-label="Pilih Status Realisasi" id="statusRealisasi" name="statusRealisasi">
+                                <option value="">Pilih Status Realisasi</option>
+                                <option value="Realisasi">Realisasi</option>
+                                <option value="Tidak Realisasi">Tidak Realisasi</option>
+                                <option value="Proses">Proses</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="anggaran">Anggaran</label>
+                            <input type="number" name="anggaran" class="form-control" id="anggaran" placeholder="Masukkan Jumlah Anggaran">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="nphd">No NPHD</label>
+                                <input type="text" name="nphd" class="form-control" id="nphd" placeholder="Masukkan NPHD">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="spm">No SPM</label>
+                                <input type="text" name="spm" class="form-control" id="spm" placeholder="Masukkan SPM">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="sp2d">No SP2D</label>
+                                <input type="text" name="sp2d" class="form-control" id="sp2d" placeholder="Masukkan SP2D">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="tglNphd">Tanggal NPHD</label>
+                                <input type="date" name="tglNphd" class="form-control" id="tglNphd">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="tglSpm">Tanggal SPM</label>
+                                <input type="date" name="tglSpm" class="form-control" id="tglSpm">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="tglSp2d">Tanggal SP2D</label>
+                                <input type="date" name="tglSp2d" class="form-control" id="tglSp2d">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Peruntukan Section -->
                 <div class="form-group">
                     <label for="peruntukan">Peruntukan</label>
                     <textarea name="peruntukan" class="form-control" id="peruntukan"></textarea>
                 </div>
 
-                <div class="card bg-light p-3 mb-3">
-                    <div class="form-row">
-                        <div class="col-md-6">
-                            <div class="pl-4">
+                <!-- Koordinat Section -->
+                <div class="card bg-light mb-3">
+                    <div class="card-header">Koordinat Lokasi</div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="col-md-6">
                                 <label for="latitude">Koordinat Latitude</label>
                                 <input type="text" class="form-control" id="latitude" name="latitude" placeholder="0" disabled>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="pl-4">
+                            <div class="col-md-6">
                                 <label for="longitude">Koordinat Longitude</label>
                                 <input type="text" class="form-control" id="longitude" name="longitude" placeholder="0" disabled>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-row mt-4">
-                        <div class="col-md-12">
-                            <div class="pl-4">
+                        <div class="form-row mt-4">
+                            <div class="col-md-12">
                                 <label for="map-canvas-siks">Map</label>
                                 <div style="height:600px; width: 100%;" id="map-canvas-siks"></div>
                             </div>
@@ -217,6 +227,7 @@ foreach ($maps_all as $i => $desa) {
         </div>
     </div>
 </div>
+
 <script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
     window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
@@ -429,6 +440,7 @@ foreach ($maps_all as $i => $desa) {
                 jQuery('#tglSpm').val(res.data.tgl_spm);
                 jQuery('#tglSp2d').val(res.data.tgl_sp2d);
                 jQuery('#peruntukan').val(res.data.peruntukan);
+                jQuery('#keterangan').text(res.data.keterangan);
 
                 jQuery('#judulmodalTambahData').hide();
                 jQuery('#judulModalEdit').show();
@@ -484,6 +496,7 @@ foreach ($maps_all as $i => $desa) {
         jQuery('#tglSpm').val('');
         jQuery('#tglSp2d').val('');
         jQuery('#peruntukan').val('');
+        jQuery('#keterangan').text();
 
         jQuery('#judulmodalTambahData').show();
         jQuery('#judulModalEdit').hide();
@@ -512,6 +525,7 @@ foreach ($maps_all as $i => $desa) {
             'peruntukan': 'Peruntukan tidak boleh kosong!',
             'longitude': 'Longitude tidak boleh kosong!',
             'latitude': 'Latitude tidak boleh kosong!',
+            'keterangan': 'keterangan tidak boleh kosong!',
             // Tambahkan field lain jika diperlukan
 
         };

@@ -566,6 +566,7 @@ foreach ($maps_all as $i => $desa) {
                     }
                     jQuery('#latitude').val(res.data.lat);
                     jQuery('#longitude').val(res.data.lng);
+
                     jQuery('#lampiran').val('').show();
                     jQuery('#file_lampiran_existing').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran).show();
                     jQuery('#modalTambahData').modal('show');
@@ -619,6 +620,7 @@ foreach ($maps_all as $i => $desa) {
 
         jQuery('#file_lampiran_existing').hide();
         jQuery('#file_lampiran_existing').closest('.form-group').find('input').show();
+
         jQuery('#modalTambahData').modal('show');
     }
 
@@ -772,12 +774,20 @@ foreach ($maps_all as $i => $desa) {
         }
 
         const id_data = jQuery('#id_data').val();
+        if (id_data == '') {
+            if (typeof lampiran == 'undefined') {
+                return alert('Upload file lampiran dulu!');
+            }
+        }
 
         const tempData = new FormData();
         tempData.append('action', 'tambah_data_usulan_anak_terlantar');
         tempData.append('api_key', ajax.apikey);
         tempData.append('id_data', id_data);
         tempData.append('id_desa', id_desa);
+        if (typeof lampiran != 'undefined') {
+            tempData.append('lampiran', lampiran);
+        }
 
         for (const [key, value] of Object.entries(data)) {
             tempData.append(key, value);

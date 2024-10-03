@@ -37,19 +37,19 @@ $default_location = $this->getSearchLocation($desa);
     <table id="tableData" class="table table-bordered">
         <thead>
             <tr>
-                <th class="text-center" style="width: 6%;">Aksi</th>
-                <th class="text-center" style="width: 12%;">Nama</th>
-                <th class="text-center" style="width: 6%;">Usia</th>
-                <th class="text-center" style="width: 6%;">Provinsi</th>
-                <th class="text-center" style="width: 6%;">Kota / Kabupaten</th>
-                <th class="text-center" style="width: 6%;">Kecamatan</th>
-                <th class="text-center" style="width: 6%;">Desa / Kelurahan</th>
-                <th class="text-center" style="width: 12%;">Alamat</th>
-                <th class="text-center" style="width: 6%;">Status DTKS</th>
-                <th class="text-center" style="width: 6%;">Status Pernikahan</th>
-                <th class="text-center" style="width: 6%;">Mempunyai Usaha</th>
-                <th class="text-center" style="width: 10%;">Keterangan</th>
-                <th class="text-center" style="width: 6%;">Tahun Anggaran</th>
+                <th class="text-center">Aksi</th>
+                <th class="text-center">Nama</th>
+                <th class="text-center">Usia</th>
+                <th class="text-center">Provinsi</th>
+                <th class="text-center">Kota / Kabupaten</th>
+                <th class="text-center">Kecamatan</th>
+                <th class="text-center">Desa / Kelurahan</th>
+                <th class="text-center">Alamat</th>
+                <th class="text-center">Status DTKS</th>
+                <th class="text-center">Status Pernikahan</th>
+                <th class="text-center">Mempunyai Usaha</th>
+                <th class="text-center">Keterangan</th>
+                <th class="text-center">Tahun Anggaran</th>
             </tr>
         </thead>
         <tbody>
