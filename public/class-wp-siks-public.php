@@ -4281,6 +4281,185 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
+	function get_datatable_data_usulan_odgj()
+	{
+		global $wpdb;
+		$user_data = wp_get_current_user();
+
+		$ret = [
+			'status' => 'success',
+			'message' => 'Berhasil get data!'
+		];
+
+		if (!empty($_POST['api_key']) && $_POST['api_key'] === get_option(SIKS_APIKEY)) {
+			$params = $_REQUEST;
+
+			// Define columns
+			$columns = [
+				'id',
+				'nama',
+				'kk',
+				'nik',
+				'jenis_kelamin',
+				'usia',
+				'provinsi',
+				'kabkot',
+				'id_kec',
+				'kecamatan',
+				'id_desa_kel',
+				'desa',
+				'rt',
+				'rw',
+				'nama_ortu',
+				'keterangan',
+				'pengobatan',
+				'file_lampiran',
+				'lat',
+				'lng',
+				'tahun_anggaran',
+				'status_data',
+				'keterangan_verifikasi',
+				'active',
+				'create_at',
+				'update_at'
+			];
+
+			$where = 'WHERE 1=1 AND active = 1';
+			$searchValue = !empty($params['search']['value']) ? $params['search']['value'] : '';
+
+			//filter by desa kec
+			if (!empty($_POST['id_desa'])) {
+				$where .= $wpdb->prepare(' AND id_desa_kel=%d', $_POST['id_desa']);
+			}
+
+			//filter by role
+			if (in_array('administrator', $user_data->roles)) {
+				$where .= $wpdb->prepare(' AND status_data != 0');
+			}
+
+			// Search filter
+			if ($searchValue) {
+				$where .= $wpdb->prepare(
+					" AND (nama LIKE %s OR nama_ortu LIKE %s OR pengobatan LIKE %s OR keterangan LIKE %s)",
+					"%$searchValue%",
+					"%$searchValue%",
+					"%$searchValue%",
+					"%$searchValue%"
+				);
+			}
+
+			// Total records
+			$sqlTot = "SELECT COUNT(id) as jml FROM data_usulan_odgj_siks $where";
+			$totalRecords = $wpdb->get_var($sqlTot);
+
+			// Sorting
+			$orderBy = '';
+			if (!empty($params['order'])) {
+				$orderByColumnIndex = $params['order'][0]['column'];
+				$orderByDirection = strtoupper($params['order'][0]['dir']);
+				if ($orderByDirection === 'ASC' || $orderByDirection === 'DESC') {
+					$orderByColumn = $columns[$orderByColumnIndex] ?? 'id';
+					$orderBy = "ORDER BY $orderByColumn $orderByDirection";
+				}
+			}
+
+			// Pagination
+			$limit = '';
+			if ($params['length'] != -1) {
+				$limit = $wpdb->prepare(
+					"LIMIT %d, %d",
+					$params['start'],
+					$params['length']
+				);
+			}
+
+			// Query records
+			$sqlRec = "SELECT " . implode(', ', $columns) . " FROM data_usulan_odgj_siks $where $orderBy $limit";
+			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
+
+			// Format data
+			foreach ($queryRecords as $record => $recVal) {
+				$btn = '';
+				$keterangan_verify = '';
+				switch ($recVal['status_data']) {
+					case 1: // Menunggu Persetujuan
+						$labelVerify = '<span class="badge badge-pill badge-warning">Menunggu Persetujuan</span>';
+
+						// Only admin can verify, no edit or delete for both roles
+						if (in_array('administrator', $user_data->roles)) {
+							$btn .= '<a class="btn btn-sm m-1 btn-success" onclick="showModalVerifikasi(\'' . $recVal['id'] . '\'); return false;" href="#" title="Verify Data"><span class="dashicons dashicons-yes"></span></a>';
+						}
+						break;
+
+					case 2: // Disetujui
+						$labelVerify = '<span class="badge badge-pill badge-success">Disetujui</span>';
+
+						// No actions allowed for admin or desa
+						break;
+
+					case 3: // Ditolak
+						$labelVerify = '<span class="badge badge-pill badge-danger">Ditolak</span>';
+
+						if (in_array('desa', $user_data->roles)) {
+							// Desa can resubmit if status is rejected
+							$btn .= '<a class="btn btn-sm m-1 btn-info" onclick="submitUsulan(\'' . $recVal['id'] . '\'); return false;" href="#" title="Submit Ulang"><span class="dashicons dashicons-controls-repeat"></span></a>';
+						}
+						break;
+
+					case 0: // Draft
+						$labelVerify = '<span class="badge badge-pill badge-info">Draft</span>';
+
+						if (in_array('desa', $user_data->roles)) {
+							// Desa can submit draft data
+							$btn .= '<a class="btn btn-sm m-1 btn-info" onclick="submitUsulan(\'' . $recVal['id'] . '\'); return false;" href="#" title="Submit Data"><span class="dashicons dashicons-upload"></span></a>';
+						}
+						break;
+
+					default:
+						$labelVerify = 'not valid';
+						break;
+				}
+
+				// Basic Edit & Delete buttons (allowed only if status is not Menunggu Persetujuan or Disetujui)	
+				if (!in_array($recVal['status_data'], [1, 2])) {
+					if (in_array('desa', $user_data->roles)) {
+						$btn .= '<a class="btn btn-sm m-1 btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><span class="dashicons dashicons-edit"></span></a>';
+						$btn .= '<a class="btn btn-sm m-1 btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Delete Data"><span class="dashicons dashicons-trash"></span></a>';
+					}
+				}
+				// Keterangan Label (allowed only if status is Ditolak or Disetujui)	
+				if (in_array($recVal['status_data'], [2, 3])) {
+					if (!empty($recVal['keterangan_verifikasi'])) {
+						$keterangan_verify = '<br><small class="text-left text-muted">Keterangan : </small>' . '<small class="text-justify text-muted">' . $recVal['keterangan_verifikasi'] . '</small>';
+					}
+				}
+
+				// Update queryRecords with label and action buttons
+				$queryRecords[$record]['status_data'] = $labelVerify . $keterangan_verify;
+				$queryRecords[$record]['aksi'] = $btn;
+
+				$queryRecords[$record]['create_at'] = $this->formatTanggal($recVal['create_at']);
+				$queryRecords[$record]['update_at'] = $this->formatTanggal($recVal['update_at']);
+
+				$queryRecords[$record]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/odgj/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
+			}
+
+			$json_data = [
+				"draw" => intval($params['draw']),
+				"recordsTotal" => intval($totalRecords),
+				"recordsFiltered" => intval($totalRecords),
+				"data" => $queryRecords
+			];
+			die(json_encode($json_data));
+		} else {
+			$ret = array(
+				'status' => 'error',
+				'message'   => 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
+
 	function get_datatable_data_usulan_bunda_kasih()
 	{
 		global $wpdb;
@@ -4433,6 +4612,8 @@ class Wp_Siks_Public
 
 				$queryRecords[$record]['create_at'] = $this->formatTanggal($recVal['create_at']);
 				$queryRecords[$record]['update_at'] = $this->formatTanggal($recVal['update_at']);
+
+				$queryRecords[$record]['file_lampiran'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/bunda_kasih/' . $recVal['file_lampiran'] . '" target="_blank">' . $recVal['file_lampiran'] . '</a>';
 			}
 
 			$json_data = [
@@ -5643,6 +5824,185 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
+	public function tambah_data_usulan_odgj()
+	{
+		global $wpdb;
+
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil simpan data usulan!',
+		);
+
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+
+				$user_data = wp_get_current_user();
+				if (!in_array('desa', $user_data->roles)) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Aksi ditolak, hanya user tertentu yang dapat mengakses fitur ini!';
+					die(json_encode($ret));
+				}
+
+				$postData = $_POST;
+
+				// Define validation rules
+				$validationRules = [
+					'nik'			=> 'required',
+					'kk'			=> 'required',
+					'nama'			=> 'required',
+					'rt'			=> 'required',
+					'rw'			=> 'required',
+					'jenisKelamin'	=> 'required',
+					'usia'			=> 'required',
+					'namaOrtu'		=> 'required',
+					'pengobatan'	=> 'required',
+					'keterangan'	=> 'required',
+					'tahunAnggaran'	=> 'required',
+					'latitude'		=> 'required',
+					'longitude'		=> 'required'
+					//name : message
+				];
+
+				// Validate data
+				$errors = $this->validate($postData, $validationRules);
+
+				if (!empty($errors)) {
+					$ret['status'] = 'error';
+					$ret['message'] = implode(" \n ", $errors);
+					die(json_encode($ret));
+				}
+
+				//auto input alamat
+				$provinsi 	= get_option(SIKS_PROV);
+				$kabkot		= get_option(SIKS_KABKOT);
+				$get_desa	= $wpdb->get_row(
+					$wpdb->prepare('
+						SELECT 
+							id_kec,
+							id_desa,
+							nama
+						FROM data_alamat_siks
+						WHERE id_desa = %d
+                	', $postData['id_desa']),
+					ARRAY_A
+				);
+				$get_kec	= $wpdb->get_row(
+					$wpdb->prepare('
+						SELECT 
+							id_kec,
+							nama
+						FROM data_alamat_siks
+						WHERE id_kec = %d
+						  AND active = 1
+                	', $get_desa['id_kec']),
+					ARRAY_A
+				);
+
+				if (
+					empty($provinsi)
+					|| empty($kabkot)
+					|| empty($get_kec)
+					|| empty($get_desa)
+				) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'Alamat Tidak Lengkap!';
+					die(json_encode($ret));
+				}
+
+				// Data to be saved
+				$id_data = !empty($postData['id_data']) ? sanitize_text_field($postData['id_data']) : null;
+
+				$data = array(
+					'tahun_anggaran' 	=> sanitize_text_field($postData['tahunAnggaran']),
+					'nama' 				=> sanitize_text_field($postData['nama']),
+					'kk'				=> sanitize_text_field($postData['kk']),
+					'nik' 				=> sanitize_text_field($postData['nik']),
+					'jenis_kelamin' 	=> sanitize_text_field($postData['jenisKelamin']),
+					'usia' 				=> sanitize_text_field($postData['usia']),
+					'rt' 				=> sanitize_text_field($postData['rt']),
+					'rw' 				=> sanitize_text_field($postData['rw']),
+					'nama_ortu' 		=> sanitize_text_field($postData['namaOrtu']),
+					'keterangan' 		=> sanitize_text_field($postData['keterangan']),
+					'pengobatan' 		=> sanitize_text_field($postData['pengobatan']),
+					'lat' 				=> sanitize_textarea_field($postData['latitude']),
+					'lng' 				=> sanitize_textarea_field($postData['longitude']),
+
+					'provinsi' 			=> $provinsi,
+					'kabkot' 			=> $kabkot,
+					'id_kec' 			=> $get_kec['id_kec'],
+					'kecamatan' 		=> strtoupper($get_kec['nama']),
+					'id_desa_kel' 		=> $get_desa['id_desa'],
+					'desa' 				=> strtoupper($get_desa['nama']),
+				);
+
+				$path = SIKS_PLUGIN_PATH . 'public/media/odgj/';
+
+				$cek_file = array();
+				if (
+					!empty($_FILES['lampiran'])
+				) {
+					$upload = CustomTraitSiks::uploadFileSiks($_POST['api_key'], $path, $_FILES['lampiran'], ['jpg', 'jpeg', 'png', 'pdf']);
+					if ($upload['status'] == true) {
+						$data['file_lampiran'] = $upload['filename'];
+						$cek_file['file_lampiran'] = $data['file_lampiran'];
+					} else {
+						$ret['status'] = 'error';
+						$ret['message'] = $upload['message'];
+					}
+				}
+
+				if ($ret['status'] == 'error') {
+					// hapus file yang sudah terlanjur upload karena ada file yg gagal upload!
+					foreach ($cek_file as $newfile) {
+						if (is_file($path . $newfile)) {
+							unlink($path . $newfile);
+						}
+					}
+				}
+
+				// Update or insert
+				if ($ret['status'] != 'error') {
+					$file_lama = $wpdb->get_row(
+						$wpdb->prepare('
+							SELECT
+								file_lampiran
+							FROM data_usulan_odgj_siks
+							WHERE id = %d
+						', $_POST['id_data']),
+						ARRAY_A
+					);
+					if (
+						$file_lama['file_lampiran'] != $data['file_lampiran']
+						&& is_file($path . $file_lama['file_lampiran'])
+					) {
+						unlink($path . $file_lama['file_lampiran']);
+					}
+					if ($id_data) {
+						$wpdb->update(
+							'data_usulan_odgj_siks',
+							$data,
+							array('id' => $id_data)
+						);
+						$ret['message'] = 'Berhasil update data!';
+					} else {
+						$wpdb->insert(
+							'data_usulan_odgj_siks',
+							$data
+						);
+					}
+				}
+			} else {
+				$ret['status'] = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status'] = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
 	public function tambah_data_usulan_disabilitas()
 	{
 		global $wpdb;
@@ -6169,11 +6529,16 @@ class Wp_Siks_Public
 
 				// Define validation rules
 				$validationRules = [
-					'tahunAnggaran'              => 'required',
-					'latitude'                   => 'required',
-					'longitude'                  => 'required',
+					'tahunAnggaran' => 'required|numeric|max:4',
+					'latitude'      => 'required',
+					'longitude'     => 'required',
+					'nik'			=> 'required|numeric|max:16',
+					'kk'			=> 'required|numeric|max:16',
+					'rtRw'			=> 'required',
+					'nama'			=> 'required'
 
 				];
+				// die(print_r($postData));
 
 				// Validate data
 				$errors = $this->validate($postData, $validationRules);
@@ -6235,6 +6600,10 @@ class Wp_Siks_Public
 					'status_data'						=> 0,
 					'lat'                        		=> sanitize_text_field($postData['latitude']),
 					'lng'                        		=> sanitize_text_field($postData['longitude']),
+					'nik'                        		=> sanitize_text_field($postData['nik']),
+					'kk'                        		=> sanitize_text_field($postData['kk']),
+					'rt_rw'                        		=> sanitize_text_field($postData['rtRw']),
+					'nama'                        		=> sanitize_text_field($postData['nama']),
 					'active'                     		=> 1
 				);
 
@@ -6270,7 +6639,7 @@ class Wp_Siks_Public
 							$wpdb->prepare('
 								SELECT
 									file_lampiran
-								FROM data_bunda_kasih_siks
+								FROM data_usulan_bunda_kasih_siks
 								WHERE id = %d
 							', $_POST['id_data']),
 							ARRAY_A
@@ -6287,7 +6656,7 @@ class Wp_Siks_Public
 							$data,
 							array('id' => $id_data)
 						);
-						$ret['message'] = 'Berhasil update data!';
+						$ret['message'] = 'Berhasil update data usulan!';
 					} else {
 						$wpdb->insert(
 							'data_usulan_bunda_kasih_siks',
@@ -6811,6 +7180,37 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
+	public function get_data_usulan_odgj_by_id()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil get data!',
+			'data' => array()
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+				$ret['data'] = $wpdb->get_row(
+					$wpdb->prepare('
+						SELECT 
+							*
+						FROM data_usulan_odgj_siks
+						WHERE id=%d
+                	', $_POST['id']),
+					ARRAY_A
+				);
+			} else {
+				$ret['status']  = 'error';
+				$ret['message'] = 'Api key tidak ditemukan!';
+			}
+		} else {
+			$ret['status']  = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+
+		die(json_encode($ret));
+	}
+
 	public function get_data_usulan_anak_terlantar_by_id()
 	{
 		global $wpdb;
@@ -6935,7 +7335,7 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
-	public function get_data_bunda_kasih_lansia_by_id()
+	public function get_data_usulan_bunda_kasih_by_id()
 	{
 		global $wpdb;
 		$ret = array(
@@ -6949,7 +7349,7 @@ class Wp_Siks_Public
 					$wpdb->prepare('
 						SELECT 
 							*
-						FROM data_bunda_kasih_lansia_siks
+						FROM data_usulan_bunda_kasih_siks
 						WHERE id=%d
                 	', $_POST['id']),
 					ARRAY_A
@@ -7517,6 +7917,9 @@ class Wp_Siks_Public
 				'Lansia' => array(
 					'Data Lansia SIKS' => '[data_lansia_siks]',
 				),
+				'ODGJ' => array(
+					'Data ODGJ SIKS' => '[data_odgj_siks]',
+				),
 				//just add, if wanted to add more card for admin page
 			);
 			$return = '<div class="row">';
@@ -7622,6 +8025,10 @@ class Wp_Siks_Public
 				'Lansia' => array(
 					'Usulan Lansia'    => '[usulan_lansia]',
 					'Lansia Per Desa'  => '[lansia_per_desa]',
+				),
+				'ODGJ' => array(
+					'Usulan ODGJ'    => '[usulan_odgj]',
+					'ODGJ Per Desa'  => '[odgj_per_desa]',
 				),
 				//just add, if wanted to add more card
 			);
@@ -7809,7 +8216,8 @@ class Wp_Siks_Public
 						'DTKS',
 						'Disabilitas',
 						'Lansia',
-						'P3KE'
+						'P3KE',
+						'ODGJ'
 						//add more if needed
 					];
 					if (!in_array($page_type, $jenis_page)) {
@@ -8087,6 +8495,9 @@ class Wp_Siks_Public
 					case 'lansia':
 						$table = 'data_usulan_lansia_siks';
 						break;
+					case 'odgj':
+						$table = 'data_usulan_odgj_siks';
+						break;
 					default:
 						$ret['status'] = 'error';
 						$ret['message'] = 'Jenis data tidak diketahui!';
@@ -8316,6 +8727,9 @@ class Wp_Siks_Public
 					case 'lansia':
 						$table = 'data_usulan_lansia_siks';
 						break;
+					case 'odgj':
+						$table = 'data_usulan_odgj_siks';
+						break;
 					default:
 						$ret['status'] = 'error';
 						$ret['message'] = 'Jenis data tidak diketahui!';
@@ -8431,6 +8845,9 @@ class Wp_Siks_Public
 					case 'lansia':
 						$table = 'data_usulan_lansia_siks';
 						break;
+					case 'odgj':
+						$table = 'data_usulan_odgj_siks';
+						break;
 					default:
 						$ret['status'] = 'error';
 						$ret['message'] = 'Jenis data tidak diketahui!';
@@ -8541,6 +8958,9 @@ class Wp_Siks_Public
 						break;
 					case 'lansia':
 						$table = 'data_usulan_lansia_siks';
+						break;
+					case 'odgj':
+						$table = 'data_usulan_odgj_siks';
 						break;
 					default:
 						$ret['status'] = 'error';

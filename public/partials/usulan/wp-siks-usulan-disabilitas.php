@@ -1543,7 +1543,7 @@ foreach ($maps_all as $i => $desa) {
 
         // Clear all input fields
         inputIds.forEach(id => {
-            jQuery('#' + id).val('testing ' + id);
+            jQuery('#' + id).val('');
         });
 
         jQuery('#file_lampiran_existing').hide();

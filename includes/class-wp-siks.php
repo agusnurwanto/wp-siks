@@ -298,10 +298,10 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_tambah_data_usulan_bunda_kasih', $plugin_public, 'tambah_data_usulan_bunda_kasih');
 		$this->loader->add_action('wp_ajax_hapus_data_usulan_bunda_kasih_by_id', $plugin_public, 'hapus_data_usulan_bunda_kasih_by_id');
 
-		$this->loader->add_action('wp_ajax_get_datatable_data_usulan_bunda_kasih', $plugin_public, 'get_datatable_data_usulan_bunda_kasih');
-		$this->loader->add_action('wp_ajax_get_data_usulan_bunda_kasih_by_id', $plugin_public, 'get_data_usulan_bunda_kasih_by_id');
-		$this->loader->add_action('wp_ajax_tambah_data_usulan_bunda_kasih', $plugin_public, 'tambah_data_usulan_bunda_kasih');
-		$this->loader->add_action('wp_ajax_hapus_data_usulan_bunda_kasih_by_id', $plugin_public, 'hapus_data_usulan_bunda_kasih_by_id');
+		$this->loader->add_action('wp_ajax_get_datatable_data_usulan_odgj', $plugin_public, 'get_datatable_data_usulan_odgj');
+		$this->loader->add_action('wp_ajax_get_data_usulan_odgj_by_id', $plugin_public, 'get_data_usulan_odgj_by_id');
+		$this->loader->add_action('wp_ajax_tambah_data_usulan_odgj', $plugin_public, 'tambah_data_usulan_odgj');
+		$this->loader->add_action('wp_ajax_hapus_data_usulan_odgj_by_id', $plugin_public, 'hapus_data_usulan_odgj_by_id');
 
 		$this->loader->add_action('wp_ajax_get_datatable_data_usulan_hibah', $plugin_public, 'get_datatable_data_usulan_hibah');
 		$this->loader->add_action('wp_ajax_get_data_usulan_hibah_by_id', $plugin_public, 'get_data_usulan_hibah_by_id');

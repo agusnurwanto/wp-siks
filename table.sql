@@ -670,3 +670,32 @@ CREATE TABLE `data_usulan_bunda_kasih_siks` (
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE `data_usulan_odgj_siks` (
+    `id` int(11) NOT NULL auto_increment,
+    `nama` TEXT DEFAULT NULL,
+    `kk` TEXT DEFAULT NULL,
+    `nik` TEXT DEFAULT NULL,
+    `jenis_kelamin` TEXT DEFAULT NULL,
+    `usia` TEXT DEFAULT NULL,
+    `provinsi` TEXT DEFAULT NULL,
+    `kabkot` TEXT DEFAULT NULL,
+    `id_kec` VARCHAR(100),
+    `kecamatan` TEXT DEFAULT NULL,
+    `id_desa_kel` VARCHAR(100),
+    `desa` TEXT DEFAULT NULL,
+    `rt` TEXT DEFAULT NULL,
+    `rw` TEXT DEFAULT NULL,
+    `nama_ortu` TEXT DEFAULT NULL,
+    `keterangan` TEXT DEFAULT NULL,
+    `pengobatan` TEXT DEFAULT NULL,
+    `file_lampiran` text DEFAULT NULL,
+    `lat` text DEFAULT NULL,
+    `lng` text DEFAULT NULL,
+    `tahun_anggaran`  int(4) DEFAULT NULL,
+    `status_data` TINYINT(1) NOT NULL COMMENT '0 = draft, 1 = menunggu persetujuan, 2 = disetujui, 3 = ditolak',
+    `keterangan_verifikasi` TEXT,
+    `active` tinyint(4) DEFAULT 1,
+    `create_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,    PRIMARY KEY (id)
+);

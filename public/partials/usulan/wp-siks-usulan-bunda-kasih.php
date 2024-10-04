@@ -67,7 +67,7 @@ foreach ($maps_all as $i => $desa) {
     }
 </style>
 <div class="pb-4 mb-5">
-    <h1 class="text-center my-4">Data Usulan bunda_kasih</h1>
+    <h1 class="text-center my-4">Data Usulan Bunda Kasih</h1>
     <h2 class="text-center my-4"><?php echo strtoupper($nama_desa_kelurahan); ?></h2>
     <?php if ($validate_user['roles'] === 'desa'): ?>
         <div class="m-4">
@@ -81,8 +81,9 @@ foreach ($maps_all as $i => $desa) {
     <table id="tableData">
         <thead>
             <tr>
+                <th class="text-center">Status Veriikasi</th>
                 <th class="text-center">NIK</th>
-                <th class="text-center">Kartu Keluarga</th>
+                <th class="text-center">No Kartu Keluarga</th>
                 <th class="text-center">Nama</th>
                 <th class="text-center">Provinsi</th>
                 <th class="text-center">Kabupaten / Kota</th>
@@ -111,57 +112,41 @@ foreach ($maps_all as $i => $desa) {
                 </button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="id_data" name="id_data">
-
-                <!-- Tahun Anggaran Card -->
-                <div class="card bg-light mb-3">
-                    <div class="card-header">
-                        <strong>Tahun Anggaran</strong>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="tahunAnggaran">Tahun Anggaran</label>
-                            <input type="number" class="form-control" id="tahunAnggaran" name="tahunAnggaran">
-                        </div>
-                    </div>
-                </div>
+                <input type="hidden" id="id_data" name="id_data" value="">
 
                 <!-- Personal Information Card -->
-                <div class="card bg-light mb-3">
+                <div class="card mb-3">
                     <div class="card-header">
                         <strong>Informasi Pribadi</strong>
                     </div>
                     <div class="card-body">
                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="nik">NIK</label>
-                                <input type="number" class="form-control" id="nik" name="nik">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="nama">Nama</label>
-                                <input type="text" class="form-control" id="nama" name="nama">
+                            <div class="form-group col-md-12">
+                                <label for="tahunAnggaran">Tahun Anggaran</label>
+                                <input type="number" class="form-control" id="tahunAnggaran" name="tahunAnggaran" maxlength="4">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="tanggalLahir">Tanggal Lahir</label>
-                                <input type="date" class="form-control" id="tanggalLahir" name="tanggalLahir">
+                                <label for="nik">NIK</label>
+                                <input type="number" class="form-control" id="nik" name="nik" maxlength="16">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="usia">Usia</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control" id="usia" name="usia">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">Tahun</span>
-                                    </div>
-                                </div>
+                                <label for="kk">No Kartu Keluarga</label>
+                                <input type="number" class="form-control" id="kk" name="kk" maxlength="16">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="nama">Nama</label>
+                                <input type="text" class="form-control" id="nama" name="nama">
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Address Information Card -->
-                <div class="card bg-light mb-3">
+                <div class="card mb-3">
                     <div class="card-header">
                         <strong>Informasi Alamat</strong>
                     </div>
@@ -172,97 +157,31 @@ foreach ($maps_all as $i => $desa) {
                                 <input type="text" class="form-control" id="provinsi" value="<?php echo $provinsi; ?>" disabled>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="kecamatan">Kecamatan</label>
-                                <input type="text" class="form-control" id="kecamatan" value="<?php echo strtoupper($validate_user['kecamatan']); ?>" disabled>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-4">
                                 <label for="kabkot">Kabupaten / Kota</label>
                                 <input type="text" class="form-control" id="kabkot" value="<?php echo $kabkot; ?>" disabled>
                             </div>
-                            <div class="form-group col-md-4">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="kecamatan">Kecamatan</label>
+                                <input type="text" class="form-control" id="kecamatan" value="<?php echo strtoupper($validate_user['kecamatan']); ?>" disabled>
+                            </div>
+                            <div class="form-group col-md-6">
                                 <label for="desa">Desa</label>
-                                <input type="text" class="form-control" id="desa" value="<?php echo strtoupper($validate_user['desa']); ?>" disabled>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="alamat">Alamat</label>
-                                <textarea class="form-control" id="alamat" name="alamat"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Status Information Card -->
-                <div class="card bg-light mb-3">
-                    <div class="card-header">
-                        <strong>Status Sosial dan Ekonomi</strong>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="dokumenKependudukan">Dokumen Kependudukan</label>
-                            <input type="text" class="form-control" id="dokumenKependudukan" name="dokumenKependudukan">
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="statusTempatTinggal">Status Tempat Tinggal</label>
-                                <input type="text" class="form-control" id="statusTempatTinggal" name="statusTempatTinggal">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="statusPemenuhanKebutuhan">Status Pemenuhan Kebutuhan</label>
-                                <input type="text" class="form-control" id="statusPemenuhanKebutuhan" name="statusPemenuhanKebutuhan">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="statusDtks">Status DTKS</label>
-                                <input type="text" class="form-control" id="statusDtks" name="statusDtks">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="statusKehidupanRumahTangga">Status Kehidupan Rumah Tangga</label>
-                                <input type="text" class="form-control" id="statusKehidupanRumahTangga" name="statusKehidupanRumahTangga">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recommendation Card -->
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <strong>Rekomendasi Pendata</strong>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="statusKepersertaanProgramBansos">Status Kepersertaan Program Bansos</label>
-                                <input type="text" id="statusKepersertaanProgramBansos" name="statusKepersertaanProgramBansos" class="form-control">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="rekomendasiPendataLama">Rekomendasi Pendata Lama</label>
-                                <input type="text" id="rekomendasiPendataLama" name="rekomendasiPendataLama" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="keteranganLainnyaLama">Keterangan Lainnya Lama</label>
-                                <textarea id="keteranganLainnyaLama" name="keteranganLainnyaLama" class="form-control"></textarea>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="rekomendasiPendata">Rekomendasi Pendata</label>
-                                <input type="text" id="rekomendasiPendata" name="rekomendasiPendata" class="form-control">
+                                <input type="text" class="form-control" id="desa" value="<?php echo strtoupper($validate_user['desa']);; ?>" disabled>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                <label for="keteranganLainnya">Keterangan Lainnya</label>
-                                <textarea id="keteranganLainnya" name="keteranganLainnya" class="form-control"></textarea>
+                                <label for="rtRw">RT / RW</label>
+                                <input type="text" class="form-control" id="rtRw" name="rtRw" placeholder="RT .. / RW ..">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Coordinates Section -->
-                <div class="card bg-light mb-3">
+                <!-- Coordinates and Map Card -->
+                <div class="card mb-3">
                     <div class="card-header">
                         <strong>Koordinat dan Peta</strong>
                     </div>
@@ -277,7 +196,7 @@ foreach ($maps_all as $i => $desa) {
                                 <input type="text" class="form-control" id="longitude" name="longitude" placeholder="0" disabled>
                             </div>
                         </div>
-                        <div class="form-row mt-4">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <label for="map-canvas-siks">Map</label>
                                 <div style="height:600px; width: 100%;" id="map-canvas-siks"></div>
@@ -287,7 +206,7 @@ foreach ($maps_all as $i => $desa) {
                 </div>
 
                 <!-- Attachment Card -->
-                <div class="card bg-light mb-3">
+                <div class="card mb-3">
                     <div class="card-header">
                         <strong>Lampiran</strong>
                     </div>
@@ -295,11 +214,11 @@ foreach ($maps_all as $i => $desa) {
                         <div class="form-group">
                             <label for="lampiran">Lampiran</label>
                             <input type="file" class="form-control-file" id="lampiran" name="lampiran" accept="application/pdf, .png, .jpg, .jpeg">
-                            <div style="padding-top: 10px; padding-bottom: 10px;">
+                            <div class="pt-2 pb-2">
                                 <a id="fileLampiranExisting"></a>
                             </div>
+                            <small>Upload file maksimal 1 Mb, berformat .pdf .png .jpg .jpeg</small>
                         </div>
-                        <small>Upload file maksimal 1 Mb, berformat .pdf, .png, .jpg, .jpeg</small>
                     </div>
                 </div>
             </div>
@@ -393,6 +312,10 @@ foreach ($maps_all as $i => $desa) {
                     jQuery("#wrap-loading").hide();
                 },
                 "columns": [{
+                        "data": 'status_data',
+                        className: "text-center"
+                    },
+                    {
                         "data": 'nik',
                         className: "text-center"
                     },
@@ -402,7 +325,7 @@ foreach ($maps_all as $i => $desa) {
                     },
                     {
                         "data": 'nama',
-                        className: "text-center"
+                        className: "text-left"
                     },
                     {
                         "data": 'provinsi',
@@ -517,16 +440,12 @@ foreach ($maps_all as $i => $desa) {
                 jQuery('#id_data').val(res.data.id);
 
                 jQuery('#nama').val(res.data.nama);
-                jQuery('#kecamatan').val(res.data.kecamatan);
-                jQuery('#desa').val(res.data.desa);
-                jQuery('#provinsi').val(res.data.provinsi);
                 jQuery('#nik').val(res.data.nik);
-                jQuery('#kabkot').val(res.data.kabkot);
                 jQuery('#kk').val(res.data.kk);
-                jQuery('#rt_rw').val(res.data.rt_rw);
+                jQuery('#rtRw').val(res.data.rt_rw);
                 jQuery('#latitude').val(res.data.lat);
                 jQuery('#longitude').val(res.data.lng);
-                jQuery('#tahun_anggaran').val(res.data.tahun_anggaran);
+                jQuery('#tahunAnggaran').val(res.data.tahun_anggaran);
 
                 jQuery('#lampiran').val('').show();
                 jQuery('#fileLampiranExisting').attr('href', global_file_upload + res.data.file_lampiran).html(res.data.file_lampiran).show();
@@ -568,16 +487,12 @@ foreach ($maps_all as $i => $desa) {
         jQuery('#id_data').val('');
 
         jQuery('#nama').val('');
-        jQuery('#kecamatan').val('');
-        jQuery('#desa').val('');
-        jQuery('#provinsi').val('');
         jQuery('#nik').val('');
-        jQuery('#kabkot').val('');
         jQuery('#kk').val('');
-        jQuery('#rt_rw').val('');
+        jQuery('#rtRw').val('');
         jQuery('#latitude').val('');
         jQuery('#longitude').val('');
-        jQuery('#tahun_anggaran').val('');
+        jQuery('#tahunAnggaran').val('');
 
         jQuery('#fileLampiranExisting').hide();
         jQuery('#fileLampiranExisting').closest('.form-group').find('input').show();
@@ -645,7 +560,7 @@ foreach ($maps_all as $i => $desa) {
         const tempData = new FormData();
         tempData.append('action', 'submit_verifikasi_usulan');
         tempData.append('api_key', ajax.apikey);
-        tempData.append('jenis_data', 'bunda_kasih');
+        tempData.append('jenis_data', 'bunda kasih');
 
         for (const [key, value] of Object.entries(data)) {
             tempData.append(key, value);
@@ -679,7 +594,7 @@ foreach ($maps_all as $i => $desa) {
             tempData.append('action', 'submit_usulan');
             tempData.append('api_key', ajax.apikey);
             tempData.append('idDataVerifikasi', id);
-            tempData.append('jenis_data', 'bunda_kasih');
+            tempData.append('jenis_data', 'bunda kasih');
 
             jQuery('#wrap-loading').show();
             jQuery.ajax({
@@ -710,20 +625,9 @@ foreach ($maps_all as $i => $desa) {
             'longitude': 'Longitude tidak boleh kosong!',
             'latitude': 'Latitude tidak boleh kosong!',
             'nik': 'NIK tidak boleh kosong!',
-            'nama': 'Nama tidak boleh kosong!',
-            'tanggalLahir': 'Tanggal Lahir tidak boleh kosong!',
-            'usia': 'Usia tidak boleh kosong!',
-            'alamat': 'Alamat tidak boleh kosong!',
-            'dokumenKependudukan': 'Dokumen Kependudukan tidak boleh kosong!',
-            'statusTempatTinggal': 'Status Tempat Tinggal tidak boleh kosong!',
-            'statusPemenuhanKebutuhan': 'Status Pemenuhan Kebutuhan tidak boleh kosong!',
-            'statusKehidupanRumahTangga': 'Status Kehidupan Rumah Tangga tidak boleh kosong!',
-            'statusDtks': 'Status DTKS tidak boleh kosong!',
-            'statusKepersertaanProgramBansos': 'Status Kepersertaan Bansos tidak boleh kosong!',
-            'rekomendasiPendataLama': 'Rekomendasi Pendata Lama tidak boleh kosong!',
-            'keteranganLainnyaLama': 'Keterangan Lainya Lama tidak boleh kosong!',
-            'rekomendasiPendata': 'Rekomendasi Pendata tidak boleh kosong!',
-            'keteranganLainnya': 'Keterangan Lainnya tidak boleh kosong!'
+            'kk': 'Nomor KK tidak boleh kosong!',
+            'rtRw': 'RT / RW tidak boleh kosong!',
+            'nama': 'Nama tidak boleh kosong!'
         };
 
         const {
