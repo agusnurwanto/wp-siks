@@ -2,21 +2,21 @@
 global $wpdb;
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
-$wrse_all = $this->get_wrse();
+$odgj_all = $this->get_odgj();
 
-$total_data_wrse = 0;
-$total_data_wrse = $wpdb->get_var(
+$total_data_odgj = 0;
+$total_data_odgj = $wpdb->get_var(
     $wpdb->prepare("
        SELECT COUNT(*)
-       FROM data_wrse_siks
+       FROM data_odgj_siks
        WHERE active = %d 
     ", 1)
 );
 
 //generate page per desa
 $this->functions->generatePage(array(
-    'nama_page' => 'WRSE Per Desa',
-    'content' => '[wrse_per_desa]',
+    'nama_page' => 'ODGJ Per Desa',
+    'content' => '[odgj_per_desa]',
     'show_header' => 1,
     'no_key' => 1,
     'post_status' => 'publish'
@@ -24,7 +24,7 @@ $this->functions->generatePage(array(
 
 $last_update = null;
 $data_all_desa = array();
-foreach ($wrse_all as $data) {
+foreach ($odgj_all as $data) {
     $index = strtolower($data['provinsi']) . '.' . strtolower($data['kabkot']) . '.' . strtolower($data['kecamatan']) . '.' . strtolower($data['desa_kelurahan']);
     if (empty($data_all_desa[$index])) {
         $data_all_desa[$index] = array();
@@ -60,7 +60,7 @@ foreach ($maps_all as $i => $desa) {
     $html = '
         <table>
             <tr>
-                <td><b>Total WRSE</b></td>
+                <td><b>Total ODGJ</b></td>
                 <td><b>' . $this->number_format($total_all_data) . ' Orang</b></td>
             </tr>
     ';
@@ -75,7 +75,7 @@ foreach ($maps_all as $i => $desa) {
     $html .= '</table>';
     $link_per_desa = '';
     if (is_user_logged_in()) {
-        $link_per_desa = add_query_arg('desa', urlencode($desa['data']['desa']), home_url('/wrse-per-desa/'));
+        $link_per_desa = add_query_arg('desa', urlencode($desa['data']['desa']), home_url('/odgj-per-desa/'));
     }
     $maps_all[$i]['html'] = $html;
 
@@ -100,16 +100,16 @@ foreach ($maps_all as $i => $desa) {
     $total_all += $total_all_data;
 }
 ?>
-<h1 class="text-center">Peta Sebaran WRSE<br>( Wanita Rawan Sosial Ekonomi )<br><?php echo $this->getNamaDaerah(); ?></h1>
+<h1 class="text-center">Peta Sebaran ODGJ<br>( Wanita Rawan Sosial Ekonomi )<br><?php echo $this->getNamaDaerah(); ?></h1>
 <div style="width: 95%; margin: 0 auto; min-height: 90vh; padding-bottom: 75px;">
     <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
     <h3 style="margin-top: 20px;">Keterangan</h3>
     <ol>
-        <li>Warna hijau berarti jumlah WRSE antara 0 sampai 5 orang</li>
-        <li>Warna kuning berarti jumlah WRSE antara 5 sampai 10 orang</li>
-        <li>Warna merah berarti jumlah WRSE diatas 10 orang</li>
+        <li>Warna hijau berarti jumlah ODGJ antara 0 sampai 5 orang</li>
+        <li>Warna kuning berarti jumlah ODGJ antara 5 sampai 10 orang</li>
+        <li>Warna merah berarti jumlah ODGJ diatas 10 orang</li>
     </ol>
-    <h1 class="text-center">Tabel Data WRSE<br>Total <?php echo $this->number_format($total_data_wrse); ?> Orang</h1>
+    <h1 class="text-center">Tabel Data ODGJ<br>Total <?php echo $this->number_format($total_data_odgj); ?> Orang</h1>
     <h3 class="text-center">Terakhir diupdate <?php echo $last_update ?></h3>
     <div style="width: 100%; overflow: auto; height: 100vh;">
         <table class="table table-bordered" id="table-data">
@@ -120,7 +120,7 @@ foreach ($maps_all as $i => $desa) {
                     <th class='text-center'>Kabupaten/Kota</th>
                     <th class='text-center'>Kecamatan</th>
                     <th class='text-center'>Desa</th>
-                    <th class='text-center'>Total WRSE</th>
+                    <th class='text-center'>Total ODGJ</th>
                     <th class='text-center'>Aksi</th>
                 </tr>
             </thead>

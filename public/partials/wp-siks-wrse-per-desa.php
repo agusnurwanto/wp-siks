@@ -15,6 +15,21 @@ if ($validate_user['status'] === 'error') {
 global $wpdb;
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
+foreach ($maps_all as $i => $desa) {
+    $html = '
+        <table>
+    ';
+    foreach ($desa['data'] as $k => $v) {
+        $html .= '
+            <tr>
+                <td><b>' . $k . '</b></td>
+                <td>' . $v . '</td></a>
+            </tr>
+        ';
+    }
+    $html .= '</table>';
+    $maps_all[$i]['html'] = $html;
+}
 
 $desa = $wpdb->get_row(
     $wpdb->prepare('
@@ -29,11 +44,11 @@ $desa = $wpdb->get_row(
 );
 $default_location = $this->getSearchLocation($desa);
 ?>
-<h1 class="text-center">Peta Sebaran WRSE<br>( Wanita Rawan Sosial Ekonomi )<br>DESA <?php echo $validate_user['desa']; ?></h1>
+<h1 class="text-center">Peta Sebaran WRSE<br>( Wanita Rawan Sosial Ekonomi )<br>DESA <?php echo strtoupper($validate_user['desa']); ?></h1>
 
 <div style="padding: 10px;margin:0 0 3rem 0;">
     <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
-    <h1 class="text-center" style="margin:3rem;">Data WRSE<br>DESA <?php echo $validate_user['desa'] ?></h1>
+    <h1 class="text-center" style="margin:3rem;">Data WRSE<br>DESA <?php echo strtoupper($validate_user['desa']); ?></h1>
     <table id="tableData" class="table table-bordered">
         <thead>
             <tr>

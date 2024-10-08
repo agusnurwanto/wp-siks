@@ -282,6 +282,11 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_get_data_usulan_wrse_by_id', $plugin_public, 'get_data_usulan_wrse_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_usulan_wrse', $plugin_public, 'tambah_data_usulan_wrse');
 		$this->loader->add_action('wp_ajax_hapus_data_usulan_wrse_by_id', $plugin_public, 'hapus_data_usulan_wrse_by_id');
+		
+		$this->loader->add_action('wp_ajax_get_datatable_data_usulan_p3ke', $plugin_public, 'get_datatable_data_usulan_p3ke');
+		$this->loader->add_action('wp_ajax_get_data_usulan_p3ke_by_id', $plugin_public, 'get_data_usulan_p3ke_by_id');
+		$this->loader->add_action('wp_ajax_tambah_data_usulan_p3ke', $plugin_public, 'tambah_data_usulan_p3ke');
+		$this->loader->add_action('wp_ajax_hapus_data_usulan_p3ke_by_id', $plugin_public, 'hapus_data_usulan_p3ke_by_id');
 
 		$this->loader->add_action('wp_ajax_get_datatable_data_usulan_disabilitas', $plugin_public, 'get_datatable_data_usulan_disabilitas');
 		$this->loader->add_action('wp_ajax_get_data_usulan_disabilitas_by_id', $plugin_public, 'get_data_usulan_disabilitas_by_id');
@@ -354,6 +359,7 @@ class Wp_Siks {
 		add_shortcode('usulan_hibah', array($plugin_public, 'usulan_hibah'));
 
 		add_shortcode('disabilitas_per_desa', array($plugin_public, 'disabilitas_per_desa'));
+		add_shortcode('odgj_per_desa', array($plugin_public, 'odgj_per_desa'));
 		add_shortcode('anak_terlantar_per_desa', array($plugin_public, 'anak_terlantar_per_desa'));
 		add_shortcode('lansia_per_desa', array($plugin_public, 'lansia_per_desa'));
 		add_shortcode('gepeng_per_desa', array($plugin_public, 'gepeng_per_desa'));
@@ -374,6 +380,7 @@ class Wp_Siks {
 		add_shortcode('data_calon_p3ke', array($plugin_public, 'data_calon_p3ke'));
 		add_shortcode('data_wrse_siks', array($plugin_public, 'data_wrse_siks'));
 		add_shortcode('data_hibah_siks', array($plugin_public, 'data_hibah_siks'));
+		add_shortcode('data_odgj_siks', array($plugin_public, 'data_odgj_siks'));
 		
 		add_shortcode('menu_siks', array($plugin_public, 'menu_siks'));
 

@@ -214,6 +214,14 @@ class Wp_Siks_Admin
 			'post_status' => 'publish'
 		));
 
+		$data_odgj = $this->functions->generatePage(array(
+			'nama_page' => 'Data Gepeng SIKS',
+			'content' => '[data_odgj_siks]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
 		$data_p3ke = $this->functions->generatePage(array(
 			'nama_page' => 'Data P3KE SIKS',
 			'content' => '[data_p3ke_siks]',
@@ -349,6 +357,7 @@ class Wp_Siks_Admin
 	            		<li><a target="_blank" href="' . $data_p3ke['url'] . '">' . $data_p3ke['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_calon_p3ke['url'] . '">' . $data_calon_p3ke['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_wrse['url'] . '">' . $data_wrse['title'] . '</a></li>
+	            		<li><a target="_blank" href="' . $data_odgj['url'] . '">' . $data_odgj['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_hibah['url'] . '">' . $data_hibah['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $cek_nik_siks['url'] . '">' . $cek_nik_siks['title'] . '</a></li>
 	            	</ol>'),

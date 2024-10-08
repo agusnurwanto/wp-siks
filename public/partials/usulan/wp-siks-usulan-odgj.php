@@ -345,8 +345,8 @@ foreach ($maps_all as $i => $desa) {
     });
 
     function getDataTable() {
-        if (typeof tableWrse === 'undefined') {
-            window.tableWrse = jQuery('#tableData').on('preXhr.dt', function(e, settings, data) {
+        if (typeof tableOdgj === 'undefined') {
+            window.tableOdgj = jQuery('#tableData').on('preXhr.dt', function(e, settings, data) {
                 jQuery("#wrap-loading").show();
             }).DataTable({
                 "processing": true,
@@ -447,7 +447,7 @@ foreach ($maps_all as $i => $desa) {
                 ]
             });
         } else {
-            tableWrse.draw();
+            tableOdgj.draw();
         }
     }
 

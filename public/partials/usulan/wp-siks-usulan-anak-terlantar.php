@@ -752,8 +752,8 @@ foreach ($maps_all as $i => $desa) {
         const validationRules = {
             'tahunAnggaran': 'Tahun Anggaran tidak boleh kosong!',
             'nama': 'Nama tidak boleh kosong!',
-            'kk': 'Nomor Kartu Keluarga tidak boleh kosong dan harus 16 digit!',
-            'nik': 'NIK tidak boleh kosong dan harus 16 digit!',
+            'kk': 'Nomor Kartu Keluarga tidak boleh kosong!',
+            'nik': 'NIK tidak boleh kosong!',
             'jenisKelamin': 'Jenis Kelamin harus dipilih!',
             'tanggalLahir': 'Tanggal Lahir tidak boleh kosong!',
             'usia': 'Usia tidak boleh kosong!',
@@ -761,7 +761,6 @@ foreach ($maps_all as $i => $desa) {
             'alamat': 'Alamat tidak boleh kosong!',
             'latitude': 'Koordinat Latitude tidak boleh kosong!',
             'longitude': 'Koordinat Longitude tidak boleh kosong!',
-            'lampiran': 'Lampiran tidak boleh kosong, file harus berformat .pdf, .png, .jpg, atau .jpeg!',
             'statusLembaga': 'Status Lembaga harus dipilih!'
         };
 
@@ -772,7 +771,7 @@ foreach ($maps_all as $i => $desa) {
         if (error) {
             return alert(error);
         }
-
+        const lampiran = jQuery('#lampiran')[0].files[0];
         const id_data = jQuery('#id_data').val();
         if (id_data == '') {
             if (typeof lampiran == 'undefined') {
