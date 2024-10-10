@@ -2,13 +2,6 @@
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
 $lansia_all = $this->get_lansia();
-$this->functions->generatePage(array(
-    'nama_page' => 'Gepeng Per Desa',
-    'content' => '[gepeng_per_desa]',
-    'show_header' => 1,
-    'no_key' => 1,
-    'post_status' => 'publish'
-));
 
 $last_update_lansia =  null;
 $lansia_all_desa = array();
@@ -51,7 +44,14 @@ foreach ($maps_all as $i => $desa) {
     $html .= '</table>';
     $link_per_desa = '';
     if (is_user_logged_in()) {
-        $link_per_desa = add_query_arg('desa', urlencode($desa['data']['desa']), home_url('/gepeng-per-desa/'));
+        $gen_page = $this->functions->generatePage(array(
+            'nama_page' => 'Gepeng Per Desa | ' . $desa['data']['desa'],
+            'content' => '[gepeng_per_desa id_desa=' . $desa['data']['id2012'] . ']',
+            'show_header' => 1,
+            'no_key' => 1,
+            'post_status' => 'publish'
+        ));
+        $link_per_desa = $gen_page['url'];
     }
     $maps_all[$i]['html'] = $html;
 

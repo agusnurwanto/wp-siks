@@ -3,15 +3,6 @@ $center = $this->get_center();
 $maps_all = $this->get_polygon();
 $disabilitas_all = $this->get_disabilitas();
 
-//generate page per desa
-$this->functions->generatePage(array(
-    'nama_page' => 'Disabilitas Per Desa',
-    'content' => '[disabilitas_per_desa]',
-    'show_header' => 1,
-    'no_key' => 1,
-    'post_status' => 'publish'
-));
-
 $last_update_disabilitas = null;
 $disabilitas_all_desa = array();
 foreach ($disabilitas_all as $data) {
@@ -88,7 +79,14 @@ foreach ($maps_all as $i => $desa) {
     $html .= '</table>';
     $link_per_desa = '';
     if (is_user_logged_in()) {
-        $link_per_desa = add_query_arg('desa', urlencode($desa['data']['desa']), home_url('/disabilitas-per-desa/'));
+        $gen_page = $this->functions->generatePage(array(
+            'nama_page' => 'Disabilitas Per Desa | ' . $desa['data']['desa'],
+            'content' => '[disabilitas_per_desa id_desa=' . $desa['data']['id2012'] . ']',
+            'show_header' => 1,
+            'no_key' => 1,
+            'post_status' => 'publish'
+        ));
+        $link_per_desa = $gen_page['url'];
     }
     $maps_all[$i]['html'] = $html;
 

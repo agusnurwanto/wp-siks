@@ -2,13 +2,6 @@
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
 $bunda_kasih_all = $this->get_bunda_kasih();
-$this->functions->generatePage(array(
-    'nama_page' => 'Bunda Kasih Per Desa',
-    'content' => '[bunda_kasih_per_desa]',
-    'show_header' => 1,
-    'no_key' => 1,
-    'post_status' => 'publish'
-));
 
 $last_update_bunda_kasih = null;
 $bunda_kasih_all_desa = array();
@@ -60,7 +53,14 @@ foreach ($maps_all as $i => $desa) {
     $html .= '</table>';
     $link_per_desa = '';
     if (is_user_logged_in()) {
-        $link_per_desa = add_query_arg('desa', urlencode($desa['data']['desa']), home_url('/bunda-kasih-per-desa/'));
+        $gen_page = $this->functions->generatePage(array(
+            'nama_page' => 'Bunda Kasih Per Desa | ' . $desa['data']['desa'],
+            'content' => '[bunda_kasih_per_desa id_desa=' . $desa['data']['id2012'] . ']',
+            'show_header' => 1,
+            'no_key' => 1,
+            'post_status' => 'publish'
+        ));
+        $link_per_desa = $gen_page['url'];
     }
     $maps_all[$i]['html'] = $html;
 

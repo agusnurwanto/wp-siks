@@ -81,7 +81,7 @@ foreach ($maps_all as $i => $desa) {
     <table id="tableData">
         <thead>
             <tr>
-                <th class="text-center">Status Veriikasi</th>
+                <th class="text-center">Status Verifikasi</th>
                 <th class="text-center">NIK</th>
                 <th class="text-center">No Kartu Keluarga</th>
                 <th class="text-center">Nama</th>

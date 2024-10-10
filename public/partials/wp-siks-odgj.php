@@ -13,15 +13,6 @@ $total_data_odgj = $wpdb->get_var(
     ", 1)
 );
 
-//generate page per desa
-$this->functions->generatePage(array(
-    'nama_page' => 'ODGJ Per Desa',
-    'content' => '[odgj_per_desa]',
-    'show_header' => 1,
-    'no_key' => 1,
-    'post_status' => 'publish'
-));
-
 $last_update = null;
 $data_all_desa = array();
 foreach ($odgj_all as $data) {
@@ -41,7 +32,7 @@ $body =  '';
 foreach ($maps_all as $i => $desa) {
     $index = strtolower($desa['data']['provinsi']) . '.' . strtolower($desa['data']['kab_kot']) . '.' . strtolower($desa['data']['kecamatan']) . '.' . strtolower($desa['data']['desa']);
     $total_all_data = 0;
-    if (!empty($data_all_desa[$index])) { 
+    if (!empty($data_all_desa[$index])) {
         foreach ($data_all_desa[$index] as $orang) {
             $total_all_data += $orang['jml'];
         }
@@ -75,7 +66,15 @@ foreach ($maps_all as $i => $desa) {
     $html .= '</table>';
     $link_per_desa = '';
     if (is_user_logged_in()) {
-        $link_per_desa = add_query_arg('desa', urlencode($desa['data']['desa']), home_url('/odgj-per-desa/'));
+        //generate page per desa
+        $gen_page = $this->functions->generatePage(array(
+            'nama_page' => 'ODGJ Per Desa | ' . $desa['data']['desa'],
+            'content' => '[odgj_per_desa id_desa='. $desa['data']['id2012'] . ']',
+            'show_header' => 1,
+            'no_key' => 1,
+            'post_status' => 'publish'
+        ));
+        $link_per_desa = $gen_page['url'];
     }
     $maps_all[$i]['html'] = $html;
 
@@ -100,7 +99,7 @@ foreach ($maps_all as $i => $desa) {
     $total_all += $total_all_data;
 }
 ?>
-<h1 class="text-center">Peta Sebaran ODGJ<br>( Wanita Rawan Sosial Ekonomi )<br><?php echo $this->getNamaDaerah(); ?></h1>
+<h1 class="text-center">Peta Sebaran ODGJ<br>( Orang Dengan Gangguan Jiwa )<br><?php echo $this->getNamaDaerah(); ?></h1>
 <div style="width: 95%; margin: 0 auto; min-height: 90vh; padding-bottom: 75px;">
     <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
     <h3 style="margin-top: 20px;">Keterangan</h3>

@@ -293,6 +293,11 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_tambah_data_usulan_disabilitas', $plugin_public, 'tambah_data_usulan_disabilitas');
 		$this->loader->add_action('wp_ajax_hapus_data_usulan_disabilitas_by_id', $plugin_public, 'hapus_data_usulan_disabilitas_by_id');
 
+		$this->loader->add_action('wp_ajax_get_datatable_data_usulan_dtks', $plugin_public, 'get_datatable_data_usulan_dtks');
+		$this->loader->add_action('wp_ajax_get_data_usulan_dtks_by_id', $plugin_public, 'get_data_usulan_dtks_by_id');
+		$this->loader->add_action('wp_ajax_tambah_data_usulan_dtks', $plugin_public, 'tambah_data_usulan_dtks');
+		$this->loader->add_action('wp_ajax_hapus_data_usulan_dtks_by_id', $plugin_public, 'hapus_data_usulan_dtks_by_id');
+
 		$this->loader->add_action('wp_ajax_get_datatable_data_usulan_lansia', $plugin_public, 'get_datatable_data_usulan_lansia');
 		$this->loader->add_action('wp_ajax_get_data_usulan_lansia_by_id', $plugin_public, 'get_data_usulan_lansia_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_usulan_lansia', $plugin_public, 'tambah_data_usulan_lansia');

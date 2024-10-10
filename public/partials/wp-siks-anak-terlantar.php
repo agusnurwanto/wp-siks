@@ -4,13 +4,6 @@ $maps_all = $this->get_polygon();
 $data_lksa = $this->get_lksa();
 $anak_terlantar_dalam = $this->get_anak_terlantar();
 $anak_terlantar_luar = $this->get_anak_terlantar_luar_magetan();
-$this->functions->generatePage(array(
-    'nama_page' => 'Anak Terlantar Per Desa',
-    'content' => '[anak_terlantar_per_desa]',
-    'show_header' => 1,
-    'no_key' => 1,
-    'post_status' => 'publish'
-));
 
 $data_all_lksa = array();
 $anak_terlantar_dalam_magetan = array();
@@ -119,7 +112,14 @@ foreach ($maps_all as $i => $desa) {
     $html .= '</table>';
     $link_per_desa = '';
     if (is_user_logged_in()) {
-        $link_per_desa = add_query_arg('desa', urlencode($desa['data']['desa']), home_url('/anak-terlantar-per-desa/'));
+        $gen_page = $this->functions->generatePage(array(
+            'nama_page' => 'Anak Terlantar Per Desa | ' . $desa['data']['desa'],
+            'content' => '[anak_terlantar_per_desa id_desa=' . $desa['data']['id2012'] . ']',
+            'show_header' => 1,
+            'no_key' => 1,
+            'post_status' => 'publish'
+        ));
+        $link_per_desa = $gen_page['url'];
     }
     $maps_all[$i]['html'] = $html;
 
@@ -165,15 +165,15 @@ foreach ($anak_terlantar_luar_magetan as $index => $data_luar) {
 foreach ($data_all_lksa as $index => $lksa_data) {
     $total_lksa = array_sum(array_column($lksa_data, 'jml'));
     foreach ($lksa_data as $data) {
-    $url_lksa = add_query_arg('nama', urlencode($data['nama']), home_url('/lksa-per-desa/'));
-    $nama_lksa = str_replace('kabkot ', '', strtolower($data['nama']));
-    $url_all_lksa[$nama_lksa] = $url_lksa;
+        $url_lksa = add_query_arg('nama', urlencode($data['nama']), home_url('/lksa-per-desa/'));
+        $nama_lksa = str_replace('kabkot ', '', strtolower($data['nama']));
+        $url_all_lksa[$nama_lksa] = $url_lksa;
 
-    $nama_lksa_all = $nama_lksa;
+        $nama_lksa_all = $nama_lksa;
 
-    if (is_user_logged_in()) {
-        $nama_lksa_all = "<a href='".$url_all_lksa[$nama_lksa]."' target='_blank'>".$nama_lksa."</a>";
-    }
+        if (is_user_logged_in()) {
+            $nama_lksa_all = "<a href='" . $url_all_lksa[$nama_lksa] . "' target='_blank'>" . $nama_lksa . "</a>";
+        }
         $body_lksa .= "
             <tr>
                 <td class='text-left' style='text-transform:uppercase'>" . $nama_lksa_all . "</td>

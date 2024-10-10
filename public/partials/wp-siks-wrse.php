@@ -13,15 +13,6 @@ $total_data_wrse = $wpdb->get_var(
     ", 1)
 );
 
-//generate page per desa
-$this->functions->generatePage(array(
-    'nama_page' => 'WRSE Per Desa',
-    'content' => '[wrse_per_desa]',
-    'show_header' => 1,
-    'no_key' => 1,
-    'post_status' => 'publish'
-));
-
 $last_update = null;
 $data_all_desa = array();
 foreach ($wrse_all as $data) {
@@ -41,7 +32,7 @@ $body =  '';
 foreach ($maps_all as $i => $desa) {
     $index = strtolower($desa['data']['provinsi']) . '.' . strtolower($desa['data']['kab_kot']) . '.' . strtolower($desa['data']['kecamatan']) . '.' . strtolower($desa['data']['desa']);
     $total_all_data = 0;
-    if (!empty($data_all_desa[$index])) { 
+    if (!empty($data_all_desa[$index])) {
         foreach ($data_all_desa[$index] as $orang) {
             $total_all_data += $orang['jml'];
         }
@@ -75,7 +66,15 @@ foreach ($maps_all as $i => $desa) {
     $html .= '</table>';
     $link_per_desa = '';
     if (is_user_logged_in()) {
-        $link_per_desa = add_query_arg('desa', urlencode($desa['data']['desa']), home_url('/wrse-per-desa/'));
+        //generate page per desa
+        $gen_page = $this->functions->generatePage(array(
+            'nama_page' => 'WRSE Per Desa | ' . $desa['data']['desa'],
+            'content' => '[wrse_per_desa id_desa=' . $desa['data']['id2012'] . ']',
+            'show_header' => 1,
+            'no_key' => 1,
+            'post_status' => 'publish'
+        ));
+        $link_per_desa = $gen_page['url'];
     }
     $maps_all[$i]['html'] = $html;
 

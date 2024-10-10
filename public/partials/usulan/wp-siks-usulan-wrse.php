@@ -82,6 +82,7 @@ foreach ($maps_all as $i => $desa) {
     <table id="tableData">
         <thead>
             <tr>
+                <th class="text-center">Status Verifikasi</th>
                 <th class="text-center">Nama</th>
                 <th class="text-center">Usia</th>
                 <th class="text-center">Provinsi</th>
@@ -95,7 +96,6 @@ foreach ($maps_all as $i => $desa) {
                 <th class="text-center">Keterangan</th>
                 <th class="text-center">Jenis Data</th>
                 <th class="text-center">Tahun Anggaran</th>
-                <th class="text-center">Status Verifikasi</th>
                 <th class="text-center">Dibuat Pada</th>
                 <th class="text-center">Terakhir Diperbarui</th>
                 <th class="text-center">Aksi</th>
@@ -349,6 +349,10 @@ foreach ($maps_all as $i => $desa) {
                     jQuery("#wrap-loading").hide();
                 },
                 "columns": [{
+                        "data": 'status_data',
+                        className: "text-center"
+                    },
+                    {
                         "data": 'nama',
                         className: "text-left"
                     },
@@ -400,10 +404,7 @@ foreach ($maps_all as $i => $desa) {
                         "data": 'tahun_anggaran',
                         className: "text-center"
                     },
-                    {
-                        "data": 'status_data',
-                        className: "text-center"
-                    },
+
                     {
                         "data": 'create_at',
                         className: "text-center"
