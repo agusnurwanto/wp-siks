@@ -417,9 +417,9 @@ CREATE TABLE `data_wrse_siks` (
 
 CREATE TABLE `data_alamat_siks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `is_kel` int ENUM(0, 1) DEFAULT 0 COMMENT '0 = desa, 1 = kelurahan',
   `id_kec` text NOT NULL,
   `id_desa` text DEFAULT NULL,
-  `is_kel` int(11) ENUM(0, 1) DEFAULT 0 COMMENT '0 = desa, 1 = kelurahan',
   `nama` text NOT NULL,
   `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `active` tinyint(4) NOT NULL DEFAULT '1',

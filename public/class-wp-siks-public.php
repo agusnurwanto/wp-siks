@@ -4348,7 +4348,7 @@ class Wp_Siks_Public
 				'prop_capil',
 				'kab_capil',
 				'id_kec',
-				'id_desa',
+				'id_desa_kel',
 				'ATENSI',
 				'Alamat',
 				'BLT',

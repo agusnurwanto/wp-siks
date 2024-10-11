@@ -269,7 +269,7 @@
                         className: "text-left"
                     },
                     {
-                        "data": 'kabkot',
+                        "data": 'kabupaten',
                         className: "text-center"
                     },
                     {

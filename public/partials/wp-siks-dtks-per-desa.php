@@ -250,7 +250,7 @@ $default_location = $this->getSearchLocation($desa);
                         className: "text-left"
                     },
                     {
-                        "data": 'kabkot',
+                        "data": 'kabupaten',
                         className: "text-center"
                     },
                     {

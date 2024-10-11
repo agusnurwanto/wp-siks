@@ -6,7 +6,7 @@ $dtks_all = $this->get_dtks();
 $last_update_dtks = null;
 $dtks_all_desa = array();
 foreach ($dtks_all as $data) {
-    $index = strtolower($data['provinsi']) . '.' . strtolower($data['kabkot']) . '.' . strtolower($data['kecamatan']) . '.' . strtolower($data['desa_kelurahan']);
+    $index = strtolower($data['provinsi']) . '.' . strtolower($data['kabupaten']) . '.' . strtolower($data['kecamatan']) . '.' . strtolower($data['desa_kelurahan']);
     if (empty($dtks_all_desa[$index])) {
         $dtks_all_desa[$index] = array();
     }
