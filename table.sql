@@ -82,7 +82,7 @@ CREATE TABLE `data_batas_desa_siks` (
     `polygon` LONGTEXT DEFAULT NULL,
     `active` tinyint(4) DEFAULT 1,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY  (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_batas_kecamatan_siks` (
@@ -97,7 +97,7 @@ CREATE TABLE `data_batas_kecamatan_siks` (
     `polygon` LONGTEXT DEFAULT NULL,
     `active` tinyint(4) DEFAULT 1,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY  (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_lansia_siks` (
@@ -127,7 +127,7 @@ CREATE TABLE `data_lansia_siks` (
     `tahun_anggaran` int(4) DEFAULT NULL,
     `active` tinyint(4) DEFAULT 1,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_disabilitas_siks` (
@@ -218,7 +218,7 @@ CREATE TABLE `data_disabilitas_siks` (
     `tahun_anggaran`  int(4) DEFAULT NULL,
     `active` tinyint(4) DEFAULT 1,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_bunda_kasih_siks` (
@@ -237,7 +237,7 @@ CREATE TABLE `data_bunda_kasih_siks` (
     `tahun_anggaran`  int(4) DEFAULT NULL,
     `active` tinyint(4) DEFAULT 1,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_anak_terlantar_siks` (
@@ -261,9 +261,8 @@ CREATE TABLE `data_anak_terlantar_siks` (
     `tahun_anggaran`  int(4) DEFAULT NULL,
     `active` tinyint(4) DEFAULT 1,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
-
 									
 CREATE TABLE `data_lksa_siks` (
     `id` int(11) NOT NULL auto_increment,
@@ -282,7 +281,7 @@ CREATE TABLE `data_lksa_siks` (
     `tahun_anggaran`  int(4) DEFAULT NULL,
     `active` tinyint(4) DEFAULT 1,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_odgj_siks` (
@@ -307,7 +306,7 @@ CREATE TABLE `data_odgj_siks` (
     `tahun_anggaran`  int(4) DEFAULT NULL,
     `active` tinyint(4) DEFAULT 1,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_p3ke_siks` (
@@ -333,7 +332,7 @@ CREATE TABLE `data_p3ke_siks` (
     `tahun_anggaran`  int(4) DEFAULT NULL,
     `active` tinyint(4) DEFAULT 1,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_calon_p3ke_siks` (
@@ -359,7 +358,7 @@ CREATE TABLE `data_calon_p3ke_siks` (
     `tahun_anggaran`  int(4) DEFAULT NULL,
     `active` tinyint(4) DEFAULT 1,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_hibah_siks` (
@@ -389,7 +388,7 @@ CREATE TABLE `data_hibah_siks` (
     `create_at` datetime,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `active` tinyint(4) DEFAULT 1,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_wrse_siks` (
@@ -412,18 +411,18 @@ CREATE TABLE `data_wrse_siks` (
     `create_at` datetime,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `active` tinyint(4) DEFAULT 1,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_alamat_siks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `is_kel` int ENUM(0, 1) DEFAULT 0 COMMENT '0 = desa, 1 = kelurahan',
   `id_kec` text NOT NULL,
   `id_desa` text DEFAULT NULL,
+  `is_kel` TINYINT(1) DEFAULT 0 COMMENT '0 = desa, 1 = kelurahan',
   `nama` text NOT NULL,
   `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `active` tinyint(4) NOT NULL DEFAULT '1',
-  PRIMARY KEY  (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_usulan_wrse_siks` (
@@ -479,7 +478,7 @@ CREATE TABLE `data_usulan_anak_terlantar_siks` (
     `create_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `update_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `active` TINYINT(1) DEFAULT 1,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_usulan_hibah_siks` (
@@ -513,7 +512,7 @@ CREATE TABLE `data_usulan_hibah_siks` (
     `create_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `active` tinyint(4) DEFAULT 1,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_usulan_disabilitas_siks` (
@@ -609,7 +608,7 @@ CREATE TABLE `data_usulan_disabilitas_siks` (
     `active` tinyint(4) DEFAULT 1,
     `create_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_usulan_lansia_siks` (
@@ -644,7 +643,7 @@ CREATE TABLE `data_usulan_lansia_siks` (
     `active` tinyint(4) DEFAULT 1,
     `create_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_usulan_bunda_kasih_siks` (
@@ -668,7 +667,7 @@ CREATE TABLE `data_usulan_bunda_kasih_siks` (
     `active` tinyint(4) DEFAULT 1,
     `create_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_usulan_odgj_siks` (
@@ -697,7 +696,7 @@ CREATE TABLE `data_usulan_odgj_siks` (
     `keterangan_verifikasi` TEXT,
     `active` tinyint(4) DEFAULT 1,
     `create_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,    PRIMARY KEY (id)
+    `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_usulan_p3ke_siks` (
@@ -728,7 +727,7 @@ CREATE TABLE `data_usulan_p3ke_siks` (
     `active` tinyint(4) DEFAULT 1,
     `create_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `data_usulan_dtks_siks` (
@@ -793,5 +792,5 @@ CREATE TABLE `data_usulan_dtks_siks` (
     `keterangan_verifikasi` TEXT,
     `create_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   
-    PRIMARY KEY  (id)
+    PRIMARY KEY (`id`)
 );
