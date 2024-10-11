@@ -1057,13 +1057,13 @@ class Wp_Siks_Public
 		$where = " provinsi='$prov'";
 		$kab = get_option('_crb_siks_kab');
 		if (!empty($kab)) {
-			$where .= " and kabkot='$kab'";
+			$where .= " and kabupaten='$kab'";
 		}
 		$data = $wpdb->get_results("
 			SELECT 
 				provinsi,
 				MAX(update_at) as last_update,
-				kabkot, 
+				kabupaten, 
 				kecamatan, 
 				desa_kelurahan,
 				BLT, 
@@ -1079,8 +1079,8 @@ class Wp_Siks_Public
 					OR is_nonaktif = ''
 				)
 				AND active=1
-			GROUP BY provinsi, kabkot, kecamatan, desa_kelurahan, BLT, BLT_BBM, BPNT, PKH, PBI
-			ORDER BY provinsi, kabkot, kecamatan, desa_kelurahan
+			GROUP BY provinsi, kabupaten, kecamatan, desa_kelurahan, BLT, BLT_BBM, BPNT, PKH, PBI
+			ORDER BY provinsi, kabupaten, kecamatan, desa_kelurahan
 		", ARRAY_A);
 
 		return $data;

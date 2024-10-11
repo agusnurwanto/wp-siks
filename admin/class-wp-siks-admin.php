@@ -1752,7 +1752,7 @@ class Wp_Siks_Admin
 						2 => 'NOKK',
 						3 => 'Alamat',
 						4 => 'provinsi',
-						5 => 'kabkot',
+						5 => 'kabupaten',
 						6 => 'kecamatan',
 						7 => 'desa_kelurahan',
 						8 => 'ATENSI',
