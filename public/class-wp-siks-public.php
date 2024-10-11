@@ -4408,7 +4408,7 @@ class Wp_Siks_Public
 
 			//filter by desa kec
 			if (!empty($_POST['id_desa'])) {
-				$where .= $wpdb->prepare(' AND id_desa=%d', $_POST['id_desa']);
+				$where .= $wpdb->prepare(' AND id_desa_kel=%d', $_POST['id_desa']);
 			}
 
 			//filter by role
