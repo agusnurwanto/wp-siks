@@ -536,3 +536,4 @@ foreach ($maps_all as $i => $desa) {
         });
     }
 </script>
+<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>

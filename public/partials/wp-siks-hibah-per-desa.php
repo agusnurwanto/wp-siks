@@ -72,7 +72,6 @@ $default_location = $this->getSearchLocation($desa);
         </tbody>
     </table>
 </div>
-<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
     window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
     window.maps_center_siks = <?php echo json_encode($center); ?>;
@@ -185,3 +184,4 @@ $default_location = $this->getSearchLocation($desa);
         }
     }
 </script>
+<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>

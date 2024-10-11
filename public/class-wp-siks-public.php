@@ -6363,6 +6363,7 @@ class Wp_Siks_Public
 
 					'provinsi' 			=> $provinsi,
 					'kabkot' 			=> $kabkot,
+					'status_data' 		=> 0,
 					'id_kec' 			=> $get_kec['id_kec'],
 					'kecamatan' 		=> strtoupper($get_kec['nama']),
 					'id_desa_kel' 		=> $get_desa['id_desa'],

@@ -161,7 +161,6 @@ foreach ($maps_all as $i => $desa) {
         </div>
     </div>
 </div>
-<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
     window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/odgj/'; ?>";
     window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
@@ -537,3 +536,4 @@ foreach ($maps_all as $i => $desa) {
         });
     }
 </script>
+<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>

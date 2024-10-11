@@ -314,9 +314,6 @@ foreach ($maps_all as $i => $desa) {
         </div>
     </div>
 </div>
-
-
-<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
 <script>
     window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
     window.maps_center_siks = <?php echo json_encode($center); ?>;
@@ -773,3 +770,4 @@ foreach ($maps_all as $i => $desa) {
         });
     }
 </script>
+<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
