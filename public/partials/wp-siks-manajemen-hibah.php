@@ -55,6 +55,8 @@ foreach ($maps_all as $i => $desa) {
                     <th class="text-center">Tahun Anggaran</th>
                     <th class="text-center">Jenis Data</th>
                     <th class="text-center">Keterangan</th>
+                    <th class="text-center">File Bukti SPJ</th>
+                    <th class="text-center">File Proposal Usulan</th>
                     <th class="text-center">Dibuat Pada</th>
                     <th class="text-center">Terakhir Diperbarui</th>
                     <th class="text-center">Aksi</th>
@@ -78,8 +80,8 @@ foreach ($maps_all as $i => $desa) {
             <div class="modal-body">
                 <input type='hidden' id='id_data' name="id_data">
 
-               <div class="card bg-light mb-3">
-                    <div class="card-header">Tahun Anggaran dan Jenis Data</div>
+                <div class="card bg-light mb-3">
+                    <div class="card-header font-weight-bold">Tahun Anggaran dan Jenis Data</div>
                     <div class="card-body">
                         <div class="form-row">
                             <div class="form-group col-md-6">
@@ -99,7 +101,7 @@ foreach ($maps_all as $i => $desa) {
                 </div>
                 <!-- Penerima dan Alamat Section -->
                 <div class="card bg-light mb-3">
-                    <div class="card-header">Data Penerima dan Alamat</div>
+                    <div class="card-header font-weight-bold">Data Penerima dan Alamat</div>
                     <div class="card-body">
                         <div class="form-row">
                             <div class="form-group col-md-6">
@@ -144,7 +146,7 @@ foreach ($maps_all as $i => $desa) {
 
                 <!-- Dokumen Section -->
                 <div class="card bg-light mb-3">
-                    <div class="card-header">Dokumen Hibah</div>
+                    <div class="card-header font-weight-bold">Dokumen Hibah</div>
                     <div class="card-body">
                         <div class="form-group">
                             <label for="statusRealisasi">Status Realisasi</label>
@@ -187,18 +189,51 @@ foreach ($maps_all as $i => $desa) {
                                 <input type="date" name="tglSp2d" class="form-control" id="tglSp2d">
                             </div>
                         </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="peruntukan">Peruntukan</label>
+                                <textarea name="peruntukan" class="form-control" id="peruntukan"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Peruntukan Section -->
-                <div class="form-group">
-                    <label for="peruntukan">Peruntukan</label>
-                    <textarea name="peruntukan" class="form-control" id="peruntukan"></textarea>
+                <!-- Lampiran Section -->
+                <div class="card bg-light mb-3">
+                    <div class="card-header font-weight-bold">File Lampiran</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="file_bukti_spj">Bukti SPJ</label>
+                                    <input type="file" name="file" class="form-control-file" id="file_bukti_spj" accept="application/pdf, .png, .jpg, .jpeg">
+                                    <div class="mt-2">
+                                        <a id="file_bukti_spj_existing" class="text-primary"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="file_proposal_usulan">Proposal Usulan</label>
+                                    <input type="file" name="file" class="form-control-file" id="file_proposal_usulan" accept="application/pdf, .png, .jpg, .jpeg">
+                                    <div class="mt-2">
+                                        <a id="file_proposal_usulan_existing" class="text-primary"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <span class="badge badge-info p-2">
+                                Upload file maksimal 1 MB, berformat .pdf, .png, .jpg, .jpeg
+                            </span>
+                        </div>
+                    </div>
                 </div>
+
 
                 <!-- Koordinat Section -->
                 <div class="card bg-light mb-3">
-                    <div class="card-header">Koordinat Lokasi</div>
+                    <div class="card-header font-weight-bold">Koordinat Lokasi</div>
                     <div class="card-body">
                         <div class="form-row">
                             <div class="col-md-6">
@@ -228,6 +263,7 @@ foreach ($maps_all as $i => $desa) {
     </div>
 </div>
 <script>
+    window.global_file_upload = "<?php echo SIKS_PLUGIN_URL . 'public/media/hibah/'; ?>";
     window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
     window.maps_center_siks = <?php echo json_encode($center); ?>;
     jQuery(document).ready(function() {
@@ -330,6 +366,14 @@ foreach ($maps_all as $i => $desa) {
                         className: "text-left"
                     },
                     {
+                        "data": 'file_bukti_spj',
+                        className: "text-left"
+                    },
+                    {
+                        "data": 'file_proposal_usulan',
+                        className: "text-left"
+                    },
+                    {
                         "data": 'create_at',
                         className: "text-center"
                     },
@@ -366,6 +410,7 @@ foreach ($maps_all as $i => $desa) {
                         alert("Berhasil Hapus Data!");
                         getDataTable();
                     } else {
+                        jQuery('#wrap-loading').hide();
                         alert(`GAGAL! \n${response.message}`);
                     }
                 }
@@ -439,6 +484,17 @@ foreach ($maps_all as $i => $desa) {
                 jQuery('#tglSp2d').val(res.data.tgl_sp2d);
                 jQuery('#peruntukan').val(res.data.peruntukan);
                 jQuery('#keterangan').text(res.data.keterangan);
+                jQuery('#file_bukti_spj_existing')
+                    .attr('href', global_file_upload + res.data.file_bukti_spj)
+                    .attr('target', '_blank')
+                    .html(res.data.file_bukti_spj)
+                    .show();
+                jQuery('#file_proposal_usulan_existing')
+                    .attr('href', global_file_upload + res.data.file_proposal_usulan)
+                    .attr('target', '_blank')
+                    .html(res.data.file_proposal_usulan).show();
+                jQuery('#file_proposal_usulan').val('').show();
+                jQuery('#file_bukti_spj').val('').show();
 
                 jQuery('#judulmodalTambahData').hide();
                 jQuery('#judulModalEdit').show();
@@ -494,7 +550,13 @@ foreach ($maps_all as $i => $desa) {
         jQuery('#tglSpm').val('');
         jQuery('#tglSp2d').val('');
         jQuery('#peruntukan').val('');
-        jQuery('#keterangan').text();
+        jQuery('#keterangan').val();
+        jQuery('#file_bukti_spj_existing').hide();
+        jQuery('#file_bukti_spj_existing').closest('.form-group').find('input').show();
+        jQuery('#file_proposal_usulan_existing').hide();
+        jQuery('#file_proposal_usulan_existing').closest('.form-group').find('input').show();
+        jQuery('#file_proposal_usulan').val('').show();
+        jQuery('#file_bukti_spj').val('').show();
 
         jQuery('#judulmodalTambahData').show();
         jQuery('#judulModalEdit').hide();
@@ -523,9 +585,7 @@ foreach ($maps_all as $i => $desa) {
             'peruntukan': 'Peruntukan tidak boleh kosong!',
             'longitude': 'Longitude tidak boleh kosong!',
             'latitude': 'Latitude tidak boleh kosong!',
-            'keterangan': 'keterangan tidak boleh kosong!',
-            // Tambahkan field lain jika diperlukan
-
+            'keterangan': 'Keterangan tidak boleh kosong!',
         };
 
         const {
@@ -537,19 +597,41 @@ foreach ($maps_all as $i => $desa) {
         }
 
         const id_data = jQuery('#id_data').val();
+        const file_proposal_usulan = jQuery('#file_proposal_usulan')[0].files[0];
+        const file_bukti_spj = jQuery('#file_bukti_spj')[0].files[0];
+
+        // Validasi file jika ID data kosong (data baru)
+        if (!id_data) {
+            if (!file_proposal_usulan) {
+                return alert('Upload file proposal usulan harus diisi!');
+            }
+            if (!file_bukti_spj) {
+                return alert('Upload file bukti SPJ harus diisi!');
+            }
+        }
+
         const tempData = new FormData();
         tempData.append('action', 'tambah_data_hibah');
         tempData.append('api_key', ajax.apikey);
         tempData.append('id_data', id_data);
 
+        // Menambahkan data dari form
         for (const [key, value] of Object.entries(data)) {
             tempData.append(key, value);
+        }
+
+        // Menambahkan file jika tersedia
+        if (file_proposal_usulan) {
+            tempData.append('file_proposal_usulan', file_proposal_usulan);
+        }
+        if (file_bukti_spj) {
+            tempData.append('file_bukti_spj', file_bukti_spj);
         }
 
         jQuery('#wrap-loading').show();
 
         jQuery.ajax({
-            method: 'post',
+            method: 'POST',
             url: ajax.url,
             dataType: 'json',
             data: tempData,
@@ -557,11 +639,16 @@ foreach ($maps_all as $i => $desa) {
             contentType: false,
             cache: false,
             success: function(res) {
+                jQuery('#wrap-loading').hide();
                 alert(res.message);
                 if (res.status === 'success') {
                     jQuery('#modalTambahData').modal('hide');
                     getDataTable();
                 }
+            },
+            error: function() {
+                jQuery('#wrap-loading').hide();
+                alert('Terjadi kesalahan saat mengirim data!');
             }
         });
     }

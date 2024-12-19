@@ -67,7 +67,7 @@ foreach ($maps_all as $i => $desa) {
     }
 </style>
 <div class="pb-4 mb-5">
-    <h1 class="text-center my-4">Data Usulan Bunda Kasih</h1>
+    <h1 class="text-center my-4">Data Usulan Penerima Bansos Bunda Kasih</h1>
     <h2 class="text-center my-4"><?php echo strtoupper($nama_desa_kelurahan); ?></h2>
     <?php if ($validate_user['roles'] === 'desa'): ?>
         <div class="m-4">

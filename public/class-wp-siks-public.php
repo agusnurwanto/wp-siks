@@ -1458,8 +1458,7 @@ class Wp_Siks_Public
 						'nomor_hp' => $nomor_hp,
 						'kelayakan' => $kelayakan,
 						'tahun_anggaran' => $tahun_anggaran,
-						'active' => 1,
-						'update_at' => current_time('mysql')
+						'active' => 1
 					);
 
 					$path = SIKS_PLUGIN_PATH . 'public/media/disabilitas/';
@@ -1849,8 +1848,7 @@ class Wp_Siks_Public
 						'rekomendasi_pendata' => $rekomendasi_pendata,
 						'keterangan_lainnya' => $keterangan_lainnya,
 						'tahun_anggaran' => $tahun_anggaran,
-						'active' => 1,
-						'update_at' => current_time('mysql')
+						'active' => 1
 					);
 					$path = SIKS_PLUGIN_PATH . 'public/media/lansia/';
 
@@ -2166,8 +2164,7 @@ class Wp_Siks_Public
 						'rt_rw' => $rt_rw,
 						'kk' => $kk,
 						'tahun_anggaran' => $tahun_anggaran,
-						'active' => 1,
-						'update_at' => current_time('mysql')
+						'active' => 1
 					);
 
 					$path = SIKS_PLUGIN_PATH . 'public/media/bunda_kasih/';
@@ -2531,8 +2528,7 @@ class Wp_Siks_Public
 						'pengobatan' => $pengobatan,
 						'keterangan' => $keterangan,
 						'tahun_anggaran' => $tahun_anggaran,
-						'active' => 1,
-						'update_at' => current_time('mysql')
+						'active' => 1
 					);
 					$path = SIKS_PLUGIN_PATH . 'public/media/odgj/';
 
@@ -3184,8 +3180,7 @@ class Wp_Siks_Public
 						'anak_luar_lksa' => $anak_luar_lksa,
 						'total_anak' => $total_anak,
 						'tahun_anggaran' => $tahun_anggaran,
-						'active' => 1,
-						'update_at' => current_time('mysql')
+						'active' => 1
 					);
 					$path = SIKS_PLUGIN_PATH . 'public/media/lksa/';
 
@@ -3497,8 +3492,7 @@ class Wp_Siks_Public
 						'pendidikan' => $pendidikan,
 						'kelembagaan' => $status_lembaga,
 						'tahun_anggaran' => $tahun_anggaran,
-						'active' => 1,
-						'update_at' => current_time('mysql')
+						'active' => 1
 					);
 					$path = SIKS_PLUGIN_PATH . 'public/media/anak_terlantar/';
 
@@ -3724,8 +3718,7 @@ class Wp_Siks_Public
 						'penghasilan' => $penghasilan,
 						'keterangan' => $keterangan,
 						'tahun_anggaran' => $tahun_anggaran,
-						'active' => 1,
-						'update_at' => current_time('mysql')
+						'active' => 1
 					);
 					$path = SIKS_PLUGIN_PATH . 'public/media/p3ke/';
 
@@ -3974,7 +3967,7 @@ class Wp_Siks_Public
 			$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
 			$totalRecords = $queryTot[0]['jml'];
 
-			$orderBy = '';
+			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
 			if (!empty($params['order'])) {
 				$orderByColumnIndex = $params['order'][0]['column'];
 				$orderByDirection = $params['order'][0]['dir'];
@@ -4097,7 +4090,7 @@ class Wp_Siks_Public
 			$totalRecords = $wpdb->get_var($sqlTot);
 
 			// Sorting
-			$orderBy = '';
+			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
 			if (!empty($params['order'])) {
 				$orderByColumnIndex = $params['order'][0]['column'];
 				$orderByDirection = strtoupper($params['order'][0]['dir']);
@@ -4220,7 +4213,7 @@ class Wp_Siks_Public
 			$totalRecords = $wpdb->get_var($sqlTot);
 
 			// Sorting
-			$orderBy = '';
+			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
 			if (!empty($params['order'])) {
 				$orderByColumnIndex = $params['order'][0]['column'];
 				$orderByDirection = strtoupper($params['order'][0]['dir']);
@@ -4431,7 +4424,7 @@ class Wp_Siks_Public
 			$totalRecords = $wpdb->get_var($sqlTot);
 
 			// Sorting
-			$orderBy = '';
+			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
 			if (!empty($params['order'])) {
 				$orderByColumnIndex = $params['order'][0]['column'];
 				$orderByDirection = strtoupper($params['order'][0]['dir']);
@@ -4608,7 +4601,7 @@ class Wp_Siks_Public
 			$totalRecords = $wpdb->get_var($sqlTot);
 
 			// Sorting
-			$orderBy = '';
+			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
 			if (!empty($params['order'])) {
 				$orderByColumnIndex = $params['order'][0]['column'];
 				$orderByDirection = strtoupper($params['order'][0]['dir']);
@@ -4787,7 +4780,7 @@ class Wp_Siks_Public
 			$totalRecords = $wpdb->get_var($sqlTot);
 
 			// Sorting
-			$orderBy = '';
+			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
 			if (!empty($params['order'])) {
 				$orderByColumnIndex = $params['order'][0]['column'];
 				$orderByDirection = strtoupper($params['order'][0]['dir']);
@@ -4959,7 +4952,7 @@ class Wp_Siks_Public
 			$totalRecords = $wpdb->get_var($sqlTot);
 
 			// Sorting
-			$orderBy = '';
+			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
 			if (!empty($params['order'])) {
 				$orderByColumnIndex = $params['order'][0]['column'];
 				$orderByDirection = strtoupper($params['order'][0]['dir']);
@@ -5142,7 +5135,7 @@ class Wp_Siks_Public
 			$totalRecords = $wpdb->get_var($sqlTot);
 
 			// Sorting
-			$orderBy = '';
+			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
 			if (!empty($params['order'])) {
 				$orderByColumnIndex = $params['order'][0]['column'];
 				$orderByDirection = strtoupper($params['order'][0]['dir']);
@@ -5321,7 +5314,7 @@ class Wp_Siks_Public
 			$totalRecords = $wpdb->get_var($sqlTot);
 
 			// Sorting
-			$orderBy = '';
+			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
 			if (!empty($params['order'])) {
 				$orderByColumnIndex = $params['order'][0]['column'];
 				$orderByDirection = strtoupper($params['order'][0]['dir']);
@@ -5502,7 +5495,7 @@ class Wp_Siks_Public
 			$totalRecords = $wpdb->get_var($sqlTot);
 
 			// Sorting
-			$orderBy = '';
+			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
 			if (!empty($params['order'])) {
 				$orderByColumnIndex = $params['order'][0]['column'];
 				$orderByDirection = strtoupper($params['order'][0]['dir']);
@@ -5743,7 +5736,7 @@ class Wp_Siks_Public
 			$totalRecords = $wpdb->get_var($sqlTot);
 
 			// Sorting
-			$orderBy = '';
+			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
 			if (!empty($params['order'])) {
 				$orderByColumnIndex = $params['order'][0]['column'];
 				$orderByDirection = strtoupper($params['order'][0]['dir']);
@@ -5882,6 +5875,8 @@ class Wp_Siks_Public
 				'tgl_sp2d',
 				'peruntukan',
 				'jenis_data',
+				'file_bukti_spj',
+				'file_proposal_usulan',
 				'tahun_anggaran',
 				'create_at',
 				'update_at',
@@ -5891,6 +5886,7 @@ class Wp_Siks_Public
 			$where = 'WHERE 1=1 AND active = 1';
 			$searchValue = !empty($params['search']['value']) ? $params['search']['value'] : '';
 
+			// Filter desa dan kecamatan
 			if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
 				$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $_POST['desa']);
 				$where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
@@ -5910,8 +5906,8 @@ class Wp_Siks_Public
 			$sqlTot = "SELECT COUNT(id) as jml FROM data_hibah_siks $where";
 			$totalRecords = $wpdb->get_var($sqlTot);
 
-			// Sorting
-			$orderBy = '';
+			// Sorting (Default: order by update_at/create_at DESC)
+			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
 			if (!empty($params['order'])) {
 				$orderByColumnIndex = $params['order'][0]['column'];
 				$orderByDirection = strtoupper($params['order'][0]['dir']);
@@ -5947,23 +5943,26 @@ class Wp_Siks_Public
 					}
 				}
 				$queryRecords[$record]['aksi'] = $btn;
+				$queryRecords[$record]['file_bukti_spj'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/hibah/' . $recVal['file_bukti_spj'] . '" target="_blank">' . $recVal['file_bukti_spj'] . '</a>';
+				$queryRecords[$record]['file_proposal_usulan'] = '<a href="' . SIKS_PLUGIN_URL . 'public/media/hibah/' . $recVal['file_proposal_usulan'] . '" target="_blank">' . $recVal['file_proposal_usulan'] . '</a>';
 			}
 
 			$json_data = [
-				"draw" => intval($params['draw']),
-				"recordsTotal" => intval($totalRecords),
-				"recordsFiltered" => intval($totalRecords),
-				"data" => $queryRecords
+				"draw" 				=> intval($params['draw']),
+				"recordsTotal" 		=> intval($totalRecords),
+				"recordsFiltered" 	=> intval($totalRecords),
+				"data" 				=> $queryRecords
 			];
 			die(json_encode($json_data));
 		} else {
 			$ret = [
-				'status' => 'error',
+				'status' 	=> 'error',
 				'message'   => 'Format tidak sesuai!'
 			];
 		}
 		die(json_encode($ret));
 	}
+
 
 
 	public function tambah_data_calon_p3ke()
@@ -6017,8 +6016,7 @@ class Wp_Siks_Public
 						'lat' => $lat,
 						'lng' => $lng,
 						'tahun_anggaran' => $tahun_anggaran,
-						'active' => 1,
-						'update_at' => current_time('mysql')
+						'active' => 1
 					);
 
 					if ($id_data) {
@@ -7478,7 +7476,7 @@ class Wp_Siks_Public
 					'pena'			=> 'required',
 					'permakanan'	=> 'required',
 					'rutilahu'		=> 'required',
-					'sembakoAdaptif'=> 'required',
+					'sembakoAdaptif' => 'required',
 					'yapi'			=> 'required',
 					'pkh'			=> 'required',
 					'firstSK'		=> 'required'
@@ -7543,7 +7541,7 @@ class Wp_Siks_Public
 					'desa_kelurahan'      => strtoupper($get_desa['nama']),
 					'status_data'         => 0,
 					'Nama'                => sanitize_text_field($postData['nama']),
-					'NIK'                 => sanitize_text_field($postData['nik']), 
+					'NIK'                 => sanitize_text_field($postData['nik']),
 					'NOKK'                => sanitize_text_field($postData['noKk']),
 					'Alamat'              => sanitize_textarea_field($postData['alamat']),
 					'ATENSI'              => sanitize_text_field($postData['atensi']),
@@ -7778,76 +7776,151 @@ class Wp_Siks_Public
 
 		if (!empty($_POST)) {
 			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
-				if ($ret['status'] != 'error') {
-					// Mengambil data dari form
-					$id_data = !empty($_POST['id_data']) ? sanitize_text_field($_POST['id_data']) : null;
-					$tahun_anggaran = sanitize_text_field($_POST['tahunAnggaran']);
-					$jenis_data = sanitize_text_field($_POST['jenisData']);
-					$anggaran = sanitize_text_field($_POST['anggaran']);
-					$status_realisasi = sanitize_text_field($_POST['statusRealisasi']);
-					$penerima = sanitize_text_field($_POST['penerima']);
-					$nama_nik_ketua = sanitize_text_field($_POST['nama_nik_ketua']);
-					$alamat = sanitize_text_field($_POST['alamat']);
-					$kecamatan = sanitize_text_field($_POST['kecamatan']);
-					$keterangan = sanitize_text_field($_POST['keterangan']);
-					$no_nphd = sanitize_text_field($_POST['nphd']);
-					$tgl_nphd = sanitize_text_field($_POST['tglNphd']);
-					$no_spm = sanitize_text_field($_POST['spm']);
-					$tgl_spm = sanitize_text_field($_POST['tglSpm']);
-					$no_sp2d = sanitize_text_field($_POST['sp2d']);
-					$tgl_sp2d = sanitize_text_field($_POST['tglSp2d']);
-					$peruntukan = sanitize_textarea_field($_POST['peruntukan']);
-					$lat = sanitize_textarea_field($_POST['latitude']);
-					$long = sanitize_textarea_field($_POST['longitude']);
+				// Mengambil data dari form
+				$id_data = !empty($_POST['id_data']) ? sanitize_text_field($_POST['id_data']) : null;
+				$tahun_anggaran = sanitize_text_field($_POST['tahunAnggaran']);
+				$jenis_data = sanitize_text_field($_POST['jenisData']);
+				$anggaran = sanitize_text_field($_POST['anggaran']);
+				$status_realisasi = sanitize_text_field($_POST['statusRealisasi']);
+				$penerima = sanitize_text_field($_POST['penerima']);
+				$nama_nik_ketua = sanitize_text_field($_POST['nama_nik_ketua']);
+				$alamat = sanitize_text_field($_POST['alamat']);
+				$kecamatan = sanitize_text_field($_POST['kecamatan']);
+				$provinsi = sanitize_text_field($_POST['provinsi']);
+				$desa_kelurahan = sanitize_text_field($_POST['desaKel']);
+				$kabkot = sanitize_text_field($_POST['kabKot']);
+				$keterangan = sanitize_text_field($_POST['keterangan']);
+				$no_nphd = sanitize_text_field($_POST['nphd']);
+				$tgl_nphd = sanitize_text_field($_POST['tglNphd']);
+				$no_spm = sanitize_text_field($_POST['spm']);
+				$tgl_spm = sanitize_text_field($_POST['tglSpm']);
+				$no_sp2d = sanitize_text_field($_POST['sp2d']);
+				$tgl_sp2d = sanitize_text_field($_POST['tglSp2d']);
+				$peruntukan = sanitize_textarea_field($_POST['peruntukan']);
+				$lat = sanitize_textarea_field($_POST['latitude']);
+				$long = sanitize_textarea_field($_POST['longitude']);
 
-					// Data yang akan disimpan atau diperbarui
-					$data = array(
-						'tahun_anggaran' => $tahun_anggaran,
-						'jenis_data' => $jenis_data,
-						'anggaran' => $anggaran,
-						'status_realisasi' => $status_realisasi,
-						'penerima' => $penerima,
-						'nama_nik_ketua' => $nama_nik_ketua,
-						'alamat' => $alamat,
-						'kecamatan' => $kecamatan,
-						'no_nphd' => $no_nphd,
-						'keterangan' => $keterangan,
-						'tgl_nphd' => $tgl_nphd,
-						'no_spm' => $no_spm,
-						'tgl_spm' => $tgl_spm,
-						'no_sp2d' => $no_sp2d,
-						'tgl_sp2d' => $tgl_sp2d,
-						'peruntukan' => $peruntukan,
-						'lat' => $lat,
-						'lng' => $long,
-						'kode' => '-',
-						'create_at' => current_time('mysql'),
-						'update_at' => current_time('mysql'),
-						'active' => 1
+				// Data yang akan disimpan atau diperbarui
+				$data = array(
+					'tahun_anggaran' 	=> $tahun_anggaran,
+					'jenis_data' 		=> $jenis_data,
+					'anggaran' 			=> $anggaran,
+					'status_realisasi' 	=> $status_realisasi,
+					'penerima' 			=> $penerima,
+					'nama_nik_ketua' 	=> $nama_nik_ketua,
+					'alamat' 			=> $alamat,
+					'kecamatan' 		=> $kecamatan,
+					'provinsi' 			=> $provinsi,
+					'desa_kelurahan' 	=> $desa_kelurahan,
+					'kabkot' 			=> $kabkot,
+					'no_nphd' 			=> $no_nphd,
+					'keterangan' 		=> $keterangan,
+					'tgl_nphd' 			=> $tgl_nphd,
+					'no_spm' 			=> $no_spm,
+					'tgl_spm' 			=> $tgl_spm,
+					'no_sp2d' 			=> $no_sp2d,
+					'tgl_sp2d' 			=> $tgl_sp2d,
+					'peruntukan' 		=> $peruntukan,
+					'lat' 				=> $lat,
+					'lng' 				=> $long,
+					'kode' 				=> '-',
+					'active' 			=> 1
+				);
+
+				$path = SIKS_PLUGIN_PATH . 'public/media/hibah/';
+				$cek_file = array();
+
+				// Proses upload file proposal usulan
+				if (!empty($_FILES['file_proposal_usulan'])) {
+					$upload_proposal = CustomTraitSiks::uploadFileSiks(
+						$_POST['api_key'],
+						$path,
+						$_FILES['file_proposal_usulan'],
+						['jpg', 'jpeg', 'png', 'pdf']
 					);
+					if ($upload_proposal['status'] === true) {
+						$data['file_proposal_usulan'] = $upload_proposal['filename'];
+						$cek_file['file_proposal_usulan'] = $data['file_proposal_usulan'];
+					} else {
+						$ret['status'] = 'error';
+						$ret['message'] = $upload_proposal['message'];
+					}
+				} else if (empty($id_data)) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'File proposal usulan tidak boleh kosong!';
+				}
 
-					// Jika `id_data` ada, lakukan pembaruan data, jika tidak, tambahkan data baru
-					if ($id_data) {
-						$wpdb->update(
-							'data_hibah_siks',
-							$data,
-							array('id' => $id_data)
+				// Proses upload file bukti SPJ
+				if (!empty($_FILES['file_bukti_spj'])) {
+					$upload_spj = CustomTraitSiks::uploadFileSiks(
+						$_POST['api_key'],
+						$path,
+						$_FILES['file_bukti_spj'],
+						['jpg', 'jpeg', 'png', 'pdf']
+					);
+					if ($upload_spj['status'] === true) {
+						$data['file_bukti_spj'] = $upload_spj['filename'];
+						$cek_file['file_bukti_spj'] = $data['file_bukti_spj'];
+					} else {
+						$ret['status'] = 'error';
+						$ret['message'] = $upload_spj['message'];
+					}
+				} else if (empty($id_data)) {
+					$ret['status'] = 'error';
+					$ret['message'] = 'File bukti SPJ tidak boleh kosong!';
+				}
+
+				if ($ret['status'] == 'error') {
+					// Hapus file yang sudah diupload jika ada error
+					foreach ($cek_file as $newfile) {
+						if (is_file($path . $newfile)) {
+							unlink($path . $newfile);
+						}
+					}
+				} else {
+					if (!empty($id_data)) {
+						// Update data
+						$file_lama = $wpdb->get_row(
+							$wpdb->prepare('SELECT file_proposal_usulan, file_bukti_spj FROM data_hibah_siks WHERE id=%d', $id_data),
+							ARRAY_A
 						);
+
+						if ($file_lama) {
+							// Hapus file lama proposal usulan jika berbeda
+							if (
+								isset($file_lama['file_proposal_usulan']) &&
+								isset($data['file_proposal_usulan']) &&
+								$file_lama['file_proposal_usulan'] != $data['file_proposal_usulan'] &&
+								is_file($path . $file_lama['file_proposal_usulan'])
+							) {
+								unlink($path . $file_lama['file_proposal_usulan']);
+							}
+
+							// Hapus file lama bukti SPJ jika berbeda
+							if (
+								isset($file_lama['file_bukti_spj']) &&
+								isset($data['file_bukti_spj']) &&
+								$file_lama['file_bukti_spj'] != $data['file_bukti_spj'] &&
+								is_file($path . $file_lama['file_bukti_spj'])
+							) {
+								unlink($path . $file_lama['file_bukti_spj']);
+							}
+						}
+
+						$wpdb->update('data_hibah_siks', $data, array('id' => $id_data));
 						$ret['message'] = 'Berhasil update data!';
 					} else {
-						$wpdb->insert(
-							'data_hibah_siks',
-							$data
-						);
+						// Insert data baru
+						$wpdb->insert('data_hibah_siks', $data);
 					}
 				}
 			} else {
 				$ret['status']  = 'error';
-				$ret['message'] = 'Api key tidak ditemukan!';
+				$ret['message'] = 'API key tidak ditemukan!';
 			}
 		} else {
 			$ret['status']  = 'error';
-			$ret['message'] = 'Format Salah!';
+			$ret['message'] = 'Format salah!';
 		}
 
 		die(json_encode($ret));
@@ -9243,14 +9316,12 @@ class Wp_Siks_Public
 
 					$data = array(
 						'nama'	 	=> $postData['newName'],
-						'is_kel' 	=> $postData['desaKelStatus'],
-						'update_at' => current_time('mysql')
+						'is_kel' 	=> $postData['desaKelStatus']
 					);
 
 					$cek_id = $wpdb->get_var(
 						$wpdb->prepare('
-							SELECT 
-								id
+							SELECT id
 							FROM data_alamat_siks
 							WHERE id_desa = %d
 							  AND active = 1
@@ -9556,8 +9627,7 @@ class Wp_Siks_Public
 
 				$data = [
 					'status_data' 			=> $postData['verifikasiStatus'],
-					'keterangan_verifikasi' => $postData['keteranganVerifikasi'],
-					'update_at' 			=> current_time('mysql')
+					'keterangan_verifikasi' => $postData['keteranganVerifikasi']
 				];
 
 				switch ($postData['jenis_data']) {

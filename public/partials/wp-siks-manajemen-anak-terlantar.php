@@ -525,11 +525,11 @@ foreach ($maps_all as $i => $desa) {
             cache: false,
             success: function(res) {
                 alert(res.message);
+                jQuery('#wrap-loading').hide();
                 if (res.status == 'success') {
                     jQuery('#modalTambahDataAnakTerlantar').modal('hide');
                     get_data_anak_terlantar();
                 }
-                jQuery('#wrap-loading').hide();
             }
         });
     }

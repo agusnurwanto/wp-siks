@@ -494,6 +494,7 @@ $jumlah_tidak_terdaftar = $calon_terdaftar['jml'] - $terdaftar['jml'];
                 cache: false,
                 success: function(res) {
                     alert(res.message);
+                    jQuery('#wrap-loading').hide();
                     if (res.status == 'success') {
                         jQuery('#modalTambahDataCalonP3KE').modal('hide');
                         get_data_calon_p3ke();

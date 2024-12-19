@@ -27,7 +27,7 @@ foreach ($maps_all as $i => $desa) {
     }
 </style>
 <div style="padding: 10px;margin:0 0 3rem 0;">
-    <h1 class="text-center" style="margin:3rem;">Manajemen Data Bunda Kasih</h1>
+    <h1 class="text-center" style="margin:3rem;">Manajemen Data Penerima Bansos Bunda Kasih</h1>
     <div style="margin-bottom: 25px;">
         <button class="btn btn-primary" onclick="tambah_data_bunda_kasih();"><i class="dashicons dashicons-plus"></i> Tambah Data</button>
     </div>
@@ -121,7 +121,9 @@ foreach ($maps_all as $i => $desa) {
                     <input type="file" name="file" class="form-control-file" id="lampiran" accept="application/pdf, .png, .jpg, .jpeg">
                     <div style="padding-top: 10px; padding-bottom: 10px;"><a id="file_lampiran_existing"></a></div>
                 </div>
-                <div><small>Upload file maksimal 1 Mb, berformat .pdf .png .jpg .jpeg</small></div>
+                <div>
+                    <small>Upload file maksimal 1 Mb, berformat .pdf .png .jpg .jpeg</small>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" onclick="submitDataBundaKasih(this);" class="btn btn-primary send_data">Simpan</button>
@@ -431,11 +433,11 @@ foreach ($maps_all as $i => $desa) {
             cache: false,
             success: function(res) {
                 alert(res.message);
+                jQuery('#wrap-loading').hide();
                 if (res.status == 'success') {
                     jQuery('#modalTambahDataBundaKasih').modal('hide');
                     get_data_bunda_kasih();
                 }
-                jQuery('#wrap-loading').hide();
             }
         });
     }

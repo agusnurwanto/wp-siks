@@ -527,6 +527,7 @@ foreach ($maps_all as $i => $desa) {
             cache: false,
             success: function(res) {
                 alert(res.message);
+                jQuery('#wrap-loading').hide();
                 if (res.status == 'success') {
                     jQuery('#modalTambahDataP3KE').modal('hide');
                     get_data_p3ke();

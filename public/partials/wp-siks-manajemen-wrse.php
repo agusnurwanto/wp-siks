@@ -553,6 +553,7 @@ foreach ($maps_all as $i => $desa) {
             contentType: false,
             cache: false,
             success: function(res) {
+                jQuery('#wrap-loading').hide();
                 alert(res.message);
                 if (res.status === 'success') {
                     jQuery('#modalTambahData').modal('hide');

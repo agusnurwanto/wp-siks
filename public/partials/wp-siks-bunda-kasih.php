@@ -38,7 +38,7 @@ foreach ($maps_all as $i => $desa) {
     $html = '
         <table>
             <tr>
-                <td><b>Total bunda_kasih</b></td>
+                <td><b>Total Bunda Kasih</b></td>
                 <td><b>' . $this->number_format($total_bunda_kasih) . ' Orang</b></td>
             </tr>
     ';
@@ -85,16 +85,16 @@ foreach ($maps_all as $i => $desa) {
     $total_all += $total_bunda_kasih;
 }
 ?>
-<h1 class="text-center">Peta Sebaran Bunda Kasih<br><?php echo $this->getNamaDaerah(); ?></h1>
+<h1 class="text-center">Peta Sebaran Penerima Bansos Bunda Kasih<br><?php echo $this->getNamaDaerah(); ?></h1>
 <div style="width: 95%; margin: 0 auto; min-height: 90vh; padding-bottom: 75px;">
     <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
     <h3 style="margin-top: 20px;">Keterangan</h3>
     <ol>
-        <li>Warna hijau berarti jumlah Bunda Kasih antara 0 sampai 5 orang</li>
-        <li>Warna kuning berarti jumlah Bunda Kasih antara 5 sampai 10 orang</li>
-        <li>Warna merah berarti jumlah Bunda Kasih diatas 10 orang</li>
+        <li>Warna hijau berarti jumlah Penerima Bansos Bunda Kasih antara 0 sampai 5 orang</li>
+        <li>Warna kuning berarti jumlah Penerima Bansos Bunda Kasih antara 5 sampai 10 orang</li>
+        <li>Warna merah berarti jumlah Penerima Bansos Bunda Kasih diatas 10 orang</li>
     </ol>
-    <h1 class="text-center">Tabel Data Bunda Kasih<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
+    <h1 class="text-center">Tabel Data Penerima Bansos Bunda Kasih<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
     <h3 class="text-center">Terakhir diupdate <?php echo $last_update_bunda_kasih ?></h3>
     <div style="width: 100%; overflow: auto; height: 100vh;">
         <table class="table table-bordered" id="table-data">

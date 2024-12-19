@@ -457,11 +457,11 @@ foreach ($maps_all as $i => $desa) {
             cache: false,
             success: function(res) {
                 alert(res.message);
+                jQuery('#wrap-loading').hide();
                 if (res.status == 'success') {
                     jQuery('#modalTambahDataLKSA').modal('hide');
                     get_data_lksa();
                 }
-                jQuery('#wrap-loading').hide();
             }
         });
     }
