@@ -61,6 +61,46 @@ CREATE TABLE `data_dtks` (
     INDEX(`id_desa`)
 );
 
+CREATE TABLE `data_dtsen` (
+    `id` int(11) NOT NULL auto_increment,
+    `alamat` TEXT DEFAULT NULL,
+    `desil_nasional` int(11) DEFAULT NULL,
+    `id_keluarga` VARCHAR(225) DEFAULT NULL,
+    `id_wilayah` TEXT DEFAULT NULL,
+    `nama_kepala_keluarga` TEXT DEFAULT NULL,
+    `no_kk` TEXT DEFAULT NULL,
+    `peringkat_nasional` TEXT DEFAULT NULL,
+    `kabupaten` TEXT DEFAULT NULL,
+    `kecamatan` TEXT DEFAULT NULL,
+    `kelurahan` TEXT DEFAULT NULL,
+    `nik` TEXT DEFAULT NULL,
+    `provinsi` TEXT DEFAULT NULL,
+    `percentile_nasional` TEXT DEFAULT NULL,
+    `peringkat_kab_kota` TEXT DEFAULT NULL,
+    `peringkat_provinsi` TEXT DEFAULT NULL,
+    `active` tinyint(4) DEFAULT NULL,
+    `update_at` DATETIME NOT NULL,
+    PRIMARY KEY  (id),
+    INDEX(`id_keluarga`),
+    INDEX(`desil_nasional`)
+);
+
+CREATE TABLE `data_dtsen_anggota_keluarga` (
+    `id` int(11) NOT NULL auto_increment,
+    `hub_kepala_keluarga` TEXT DEFAULT NULL,
+    `id_keluarga` VARCHAR(225) DEFAULT NULL,
+    `idsemesta` VARCHAR(225) DEFAULT NULL,
+    `nama` TEXT DEFAULT NULL,
+    `nik` TEXT DEFAULT NULL,
+    `no_kk` TEXT DEFAULT NULL,
+    `pekerjaan_utama` TEXT DEFAULT NULL,
+    `active` tinyint(4) DEFAULT NULL,
+    `update_at` DATETIME NOT NULL,
+    PRIMARY KEY  (id),
+    INDEX(`id_keluarga`),
+    INDEX(`idsemesta`)
+);
+
 CREATE TABLE `data_batas_desa_siks` (
     `id` int(11) NOT NULL auto_increment,
     `id_desa` int(11) DEFAULT NULL,
