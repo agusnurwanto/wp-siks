@@ -68,21 +68,25 @@ CREATE TABLE `data_dtsen` (
     `id_keluarga` VARCHAR(225) DEFAULT NULL,
     `id_wilayah` TEXT DEFAULT NULL,
     `nama_kepala_keluarga` TEXT DEFAULT NULL,
-    `no_kk` TEXT DEFAULT NULL,
+    `no_kk` VARCHAR(225) DEFAULT NULL,
     `peringkat_nasional` TEXT DEFAULT NULL,
     `kabupaten` TEXT DEFAULT NULL,
     `kecamatan` TEXT DEFAULT NULL,
     `kelurahan` TEXT DEFAULT NULL,
-    `nik` TEXT DEFAULT NULL,
+    `nik` VARCHAR(225) DEFAULT NULL,
     `provinsi` TEXT DEFAULT NULL,
     `percentile_nasional` TEXT DEFAULT NULL,
     `peringkat_kab_kota` TEXT DEFAULT NULL,
     `peringkat_provinsi` TEXT DEFAULT NULL,
+    `peringkat_nasional` TEXT DEFAULT NULL,
     `active` tinyint(4) DEFAULT NULL,
     `update_at` DATETIME NOT NULL,
     PRIMARY KEY  (id),
+    INDEX(`id_wilayah`),
     INDEX(`id_keluarga`),
-    INDEX(`desil_nasional`)
+    INDEX(`desil_nasional`),
+    INDEX(`no_kk`),
+    INDEX(`nik`)
 );
 
 CREATE TABLE `data_dtsen_anggota_keluarga` (
@@ -91,13 +95,15 @@ CREATE TABLE `data_dtsen_anggota_keluarga` (
     `id_keluarga` VARCHAR(225) DEFAULT NULL,
     `idsemesta` VARCHAR(225) DEFAULT NULL,
     `nama` TEXT DEFAULT NULL,
-    `nik` TEXT DEFAULT NULL,
-    `no_kk` TEXT DEFAULT NULL,
+    `nik` VARCHAR(225) DEFAULT NULL,
+    `no_kk` VARCHAR(225) DEFAULT NULL,
     `pekerjaan_utama` TEXT DEFAULT NULL,
     `active` tinyint(4) DEFAULT NULL,
     `update_at` DATETIME NOT NULL,
     PRIMARY KEY  (id),
     INDEX(`id_keluarga`),
+    INDEX(`no_kk`),
+    INDEX(`nik`),
     INDEX(`idsemesta`)
 );
 

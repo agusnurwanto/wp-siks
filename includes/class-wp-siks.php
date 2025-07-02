@@ -224,6 +224,8 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_nopriv_proses_captcha',  $plugin_public, 'proses_captcha');
 		$this->loader->add_action('wp_ajax_singkronisasi_dtks',  $plugin_public, 'singkronisasi_dtks');
 		$this->loader->add_action('wp_ajax_nopriv_singkronisasi_dtks',  $plugin_public, 'singkronisasi_dtks');
+		$this->loader->add_action('wp_ajax_singkronisasi_dtsen',  $plugin_public, 'singkronisasi_dtsen');
+		$this->loader->add_action('wp_ajax_nopriv_singkronisasi_dtsen',  $plugin_public, 'singkronisasi_dtsen');
 
 		$this->loader->add_action('wp_ajax_get_datatable_lansia',  $plugin_public, 'get_datatable_lansia');
 		$this->loader->add_action('wp_ajax_get_data_lansia_by_id',  $plugin_public, 'get_data_lansia_by_id');

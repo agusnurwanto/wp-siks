@@ -962,6 +962,102 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
+	public function singkronisasi_dtsen()
+	{
+		global $wpdb;
+		$ret = array(
+			'action'	=> 'singkronisasi_dtsen',
+			'status'	=> 'success',
+			'message'	=> 'Berhasil backup data DTSEN (Data Tunggal Sosial Ekonomi Nasional)!'
+		);
+		if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+			$data = json_decode(stripslashes(html_entity_decode($_POST['data'])), true);
+			if ($data['page'] == 0) {
+				$wpdb->update("data_dtsen", array('active' => 0), array(
+					'id_wilayah' => $data['meta']['id_desa']
+				));
+			}
+			foreach ($data['data'] as $orang) {
+				$cek_id = $wpdb->get_var($wpdb->prepare("
+					SELECT
+						id
+					FROM data_dtsen
+					WHERE id_wilayah = %s
+						AND id_keluarga = %s
+						AND no_kk = %s
+				", $data['meta']['id_desa'], $orang['id_keluarga'], $orang['no_kk']));
+
+				$opsi = array(
+					'alamat' => $orang['alamat']['alamat'],
+					'desil_nasional' => $orang['desil_nasional'],
+					'id_keluarga' => $orang['id_keluarga'],
+					'id_wilayah' => $orang['id_wilayah'],
+					'nama_kepala_keluarga' => $orang['nama_kepala_keluarga'],
+					'no_kk' => $orang['no_kk'],
+					'peringkat_nasional' => $orang['peringkat_nasional'],
+					'kabupaten' => $orang['alamat']['kabupaten'],
+					'kecamatan' => $orang['alamat']['kecamatan'],
+					'kelurahan' => $orang['alamat']['kelurahan'],
+					'nik' => $orang['alamat']['nik'],
+					'provinsi' => $orang['alamat']['provinsi'],
+					'percentile_nasional' => $orang['peringkat']['percentile_nasional'],
+					'peringkat_kab_kota' => $orang['peringkat']['peringkat_kab_kota'],
+					'peringkat_provinsi' => $orang['peringkat']['peringkat_provinsi'],
+					'peringkat_nasional' => $orang['peringkat']['peringkat_nasional'],
+					'update_at' => date('Y-m-d H:i:s'),
+					'active' => 1
+				);
+				if (empty($cek_id)) {
+					$wpdb->insert('data_dtsen', $opsi);
+				} else {
+					$wpdb->update('data_dtsen', $opsi, array(
+						'id' => $cek_id
+					));
+				}
+
+				$wpdb->update("data_dtsen_anggota_keluarga", array('active' => 0), array(
+					'id_keluarga' => $orang['id_keluarga']
+				));
+				foreach($orang['anggota_keluarga'] as $anggota){
+					$cek_id = $wpdb->get_var($wpdb->prepare("
+						SELECT
+							id
+						FROM data_dtsen_anggota_keluarga
+						WHERE id_keluarga = %s
+							AND nik = %s
+							AND idsemesta = %s
+							AND no_kk = %s
+					", $orang['id_keluarga'], $anggota['nik'], $anggota['idsemesta'], $orang['no_kk']));
+
+					$opsi = array(
+						'hub_kepala_keluarga' => $anggota['hub_kepala_keluarga'],
+						'id_keluarga' => $anggota['id_keluarga'],
+						'idsemesta' => $anggota['idsemesta'],
+						'nama' => $anggota['nama'],
+						'nik' => $anggota['nik'],
+						'no_kk' => $anggota['no_kk'],
+						'pekerjaan_utama' => $anggota['pekerjaan_utama'],
+						'update_at' => date('Y-m-d H:i:s'),
+						'active' => 1
+					);
+					if (empty($cek_id)) {
+						$wpdb->insert('data_dtsen_anggota_keluarga', $opsi);
+					} else {
+						$wpdb->update('data_dtsen_anggota_keluarga', $opsi, array(
+							'id' => $cek_id
+						));
+					}
+				}
+			}
+		} else {
+			$ret = array(
+				'status' => 'error',
+				'message'	=> 'Format tidak sesuai!'
+			);
+		}
+		die(json_encode($ret));
+	}
+
 	public function my_cron_schedules($schedules)
 	{
 		if (!isset($schedules["custom_min"])) {
