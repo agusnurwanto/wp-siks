@@ -206,6 +206,14 @@ class Wp_Siks_Admin
 			'post_status' => 'publish'
 		));
 
+		$data_dtsen = $this->functions->generatePage(array(
+			'nama_page' => 'Data DTSEN SIKS',
+			'content' => '[data_dtsen_siks]',
+			'show_header' => 1,
+			'no_key' => 1,
+			'post_status' => 'publish'
+		));
+
 		$data_gepeng = $this->functions->generatePage(array(
 			'nama_page' => 'Data Gepeng SIKS',
 			'content' => '[data_gepeng_siks]',
@@ -359,6 +367,7 @@ class Wp_Siks_Admin
 	            		<li><a target="_blank" href="' . $data_wrse['url'] . '">' . $data_wrse['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_odgj['url'] . '">' . $data_odgj['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $data_hibah['url'] . '">' . $data_hibah['title'] . '</a></li>
+	            		<li><a target="_blank" href="' . $data_dtsen['url'] . '">' . $data_dtsen['title'] . '</a></li>
 	            		<li><a target="_blank" href="' . $cek_nik_siks['url'] . '">' . $cek_nik_siks['title'] . '</a></li>
 	            	</ol>'),
 				Field::make('text', 'crb_apikey_siks', 'API KEY')

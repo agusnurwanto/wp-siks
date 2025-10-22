@@ -391,4 +391,94 @@ class Siks_Functions
 	  	}
 	  	return $ret;
     }
+
+	/**
+     * validate an array $field => $rules.
+     *
+     * example :
+     * $rules = [
+     *  'username' => 'required|string|min:3|max:20',
+     *  'age'      => 'required|numeric|min:18',
+     *  'status'   => 'required|in:active,inactive,pending',
+     *  'role'     => 'required'
+     * ];
+     * 
+     * @param array $data field data to validate ($_GET or $_POST, ...).
+     * @param array $rules rules for validate the field ['field' => 'rule1|rule2:param|...'].
+     * @throws Exception if err throw exception code 422.
+     */
+    function validate(array $data, array $rules)
+    {
+        foreach ($rules as $field => $ruleString) {
+            $rulesArray = explode('|', $ruleString);
+            $value = isset($data[$field]) ? $data[$field] : null;
+
+            if (in_array('required', $rulesArray) && (is_null($value) || $value === '')) {
+                throw new Exception("Parameter '{$field}' dibutuhkan.", 422);
+            }
+
+            if (is_null($value)) {
+                continue;
+            }
+
+            foreach ($rulesArray as $rule) {
+                if ($rule === 'required') {
+                    continue;
+                }
+
+                // Memisahkan aturan dan parameternya (jika ada), contoh: 'max:255'
+                $ruleParts = explode(':', $rule, 2);
+                $ruleName = $ruleParts[0];
+                $ruleParam = isset($ruleParts[1]) ? $ruleParts[1] : null;
+
+                switch ($ruleName) {
+                    case 'numeric':
+                        if (!is_numeric($value)) {
+                            throw new Exception("Parameter '{$field}' harus berupa angka.", 422);
+                        }
+                        break;
+
+                    case 'string':
+                        if (!is_string($value)) {
+                            throw new Exception("Parameter '{$field}' harus berupa teks (string).", 422);
+                        }
+                        break;
+
+                    case 'in':
+                        if (is_null($ruleParam)) {
+                            throw new Exception("Aturan validasi 'in' untuk '{$field}' tidak memiliki parameter.", 500);
+                        }
+                        $allowedValues = explode(',', $ruleParam);
+                        if (!in_array($value, $allowedValues)) {
+                            throw new Exception("Parameter '{$field}' harus salah satu dari: {$ruleParam}.", 422);
+                        }
+                        break;
+
+                    case 'min':
+                        if (is_null($ruleParam)) {
+                            throw new Exception("Aturan validasi 'min' untuk '{$field}' tidak memiliki parameter.", 500);
+                        }
+                        if (is_numeric($value) && $value < $ruleParam) {
+                            throw new Exception("Parameter '{$field}' harus memiliki nilai minimal {$ruleParam}.", 422);
+                        }
+                        if (is_string($value) && mb_strlen($value) < $ruleParam) {
+                            throw new Exception("Parameter '{$field}' harus memiliki panjang minimal {$ruleParam} karakter.", 422);
+                        }
+                        break;
+
+                    case 'max':
+                        if (is_null($ruleParam)) {
+                            throw new Exception("Aturan validasi 'max' untuk '{$field}' tidak memiliki parameter.", 500);
+                        }
+                        if (is_numeric($value) && $value > $ruleParam) {
+                            throw new Exception("Parameter '{$field}' harus memiliki nilai maksimal {$ruleParam}.", 422);
+                        }
+                        if (is_string($value) && mb_strlen($value) > $ruleParam) {
+                            throw new Exception("Parameter '{$field}' harus memiliki panjang maksimal {$ruleParam} karakter.", 422);
+                        }
+                        break;
+                }
+            }
+        }
+    }
 }

@@ -85,6 +85,7 @@ CREATE TABLE `data_dtsen` (
     INDEX(`id_keluarga`),
     INDEX(`desil_nasional`),
     INDEX(`no_kk`),
+    INDEX(`active`),
     INDEX(`nik`)
 );
 
@@ -103,6 +104,7 @@ CREATE TABLE `data_dtsen_anggota_keluarga` (
     INDEX(`id_keluarga`),
     INDEX(`no_kk`),
     INDEX(`nik`),
+    INDEX(`active`),
     INDEX(`idsemesta`)
 );
 
@@ -196,7 +198,7 @@ CREATE TABLE `data_disabilitas_siks` (
     `nama_sekolah` TEXT DEFAULT NULL,
     `keterangan_lulus` TEXT DEFAULT NULL,
     `jenis_disabilitas` TEXT DEFAULT NULL,
-    `keterangan_disabilitas` TEXT DEFAULT NULL,
+    `keterangan_disabilitas` VARCHAR(600) DEFAULT NULL,
     `sebab_disabilitas` TEXT DEFAULT NULL,
     `diagnosa_medis` TEXT DEFAULT NULL,
     `penyakit_lain` TEXT DEFAULT NULL,
@@ -263,7 +265,8 @@ CREATE TABLE `data_disabilitas_siks` (
     `tahun_anggaran`  int(4) DEFAULT NULL,
     `active` tinyint(4) DEFAULT 1,
     `update_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    INDEX(`id_desa`)
 );
 
 CREATE TABLE `data_bunda_kasih_siks` (

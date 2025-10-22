@@ -137,6 +137,15 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-disabilitas-per-desa.php';
 	}
 
+	public function dtsen_per_desa($atts)
+	{
+		// untuk disable render shortcode di halaman edit page/post
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-dtsen-per-desa.php';
+	}
+
 	public function lksa_per_desa($atts)
 	{
 		// untuk disable render shortcode di halaman edit page/post
@@ -383,6 +392,14 @@ class Wp_Siks_Public
 			return '';
 		}
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-dtks.php';
+	}
+
+	public function data_dtsen_siks()
+	{
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-dtsen.php';
 	}
 
 	public function data_lansia_siks()
@@ -1142,8 +1159,114 @@ class Wp_Siks_Public
 			}
 		}
 
-		// SELECT * FROM data_batas_desa WHERE provinsi='JAWA TIMUR' and kab_kot='MAGETAN' and desa IN ('KAUMAN','PATIHAN', 'ALASTUWO') order by desa;
 		return $new_data;
+	}
+
+	function get_dtsen()
+	{
+		global $wpdb;
+
+		$prov = get_option(SIKS_PROV);
+		$kab = get_option(SIKS_KABKOT);
+
+		$data = $wpdb->get_results(
+			$wpdb->prepare("
+				SELECT
+					kepala.provinsi,
+					kepala.kabupaten,
+					kepala.kecamatan,
+					kepala.kelurahan,
+					COUNT(CASE WHEN kepala.desil_nasional = 1 THEN 1 END) AS total_desil_1,
+					COUNT(CASE WHEN kepala.desil_nasional = 2 THEN 1 END) AS total_desil_2,
+					COUNT(CASE WHEN kepala.desil_nasional = 3 THEN 1 END) AS total_desil_3,
+					COUNT(CASE WHEN kepala.desil_nasional = 4 THEN 1 END) AS total_desil_4,
+					COUNT(CASE WHEN kepala.desil_nasional = 5 THEN 1 END) AS total_desil_5,
+					COUNT(anggota.id) AS jumlah,
+					MAX(anggota.update_at) AS last_update
+				FROM data_dtsen kepala
+				LEFT JOIN data_dtsen_anggota_keluarga anggota
+					   ON kepala.id_keluarga = anggota.id_keluarga
+					  AND anggota.active = 1
+				WHERE kepala.provinsi = %s
+				  AND kepala.kabupaten = %s
+				  AND kepala.active = 1
+				  AND kepala.desil_nasional BETWEEN 1 AND 5
+				GROUP BY kepala.provinsi, kepala.kabupaten, kepala.kecamatan, kepala.kelurahan
+				ORDER BY kepala.provinsi, kepala.kabupaten, kepala.kecamatan, kepala.kelurahan
+		", $prov, $kab), ARRAY_A);
+
+		return $data;
+	}
+
+	function get_dtsen_by_desa(string $desa)
+	{
+		global $wpdb;
+
+		$prov = get_option(SIKS_PROV);
+		$kab = get_option(SIKS_KABKOT);
+
+		$data = $wpdb->get_results(
+			$wpdb->prepare("
+				SELECT
+					kepala.provinsi,
+					kepala.kabupaten,
+					kepala.kecamatan,
+					kepala.kelurahan,
+					kepala.alamat,
+					kepala.desil_nasional,
+					anggota.nama,
+					anggota.nik,
+					anggota.no_kk,
+					anggota.pekerjaan_utama,
+					anggota.hub_kepala_keluarga
+				FROM data_dtsen kepala
+				LEFT JOIN data_dtsen_anggota_keluarga anggota
+					   ON kepala.id_keluarga = anggota.id_keluarga
+					  AND anggota.active = 1
+				WHERE kepala.provinsi = %s
+				  AND kepala.kabupaten = %s
+				  AND kepala.kelurahan = %s
+				  AND kepala.active = 1
+				  AND kepala.desil_nasional BETWEEN 1 AND 5;
+			", $prov, $kab, $desa)
+			, ARRAY_A
+		);
+
+		return $data;
+	}
+
+	public function get_data_dtsen_ajax()
+	{
+		try {
+			$this->functions->validate($_POST, [
+				'api_key'   => 'required|string',
+			]);
+
+			if ($_POST['api_key'] !== get_option(SIKS_APIKEY)) {
+				throw new Exception("API key tidak valid atau tidak ditemukan!", 401);
+			}
+
+			$desa = $_POST['desa'] ?? null;
+			if (!empty($desa)) {
+				$get_dtsen = $this->get_dtsen_by_desa($desa);
+			}
+
+			if ($get_dtsen) {
+				echo json_encode([
+					'status'  => true,
+					'message' => 'Data berhasil ditemukan. ' . $desa,
+					'data'    => $get_dtsen
+				]);
+			}
+		} catch (Exception $e) {
+			$code = is_int($e->getCode()) && $e->getCode() !== 0 ? $e->getCode() : 500;
+			http_response_code($code);
+			echo json_encode([
+				'status'  => false,
+				'message' => $e->getMessage()
+			]);
+		}
+		wp_die();
 	}
 
 	function get_dtks()
