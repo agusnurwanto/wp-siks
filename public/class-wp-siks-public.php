@@ -1242,7 +1242,7 @@ class Wp_Siks_Public
 					'total_desil_4_lansia' => 0,
 					'total_desil_5_lansia' => 0,
 					'jumlah' => 0,
-					'last_update' => $val['last_update']
+					'last_update' => $val['update_at']
 				);
 			}
 			$data[$key]['jumlah']++;
