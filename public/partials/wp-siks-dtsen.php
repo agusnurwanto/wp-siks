@@ -131,10 +131,10 @@ foreach ($maps_all as $i => $desa) {
         <li>Warna kuning berarti jumlah DTSEN antara 1501 sampai 3000 orang</li>
         <li>Warna merah berarti jumlah DTSEN diatas 3000 orang</li>
     </ol>
-    <h1 class="text-center">Tabel Data DTSEN (Data Tunggal Sosial dan Ekonomi Nasional)<br>Desil 1 s.d 5<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
+    <h2 class="text-center">Tabel Data DTSEN (Data Tunggal Sosial dan Ekonomi Nasional)<br>Desil 1 s.d 5<br>Total <?php echo $this->number_format($total_all); ?> Orang</h1>
     <h3 class="text-center">Terakhir diupdate <?php echo $last_update; ?></h3>
     <div style="width: 100%; overflow: auto; height: 100vh;">
-        <table id="table-data">
+        <table id="table-data" class="table table-bordered">
             <thead>
                 <tr>
                     <th rowspan='2' class='text-center'>Kode Desa</th>
