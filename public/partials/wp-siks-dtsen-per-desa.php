@@ -114,8 +114,8 @@ $default_location = $this->getSearchLocation($desa);
                         <tr>
                             <td class="text-center">${no++}</td>
                             <td class="text-center">${data.desil_nasional}</td>
-                            <td class="text-center">-</td>
-                            <td class="text-center">-</td>
+                            <td class="text-left">${data.disabilitas}</td>
+                            <td class="text-left">${data.lansia}</td>
                             <td class="text-left">${data.no_kk}</td>
                             <td class="text-left">${data.hub_kepala_keluarga}</td>
                             <td class="text-left">${data.alamat}</td>

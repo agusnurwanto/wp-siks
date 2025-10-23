@@ -1329,26 +1329,87 @@ class Wp_Siks_Public
 		return $data;
 	}
 
+	function get_all_data_dtks()
+	{
+		global $wpdb;
+
+		$prov = get_option(SIKS_PROV);
+		$kab = get_option(SIKS_KABKOT);
+
+		$data_dtks = $wpdb->get_results(
+			$wpdb->prepare("
+				SELECT
+					NIK,
+					keterangan_disabilitas
+				FROM data_dtks
+				WHERE active=1
+				  AND provinsi=%s
+				  AND kabupaten=%s
+				  AND keterangan_disabilitas != '\"Non Disabilitas\"'
+			", $prov, $kab),
+			ARRAY_A
+		);
+
+		$data_all_dtks = array();
+		foreach($data_dtks as $val){
+			$data_all_dtks[$val['NIK']] = $val;
+		}
+
+		return $data_all_dtks;
+	}
+
+	function get_all_data_lansia()
+	{
+		global $wpdb;
+
+		$data_lansia = $wpdb->get_results("
+			SELECT
+				nik
+			FROM data_lansia_siks
+			WHERE active=1
+		", ARRAY_A);
+
+		$data_all_lansia = array();
+		foreach($data_lansia as $val){
+			$data_all_lansia[$val['nik']] = $val;
+		}
+
+		return $data_all_lansia;
+	}
+
 	public function get_data_dtsen_ajax()
 	{
 		try {
 			$this->functions->validate($_POST, [
 				'api_key'   => 'required|string',
+				'desa'   	=> 'required|string',
 			]);
 
 			if ($_POST['api_key'] !== get_option(SIKS_APIKEY)) {
 				throw new Exception("API key tidak valid atau tidak ditemukan!", 401);
 			}
 
-			$desa = $_POST['desa'] ?? null;
-			if (!empty($desa)) {
-				$get_dtsen = $this->get_dtsen_by_desa($desa);
+			$get_dtsen = $this->get_dtsen_by_desa($_POST['desa']);
+			$get_dtks_disabilitas = $this->get_all_data_dtks();
+			$get_lansia = $this->get_all_data_lansia();
+
+			foreach ($get_dtsen as &$val) {
+				$val['disabilitas'] = "-";
+				$val['lansia'] = "-";
+
+				if (!empty($get_dtks_disabilitas[$val['nik']])) {
+					$val['disabilitas'] = $get_dtks_disabilitas[$val['nik']]['keterangan_disabilitas'];
+				}
+
+				if (!empty($get_lansia[$val['nik']])) {
+					$val['lansia'] = "Lansia";
+				}
 			}
 
 			if ($get_dtsen) {
 				echo json_encode([
 					'status'  => true,
-					'message' => 'Data berhasil ditemukan. ' . $desa,
+					'message' => 'Data berhasil ditemukan. ' . $_POST['desa'],
 					'data'    => $get_dtsen
 				]);
 			}
