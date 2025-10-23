@@ -1,7 +1,7 @@
 CREATE TABLE `data_dtks` (
     `id` int(11) NOT NULL auto_increment,
-    `provinsi` TEXT DEFAULT NULL,
-    `kabupaten` TEXT DEFAULT NULL,
+    `provinsi` VARCHAR(600) DEFAULT NULL,
+    `kabupaten` VARCHAR(600) DEFAULT NULL,
     `kecamatan` TEXT DEFAULT NULL,
     `desa_kelurahan` TEXT DEFAULT NULL,
     `prop_capil` VARCHAR(30) DEFAULT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE `data_dtks` (
     `is_btn_hidupkan` TEXT DEFAULT NULL,
     `is_btn_padankan` TEXT DEFAULT NULL,
     `is_nonaktif` TEXT DEFAULT NULL,
-    `keterangan_disabilitas` TEXT DEFAULT NULL,
+    `keterangan_disabilitas` VARCHAR(600) DEFAULT NULL,
     `keterangan_meninggal` TEXT DEFAULT NULL,
     `masih_hidup_label` TEXT DEFAULT NULL,
     `padankan_at` TEXT DEFAULT NULL,
@@ -58,7 +58,11 @@ CREATE TABLE `data_dtks` (
     `active` tinyint(4) DEFAULT NULL,
     `update_at` DATETIME NOT NULL,
     PRIMARY KEY  (id),
-    INDEX(`id_desa`)
+    INDEX(`provinsi`),
+    INDEX(`kabupaten`),
+    INDEX(`id_desa`),
+    INDEX(`keterangan_disabilitas`),
+    INDEX(`active`)
 );
 
 CREATE TABLE `data_dtsen` (

@@ -1168,21 +1168,18 @@ class Wp_Siks_Public
 
 		$prov = get_option(SIKS_PROV);
 		$kab = get_option(SIKS_KABKOT);
-
-		$data = $wpdb->get_results(
+		$data_all = $wpdb->get_results(
 			$wpdb->prepare("
 				SELECT
 					kepala.provinsi,
 					kepala.kabupaten,
 					kepala.kecamatan,
 					kepala.kelurahan,
-					COUNT(CASE WHEN kepala.desil_nasional = 1 THEN 1 END) AS total_desil_1,
-					COUNT(CASE WHEN kepala.desil_nasional = 2 THEN 1 END) AS total_desil_2,
-					COUNT(CASE WHEN kepala.desil_nasional = 3 THEN 1 END) AS total_desil_3,
-					COUNT(CASE WHEN kepala.desil_nasional = 4 THEN 1 END) AS total_desil_4,
-					COUNT(CASE WHEN kepala.desil_nasional = 5 THEN 1 END) AS total_desil_5,
-					COUNT(anggota.id) AS jumlah,
-					MAX(anggota.update_at) AS last_update
+					kepala.desil_nasional,
+					anggota.id_keluarga,
+					anggota.nik,
+					anggota.id,
+					anggota.update_at
 				FROM data_dtsen kepala
 				LEFT JOIN data_dtsen_anggota_keluarga anggota
 					   ON kepala.id_keluarga = anggota.id_keluarga
@@ -1191,11 +1188,108 @@ class Wp_Siks_Public
 				  AND kepala.kabupaten = %s
 				  AND kepala.active = 1
 				  AND kepala.desil_nasional BETWEEN 1 AND 5
-				GROUP BY kepala.provinsi, kepala.kabupaten, kepala.kecamatan, kepala.kelurahan
 				ORDER BY kepala.provinsi, kepala.kabupaten, kepala.kecamatan, kepala.kelurahan
 		", $prov, $kab), ARRAY_A);
 
-		return $data;
+		$data_dtks = $wpdb->get_results($wpdb->prepare("
+			SELECT
+				NIK,
+				keterangan_disabilitas
+			FROM data_dtks
+			WHERE active=1
+				AND provinsi=%s
+				AND kabupaten=%s
+				AND keterangan_disabilitas != '\"Non Disabilitas\"'
+		", $prov, $kab), ARRAY_A);
+		$data_all_dtks = array();
+		foreach($data_dtks as $val){
+			$data_all_dtks[$val['NIK']] = $val;
+		}
+
+		$data_lansia = $wpdb->get_results("
+			SELECT
+				nik
+			FROM data_lansia_siks
+			WHERE active=1
+		", ARRAY_A);
+		$data_all_lansia = array();
+		foreach($data_lansia as $val){
+			$data_all_lansia[$val['nik']] = $val;
+		}
+
+		$data = array();
+		foreach($data_all as $val){
+			$key = $val['provinsi'].'|'.$val['kabupaten'].'|'.$val['kecamatan'].'|'.$val['kelurahan'];
+			if(empty($data[$key])){
+				$data[$key] = array(
+					'provinsi' => $val['provinsi'],
+					'kabupaten' => $val['kabupaten'],
+					'kecamatan' => $val['kecamatan'],
+					'kelurahan' => $val['kelurahan'],
+					'total_desil_1' => 0,
+					'total_desil_2' => 0,
+					'total_desil_3' => 0,
+					'total_desil_4' => 0,
+					'total_desil_5' => 0,
+					'total_desil_1_disabilitas' => 0,
+					'total_desil_2_disabilitas' => 0,
+					'total_desil_3_disabilitas' => 0,
+					'total_desil_4_disabilitas' => 0,
+					'total_desil_5_disabilitas' => 0,
+					'total_desil_1_lansia' => 0,
+					'total_desil_2_lansia' => 0,
+					'total_desil_3_lansia' => 0,
+					'total_desil_4_lansia' => 0,
+					'total_desil_5_lansia' => 0,
+					'jumlah' => 0,
+					'last_update' => $val['last_update']
+				);
+			}
+			$data[$key]['jumlah']++;
+			if($val['desil_nasional'] == 1){
+				$data[$key]['total_desil_1']++;
+				if(!empty($data_all_dtks[$val['nik']])){
+					$data[$key]['total_desil_1_disabilitas']++;
+				}
+				if(!empty($data_all_lansia[$val['nik']])){
+					$data[$key]['total_desil_1_lansia']++;
+				}
+			}else if($val['desil_nasional'] == 2){
+				$data[$key]['total_desil_2']++;
+				if(!empty($data_all_dtks[$val['nik']])){
+					$data[$key]['total_desil_2_disabilitas']++;
+				}
+				if(!empty($data_all_lansia[$val['nik']])){
+					$data[$key]['total_desil_2_lansia']++;
+				}
+			}else if($val['desil_nasional'] == 3){
+				$data[$key]['total_desil_3']++;
+				if(!empty($data_all_dtks[$val['nik']])){
+					$data[$key]['total_desil_3_disabilitas']++;
+				}
+				if(!empty($data_all_lansia[$val['nik']])){
+					$data[$key]['total_desil_3_lansia']++;
+				}
+			}else if($val['desil_nasional'] == 4){
+				$data[$key]['total_desil_4']++;
+				if(!empty($data_all_dtks[$val['nik']])){
+					$data[$key]['total_desil_4_disabilitas']++;
+				}
+				if(!empty($data_all_lansia[$val['nik']])){
+					$data[$key]['total_desil_4_lansia']++;
+				}
+			}else if($val['desil_nasional'] == 5){
+				$data[$key]['total_desil_5']++;
+				if(!empty($data_all_dtks[$val['nik']])){
+					$data[$key]['total_desil_5_disabilitas']++;
+				}
+				if(!empty($data_all_lansia[$val['nik']])){
+					$data[$key]['total_desil_5_lansia']++;
+				}
+			}
+		}
+
+		return array_values($data);
 	}
 
 	function get_dtsen_by_desa(string $desa)

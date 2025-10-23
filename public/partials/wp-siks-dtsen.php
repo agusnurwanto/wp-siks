@@ -34,11 +34,16 @@ foreach ($maps_all as $i => $desa) {
     if (!empty($dtsen_desa[$index])) {
         foreach ($dtsen_desa[$index] as $orang) {
             $total_dtsen += $orang['jumlah'];
-            $total_desil_1 += $orang['total_desil_1'];
-            $total_desil_2 += $orang['total_desil_2'];
-            $total_desil_3 += $orang['total_desil_3'];
-            $total_desil_4 += $orang['total_desil_4'];
-            $total_desil_5 += $orang['total_desil_5'];
+            $total_desil_1_disabilitas += $orang['total_desil_1_disabilitas'];
+            $total_desil_2_disabilitas += $orang['total_desil_2_disabilitas'];
+            $total_desil_3_disabilitas += $orang['total_desil_3_disabilitas'];
+            $total_desil_4_disabilitas += $orang['total_desil_4_disabilitas'];
+            $total_desil_5_disabilitas += $orang['total_desil_5_disabilitas'];
+            $total_desil_1_lansia += $orang['total_desil_1_lansia'];
+            $total_desil_2_lansia += $orang['total_desil_2_lansia'];
+            $total_desil_3_lansia += $orang['total_desil_3_lansia'];
+            $total_desil_4_lansia += $orang['total_desil_4_lansia'];
+            $total_desil_5_lansia += $orang['total_desil_5_lansia'];
         }
     }
 
@@ -95,16 +100,16 @@ foreach ($maps_all as $i => $desa) {
     }
     $body .= "</td>
             <td class='text-center'>" . $total_dtsen . "</td>
-            <td class='text-center'>" . $total_desil_1 . "</td>
-            <td class='text-center'>" . $total_desil_2 . "</td>
-            <td class='text-center'>" . $total_desil_3 . "</td>
-            <td class='text-center'>" . $total_desil_4 . "</td>
-            <td class='text-center'>" . $total_desil_5 . "</td>
-            <td class='text-center'></td>
-            <td class='text-center'></td>
-            <td class='text-center'></td>
-            <td class='text-center'></td>
-            <td class='text-center'></td>
+            <td class='text-center'>" . $total_desil_1_disabilitas . "</td>
+            <td class='text-center'>" . $total_desil_2_disabilitas . "</td>
+            <td class='text-center'>" . $total_desil_3_disabilitas . "</td>
+            <td class='text-center'>" . $total_desil_4_disabilitas . "</td>
+            <td class='text-center'>" . $total_desil_5_disabilitas . "</td>
+            <td class='text-center'>" . $total_desil_1_lansia . "</td>
+            <td class='text-center'>" . $total_desil_2_lansia . "</td>
+            <td class='text-center'>" . $total_desil_3_lansia . "</td>
+            <td class='text-center'>" . $total_desil_4_lansia . "</td>
+            <td class='text-center'>" . $total_desil_5_lansia . "</td>
             <td class='text-center'><a style='margin-bottom: 5px;' onclick='cari_alamat_siks(\"" . $search . "\"); return false;' href='#' class='btn btn-danger'>Map</a></td>
         </tr>
     ";
