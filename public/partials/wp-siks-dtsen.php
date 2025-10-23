@@ -26,11 +26,16 @@ foreach ($maps_all as $i => $desa) {
     $index = strtolower($desa['data']['provinsi']) . '.' . strtolower($desa['data']['kab_kot']) . '.' . strtolower($desa['data']['kecamatan']) . '.' . strtolower($desa['data']['desa']);
 
     $total_dtsen = 0;
-    $total_desil_1 = 0;
-    $total_desil_2 = 0;
-    $total_desil_3 = 0;
-    $total_desil_4 = 0;
-    $total_desil_5 = 0;
+    $total_desil_1_disabilitas = 0;
+    $total_desil_2_disabilitas = 0;
+    $total_desil_3_disabilitas = 0;
+    $total_desil_4_disabilitas = 0;
+    $total_desil_5_disabilitas = 0;
+    $total_desil_1_lansia = 0;
+    $total_desil_2_lansia = 0;
+    $total_desil_3_lansia = 0;
+    $total_desil_4_lansia = 0;
+    $total_desil_5_lansia = 0;
     if (!empty($dtsen_desa[$index])) {
         foreach ($dtsen_desa[$index] as $orang) {
             $total_dtsen += $orang['jumlah'];
