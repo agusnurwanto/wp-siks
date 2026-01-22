@@ -57,6 +57,8 @@ class Wp_Siks {
 	 */
 	protected $version;
 
+	public $functions;
+
 	/**
 	 * Define the core functionality of the plugin.
 	 *
