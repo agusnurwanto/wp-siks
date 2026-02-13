@@ -417,6 +417,9 @@ class Wp_Siks_Admin
 				Field::make('html', 'crb_generate_user_siks')
 					->set_html('<a id="generate_user_siks" onclick="return false;" href="#" class="button button-primary button-large">Generate User Desa & Kecamatan</a>')
 					->set_help_text('Data user aktif yang ada di table data_alamat_siks akan digenerate menjadi user wordpress.'),
+				Field::make('html', 'crb_generate_user_rt_rw_siks')
+					->set_html('<a id="generate_user_rt_rw_siks" onclick="return false;" href="#" class="button button-primary button-large">Generate User RT / RW</a>')
+					->set_help_text('Data user aktif yang ada di table data_user_rt_rw akan digenerate menjadi user wordpress.'),
 			));
 
 		Container::make('theme_options', __('Google Maps'))
@@ -2115,6 +2118,54 @@ class Wp_Siks_Admin
 						$user['nama'] 			= $user['nama'];
 						$user['id_desa'] 		= $user['id_desa'];
 						$user['jabatan'] 		= 'Desa';
+						$this->gen_user_siks($user, $update_pass);
+					}
+				}
+			} else {
+				$ret['status'] = 'error';
+				$ret['message'] = 'APIKEY tidak sesuai!';
+			}
+		} else {
+			$ret['status'] = 'error';
+			$ret['message'] = 'Format Salah!';
+		}
+		die(json_encode($ret));
+	}
+
+	function generate_user_rt_rw_siks()
+	{
+		global $wpdb;
+		$ret = array(
+			'status' => 'success',
+			'message' => 'Berhasil Generate User Wordpress dari DB Lokal'
+		);
+		if (!empty($_POST)) {
+			if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option('_crb_apikey_siks')) {
+				$data_rt_rw = $wpdb->get_results(
+					$wpdb->prepare("
+						SELECT 
+							*
+						FROM data_user_rt_rw 
+						WHERE active = 1
+					"),
+					ARRAY_A
+				);
+				$update_pass = false;
+				if (
+					!empty($_POST['update_pass'])
+					&& $_POST['update_pass'] == 'true'
+				) {
+					$update_pass = true;
+				}
+
+				if (!empty($data_rt_rw)) {
+					foreach ($data_rt_rw as $k => $user) {
+						$user['pass'] 			= $_POST['pass'];
+						$user['loginname'] 		= $user['username'];
+						$user['nama'] 			= $user['nama'];
+						$user['rt'] 			= $user['rt'];
+						$user['rw'] 			= $user['rw'];
+						$user['jabatan'] 		= 'RT';
 						$this->gen_user_siks($user, $update_pass);
 					}
 				}
