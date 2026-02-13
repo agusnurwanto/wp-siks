@@ -58,7 +58,7 @@ foreach ($maps_all as $i => $desa) {
             'content' => '[bunda_kasih_per_desa id_desa=' . $desa['data']['id2012'] . ']',
             'show_header' => 1,
             'no_key' => 1,
-            'post_status' => 'publish'
+            'post_status' => 'private'
         ));
         $link_per_desa = $gen_page['url'];
     }

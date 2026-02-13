@@ -326,6 +326,8 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_get_data_usulan_anak_terlantar_by_id', $plugin_public, 'get_data_usulan_anak_terlantar_by_id');
 		$this->loader->add_action('wp_ajax_tambah_data_usulan_anak_terlantar', $plugin_public, 'tambah_data_usulan_anak_terlantar');
 		$this->loader->add_action('wp_ajax_hapus_data_usulan_anak_terlantar_by_id', $plugin_public, 'hapus_data_usulan_anak_terlantar_by_id');
+		
+		$this->loader->add_action('wp_ajax_get_data_usulan_dtsen_ajax', $plugin_public, 'get_data_usulan_dtsen_ajax');
 
 		$this->loader->add_action('wp_ajax_get_datatable_data_hibah', $plugin_public, 'get_datatable_data_hibah');
 		$this->loader->add_action('wp_ajax_get_data_hibah_by_id', $plugin_public, 'get_data_hibah_by_id');
@@ -368,6 +370,7 @@ class Wp_Siks {
 		add_shortcode('usulan_p3ke', array($plugin_public, 'usulan_p3ke'));
 		add_shortcode('usulan_wrse', array($plugin_public, 'usulan_wrse'));
 		add_shortcode('usulan_hibah', array($plugin_public, 'usulan_hibah'));
+		add_shortcode('usulan_dtsen', array($plugin_public, 'usulan_dtsen'));
 
 		add_shortcode('disabilitas_per_desa', array($plugin_public, 'disabilitas_per_desa'));
 		add_shortcode('odgj_per_desa', array($plugin_public, 'odgj_per_desa'));

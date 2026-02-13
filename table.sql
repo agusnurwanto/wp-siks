@@ -848,3 +848,41 @@ CREATE TABLE `data_usulan_dtks_siks` (
     `update_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   
     PRIMARY KEY (`id`)
 );
+
+CREATE TABLE `data_usulan_dtsen` (
+    `id` int(11) NOT NULL auto_increment,
+    `alamat` TEXT DEFAULT NULL,
+    `id_wilayah` VARCHAR(225) DEFAULT NULL,
+    `nama_kepala_keluarga` TEXT DEFAULT NULL,
+    `no_kk` VARCHAR(225) DEFAULT NULL,
+    `kabupaten` TEXT DEFAULT NULL,
+    `kecamatan` TEXT DEFAULT NULL,
+    `kelurahan` TEXT DEFAULT NULL,
+    `nik` VARCHAR(225) DEFAULT NULL,
+    `provinsi` TEXT DEFAULT NULL,
+    `status_data` TINYINT(1) NOT NULL COMMENT '0 = draft, 1 = menunggu persetujuan, 2 = disetujui, 3 = ditolak',
+    `keterangan_verifikasi` TEXT,
+    `active` tinyint(4) DEFAULT NULL,
+    `update_at` DATETIME NOT NULL,
+    PRIMARY KEY  (id),
+    INDEX(`status_data`),
+    INDEX(`id_wilayah`),
+    INDEX(`no_kk`),
+    INDEX(`active`),
+    INDEX(`nik`)
+);
+
+CREATE TABLE `data_usulan_dtsen_anggota_keluarga` (
+    `id` int(11) NOT NULL auto_increment,
+    `hub_kepala_keluarga` TEXT DEFAULT NULL,
+    `nama` TEXT DEFAULT NULL,
+    `nik` VARCHAR(225) DEFAULT NULL,
+    `no_kk` VARCHAR(225) DEFAULT NULL,
+    `pekerjaan_utama` TEXT DEFAULT NULL,
+    `active` tinyint(4) DEFAULT NULL,
+    `update_at` DATETIME NOT NULL,
+    PRIMARY KEY  (id),
+    INDEX(`no_kk`),
+    INDEX(`nik`),
+    INDEX(`active`)
+);
