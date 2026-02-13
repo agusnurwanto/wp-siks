@@ -295,4 +295,29 @@ jQuery(document).ready(function () {
 			});
 		}
 	});
+
+	jQuery('#generate_user_rt_rw_siks').on('click', function () {
+		if (confirm("Apakah anda yakin akan menggenerate user SIKS ?")) {
+			jQuery('#wrap-loading').show();
+			jQuery.ajax({
+				url: ajax.url,
+				type: "post",
+				data: {
+					"action": "generate_user_rt_rw_siks",
+					"api_key": ajax.apikey,
+					"pass": prompt('Masukan password default untuk User yang akan dibuat'),
+					"update_pass": confirm("Apakah anda mau mereset password user existing juga?")
+				},
+				dataType: "json",
+				success: function (data) {
+					jQuery('#wrap-loading').hide();
+					return alert(data.message);
+				},
+				error: function (e) {
+					console.log(e);
+					return alert(e.message);
+				}
+			});
+		}
+	});
 });

@@ -539,6 +539,14 @@ class Wp_Siks_Public
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/usulan/wp-siks-list-verifikasi-usulan.php';
 	}
 
+	public function management_data_user_rt($atts)
+	{
+		if (!empty($_GET) && !empty($_GET['post'])) {
+			return '';
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wp-siks-management-user-rt.php';
+	}
+
 	public function get_data_bansos_lama()
 	{
 		global $wpdb;
@@ -9645,24 +9653,33 @@ class Wp_Siks_Public
 				$collapseId = 'collapse' . $index;
 				$headingId = 'heading' . $index;
 
-				$return .= '
-					<div class="card">
-						<div class="card-header" id="' . $headingId . '">
-							<h2 class="mb-0">
-								<a class="accordion-toggle d-flex justify-content-between text-dark" data-toggle="collapse" href="#' . $collapseId . '" aria-expanded="false" aria-controls="' . $collapseId . '">
-									' . $statusDesa . ' ' . $desa['nama'] . '
-								<span class="dashicons dashicons-arrow-down-alt2"></span>
-								</a>
-							</h2>
-						</div>
-
-						<div id="' . $collapseId . '" class="collapse" aria-labelledby="' . $headingId . '" data-parent="#desaAccordion">
-							<div class="card-body">
-								<div class="d-flex justify-content-center mb-4">
-									<button type="button" id="settingDesaBtn" class="btn btn-info" data-toggle="modal" data-target="#settingModal' . $index . '"><span class="dashicons dashicons-admin-generic"></span> Pengaturan</button>
-								</div>
-								<div class="row">
-				';
+				$shortcode_user_rt = '[management_data_user_rt id_desa="' . $desa['id_desa'] . '"]';
+			    $gen_page_user_rt = $this->functions->generatePage(array(
+			        'nama_page' => 'User RT / RW | ' . $desa['nama'],
+			        'content' => $shortcode_user_rt,
+			        'show_header' => 1,
+			        'no_key' => 1,
+			        'post_status' => 'publish'
+			    ));
+			    
+			    $return .= '
+			        <div class="card">
+			            <div class="card-header" id="' . $headingId . '">
+			                <h2 class="mb-0">
+			                    <a class="accordion-toggle d-flex justify-content-between text-dark" data-toggle="collapse" href="#' . $collapseId . '" aria-expanded="false" aria-controls="' . $collapseId . '">
+			                        ' . $statusDesa . ' ' . esc_html($desa['nama']) . '
+			                    <span class="dashicons dashicons-arrow-down-alt2"></span>
+			                    </a>
+			                </h2>
+			            </div>
+			            <div id="' . $collapseId . '" class="collapse" aria-labelledby="' . $headingId . '" data-parent="#desaAccordion">
+			                <div class="card-body">
+			                    <div class="d-flex justify-content-center mb-4">
+			                        <button type="button" id="settingDesaBtn" class="btn btn-info" data-toggle="modal" data-target="#settingModal' . $index . '"><span class="dashicons dashicons-admin-generic"></span> Pengaturan</button>
+			                        <a href="' . $gen_page_user_rt['url'] . '" target="_blank" style="margin-left: 10px;" class="btn btn-info"><span class="dashicons dashicons-admin-generic"></span> User RT / RW</a>
+			                    </div>
+			                    <div class="row">
+			    ';
 
 				foreach ($pages as $jenis_data => $page) {
 					$return .= '
@@ -10617,4 +10634,308 @@ class Wp_Siks_Public
 
 		return "$hari, $tanggal ($jam)";
 	}
+
+	function get_data_user_rt_rw()
+    {
+        global $wpdb;
+        $ret = array(
+            'status'    => 'success',
+            'message'   => 'Berhasil get data user RT/RW!'
+        );
+        
+        if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+            $params = $columns = $totalRecords = $data = array();
+            $params = $_REQUEST;
+            
+            $columns = array(
+                0 => 'nama',
+                1 => 'alamat',
+                2 => 'rt',
+                3 => 'rw',
+                4 => 'emailteks',
+                5 => 'no_hp',
+                6 => 'username',
+                7 => 'id'
+            );
+            
+            $where = $sqlTot = $sqlRec = "";
+            
+            if (!empty($_POST['id_desa'])) {
+                $where .= $wpdb->prepare(' AND id_desa = %s', $_POST['id_desa']);
+            }
+            
+            // Check search value exist
+            if (!empty($params['search']['value'])) {
+                $search_value = $params['search']['value'];
+                $where .= " AND (";
+                $where .= " nama LIKE " . $wpdb->prepare('%s', "%" . $search_value . "%");
+                $where .= " OR alamat LIKE " . $wpdb->prepare('%s', "%" . $search_value . "%");
+                $where .= " OR rt LIKE " . $wpdb->prepare('%s', "%" . $search_value . "%");
+                $where .= " OR rw LIKE " . $wpdb->prepare('%s', "%" . $search_value . "%");
+                $where .= " OR emailteks LIKE " . $wpdb->prepare('%s', "%" . $search_value . "%");
+                $where .= " OR no_hp LIKE " . $wpdb->prepare('%s', "%" . $search_value . "%");
+                $where .= " OR username LIKE " . $wpdb->prepare('%s', "%" . $search_value . "%");
+                $where .= ")";
+            }
+            
+            // Getting total number records without any search
+            $sql_tot = "SELECT count(id) as jml FROM `data_user_rt_rw`";
+            $sql = "SELECT " . implode(', ', $columns) . " FROM `data_user_rt_rw`";
+            $where_first = " WHERE 1=1 AND active = 1";
+            
+            $sqlTot .= $sql_tot . $where_first;
+            $sqlRec .= $sql . $where_first;
+            
+            if (isset($where) && $where != '') {
+                $sqlTot .= $where;
+                $sqlRec .= $where;
+            }
+            
+            $limit = '';
+            if ($params['length'] != -1) {
+                $limit = " LIMIT " . $wpdb->prepare('%d', $params['start']) . ", " . $wpdb->prepare('%d', $params['length']);
+            }
+            $sqlRec .= " ORDER BY update_at DESC" . $limit;
+            
+            $queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
+            $totalRecords = $queryTot[0]['jml'];
+            $queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
+            
+            foreach ($queryRecords as $recKey => $recVal) {
+                $queryRecords[$recKey]['rt_rw'] = 'RT ' . $recVal['rt'] . ' / RW ' . $recVal['rw'];
+                
+                $btn = '<a class="btn btn-sm btn-warning" onclick="edit_data_user(' . $recVal['id'] . '); return false;" href="#" title="Edit Data"><i class="dashicons dashicons-edit"></i></a>';
+                $btn .= ' <a class="btn btn-sm btn-danger" onclick="hapus_data_user(' . $recVal['id'] . '); return false;" href="#" title="Hapus Data"><i class="dashicons dashicons-trash"></i></a>';
+                
+                $queryRecords[$recKey]['aksi'] = $btn;
+            }
+            
+            $json_data = array(
+                "draw"            => intval($params['draw']),
+                "recordsTotal"    => intval($totalRecords),
+                "recordsFiltered" => intval($totalRecords),
+                "data"            => $queryRecords,
+                "sql"             => $sqlRec
+            );
+            
+            die(json_encode($json_data));
+        } else {
+            $ret = array(
+                'status' => 'error',
+                'message'   => 'Format tidak sesuai!'
+            );
+        }
+        die(json_encode($ret));
+    }
+
+    function submit_user_rt_rw()
+    {
+        global $wpdb;
+        $ret = array(
+            'status'    => 'success',
+            'message'   => 'Berhasil menyimpan data user!'
+        );
+        
+        if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+            $id_desa = isset($_POST['id_desa']) ? trim($_POST['id_desa']) : '';
+            $nama = isset($_POST['nama']) ? trim($_POST['nama']) : '';
+            $alamat = isset($_POST['alamat']) ? trim($_POST['alamat']) : '';
+            $rt = isset($_POST['rt']) ? trim($_POST['rt']) : '';
+            $rw = isset($_POST['rw']) ? trim($_POST['rw']) : '';
+            $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+            $no_hp = isset($_POST['no_hp']) ? trim($_POST['no_hp']) : '';
+            $nama_desa = isset($_POST['nama_desa']) ? trim($_POST['nama_desa']) : '';
+            $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+            $nama_desa_lower = strtolower($nama_desa);
+			$username = $nama_desa_lower . $rt . $rw;
+            if (empty($id_desa) || empty($nama) || empty($alamat) || empty($rt) || empty($rw) || empty($email) || empty($no_hp)) {
+                $ret = array(
+                    'status' => 'error',
+                    'message' => 'Semua data wajib diisi!'
+                );
+                die(json_encode($ret));
+            }
+            
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $ret = array(
+                    'status' => 'error',
+                    'message' => 'Format email tidak valid!'
+                );
+                die(json_encode($ret));
+            }
+            
+            $data = array(
+                'id_desa' => $id_desa,
+                'nama' => $nama,
+                'alamat' => $alamat,
+                'emailteks' => $email,
+                'no_hp' => $no_hp,
+                'username' => $username
+            );
+            
+            if ($id > 0) {
+                $cek_data = $wpdb->get_row($wpdb->prepare("
+                	SELECT 
+                		* 
+                	FROM data_user_rt_rw 
+                	WHERE id = %d 
+                		AND active = 1
+                ", $id), ARRAY_A);
+                
+                if (!$cek_data) {
+                    $ret = array(
+                        'status' => 'error',
+                        'message' => 'Data user tidak ditemukan!'
+                    );
+                    die(json_encode($ret));
+                }
+                
+                $wpdb->update(
+                    'data_user_rt_rw',
+                    $data,
+                    array('id' => $id)
+                );
+                
+                $ret['message'] = 'Berhasil mengupdate data user!';
+            } else {
+                $data['rt'] = $rt;
+                $data['rw'] = $rw;
+                
+                $cek_email = $wpdb->get_var($wpdb->prepare("
+                	SELECT COUNT(*) 
+                	FROM data_user_rt_rw 
+                	WHERE emailteks = %s 
+                		AND id_desa = %s 
+                		AND active = 1
+                ", $email, $id_desa));
+                
+                if ($cek_email > 0) {
+                    $ret = array(
+                        'status' => 'error',
+                        'message' => 'Email sudah terdaftar!'
+                    );
+                    die(json_encode($ret));
+                }
+                
+                $cek_rt_rw = $wpdb->get_var($wpdb->prepare("
+                	SELECT COUNT(*) 
+                	FROM data_user_rt_rw 
+                	WHERE rt = %s 
+                		AND rw = %s 
+                		AND id_desa = %s 
+                		AND active = 1
+                ", $rt, $rw, $id_desa));
+                
+                if ($cek_rt_rw > 0) {
+                    $ret = array(
+                        'status' => 'error',
+                        'message' => 'RT/RW sudah terdaftar!'
+                    );
+                    die(json_encode($ret));
+                }
+                
+                $wpdb->insert('data_user_rt_rw', $data);
+                
+                $ret['message'] = 'Berhasil menambahkan data user!';
+            }
+        } else {
+            $ret = array(
+                'status' => 'error',
+                'message'   => 'Format tidak sesuai!'
+            );
+        }
+        die(json_encode($ret));
+    }
+
+    function get_data_user_rt_rw_by_id()
+    {
+        global $wpdb;
+        $ret = array(
+            'status'    => 'success',
+            'message'   => 'Berhasil get data user!'
+        );
+        
+        if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+            $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+            
+            if ($id <= 0) {
+                $ret = array(
+                    'status' => 'error',
+                    'message' => 'ID tidak valid!'
+                );
+                die(json_encode($ret));
+            }
+            
+            $data = $wpdb->get_row($wpdb->prepare("
+            	SELECT 
+            		* 
+            	FROM data_user_rt_rw 
+            	WHERE id = %d 
+            		AND active = 1
+            ", $id), ARRAY_A);
+            
+            if (!$data) {
+                $ret = array(
+                    'status' => 'error',
+                    'message' => 'Data user tidak ditemukan!'
+                );
+            } else {
+                $ret['data'] = $data;
+            }
+        } else {
+            $ret = array(
+                'status' => 'error',
+                'message'   => 'Format tidak sesuai!'
+            );
+        }
+        die(json_encode($ret));
+    }
+
+    function delete_user_rt_rw()
+    {
+        global $wpdb;
+        $ret = array(
+            'status'    => 'success',
+            'message'   => 'Berhasil menghapus data user!'
+        );
+        
+        if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+            $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+            
+            if ($id <= 0) {
+                $ret = array(
+                    'status' => 'error',
+                    'message' => 'ID tidak valid!'
+                );
+                die(json_encode($ret));
+            }
+            
+            $cek_data = $wpdb->get_var($wpdb->prepare("
+            	SELECT COUNT(*) 
+            	FROM data_user_rt_rw 
+            	WHERE id = %d 
+            		AND active = 1
+            ", $id));
+            
+            if ($cek_data == 0) {
+                $ret = array(
+                    'status' => 'error',
+                    'message' => 'Data user tidak ditemukan!'
+                );
+                die(json_encode($ret));
+            }
+            
+            $wpdb->update(
+                'data_user_rt_rw',
+                array('active' => 0),
+                array('id' => $id)
+            );
+        } else {
+            $ret = array(
+                'status' => 'error',
+                'message'   => 'Format tidak sesuai!'
+            );
+        }
+        die(json_encode($ret));
+    }
 }

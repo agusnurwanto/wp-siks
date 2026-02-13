@@ -172,6 +172,7 @@ class Wp_Siks {
   		$this->loader->add_action( 'wp_ajax_get_data_alamat_dtks_siks',  $plugin_admin, 'get_data_alamat_dtks_siks');
   		$this->loader->add_action( 'wp_ajax_generate_user_siks',  $plugin_admin, 'generate_user_siks');
   		$this->loader->add_action( 'wp_ajax_gen_user_siks',  $plugin_admin, 'gen_user_siks');
+  		$this->loader->add_action( 'wp_ajax_generate_user_rt_rw_siks',  $plugin_admin, 'generate_user_rt_rw_siks');
 
   		$this->loader->add_action( 'wp_ajax_import_excel_lansia',  $plugin_admin, 'import_excel_lansia');
   		$this->loader->add_action( 'wp_ajax_import_excel_disabilitas',  $plugin_admin, 'import_excel_disabilitas');
@@ -341,6 +342,12 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_edit_data_desa_kel', $plugin_public, 'edit_data_desa_kel');
 		$this->loader->add_action('wp_ajax_get_table_list_usulan', $plugin_public, 'get_table_list_usulan');
 
+		$this->loader->add_action('wp_ajax_get_data_user_rt_rw', $plugin_public, 'get_data_user_rt_rw');
+		$this->loader->add_action('wp_ajax_get_form_tambah_user_rt_rw', $plugin_public, 'get_form_tambah_user_rt_rw');
+		$this->loader->add_action('wp_ajax_submit_user_rt_rw', $plugin_public, 'submit_user_rt_rw');
+		$this->loader->add_action('wp_ajax_get_data_user_rt_rw_by_id', $plugin_public, 'get_data_user_rt_rw_by_id');
+		$this->loader->add_action('wp_ajax_delete_user_rt_rw', $plugin_public, 'delete_user_rt_rw');
+
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 		add_shortcode('cek_nik_siks', array($plugin_public, 'cek_nik_siks'));
 
@@ -399,6 +406,7 @@ class Wp_Siks {
 		add_shortcode('data_odgj_siks', array($plugin_public, 'data_odgj_siks'));
 		
 		add_shortcode('menu_siks', array($plugin_public, 'menu_siks'));
+		add_shortcode('management_data_user_rt', array($plugin_public, 'management_data_user_rt'));
 
 		// untuk menjalankan conjob refresh session
 		$this->loader->add_action('siks_conjob',  $plugin_public, 'refresh_token');

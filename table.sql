@@ -886,3 +886,19 @@ CREATE TABLE `data_usulan_dtsen_anggota_keluarga` (
     INDEX(`nik`),
     INDEX(`active`)
 );
+
+CREATE TABLE `data_user_rt_rw` (
+    `id` int(11) NOT NULL auto_increment,
+    `id_desa` VARCHAR(30) DEFAULT NULL,
+    `nama` TEXT DEFAULT NULL,
+    `alamat` TEXT DEFAULT NULL,
+    `rt` VARCHAR(30) DEFAULT NULL,
+    `rw` VARCHAR(30) DEFAULT NULL,
+    `emailteks` TEXT DEFAULT NULL,
+    `no_hp` VARCHAR(30) DEFAULT NULL,
+    `username` TEXT DEFAULT NULL,
+    `active` tinyint(4) DEFAULT 1,
+    `create_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `update_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   
+    PRIMARY KEY (`id`)
+);
