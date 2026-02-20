@@ -9598,6 +9598,142 @@ class Wp_Siks_Public
 				', $id_kecamatan),
 				ARRAY_A
 			);
+		} else if (in_array('rt', $user_data->roles)) {
+		    $username_rt = $user_data->user_login;
+		    $data_rt = $wpdb->get_row(
+		        $wpdb->prepare('
+		            SELECT *
+		            FROM data_user_rt_rw
+		            WHERE username = %s
+		              AND active = 1
+		        ', $username_rt),
+		        ARRAY_A
+		    );
+
+		    if (empty($data_rt)) {
+		        return '<h2 class="text-center">Data RT tidak ditemukan!.</h2>';
+		    }
+
+		    $id_desa = $data_rt['id_desa'];
+		    $rt      = $data_rt['rt'];
+		    $rw      = $data_rt['rw'];
+
+		    $data_alamat = $wpdb->get_row(
+		        $wpdb->prepare('
+		            SELECT 
+		                d.nama AS nama_desa,
+		                k.nama AS nama_kecamatan
+		            FROM data_alamat_siks d
+		            LEFT JOIN data_alamat_siks k 
+		                ON k.id_kec = d.id_kec 
+		               AND k.id_desa IS NULL 
+		               AND k.active = 1
+		            WHERE d.id_desa = %d
+		              AND d.active = 1
+		        ', $id_desa),
+		        ARRAY_A
+		    );
+
+		    $nama_desa      = $data_alamat['nama_desa']      ?? '';
+		    $nama_kecamatan = $data_alamat['nama_kecamatan'] ?? '';
+
+		    $pages_rt = array(
+		        'DTKS'           => array('usulan' => null,                     'lihat' => '[dtks_per_desa]'),
+		        'Bunda Kasih'    => array('usulan' => null,                     'lihat' => '[bunda_kasih_per_desa]'),
+		        'Anak Terlantar' => array('usulan' => null,                     'lihat' => '[anak_terlantar_per_desa]'),
+		        'Gepeng'         => array('usulan' => null,                     'lihat' => '[gepeng_per_desa]'),
+		        'Hibah'          => array('usulan' => null,                     'lihat' => '[hibah_per_desa]'),
+		        'P3KE'           => array('usulan' => null,                     'lihat' => '[p3ke_per_desa]'),
+		        'WRSE'           => array('usulan' => null,                     'lihat' => '[wrse_per_desa]'),
+		        'Disabilitas'    => array('usulan' => null,                     'lihat' => '[disabilitas_per_desa]'),
+		        'Lansia'         => array('usulan' => null,                     'lihat' => '[lansia_per_desa]'),
+		        'ODGJ'           => array('usulan' => null,                     'lihat' => '[odgj_per_desa]'),
+		        'DTSEN'          => array('usulan' => '[usulan_dtsen]',         'lihat' => '[dtsen_per_desa]'),
+		    );
+
+		    $index      = 0;
+			$collapseId = 'collapse' . $index;
+			$headingId  = 'heading' . $index;
+
+			$return = '<div id="desaAccordion" class="accordion">';
+			$return .= '
+			    <div class="card">
+			        <div class="card-header" id="' . $headingId . '">
+			            <h2 class="mb-0">
+			                <a class="accordion-toggle d-flex justify-content-between text-dark"  data-toggle="collapse"  href="#' . $collapseId . '"  aria-expanded="false" aria-controls="' . $collapseId . '"> RT ' . esc_html($rt) . ' / RW ' . esc_html($rw) . ' <span class="dashicons dashicons-arrow-down-alt2"></span>
+			                </a>
+			            </h2>
+			        </div>
+			        <div id="' . $collapseId . '" class="collapse" aria-labelledby="' . $headingId . '" data-parent="#desaAccordion">
+			            <div class="card-body">
+			                <div class="row">
+			';
+
+		    foreach ($pages_rt as $jenis_data => $shortcodes) {
+		        $shortcode_lihat = str_replace(
+		            ']',
+		            ' id_desa=' . $id_desa . ' rt=' . $rt . ' rw=' . $rw . ']',
+		            $shortcodes['lihat']
+		        );
+		        $gen_page_lihat = $this->functions->generatePage(array(
+		            'nama_page'   => 'Data ' . $jenis_data . ' | RT ' . $rt . ' RW ' . $rw . ' | ' . $nama_desa,
+		            'content'     => $shortcode_lihat,
+		            'show_header' => 1,
+		            'no_key'      => 1,
+		            'post_status' => 'publish'
+		        ));
+
+		        $btn_usulan = '';
+		        if ($shortcodes['usulan'] !== null) {
+		            $shortcode_usulan = str_replace(
+		                ']',
+		                ' id_desa=' . $id_desa . ' rt=' . $rt . ' rw=' . $rw . ']',
+		                $shortcodes['usulan']
+		            );
+		            $gen_page_usulan = $this->functions->generatePage(array(
+		                'nama_page'   => 'Usulan ' . $jenis_data . ' | RT ' . $rt . ' RW ' . $rw . ' | ' . $nama_desa,
+		                'content'     => $shortcode_usulan,
+		                'show_header' => 1,
+		                'no_key'      => 1,
+		                'post_status' => 'publish'
+		            ));
+		            $btn_usulan = '
+		                <a href="' . esc_url($gen_page_usulan['url']) . '" target="_blank" class="btn btn-warning">
+		                    <span class="dashicons dashicons-insert"></span> Usulkan Data
+		                </a>
+		            ';
+		        }
+
+		        $return .= '
+		            <div class="col-md-4 mb-3">
+		                <div class="card shadow-sm border-0 rounded-lg text-dark bg-light">
+		                    <div class="card-body d-flex flex-column shadow-lg">
+		                        <h5 class="card-title">
+		                            <span class="dashicons dashicons-admin-page"></span> ' . esc_html($jenis_data) . '
+		                        </h5>
+		                        <div class="d-flex justify-content-between">
+		                            ' . $btn_usulan . '
+		                            <a href="' . esc_url($gen_page_lihat['url']) . '" target="_blank" class="btn btn-primary">
+		                                <span class="dashicons dashicons-arrow-right-alt"></span> Lihat Data
+		                            </a>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+		        ';
+		    }
+
+		    $return .= '
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>';
+
+		    return '
+		        <h2 class="text-center">Kecamatan ' . esc_html($nama_kecamatan) . ' <br> Desa ' . esc_html($nama_desa) . '</h2>
+		        <div>' . $return . '</div>
+		    ';
 		} else if (in_array('administrator', $user_data->roles)) {
 			$datas = array(
 				'DTKS' => array(
