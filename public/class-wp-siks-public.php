@@ -1345,41 +1345,6 @@ class Wp_Siks_Public
 		return $data;
 	}
 
-	function get_usulan_dtsen_by_desa(string $desa)
-	{
-		global $wpdb;
-
-		$prov = get_option(SIKS_PROV);
-		$kab = get_option(SIKS_KABKOT);
-
-		$data = $wpdb->get_results(
-			$wpdb->prepare("
-				SELECT
-					kepala.provinsi,
-					kepala.kabupaten,
-					kepala.kecamatan,
-					kepala.kelurahan,
-					kepala.no_kk,
-					kepala.alamat,
-					anggota.nama,
-					anggota.nik,
-					anggota.pekerjaan_utama,
-					anggota.hub_kepala_keluarga
-				FROM data_usulan_dtsen kepala
-				LEFT JOIN data_usulan_dtsen_anggota_keluarga anggota
-					   ON kepala.no_kk = anggota.no_kk
-					  AND anggota.active = 1
-				WHERE kepala.provinsi = %s
-				  AND kepala.kabupaten = %s
-				  AND kepala.kelurahan = %s
-				  AND kepala.active = 1
-			", $prov, $kab, $desa)
-			, ARRAY_A
-		);
-
-		return $data;
-	}
-
 	function get_all_data_dtks()
 	{
 		global $wpdb;
@@ -1428,34 +1393,187 @@ class Wp_Siks_Public
 		return $data_all_lansia;
 	}
 
-	public function get_data_usulan_dtsen_ajax()
+	public function save_keluarga_usulan_dtsen_ajax()
 	{
+		global $wpdb;
 		try {
 			$this->functions->validate($_POST, [
-				'api_key'   => 'required|string',
-				'desa'   	=> 'required|string',
+				'api_key'    => 'required|string',
+				'no_kk'      => 'required|numeric|minlen:16|maxlen:16',
+				'id_wilayah' => 'required',
+				'provinsi'   => 'required|string',
+				'kabupaten'  => 'required|string',
+				'kecamatan'  => 'required|string',
+				'kelurahan'  => 'required|string',
+				'alamat'     => 'required|string',
 			]);
+			
+			if ($_POST['api_key'] !== get_option(SIKS_APIKEY)) throw new Exception("API key tidak valid!", 401);
 
-			if ($_POST['api_key'] !== get_option(SIKS_APIKEY)) {
-				throw new Exception("API key tidak valid atau tidak ditemukan!", 401);
+			$id_keluarga = !empty($_POST['id_keluarga']) ? (int) $_POST['id_keluarga'] : null;
+			$data = [
+				'no_kk'      => $_POST['no_kk'],
+				'alamat'     => $_POST['alamat'],
+				'id_desa_kel' => $_POST['id_wilayah'],
+				'kabupaten'  => $_POST['kabupaten'],
+				'kecamatan'  => $_POST['kecamatan'],
+				'kelurahan'  => $_POST['kelurahan'],
+				'provinsi'   => $_POST['provinsi'],
+				'update_at'  => current_time('mysql')
+			];
+
+			if ($id_keluarga) {
+				$result = $wpdb->update('data_usulan_dtsen', $data, ['id' => $id_keluarga, 'active' => 1]);
+				if ($result === false) throw new Exception("Gagal update data keluarga.");
+				$msg = "Data Keluarga berhasil diperbarui.";
+			} else {
+				$data['status_data'] = 0; // Draft
+				$result = $wpdb->insert('data_usulan_dtsen', $data);
+				if ($result === false) throw new Exception("Gagal menyimpan data keluarga baru.");
+				$msg = "Data Keluarga berhasil ditambahkan. Silakan tambah anggota/kepala keluarga.";
 			}
 
-			$get_dtsen = $this->get_usulan_dtsen_by_desa($_POST['desa']);
-
-			echo json_encode([
-				'status'  => true,
-				'message' => 'Data berhasil ditemukan. ' . $_POST['desa'],
-				'data'    => $get_dtsen
-			]);
+			wp_send_json_success(['message' => $msg]);
 		} catch (Exception $e) {
-			$code = is_int($e->getCode()) && $e->getCode() !== 0 ? $e->getCode() : 500;
-			http_response_code($code);
-			echo json_encode([
-				'status'  => false,
-				'message' => $e->getMessage()
-			]);
+			wp_send_json_error(['message' => $e->getMessage()]);
 		}
-		wp_die();
+	}
+
+	public function save_anggota_usulan_dtsen_ajax()
+	{
+		global $wpdb;
+		try {
+			$this->functions->validate($_POST, [
+				'api_key'             => 'required|string',
+				'id_keluarga'         => 'required|numeric',
+				'nik'                 => 'required|numeric|minlen:16|maxlen:16',
+				'nama'                => 'required|string',
+				'hub_kepala_keluarga' => 'required|string',
+				'pekerjaan_utama'     => 'required|string',
+				'is_kepala_keluarga'  => 'required|numeric' // 0 atau 1
+			]);
+
+			if ($_POST['api_key'] !== get_option(SIKS_APIKEY)) throw new Exception("API key tidak valid!", 401);
+
+			$id_anggota = !empty($_POST['id_anggota']) ? (int) $_POST['id_anggota'] : null;
+			$id_keluarga = (int) $_POST['id_keluarga'];
+			$is_kepala = (int) $_POST['is_kepala_keluarga'];
+
+			$wpdb->query('START TRANSACTION');
+
+			// Jika dia diset sebagai Kepala Keluarga (1), pastikan anggota lain di keluarga ini diset ke 0 (Hanya boleh 1 kepala keluarga)
+			if ($is_kepala === 1) {
+				$wpdb->update('data_usulan_dtsen_anggota_keluarga', 
+					['is_kepala_keluarga' => 0], 
+					['id_keluarga' => $id_keluarga]
+				);
+			}
+
+			$data = [
+				'id_keluarga'         => $id_keluarga,
+				'is_kepala_keluarga'  => $is_kepala,
+				'hub_kepala_keluarga' => strtoupper($_POST['hub_kepala_keluarga']),
+				'nama'                => $_POST['nama'],
+				'nik'                 => $_POST['nik'],
+				'pekerjaan_utama'     => $_POST['pekerjaan_utama'],
+			];
+
+			if ($id_anggota) {
+				$res = $wpdb->update('data_usulan_dtsen_anggota_keluarga', $data, ['id' => $id_anggota, 'active' => 1]);
+			} else {
+				$res = $wpdb->insert('data_usulan_dtsen_anggota_keluarga', $data);
+			}
+
+			if ($res === false) throw new Exception("Database error: " . $wpdb->last_error);
+
+			$wpdb->query('COMMIT');
+			wp_send_json_success(['message' => 'Anggota berhasil disimpan.']);
+		} catch (Exception $e) {
+			$wpdb->query('ROLLBACK');
+			wp_send_json_error(['message' => $e->getMessage()]);
+		}
+	}
+
+	public function delete_keluarga_usulan_dtsen_ajax()
+	{
+		global $wpdb;
+		try {
+			$this->functions->validate($_POST, ['api_key' => 'required', 'id_keluarga' => 'required|numeric']);
+			if ($_POST['api_key'] !== get_option(SIKS_APIKEY)) throw new Exception("Akses tidak valid.");
+
+			$id_keluarga = (int) $_POST['id_keluarga'];
+
+			// Cek anggota aktif
+			$count_member = $wpdb->get_var($wpdb->prepare("
+				SELECT COUNT(id) FROM data_usulan_dtsen_anggota_keluarga 
+				WHERE id_keluarga = %d AND active = 1
+			", $id_keluarga));
+
+			if ($count_member > 0) {
+				throw new Exception("GAGAL DIHAPUS: Masih ada {$count_member} anggota keluarga aktif. Hapus seluruh anggota di dalam KK ini terlebih dahulu.");
+			}
+
+			$del = $wpdb->update('data_usulan_dtsen', ['active' => 0, 'update_at' => current_time('mysql')], ['id' => $id_keluarga]);
+			if ($del === false) throw new Exception("Gagal menghapus data keluarga.");
+
+			wp_send_json_success(['message' => 'Data keluarga berhasil dihapus.']);
+		} catch (Exception $e) {
+			wp_send_json_error(['message' => $e->getMessage()]);
+		}
+	}
+
+	public function delete_anggota_usulan_dtsen_ajax()
+	{
+		global $wpdb;
+		try {
+			$this->functions->validate($_POST, ['api_key' => 'required', 'id_anggota' => 'required|numeric']);
+			if ($_POST['api_key'] !== get_option(SIKS_APIKEY)) throw new Exception("Akses tidak valid.");
+
+			$id_anggota = (int) $_POST['id_anggota'];
+			
+			$del = $wpdb->update('data_usulan_dtsen_anggota_keluarga', ['active' => 0], ['id' => $id_anggota]);
+			if ($del === false) throw new Exception("Gagal menghapus anggota.");
+
+			wp_send_json_success(['message' => 'Anggota berhasil dihapus.']);
+		} catch (Exception $e) {
+			wp_send_json_error(['message' => $e->getMessage()]);
+		}
+	}
+
+	public function verifikasi_keluarga_usulan_dtsen_ajax()
+	{
+		global $wpdb;
+		try {
+			$this->functions->validate($_POST, [
+				'api_key'               => 'required',
+				'id_keluarga'           => 'required|numeric',
+				'status_data'           => 'required|numeric', // 0, 1, 2, 3
+			]);
+			if ($_POST['api_key'] !== get_option(SIKS_APIKEY)) throw new Exception("Akses tidak valid.");
+
+			$id_keluarga = (int) $_POST['id_keluarga'];
+			$status      = (int) $_POST['status_data'];
+			$keterangan  = isset($_POST['keterangan_verifikasi']) ? sanitize_text_field($_POST['keterangan_verifikasi']) : '';
+
+			// Validasi batasan status
+			if (!in_array($status, [0, 1, 2, 3])) throw new Exception("Status tidak dikenali.");
+
+			$update = $wpdb->update(
+				'data_usulan_dtsen',
+				[
+					'status_data'           => $status,
+					'keterangan_verifikasi' => $keterangan,
+					'update_at'             => current_time('mysql')
+				],
+				['id' => $id_keluarga]
+			);
+
+			if ($update === false) throw new Exception("Gagal menyimpan verifikasi.");
+
+			wp_send_json_success(['message' => 'Status keluarga berhasil diperbarui.']);
+		} catch (Exception $e) {
+			wp_send_json_error(['message' => $e->getMessage()]);
+		}
 	}
 
 	public function get_data_dtsen_ajax()
@@ -4984,215 +5102,207 @@ class Wp_Siks_Public
 		die(json_encode($ret));
 	}
 
-	function get_datatable_data_usulan_dtsen()
+	public function get_datatable_data_usulan_dtsen()
 	{
 		global $wpdb;
 		$user_data = wp_get_current_user();
 
-		$ret = [
-			'status' => 'success',
-			'message' => 'Berhasil get data!'
+		if (empty($_POST['api_key']) || $_POST['api_key'] !== get_option(SIKS_APIKEY)) {
+			wp_send_json(['status' => 'error', 'message' => 'API Key Invalid']);
+		}
+
+		$request = $_REQUEST;
+		
+		// Kolom relasi murni tabel keluarga
+		$columns = [
+			0 => 'status_data',
+			1 => 'no_kk',
+			2 => 'alamat',
+			3 => 'provinsi',
+			4 => 'kabupaten',
+			5 => 'kecamatan',
+			6 => 'kelurahan',
+			7 => 'id'
 		];
 
-		if (!empty($_POST['api_key']) && $_POST['api_key'] === get_option(SIKS_APIKEY)) {
-			$params = $_REQUEST;
+		$sql_base = "FROM data_usulan_dtsen WHERE active = 1";
 
-			// Define columns
-			$columns = [
-				'id',
-				'provinsi',
-				'kabupaten',
-				'kecamatan',
-				'desa_kelurahan',
-				'prop_capil',
-				'kab_capil',
-				'id_kec',
-				'id_desa_kel',
-				'ATENSI',
-				'Alamat',
-				'BLT',
-				'BLT_BBM',
-				'BNPT_PPKM',
-				'BPNT',
-				'BST',
-				'FIRST_SK',
-				'NIK',
-				'NOKK',
-				'Nama',
-				'PBI',
-				'PENA',
-				'PERMAKANAN',
-				'PKH',
-				'RUTILAHU',
-				'SEMBAKO_ADAPTIF',
-				'YAPI',
-				'aktorLabel',
-				'checkBtnHamil',
-				'checkBtnVerifMeninggal',
-				'counter',
-				'deleted_label',
-				'idsemesta',
-				'isAktifHamil',
-				'is_btn_dapodik',
-				'is_btn_hidupkan',
-				'is_btn_padankan',
-				'is_nonaktif',
-				'keterangan_disabilitas',
-				'keterangan_meninggal',
-				'masih_hidup_label',
-				'padankan_at',
-				'pendampingShow',
-				'periode_blt',
-				'periode_blt_bbm',
-				'periode_bpnt',
-				'periode_bpnt_ppkm',
-				'periode_bst',
-				'periode_pbi',
-				'periode_pena',
-				'periode_permakanan',
-				'periode_pkh',
-				'periode_rutilahu',
-				'periode_sembako_adaptif',
-				'periode_yapi',
-				'verifyid',
-				'active',
-				'status_data',
-				'keterangan_verifikasi',
-				'create_at',
-				'update_at'
-			];
-
-			$where = 'WHERE 1=1 AND active = 1';
-			$searchValue = !empty($params['search']['value']) ? $params['search']['value'] : '';
-
-			//filter by desa kec
-			if (!empty($_POST['id_desa'])) {
-				$where .= $wpdb->prepare(' AND id_desa_kel=%d', $_POST['id_desa']);
-			}
-
-			//filter by role
-			if (in_array('administrator', $user_data->roles)) {
-				$where .= $wpdb->prepare(' AND status_data != 0');
-			}
-
-			// Search filter
-			if ($searchValue) {
-				$where .= $wpdb->prepare(
-					" AND (Nama LIKE %s OR NIK LIKE %s OR NOKK LIKE %s)",
-					"%$searchValue%",
-					"%$searchValue%",
-					"%$searchValue%"
-				);
-			}
-
-			// Total records
-			$sqlTot = "SELECT COUNT(id) as jml FROM data_usulan_dtks_siks $where";
-			$totalRecords = $wpdb->get_var($sqlTot);
-
-			// Sorting
-			$orderBy = 'ORDER BY COALESCE(update_at, create_at) DESC'; // Default order
-			if (!empty($params['order'])) {
-				$orderByColumnIndex = $params['order'][0]['column'];
-				$orderByDirection = strtoupper($params['order'][0]['dir']);
-				if ($orderByDirection === 'ASC' || $orderByDirection === 'DESC') {
-					$orderByColumn = $columns[$orderByColumnIndex] ?? 'id';
-					$orderBy = "ORDER BY $orderByColumn $orderByDirection";
-				}
-			}
-
-			// Pagination
-			$limit = '';
-			if ($params['length'] != -1) {
-				$limit = $wpdb->prepare(
-					"LIMIT %d, %d",
-					$params['start'],
-					$params['length']
-				);
-			}
-
-			// Query records
-			$sqlRec = "SELECT " . implode(', ', $columns) . " FROM data_usulan_dtks_siks $where $orderBy $limit";
-			$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
-
-			// Format data
-			foreach ($queryRecords as $record => $recVal) {
-				$btn = '';
-				$keterangan_verify = '';
-				switch ($recVal['status_data']) {
-					case 1: // Menunggu Persetujuan
-						$labelVerify = '<span class="badge badge-pill badge-warning">Menunggu Persetujuan</span>';
-
-						// Only admin can verify, no edit or delete for both roles
-						if (in_array('administrator', $user_data->roles)) {
-							$btn .= '<a class="btn btn-sm m-1 btn-success" onclick="showModalVerifikasi(\'' . $recVal['id'] . '\'); return false;" href="#" title="Verify Data"><span class="dashicons dashicons-yes"></span></a>';
-						}
-						break;
-
-					case 2: // Disetujui
-						$labelVerify = '<span class="badge badge-pill badge-success">Disetujui</span>';
-
-						// No actions allowed for admin or desa
-						break;
-
-					case 3: // Ditolak
-						$labelVerify = '<span class="badge badge-pill badge-danger">Ditolak</span>';
-
-						if (in_array('desa', $user_data->roles)) {
-							// Desa can resubmit if status is rejected
-							$btn .= '<a class="btn btn-sm m-1 btn-info" onclick="submitUsulan(\'' . $recVal['id'] . '\'); return false;" href="#" title="Submit Ulang"><span class="dashicons dashicons-controls-repeat"></span></a>';
-						}
-						break;
-
-					case 0: // Draft
-						$labelVerify = '<span class="badge badge-pill badge-info">Draft</span>';
-
-						if (in_array('desa', $user_data->roles)) {
-							// Desa can submit draft data
-							$btn .= '<a class="btn btn-sm m-1 btn-info" onclick="submitUsulan(\'' . $recVal['id'] . '\'); return false;" href="#" title="Submit Data"><span class="dashicons dashicons-upload"></span></a>';
-						}
-						break;
-
-					default:
-						$labelVerify = 'not valid';
-						break;
-				}
-
-				// Basic Edit & Delete buttons (allowed only if status is not Menunggu Persetujuan or Disetujui)	
-				if (!in_array($recVal['status_data'], [1, 2])) {
-					if (in_array('desa', $user_data->roles)) {
-						$btn .= '<a class="btn btn-sm m-1 btn-warning" onclick="edit_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Edit Data"><span class="dashicons dashicons-edit"></span></a>';
-						$btn .= '<a class="btn btn-sm m-1 btn-danger" onclick="hapus_data(\'' . $recVal['id'] . '\'); return false;" href="#" title="Delete Data"><span class="dashicons dashicons-trash"></span></a>';
-					}
-				}
-				// Keterangan Label (allowed only if status is Ditolak or Disetujui)	
-				if (in_array($recVal['status_data'], [2, 3])) {
-					if (!empty($recVal['keterangan_verifikasi'])) {
-						$keterangan_verify = '<br><small class="text-left text-muted">Keterangan : </small>' . '<small class="text-justify text-muted">' . $recVal['keterangan_verifikasi'] . '</small>';
-					}
-				}
-
-				// Update queryRecords with label and action buttons
-				$queryRecords[$record]['status_data'] = $labelVerify . $keterangan_verify;
-				$queryRecords[$record]['aksi'] = $btn;
-
-				$queryRecords[$record]['create_at'] = $this->formatTanggal($recVal['create_at']);
-				$queryRecords[$record]['update_at'] = $this->formatTanggal($recVal['update_at']);
-			}
-
-			$json_data = [
-				"draw" => intval($params['draw']),
-				"recordsTotal" => intval($totalRecords),
-				"recordsFiltered" => intval($totalRecords),
-				"data" => $queryRecords
-			];
-			die(json_encode($json_data));
-		} else {
-			$ret = array(
-				'status' => 'error',
-				'message'   => 'Format tidak sesuai!'
-			);
+		if (!empty($_POST['desa'])) {
+			$sql_base .= $wpdb->prepare(" AND kelurahan = %s", $_POST['desa']);
 		}
-		die(json_encode($ret));
+
+		if (in_array('administrator', $user_data->roles)) {
+			$sql_base .= " AND status_data != 0";
+		}
+
+		if (!empty($request['search']['value'])) {
+			$search = $request['search']['value'];
+			$sql_base .= $wpdb->prepare(" AND (no_kk LIKE %s OR alamat LIKE %s)", "%{$search}%", "%{$search}%");
+		}
+
+		$totalFiltered = $wpdb->get_var("SELECT COUNT(id) $sql_base");
+
+		$sql_order = " ORDER BY update_at DESC";
+		if (!empty($request['order'])) {
+			$colIdx = $request['order'][0]['column'];
+			$dir    = strtoupper($request['order'][0]['dir']);
+			if (isset($columns[$colIdx])) $sql_order = " ORDER BY " . $columns[$colIdx] . " $dir";
+		}
+
+		$sql_limit = "";
+		if (isset($request['start']) && $request['length'] != -1) {
+			$sql_limit = $wpdb->prepare(" LIMIT %d, %d", $request['start'], $request['length']);
+		}
+
+		$data = $wpdb->get_results("SELECT * $sql_base $sql_order $sql_limit", ARRAY_A);
+
+		$formatted_data = [];
+		foreach ($data as $row) {
+			$btn = '<div class="btn-group-vertical btn-group-sm">';
+			
+			$status_label = '';
+			switch ($row['status_data']) {
+				case 0: $status_label = '<span class="badge badge-info">Draft</span>'; break;
+				case 1: $status_label = '<span class="badge badge-warning">Menunggu</span>'; break;
+				case 2: $status_label = '<span class="badge badge-success">Disetujui</span>'; break;
+				case 3: $status_label = '<span class="badge badge-danger">Ditolak</span>'; break;
+			}
+
+			if (in_array($row['status_data'], [2, 3]) && !empty($row['keterangan_verifikasi'])) {
+				$status_label .= '<br><small class="text-muted text-wrap" style="font-size:10px"><em>Ket: ' . esc_html($row['keterangan_verifikasi']) . '</em></small>';
+			}
+
+			// Tombol Lihat Anggota
+			$btn .= '<button class="btn btn-primary" onclick="showModalAnggotaKeluarga('.$row['id'].')" title="Kelola Anggota Keluarga"><i class="dashicons dashicons-groups"></i></button>';
+
+			if (in_array('administrator', $user_data->roles) && $row['status_data'] == 1) {
+				$btn .= '<button class="btn btn-success" onclick="showModalVerifikasi('.$row['id'].')" title="Verifikasi Data"><i class="dashicons dashicons-yes"></i></button>';
+			}
+
+			if (in_array('desa', $user_data->roles) && in_array($row['status_data'], [0, 3])) {
+				$icon_submit = ($row['status_data'] == 3) ? 'dashicons-controls-repeat' : 'dashicons-upload';
+				$title_submit = ($row['status_data'] == 3) ? 'Ajukan Ulang' : 'Ajukan Data';
+				
+				$btn .= '<button class="btn btn-info" onclick="submitUsulan('.$row['id'].')" title="'.$title_submit.'"><i class="dashicons '.$icon_submit.'"></i></button>';
+				$btn .= '<button class="btn btn-warning" onclick="showModalKeluarga('.$row['id'].')" title="Edit Data Keluarga"><i class="dashicons dashicons-edit"></i></button>';
+				$btn .= '<button class="btn btn-danger" onclick="hapusKeluarga('.$row['id'].')" title="Hapus Keluarga"><i class="dashicons dashicons-trash"></i></button>';
+			}
+			$btn .= '</div>';
+
+			$formatted_data[] = [
+				"status_data" => $status_label,
+				"no_kk"       => $row['no_kk'],
+				"alamat"      => $row['alamat'],
+				"provinsi"    => $row['provinsi'],
+				"kabupaten"   => $row['kabupaten'],
+				"kecamatan"   => $row['kecamatan'],
+				"kelurahan"   => $row['kelurahan'],
+				"aksi"        => $btn
+			];
+		}
+
+		wp_send_json([
+			"draw"            => intval($request['draw']),
+			"recordsTotal"    => intval($totalFiltered),
+			"recordsFiltered" => intval($totalFiltered),
+			"data"            => $formatted_data
+		]);
+	}
+
+	public function get_datatable_anggota_usulan_dtsen_ajax()
+	{
+		global $wpdb;
+		if (empty($_POST['api_key']) || $_POST['api_key'] !== get_option(SIKS_APIKEY)) wp_send_json_error('API Key Invalid');
+
+		$id_keluarga = (int) $_POST['id_keluarga'];
+		$data = $wpdb->get_results($wpdb->prepare("
+			SELECT * FROM data_usulan_dtsen_anggota_keluarga 
+			WHERE id_keluarga = %d AND active = 1 
+			ORDER BY is_kepala_keluarga DESC, update_at ASC
+		", $id_keluarga), ARRAY_A);
+
+		$formatted_data = [];
+		foreach ($data as $row) {
+			$btn = '<div class="btn-group btn-group-sm">';
+			$btn .= '<button class="btn btn-warning" onclick="editAnggota('.$row['id'].')" title="Edit Anggota"><i class="dashicons dashicons-edit"></i></button>';
+			$btn .= '<button class="btn btn-danger" onclick="hapusAnggota('.$row['id'].')" title="Hapus Anggota"><i class="dashicons dashicons-trash"></i></button>';
+			$btn .= '</div>';
+
+			$status_kepala = $row['is_kepala_keluarga'] == 1 ? '<span class="badge badge-success">Kepala Keluarga</span>' : '<span class="badge badge-secondary">Anggota</span>';
+
+			$formatted_data[] = [
+				"nik"                 => $row['nik'],
+				"nama"                => $row['nama'],
+				"hub_kepala_keluarga" => $row['hub_kepala_keluarga'],
+				"pekerjaan_utama"     => $row['pekerjaan_utama'],
+				"status_kepala"       => $status_kepala,
+				"aksi"                => $btn
+			];
+		}
+
+		wp_send_json(["data" => $formatted_data]);
+	}
+
+	public function get_detail_keluarga_usulan_dtsen_ajax()
+	{
+		global $wpdb;
+		if (empty($_POST['api_key']) || $_POST['api_key'] !== get_option(SIKS_APIKEY)) wp_send_json_error('API Key Invalid');
+
+		$id = (int) $_POST['id'];
+		if ($id <= 0) wp_send_json_error(['message' => 'ID tidak valid']);
+
+		$data = $wpdb->get_row($wpdb->prepare("SELECT * FROM data_usulan_dtsen WHERE id = %d AND active = 1", $id), ARRAY_A);
+		if ($data) wp_send_json_success($data);
+		wp_send_json_error(['message' => 'Data keluarga tidak ditemukan']);
+	}
+
+	public function get_detail_anggota_usulan_dtsen_ajax()
+	{
+		global $wpdb;
+		if (empty($_POST['api_key']) || $_POST['api_key'] !== get_option(SIKS_APIKEY)) wp_send_json_error('API Key Invalid');
+
+		$id = (int) $_POST['id'];
+		if ($id <= 0) wp_send_json_error(['message' => 'ID tidak valid']);
+
+		$data = $wpdb->get_row($wpdb->prepare("SELECT * FROM data_usulan_dtsen_anggota_keluarga WHERE id = %d AND active = 1", $id), ARRAY_A);
+		if ($data) wp_send_json_success($data);
+		wp_send_json_error(['message' => 'Data anggota tidak ditemukan']);
+	}
+
+	public function submit_usulan_dtsen_ajax()
+	{
+		global $wpdb;
+		try {
+			$this->functions->validate($_POST, ['api_key' => 'required', 'id_keluarga' => 'required|numeric']);
+			if ($_POST['api_key'] !== get_option(SIKS_APIKEY)) throw new Exception("Akses tidak valid.");
+
+			$id_keluarga = (int) $_POST['id_keluarga'];
+
+			// Cek apakah keluarga punya anggota (Minimal Kepala Keluarga) sebelum diajukan
+			$cek_anggota = $wpdb->get_var($wpdb->prepare("
+				SELECT COUNT(id) 
+				FROM data_usulan_dtsen_anggota_keluarga 
+				WHERE id_keluarga = %d 
+				  AND active = 1
+				  AND is_kepala_keluarga = 1
+			", $id_keluarga));
+
+			if ($cek_anggota == 0) {
+				throw new Exception("GAGAL: Silakan tambah Kepala Keluarga terlebih dahulu.");
+			}
+
+			$update = $wpdb->update(
+				'data_usulan_dtsen', 
+				['status_data' => 1, 'update_at' => current_time('mysql')], 
+				['id' => $id_keluarga]
+			);
+			
+			if ($update === false) throw new Exception("Gagal mengajukan usulan.");
+
+			wp_send_json_success(['message' => 'Data berhasil diajukan dan menunggu verifikasi.']);
+		} catch (Exception $e) {
+			wp_send_json_error(['message' => $e->getMessage()]);
+		}
 	}
 
 	function get_datatable_data_usulan_odgj()
@@ -9659,7 +9769,7 @@ class Wp_Siks_Public
 			        'content' => $shortcode_user_rt,
 			        'show_header' => 1,
 			        'no_key' => 1,
-			        'post_status' => 'publish'
+			        'post_status' => 'private'
 			    ));
 			    
 			    $return .= '
@@ -10114,7 +10224,7 @@ class Wp_Siks_Public
 						$table = 'data_usulan_odgj_siks';
 						break;
 					case 'dtsen':
-						$table = 'data_usulan_dtsen_siks';
+						$table = 'data_usulan_dtsen';
 						break;
 					default:
 						$ret['status'] = 'error';

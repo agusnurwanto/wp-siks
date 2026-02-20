@@ -328,7 +328,20 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_tambah_data_usulan_anak_terlantar', $plugin_public, 'tambah_data_usulan_anak_terlantar');
 		$this->loader->add_action('wp_ajax_hapus_data_usulan_anak_terlantar_by_id', $plugin_public, 'hapus_data_usulan_anak_terlantar_by_id');
 		
-		$this->loader->add_action('wp_ajax_get_data_usulan_dtsen_ajax', $plugin_public, 'get_data_usulan_dtsen_ajax');
+		$this->loader->add_action('wp_ajax_get_datatable_data_usulan_dtsen', $plugin_public, 'get_datatable_data_usulan_dtsen');
+		$this->loader->add_action('wp_ajax_save_keluarga_usulan_dtsen_ajax', $plugin_public, 'save_keluarga_usulan_dtsen_ajax');
+		$this->loader->add_action('wp_ajax_save_anggota_usulan_dtsen_ajax', $plugin_public, 'save_anggota_usulan_dtsen_ajax');
+		$this->loader->add_action('wp_ajax_delete_keluarga_usulan_dtsen_ajax', $plugin_public, 'delete_keluarga_usulan_dtsen_ajax');
+		$this->loader->add_action('wp_ajax_delete_anggota_usulan_dtsen_ajax', $plugin_public, 'delete_anggota_usulan_dtsen_ajax');
+
+		$this->loader->add_action('wp_ajax_verifikasi_keluarga_usulan_dtsen_ajax', $plugin_public, 'verifikasi_keluarga_usulan_dtsen_ajax');
+		
+		$this->loader->add_action('wp_ajax_get_datatable_anggota_usulan_dtsen_ajax', $plugin_public, 'get_datatable_anggota_usulan_dtsen_ajax');
+		$this->loader->add_action('wp_ajax_get_detail_keluarga_usulan_dtsen_ajax', $plugin_public, 'get_detail_keluarga_usulan_dtsen_ajax');
+		$this->loader->add_action('wp_ajax_get_detail_anggota_usulan_dtsen_ajax', $plugin_public, 'get_detail_anggota_usulan_dtsen_ajax');
+		$this->loader->add_action('wp_ajax_get_delete_keluarga_usulan_dtsen_ajax', $plugin_public, 'get_delete_keluarga_usulan_dtsen_ajax');
+		$this->loader->add_action('wp_ajax_get_delete_anggota_usulan_dtsen_ajax', $plugin_public, 'get_delete_anggota_usulan_dtsen_ajax');
+		$this->loader->add_action('wp_ajax_submit_usulan_dtsen_ajax', $plugin_public, 'submit_usulan_dtsen_ajax');
 
 		$this->loader->add_action('wp_ajax_get_datatable_data_hibah', $plugin_public, 'get_datatable_data_hibah');
 		$this->loader->add_action('wp_ajax_get_data_hibah_by_id', $plugin_public, 'get_data_hibah_by_id');

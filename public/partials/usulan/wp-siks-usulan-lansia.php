@@ -147,7 +147,7 @@ foreach ($maps_all as $i => $desa) {
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="nik">NIK</label>
-                                <input type="number" class="form-control" id="nik" name="nik">
+                                <input type="text" class="form-control" id="nik" name="nik" placeholder="16 digit NIK" required maxlength="16">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="nama">Nama</label>

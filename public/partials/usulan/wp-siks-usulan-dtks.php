@@ -140,12 +140,12 @@ foreach ($maps_all as $i => $desa) {
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="nik">NIK</label>
-                                <input type="number" class="form-control" id="nik" name="nik">
+                                <input type="text" class="form-control" id="nik" name="nik" placeholder="16 digit NIK" required maxlength="16">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="noKk">No KK</label>
-                            <input type="number" class="form-control" id="noKk" name="noKk">
+                            <input type="text" class="form-control" id="noKk" name="noKk" placeholder="16 digit No KK" required maxlength="16">
                         </div>
                     </div>
                 </div>
@@ -446,8 +446,8 @@ foreach ($maps_all as $i => $desa) {
     });
 
     function getDataTable() {
-        if (typeof tableWrse === 'undefined') {
-            window.tableWrse = jQuery('#tableData').on('preXhr.dt', function(e, settings, data) {
+        if (typeof tableDtks === 'undefined') {
+            window.tableDtks = jQuery('#tableData').on('preXhr.dt', function(e, settings, data) {
                 jQuery("#wrap-loading").show();
             }).DataTable({
                 "processing": true,
@@ -576,7 +576,7 @@ foreach ($maps_all as $i => $desa) {
                 ]
             });
         } else {
-            tableWrse.draw();
+            tableDtks.draw();
         }
     }
 

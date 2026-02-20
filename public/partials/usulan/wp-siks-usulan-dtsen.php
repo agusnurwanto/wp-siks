@@ -78,98 +78,68 @@ foreach ($maps_all as $i => $desa) {
         </div>
     <?php endif; ?>
 </div>
-<div class="wrap-table m-4">
-    <table id="tableData">
+<div class="table-responsive p-2">
+    <table id="tableData" class="table table-bordered table-striped w-100">
         <thead>
             <tr>
-                <th class="text-center">No.</th>
+                <th class="text-center">Status</th>
                 <th class="text-center">No. KK</th>
-                <th class="text-center">Hubungan Keluarga</th>
                 <th class="text-center">Alamat</th>
-                <th class="text-center">Nama</th>
-                <th class="text-center">NIK</th>
-                <th class='text-center'>Pekerjaan Utama</th>
                 <th class="text-center">Provinsi</th>
                 <th class="text-center">Kabupaten / Kota</th>
                 <th class="text-center">Kecamatan</th>
                 <th class="text-center">Desa/Kelurahan</th>
+                <th class="text-center">Aksi</th>
             </tr>
         </thead>
-        <tbody>
-        </tbody>
+        <tbody></tbody>
     </table>
 </div>
 
-<!-- modal tambah data -->
-<div class="modal fade mt-4" id="modalTambahData" tabindex="-1" role="dialog" aria-labelledby="modalTambahData" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
+<div class="modal fade mt-4" data-backdrop="static" id="modalTambahData" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="judulmodalTambahData">Tambah Data DTSEN</h5>
-                <h5 class="modal-title" id="judulModalEdit">Edit Data DTSEN</h5>
+                <h5 class="modal-title" id="judulmodalTambahData">Tambah Data Keluarga</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="form-dtsen">
-                    <input type="hidden" id="id_data" name="id_data">
+                <form id="form-keluarga">
+                    <input type="hidden" id="id_keluarga_input" name="id_keluarga">
 
                     <div class="card mb-3">
                         <div class="card-header bg-light font-weight-bold">
-                            <i class="fas fa-user-tie mr-1"></i> Identitas Kepala Keluarga
+                            <i class="dashicons dashicons-location mr-1"></i> Data Kartu Keluarga & Wilayah
                         </div>
                         <div class="card-body">
                             <div class="form-row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-12">
                                     <label for="no_kk">No. Kartu Keluarga <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="no_kk" name="no_kk" placeholder="16 digit No KK" required maxlength="16">
                                 </div>
-
-                                <div class="form-group col-md-6">
-                                    <label for="nik">NIK Kepala Keluarga <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="nik" name="nik" placeholder="16 digit NIK" required maxlength="16">
-                                </div>
                             </div>
-
-                            <div class="form-row">
-                                <div class="form-group col-md-12">
-                                    <label for="nama_kepala_keluarga">Nama Lengkap Kepala Keluarga <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="nama_kepala_keluarga" name="nama_kepala_keluarga" placeholder="Sesuai KTP" required>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header bg-light font-weight-bold">
-                            <i class="fas fa-map-marker-alt mr-1"></i> Domisili & Wilayah
-                        </div>
-                        <div class="card-body">
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="provinsi">Provinsi</label>
-                                    <input type="text" class="form-control" id="provinsi" name="provinsi" disabled>
+                                    <label>Provinsi</label>
+                                    <input type="text" class="form-control" name="provinsi" value="<?php echo $provinsi; ?>" readonly>
                                 </div>
-
                                 <div class="form-group col-md-6">
-                                    <label for="kabupaten">Kabupaten/Kota</label>
-                                    <input type="text" class="form-control" id="kabupaten" name="kabupaten" disabled>
+                                    <label>Kabupaten/Kota</label>
+                                    <input type="text" class="form-control" name="kabupaten" value="<?php echo $kabkot; ?>" readonly>
                                 </div>
                             </div>
-
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="kecamatan">Kecamatan</label>
-                                    <input type="text" class="form-control" id="kecamatan" name="kecamatan" disabled>
+                                    <label>Kecamatan</label>
+                                    <input type="text" class="form-control" name="kecamatan" value="<?php echo strtoupper($validate_user['kecamatan']); ?>" readonly>
                                 </div>
-
                                 <div class="form-group col-md-6">
-                                    <label for="kelurahan">Kelurahan/Desa</label>
-                                    <input type="text" class="form-control" id="kelurahan" name="kelurahan" disabled>
+                                    <label>Kelurahan/Desa</label>
+                                    <input type="text" class="form-control" name="kelurahan" value="<?php echo strtoupper($validate_user['desa']); ?>" readonly>
                                 </div>
                             </div>
-
                             <div class="form-row">
                                 <div class="form-group col-md-12">
                                     <label for="alamat">Alamat Lengkap (Jalan/RT/RW) <span class="text-danger">*</span></label>
@@ -177,25 +147,90 @@ foreach ($maps_all as $i => $desa) {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="submitKeluarga();" class="btn btn-primary">Simpan Keluarga</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-                        <div class="card bg-light mb-3">
-                            <div class="card-header">Koordinat dan Peta</div>
-                            <div class="card-body">
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <label for="latitude">Koordinat Latitude</label>
-                                        <input type="text" class="form-control" id="latitude" name="latitude" placeholder="0" disabled>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="longitude">Koordinat Longitude</label>
-                                        <input type="text" class="form-control" id="longitude" name="longitude" placeholder="0" disabled>
-                                    </div>
+<div class="modal fade" id="modalAnggotaKeluarga" role="dialog" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="judulmodalAnggotaKeluarga">Daftar Anggota Keluarga</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-info mb-3" onclick="showModalTambahDataAnggota();" title="Tambah Anggota Keluarga">
+                    <span class="dashicons dashicons-plus-alt"></span> Tambah Anggota
+                </button>
+                <div class="table-responsive p-2">
+                    <table id="tableDataAnggotaKeluarga" class="table table-bordered table-hover w-100">
+                        <thead>
+                            <tr>
+                                <th class="text-center">NIK</th>
+                                <th class="text-center">Nama</th>
+                                <th class="text-center">Hubungan</th>
+                                <th class="text-center">Pekerjaan Utama</th>
+                                <th class="text-center">Status di KK</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalTambahDataAnggota" role="dialog" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="judulmodalTambahDataAnggota">Tambah Anggota</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-anggota">
+                    <input type="hidden" id="id_anggota" name="id_anggota">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="is_kepala_keluarga">Status di Keluarga <span class="text-danger">*</span></label>
+                                    <select class="form-control" id="is_kepala_keluarga" name="is_kepala_keluarga" required>
+                                        <option value="0">Anggota Keluarga (Istri/Anak/dll)</option>
+                                        <option value="1">Kepala Keluarga</option>
+                                    </select>
                                 </div>
-                                <div class="form-row mt-4">
-                                    <div class="col-md-12">
-                                        <label for="map-canvas-siks">Map</label>
-                                        <div style="height:600px; width: 100%;" id="map-canvas-siks"></div>
-                                    </div>
+                                <div class="form-group col-md-12">
+                                    <label for="nik_anggota">NIK <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="nik_anggota" name="nik" placeholder="16 digit NIK" required maxlength="16">
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label for="nama_anggota">Nama Lengkap <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="nama_anggota" name="nama" placeholder="Sesuai KTP" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="hub_kepala_keluarga">Hubungan (Text) <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="hub_kepala_keluarga" name="hub_kepala_keluarga" placeholder="Contoh: ISTRI, ANAK, KEPALA KELUARGA" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="pekerjaan_utama_anggota">Pekerjaan Utama <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="pekerjaan_utama_anggota" name="pekerjaan_utama" required>
                                 </div>
                             </div>
                         </div>
@@ -203,20 +238,18 @@ foreach ($maps_all as $i => $desa) {
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="submit" onclick="submitData();" class="btn btn-primary">Simpan</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Tutup</button>
+                <button type="button" onclick="submitAnggota();" class="btn btn-primary">Simpan Anggota</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
             </div>
         </div>
     </div>
 </div>
 
-
-<!-- Modal Verifikasi -->
-<div class="modal fade" id="verifikasiModal" tabindex="-1" aria-labelledby="verifikasiModalLabel" aria-hidden="true">
+<div class="modal fade" id="verifikasiModal" data-backdrop="static" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="verifikasiModalLabel">Verifikasi Data</h5>
+                <h5 class="modal-title">Verifikasi Data Keluarga</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -225,7 +258,7 @@ foreach ($maps_all as $i => $desa) {
                 <form id="formVerifikasi">
                     <input type="hidden" name="idDataVerifikasi" id="idDataVerifikasi" value="">
                     <div class="mb-3">
-                        <label for="verifikasiStatus" class="form-label">Status Verifikasi</label>
+                        <label class="form-label">Status Verifikasi</label>
                         <div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="verifikasiStatus" id="statusTerima" value="2">
@@ -238,416 +271,363 @@ foreach ($maps_all as $i => $desa) {
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="keteranganVerifikasi" class="form-label">Keterangan Verifikasi</label>
-                        <textarea class="form-control" id="keteranganVerifikasi" name="keteranganVerifikasi" rows="3" placeholder="diterima/ditolak karena ..."></textarea>
+                        <label class="form-label">Keterangan Verifikasi</label>
+                        <textarea class="form-control" id="keteranganVerifikasi" name="keteranganVerifikasi" rows="3" placeholder="Alasan ditolak/diterima..."></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary" onclick="submitVerifikasi()">Simpan</button>
+                <button type="button" class="btn btn-primary" onclick="submitVerifikasi()">Simpan Verifikasi</button>
             </div>
         </div>
     </div>
 </div>
 <script>
-    window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
-    window.maps_center_siks = <?php echo json_encode($center); ?>;
     window.id_desa = <?php echo json_encode($input['id_desa']); ?>;
+    window.id_keluarga_aktif = null;
+    window.tableDtsen;
+    window.tableAnggotaDtsen;
+
     jQuery(document).ready(function() {
-        generate_table();
+        initTableDtsen();
     });
 
-    function get_data_dtsen() {
-        return jQuery.ajax({
-            url: ajax.url,
-            method: 'POST',
-            data: {
-                action: "get_data_usulan_dtsen_ajax",
-                api_key: ajax.apikey,
-                desa: "<?php echo $get_desa_kel['nama']; ?>"
-            },
-            dataType: 'json',
-        });
-    }
-
-    async function generate_table() {
-        try {
-            jQuery(`#wrap-loading`).show();
-            const allData = await get_data_dtsen();
-            if (allData.status) {
-                let tbody = ``;
-                let no = 1;
-                allData.data.forEach(data => {
-                    tbody += `
-                        <tr>
-                            <td class="text-center">${no++}</td>
-                            <td class="text-left">${data.no_kk}</td>
-                            <td class="text-left">${data.hub_kepala_keluarga}</td>
-                            <td class="text-left">${data.alamat}</td>
-                            <td class="text-left">${data.nama}</td>
-                            <td class="text-left">${data.nik}</td>
-                            <td class="text-left">${data.pekerjaan_utama}</td>
-                            <td class="text-left">${data.provinsi}</td>
-                            <td class="text-left">${data.kabupaten}</td>
-                            <td class="text-left">${data.kecamatan}</td>
-                            <td class="text-left">${data.kelurahan}</td>
-                        </tr>
-                    `;
-                });
-
-                jQuery(`#tableData tbody`).html(tbody);
-            }
-
-        } catch (error) {
-            alert("Gagal generate table");
-            console.log(error);
-        } finally {
-            jQuery(`#tableData`).dataTable();
-            jQuery(`#wrap-loading`).hide();
-        }
-    }
-
-    function hapus_data(id) {
-        let confirmDelete = confirm("Apakah anda yakin akan menghapus data ini?");
-        if (confirmDelete) {
-            jQuery('#wrap-loading').show();
-            jQuery.ajax({
-                url: ajax.url,
-                type: 'post',
-                data: {
-                    'action': 'hapus_data_usulan_dtsen_by_id',
-                    'api_key': ajax.apikey,
-                    'id': id
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status == 'success') {
-                        alert("Berhasil Hapus Data!");
-                        getDataTable();
-                    } else {
-                        alert(`GAGAL! \n${response.message}`);
-                    }
-                }
-            });
-        }
-    }
-
-
-    function edit_data(_id) {
-        jQuery('#wrap-loading').show();
-        jQuery.ajax({
-            method: 'post',
-            url: ajax.url,
-            dataType: 'JSON',
-            data: {
-                'action': 'get_data_usulan_dtsen_by_id',
-                'api_key': ajax.apikey,
-                'id': _id,
-            },
-            success: function(res) {
-                // Lokasi Center Map
-                if (!res.data.lat || !res.data.lng) {
-                    var lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
-                } else {
-                    var lokasi_center = new google.maps.LatLng(res.data.lat, res.data.lng);
-                }
-
-                if (typeof evm != 'undefined') {
-                    evm.setMap(null);
-                }
-
-                // Menampilkan Marker
-                window.evm = new google.maps.Marker({
-                    position: lokasi_center,
-                    map,
-                    draggable: true,
-                    title: 'Lokasi Map'
-                });
-
-                window.infoWindow = new google.maps.InfoWindow({
-                    content: JSON.stringify(res.data)
-                });
-
-                google.maps.event.addListener(evm, 'click', function(event) {
-                    infoWindow.setPosition(event.latLng);
-                    infoWindow.open(map);
-                });
-
-                google.maps.event.addListener(evm, 'mouseup', function(event) {
-                    jQuery('input[name="latitude"]').val(event.latLng.lat());
-                    jQuery('input[name="longitude"]').val(event.latLng.lng());
-                });
-
-                jQuery('#judulmodalTambahData').hide();
-                jQuery('#id_data').val(res.data.id);
-                jQuery('#tahunAnggaran').val(res.data.tahun_anggaran);
-                jQuery('#jenisData').val(res.data.jenis_data).trigger('change').prop('selected', false);
-                jQuery('#nama').val(res.data.nama);
-                jQuery('#usia').val(res.data.usia);
-                jQuery('#alamat').text(res.data.alamat);
-                jQuery('#latitude').val(res.data.lat);
-                jQuery('#longitude').val(res.data.lng);
-
-                jQuery('input[name="statusDtks"]').prop('checked', false);
-                jQuery('input[name="statusPernikahan"]').prop('checked', false);
-                jQuery('input[name="statusUsaha"]').prop('checked', false);
-                switch (res.data.status_dtks) {
-                    case 'Terdaftar':
-                        jQuery('#terdaftar').prop('checked', true);
-                        break;
-                    case 'Tidak Terdaftar':
-                        jQuery('#tidakTerdaftar').prop('checked', true);
-                        break;
-                    default:
-                        jQuery('input[name="statusDtks"]').prop('checked', false);
-                }
-                switch (res.data.status_pernikahan) {
-                    case 'Menikah':
-                        jQuery('#menikah').prop('checked', true);
-                        break;
-                    case 'Belum Menikah':
-                        jQuery('#belumMenikah').prop('checked', true);
-                        break;
-                    case 'Janda':
-                        jQuery('#janda').prop('checked', true);
-                        break;
-                    default:
-                        jQuery('input[name="statusPernikahan"]').prop('checked', false);
-                }
-                switch (res.data.mempunyai_usaha) {
-                    case 'Ya':
-                        jQuery('#ya').prop('checked', true);
-                        break;
-                    case 'Tidak':
-                        jQuery('#tidak').prop('checked', true);
-                        break;
-                    default:
-                        jQuery('input[name="statusUsaha"]').prop('checked', false);
-                }
-                jQuery('#keterangan').text(res.data.keterangan);
-
-                jQuery('#judulModalEdit').show();
-                jQuery('#judulmodalTambahData').hide();
-                jQuery('#modalTambahData').modal('show');
-                jQuery('#wrap-loading').hide();
-            },
-            error: function() {
-                jQuery('#wrap-loading').hide();
-            }
-        });
-    }
-
+    // ==========================================
+    // 1. KELUARGA (PARENT) - CRUD
+    // ==========================================
     function showModalTambahData() {
-        let lokasi_center = new google.maps.LatLng(maps_center_siks['lat'], maps_center_siks['lng']);
-
-        if (typeof evm != 'undefined') {
-            evm.setMap(null);
-        }
-
-        // Menampilkan Marker
-        window.evm = new google.maps.Marker({
-            position: lokasi_center,
-            map,
-            draggable: true,
-            title: 'Lokasi Map'
-        });
-
-        google.maps.event.addListener(evm, 'mouseup', function(event) {
-            jQuery('input[name="latitude"]').val(event.latLng.lat());
-            jQuery('input[name="longitude"]').val(event.latLng.lng());
-        });
-
-        jQuery('#longitude').val(maps_center_siks['lng']).show();
-        jQuery('#latitude').val(maps_center_siks['lat']).show();
-
-        jQuery('#id_data').val('');
-        jQuery('#tahunAnggaran').val('');
-        jQuery('#jenisData').val('');
-        jQuery('#nama').val('');
-        jQuery('#usia').val('');
-        jQuery('#alamat').text('');
-        jQuery('input[name="statusDtks"]').prop('checked', false);
-        jQuery('input[name="statusPernikahan"]').prop('checked', false);
-        jQuery('input[name="statusUsaha"]').prop('checked', false);
-        jQuery('#keterangan').text('');
-        jQuery('#judulmodalTambahData').show();
-        jQuery('#judulModalEdit').hide();
+        jQuery('#form-keluarga')[0].reset();
+        jQuery('#id_keluarga_input').val('');
+        jQuery('#judulmodalTambahData').html('Tambah Data Keluarga Baru');
         jQuery('#modalTambahData').modal('show');
     }
 
-    function showModalVerifikasi(id) {
+    function showModalKeluarga(editId) {
+        jQuery('#form-keluarga')[0].reset();
         jQuery('#wrap-loading').show();
-        jQuery.ajax({
-            method: 'post',
-            url: ajax.url,
-            dataType: 'JSON',
-            data: {
-                'action': 'get_status_verifikasi_usulan',
-                'api_key': ajax.apikey,
-                'id': id,
-                'jenis_data': 'dtsen'
-            },
-            success: function(res) {
-                jQuery('#idDataVerifikasi').val(res.data.id);
-                jQuery('#keteranganVerifikasi').text(res.data.keterangan_verifikasi);
-                jQuery('input[name="verifikasiStatus"]').prop('checked', false);
-                if (res.data.status_data) {
-                    switch (res.data.status_data) {
-                        case '1':
-                            jQuery('input[name="verifikasiStatus"]').prop('checked', false);
-                            break;
-                        case '2':
-                            jQuery('#statusTerima').prop('checked', true);
-                            break;
-                        case '3':
-                            jQuery('#statusTolak').prop('checked', true);
-                            break;
-                    }
-                }
-                jQuery('#wrap-loading').hide();
-                jQuery('#verifikasiModal').modal('show');
-            },
-            error: function(e) {
-                alert(e.message);
-                jQuery('#wrap-loading').hide();
+
+        jQuery.post(ajax.url, {
+            action: 'get_detail_keluarga_usulan_dtsen_ajax',
+            api_key: ajax.apikey,
+            id: editId
+        }, function(res) {
+            jQuery('#wrap-loading').hide();
+            if (res.success) {
+                let d = res.data;
+                jQuery('#id_keluarga_input').val(d.id);
+                jQuery('#no_kk').val(d.no_kk);
+                jQuery('#alamat').val(d.alamat);
+                jQuery('#judulmodalTambahData').html('Edit Data Keluarga');
+                jQuery('#modalTambahData').modal('show');
+            } else {
+                alert(res.data.message);
             }
         });
     }
 
-    function submitVerifikasi() {
-        const validationRules = {
-            'idDataVerifikasi': 'id kosong!',
-            'verifikasiStatus': 'Status verifikasi tidak boleh kosong!',
-            'keteranganVerifikasi': 'Keterangan verifikasi tidak boleh kosong!',
-            // Tambahkan field lain jika diperlukan
-        };
-
-        const {
-            error,
-            data
-        } = validateForm(validationRules);
-        if (error) {
-            return alert(error);
+    function submitKeluarga() {
+        let form = jQuery('#form-keluarga')[0];
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
         }
 
-        const tempData = new FormData();
-        tempData.append('action', 'submit_verifikasi_usulan');
-        tempData.append('api_key', ajax.apikey);
-        tempData.append('jenis_data', 'dtsen');
+        let data = new FormData(form);
+        data.append('action', 'save_keluarga_usulan_dtsen_ajax');
+        data.append('api_key', ajax.apikey);
+        data.append('id_wilayah', window.id_desa);
 
-        for (const [key, value] of Object.entries(data)) {
-            tempData.append(key, value);
-        }
         jQuery('#wrap-loading').show();
         jQuery.ajax({
-            method: 'post',
             url: ajax.url,
-            dataType: 'JSON',
-            data: tempData,
+            type: 'POST',
+            data: data,
             processData: false,
             contentType: false,
-            cache: false,
             success: function(res) {
-                alert(res.message);
                 jQuery('#wrap-loading').hide();
-                jQuery('#verifikasiModal').modal('hide');
-                getDataTable();
-            },
-            error: function(e) {
-                alert(e.message);
-                jQuery('#wrap-loading').hide();
+                if (res.success) {
+                    alert(res.data.message);
+                    jQuery('#modalTambahData').modal('hide');
+                    if (tableDtsen) tableDtsen.ajax.reload(null, false);
+                } else {
+                    alert(res.data.message);
+                }
             }
         });
     }
 
-    function submitUsulan(id) {
-        let confirmSubmitUsulan = confirm("Apakah anda yakin akan mensubmit data ini?");
-        if (confirmSubmitUsulan) {
-            const tempData = new FormData();
-            tempData.append('action', 'submit_usulan');
-            tempData.append('api_key', ajax.apikey);
-            tempData.append('idDataVerifikasi', id);
-            tempData.append('jenis_data', 'dtsen');
-
+    function hapusKeluarga(id) {
+        if (confirm('Yakin ingin menghapus Data Keluarga ini? Pastikan seluruh anggotanya sudah dihapus terlebih dahulu.')) {
             jQuery('#wrap-loading').show();
-            jQuery.ajax({
-                method: 'post',
-                url: ajax.url,
-                dataType: 'JSON',
-                data: tempData,
-                processData: false,
-                contentType: false,
-                cache: false,
-                success: function(res) {
-                    alert(res.message);
-                    jQuery('#wrap-loading').hide();
-                    jQuery('#verifikasiModal').modal('hide');
-                    getDataTable();
-                },
-                error: function(e) {
-                    alert(e.message);
-                    jQuery('#wrap-loading').hide();
+            jQuery.post(ajax.url, {
+                action: 'delete_keluarga_usulan_dtsen_ajax',
+                api_key: ajax.apikey,
+                id_keluarga: id
+            }, function(res) {
+                jQuery('#wrap-loading').hide();
+                if (res.success) {
+                    alert(res.data.message);
+                    tableDtsen.ajax.reload(null, false);
+                } else {
+                    alert(res.data.message);
                 }
+            }).fail(function(xhr) {
+                jQuery('#wrap-loading').hide();
+                alert(xhr.responseJSON?.data?.message || 'Error server saat menghapus keluarga');
             });
         }
     }
 
-    function submitData() {
-        const validationRules = {
-            'nama': 'Data Nama tidak boleh kosong!',
-            'usia': 'Data Usia tidak boleh kosong!',
-            'alamat': 'Data Alamat tidak boleh kosong!',
-            'tahunAnggaran': 'Data Tahun Anggaran tidak boleh kosong!',
-            'statusDtks': 'Pilih Status DTKS!',
-            'statusPernikahan': 'Pilih Status Pernikahan!',
-            'statusUsaha': 'Pilih Status Usaha!',
-            'jenisData': 'Pilih Jenis Data!',
-            'keterangan': 'Keterangan tidak boleh kosong!',
-            'longitude': 'Longitude tidak boleh kosong!',
-            'latitude': 'Latitude tidak boleh kosong!',
-            // Tambahkan field lain jika diperlukan
-        };
+    // ==========================================
+    // 2. ANGGOTA (CHILD) - CRUD
+    // ==========================================
+    function showModalAnggotaKeluarga(id_keluarga) {
+        window.id_keluarga_aktif = id_keluarga;
+        initTableAnggotaDtsen(id_keluarga);
+        jQuery('#modalAnggotaKeluarga').modal('show');
+    }
 
-        const {
-            error,
-            data
-        } = validateForm(validationRules);
-        if (error) {
-            return alert(error);
-        }
+    function showModalTambahDataAnggota() {
+        jQuery('#form-anggota')[0].reset();
+        jQuery('#id_anggota').val('');
+        jQuery('#judulmodalTambahDataAnggota').html('Tambah Anggota Keluarga');
+        jQuery('#modalTambahDataAnggota').modal('show');
+    }
 
-        const id_data = jQuery('#id_data').val();
-
-        const tempData = new FormData();
-        tempData.append('action', 'tambah_data_usulan_dtsen');
-        tempData.append('api_key', ajax.apikey);
-        tempData.append('id_data', id_data);
-        tempData.append('id_desa', id_desa);
-
-        for (const [key, value] of Object.entries(data)) {
-            tempData.append(key, value);
-        }
-
+    function editAnggota(id_anggota) {
+        jQuery('#form-anggota')[0].reset();
         jQuery('#wrap-loading').show();
 
+        jQuery.post(ajax.url, {
+            action: 'get_detail_anggota_usulan_dtsen_ajax',
+            api_key: ajax.apikey,
+            id: id_anggota
+        }, function(res) {
+            jQuery('#wrap-loading').hide();
+            if (res.success) {
+                let d = res.data;
+                jQuery('#id_anggota').val(d.id);
+                jQuery('#is_kepala_keluarga').val(d.is_kepala_keluarga);
+                jQuery('#nik_anggota').val(d.nik);
+                jQuery('#nama_anggota').val(d.nama);
+                jQuery('#hub_kepala_keluarga').val(d.hub_kepala_keluarga);
+                jQuery('#pekerjaan_utama_anggota').val(d.pekerjaan_utama);
+
+                jQuery('#judulmodalTambahDataAnggota').html('Edit Anggota Keluarga');
+                jQuery('#modalTambahDataAnggota').modal('show');
+            } else {
+                alert(res.data.message);
+            }
+        });
+    }
+
+    function submitAnggota() {
+        let form = jQuery('#form-anggota')[0];
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        let data = new FormData(form);
+        data.append('action', 'save_anggota_usulan_dtsen_ajax');
+        data.append('api_key', ajax.apikey);
+        data.append('id_keluarga', window.id_keluarga_aktif);
+
+        jQuery('#wrap-loading').show();
         jQuery.ajax({
-            method: 'post',
             url: ajax.url,
-            dataType: 'json',
-            data: tempData,
+            type: 'POST',
+            data: data,
             processData: false,
             contentType: false,
-            cache: false,
             success: function(res) {
-                alert(res.message);
                 jQuery('#wrap-loading').hide();
-                if (res.status === 'success') {
-                    jQuery('#modalTambahData').modal('hide');
-                    getDataTable();
+                if (res.success) {
+                    alert(res.data.message);
+                    jQuery('#modalTambahDataAnggota').modal('hide');
+                    if (tableAnggotaDtsen) tableAnggotaDtsen.ajax.reload(null, false);
+                } else {
+                    alert(res.data.message);
                 }
             }
         });
     }
+
+    function hapusAnggota(id) {
+        if (confirm('Yakin ingin menghapus Anggota Keluarga ini?')) {
+            jQuery('#wrap-loading').show();
+            jQuery.post(ajax.url, {
+                action: 'delete_anggota_usulan_dtsen_ajax',
+                api_key: ajax.apikey,
+                id_anggota: id
+            }, function(res) {
+                jQuery('#wrap-loading').hide();
+                if (res.success) {
+                    alert(res.data.message);
+                    tableAnggotaDtsen.ajax.reload(null, false);
+                } else {
+                    alert(res.data.message);
+                }
+            }).fail(function(xhr) {
+                jQuery('#wrap-loading').hide();
+                alert(xhr.responseJSON?.data?.message || 'Error server saat menghapus anggota');
+            });
+        }
+    }
+
+    // ==========================================
+    // 3. FUNGSI VERIFIKASI & PENGAJUAN (SUBMIT)
+    // ==========================================
+    function submitUsulan(id_keluarga) {
+        if (confirm('Yakin ingin mengajukan data ini ke Admin? Pastikan anggota sudah lengkap.')) {
+            jQuery('#wrap-loading').show();
+            jQuery.post(ajax.url, {
+                action: 'submit_usulan_dtsen_ajax',
+                api_key: ajax.apikey,
+                id_keluarga: id_keluarga
+            }, function(res) {
+                jQuery('#wrap-loading').hide();
+                if (res.success) {
+                    alert(res.data.message);
+                    tableDtsen.ajax.reload(null, false);
+                } else {
+                    alert(res.data.message);
+                }
+            }).fail(function(xhr) {
+                jQuery('#wrap-loading').hide();
+                alert(xhr.responseJSON?.data?.message || 'Gagal mengajukan data.');
+            });
+        }
+    }
+
+    function showModalVerifikasi(id_keluarga) {
+        jQuery('#formVerifikasi')[0].reset();
+        jQuery('#idDataVerifikasi').val(id_keluarga);
+        jQuery('#verifikasiModal').modal('show');
+    }
+
+    function submitVerifikasi() {
+        let id_keluarga = jQuery('#idDataVerifikasi').val();
+        let status = jQuery('input[name="verifikasiStatus"]:checked').val();
+        let keterangan = jQuery('#keteranganVerifikasi').val();
+
+        if (!status) {
+            alert('Pilih status Terima atau Tolak');
+            return;
+        }
+
+        jQuery('#wrap-loading').show();
+        jQuery.post(ajax.url, {
+            action: 'verifikasi_keluarga_usulan_dtsen_ajax',
+            api_key: ajax.apikey,
+            id_keluarga: id_keluarga,
+            status_data: status,
+            keterangan_verifikasi: keterangan
+        }, function(res) {
+            jQuery('#wrap-loading').hide();
+            if (res.success) {
+                alert(res.data.message);
+                jQuery('#verifikasiModal').modal('hide');
+                tableDtsen.ajax.reload(null, false);
+            } else {
+                alert(res.data.message);
+            }
+        });
+    }
+
+    // ==========================================
+    // 4. INIT DATATABLES
+    // ==========================================
+    function initTableDtsen() {
+        if (jQuery.fn.DataTable.isDataTable('#tableData')) {
+            jQuery('#tableData').DataTable().ajax.reload();
+            return;
+        }
+        tableDtsen = jQuery('#tableData').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "ajax": {
+                "url": ajax.url,
+                "type": "POST",
+                "data": function(d) {
+                    d.action = "get_datatable_data_usulan_dtsen";
+                    d.api_key = ajax.apikey;
+                    d.desa = "<?php echo $get_desa_kel['nama']; ?>";
+                }
+            },
+            "columns": [{
+                    "data": "status_data",
+                    "className": "text-center"
+                },
+                {
+                    "data": "no_kk"
+                },
+                {
+                    "data": "alamat"
+                },
+                {
+                    "data": "provinsi"
+                },
+                {
+                    "data": "kabupaten"
+                },
+                {
+                    "data": "kecamatan"
+                },
+                {
+                    "data": "kelurahan"
+                },
+                {
+                    "data": "aksi",
+                    "className": "text-center",
+                    "orderable": false
+                }
+            ]
+        });
+    }
+
+    function initTableAnggotaDtsen(id_keluarga) {
+        if (jQuery.fn.DataTable.isDataTable('#tableDataAnggotaKeluarga')) {
+            jQuery('#tableDataAnggotaKeluarga').DataTable().destroy();
+        }
+        tableAnggotaDtsen = jQuery('#tableDataAnggotaKeluarga').DataTable({
+            "processing": true,
+            "serverSide": false,
+            "responsive": true,
+            "ajax": {
+                "url": ajax.url,
+                "type": "POST",
+                "data": function(d) {
+                    d.action = "get_datatable_anggota_usulan_dtsen_ajax";
+                    d.api_key = ajax.apikey;
+                    d.id_keluarga = id_keluarga;
+                }
+            },
+            "columns": [{
+                    "data": "nik"
+                },
+                {
+                    "data": "nama"
+                },
+                {
+                    "data": "hub_kepala_keluarga"
+                },
+                {
+                    "data": "pekerjaan_utama"
+                },
+                {
+                    "data": "status_kepala",
+                    "className": "text-center"
+                },
+                {
+                    "data": "aksi",
+                    "className": "text-center",
+                    "orderable": false
+                }
+            ]
+        });
+    }
 </script>
-<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
