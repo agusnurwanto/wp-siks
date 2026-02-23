@@ -9623,67 +9623,73 @@ class Wp_Siks_Public
 		    $nama_kecamatan = $data_alamat['nama_kecamatan'] ?? '';
 
 		    $pages_rt = array(
-		        'DTKS'           => array('usulan' => null,                     'lihat' => '[dtks_per_desa]'),
-		        'Bunda Kasih'    => array('usulan' => null,                     'lihat' => '[bunda_kasih_per_desa]'),
-		        'Anak Terlantar' => array('usulan' => null,                     'lihat' => '[anak_terlantar_per_desa]'),
-		        'Gepeng'         => array('usulan' => null,                     'lihat' => '[gepeng_per_desa]'),
-		        'Hibah'          => array('usulan' => null,                     'lihat' => '[hibah_per_desa]'),
-		        'P3KE'           => array('usulan' => null,                     'lihat' => '[p3ke_per_desa]'),
-		        'WRSE'           => array('usulan' => null,                     'lihat' => '[wrse_per_desa]'),
-		        'Disabilitas'    => array('usulan' => null,                     'lihat' => '[disabilitas_per_desa]'),
-		        'Lansia'         => array('usulan' => null,                     'lihat' => '[lansia_per_desa]'),
-		        'ODGJ'           => array('usulan' => null,                     'lihat' => '[odgj_per_desa]'),
-		        'DTSEN'          => array('usulan' => '[usulan_dtsen]',         'lihat' => '[dtsen_per_desa]'),
+		        'DTKS'           => array('usulan' => null,             'lihat' => '[dtks_per_desa]'),
+		        'Bunda Kasih'    => array('usulan' => null,             'lihat' => '[bunda_kasih_per_desa]'),
+		        'Anak Terlantar' => array('usulan' => null,             'lihat' => '[anak_terlantar_per_desa]'),
+		        'Gepeng'         => array('usulan' => null,             'lihat' => '[gepeng_per_desa]'),
+		        'Hibah'          => array('usulan' => null,             'lihat' => '[hibah_per_desa]'),
+		        'P3KE'           => array('usulan' => null,             'lihat' => '[p3ke_per_desa]'),
+		        'WRSE'           => array('usulan' => null,             'lihat' => '[wrse_per_desa]'),
+		        'Disabilitas'    => array('usulan' => null,             'lihat' => '[disabilitas_per_desa]'),
+		        'Lansia'         => array('usulan' => null,             'lihat' => '[lansia_per_desa]'),
+		        'ODGJ'           => array('usulan' => null,             'lihat' => '[odgj_per_desa]'),
+		        'DTSEN'          => array('usulan' => '[usulan_dtsen]', 'lihat' => '[dtsen_per_desa]'),
 		    );
 
 		    $index      = 0;
-			$collapseId = 'collapse' . $index;
-			$headingId  = 'heading' . $index;
+		    $collapseId = 'collapse' . $index;
+		    $headingId  = 'heading' . $index;
 
-			$return = '<div id="desaAccordion" class="accordion">';
-			$return .= '
-			    <div class="card">
-			        <div class="card-header" id="' . $headingId . '">
-			            <h2 class="mb-0">
-			                <a class="accordion-toggle d-flex justify-content-between text-dark"  data-toggle="collapse"  href="#' . $collapseId . '"  aria-expanded="false" aria-controls="' . $collapseId . '"> RT ' . esc_html($rt) . ' / RW ' . esc_html($rw) . ' <span class="dashicons dashicons-arrow-down-alt2"></span>
-			                </a>
-			            </h2>
-			        </div>
-			        <div id="' . $collapseId . '" class="collapse" aria-labelledby="' . $headingId . '" data-parent="#desaAccordion">
-			            <div class="card-body">
-			                <div class="row">
-			';
+		    $return = '<div id="desaAccordion" class="accordion">';
+		    $return .= '
+		        <div class="card">
+		            <div class="card-header" id="' . $headingId . '">
+		                <h2 class="mb-0">
+		                    <a class="accordion-toggle d-flex justify-content-between text-dark" data-toggle="collapse" href="#' . $collapseId . '" aria-expanded="false" aria-controls="' . $collapseId . '">
+		                        RT ' . esc_html($rt) . ' / RW ' . esc_html($rw) . '
+		                        <span class="dashicons dashicons-arrow-down-alt2"></span>
+		                    </a>
+		                </h2>
+		            </div>
+		            <div id="' . $collapseId . '" class="collapse" aria-labelledby="' . $headingId . '" data-parent="#desaAccordion">
+		                <div class="card-body">
+		                    <div class="row">
+		    ';
 
 		    foreach ($pages_rt as $jenis_data => $shortcodes) {
-		        $shortcode_lihat = str_replace(
-		            ']',
-		            ' id_desa=' . $id_desa . ' rt=' . $rt . ' rw=' . $rw . ']',
-		            $shortcodes['lihat']
-		        );
+		        $shortcode_lihat = str_replace(']', ']', $shortcodes['lihat']);
 		        $gen_page_lihat = $this->functions->generatePage(array(
-		            'nama_page'   => 'Data ' . $jenis_data . ' | RT ' . $rt . ' RW ' . $rw . ' | ' . $nama_desa,
+		            'nama_page'   => 'Data ' . $jenis_data,
 		            'content'     => $shortcode_lihat,
 		            'show_header' => 1,
 		            'no_key'      => 1,
 		            'post_status' => 'publish'
 		        ));
 
+		        $url_lihat = add_query_arg(array(
+		            'id_desa' => $id_desa,
+		            'rt'      => $rt,
+		            'rw'      => $rw,
+		        ), $gen_page_lihat['url']);
+
 		        $btn_usulan = '';
 		        if ($shortcodes['usulan'] !== null) {
-		            $shortcode_usulan = str_replace(
-		                ']',
-		                ' id_desa=' . $id_desa . ' rt=' . $rt . ' rw=' . $rw . ']',
-		                $shortcodes['usulan']
-		            );
 		            $gen_page_usulan = $this->functions->generatePage(array(
-		                'nama_page'   => 'Usulan ' . $jenis_data . ' | RT ' . $rt . ' RW ' . $rw . ' | ' . $nama_desa,
-		                'content'     => $shortcode_usulan,
+		                'nama_page'   => 'Usulan ' . $jenis_data,
+		                'content'     => $shortcodes['usulan'],
 		                'show_header' => 1,
 		                'no_key'      => 1,
 		                'post_status' => 'publish'
 		            ));
+
+		            $url_usulan = add_query_arg(array(
+		                'id_desa' => $id_desa,
+		                'rt'      => $rt,
+		                'rw'      => $rw,
+		            ), $gen_page_usulan['url']);
+
 		            $btn_usulan = '
-		                <a href="' . esc_url($gen_page_usulan['url']) . '" target="_blank" class="btn btn-warning">
+		                <a href="' . esc_url($url_usulan) . '" target="_blank" class="btn btn-warning">
 		                    <span class="dashicons dashicons-insert"></span> Usulkan Data
 		                </a>
 		            ';
@@ -9698,7 +9704,7 @@ class Wp_Siks_Public
 		                        </h5>
 		                        <div class="d-flex justify-content-between">
 		                            ' . $btn_usulan . '
-		                            <a href="' . esc_url($gen_page_lihat['url']) . '" target="_blank" class="btn btn-primary">
+		                            <a href="' . esc_url($url_lihat) . '" target="_blank" class="btn btn-primary">
 		                                <span class="dashicons dashicons-arrow-right-alt"></span> Lihat Data
 		                            </a>
 		                        </div>

@@ -1,6 +1,8 @@
 <?php
 $input = shortcode_atts(array(
-    'id_desa' => ''
+    'id_desa' => isset($_GET['id_desa']) ? intval($_GET['id_desa'])              : '',
+    'rt'      => isset($_GET['rt'])      ? sanitize_text_field($_GET['rt'])      : '',
+    'rw'      => isset($_GET['rw'])      ? sanitize_text_field($_GET['rw'])      : '',
 ), $atts);
 if (empty($input['id_desa'])) {
     die('id_desa kosong');
