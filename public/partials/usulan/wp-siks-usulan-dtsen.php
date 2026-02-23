@@ -12,6 +12,14 @@ if ($validate_user['status'] === 'error') {
 } else {
     echo "<script>console.log('Debug Objects: " . $validate_user['message'] . "' );</script>";
 }
+$is_rt = ($validate_user['roles'] === 'rt');
+$rt_filter = '';
+$rw_filter = '';
+
+if ($is_rt) {
+    $rt_filter = $validate_user['rt'] ?? '';
+    $rw_filter = $validate_user['rw'] ?? '';
+}
 global $wpdb;
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
@@ -70,7 +78,11 @@ foreach ($maps_all as $i => $desa) {
     <h1 class="text-center my-4">Data Usulan DTSEN</h1>
     <h2 class="text-center my-4">(Data Tunggal Sosial Ekonomi Nasional)</h2>
     <h2 class="text-center my-4"><?php echo strtoupper($nama_desa_kelurahan); ?></h2>
-    <?php if ($validate_user['roles'] === 'desa'): ?>
+    <?php if ($is_rt): ?>
+        <h3 class="text-center my-2">RT <?php echo esc_html($rt_filter); ?> / RW <?php echo esc_html($rw_filter); ?></h3>
+    <?php endif; ?>
+
+    <?php if ($validate_user['roles'] === 'desa' || $is_rt): ?>
         <div class="m-4">
             <button class="btn btn-primary" onclick="showModalTambahData();">
                 <span class="dashicons dashicons-plus"></span> Tambah Data
@@ -89,6 +101,8 @@ foreach ($maps_all as $i => $desa) {
                 <th class="text-center">Kabupaten / Kota</th>
                 <th class="text-center">Kecamatan</th>
                 <th class="text-center">Desa/Kelurahan</th>
+                <th class="text-center">RT</th>
+                <th class="text-center">RW</th>
                 <th class="text-center">Aksi</th>
             </tr>
         </thead>
@@ -138,6 +152,20 @@ foreach ($maps_all as $i => $desa) {
                                 <div class="form-group col-md-6">
                                     <label>Kelurahan/Desa</label>
                                     <input type="text" class="form-control" name="kelurahan" value="<?php echo strtoupper($validate_user['desa']); ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for='rt'>RT</label>
+                                        <input type='number' id='rt' name='rt' class='form-control' placeholder="Contoh: 01" value="<?php echo $is_rt ? esc_attr($rt_filter) : ''; ?>" <?php echo $is_rt ? 'readonly' : ''; ?>>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for='rw'>RW</label>
+                                        <input type='number' id='rw' name='rw' class='form-control'  placeholder="Contoh: 02" value="<?php echo $is_rt ? esc_attr($rw_filter) : ''; ?>" <?php echo $is_rt ? 'readonly' : ''; ?>>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -285,6 +313,9 @@ foreach ($maps_all as $i => $desa) {
 </div>
 <script>
     window.id_desa = <?php echo json_encode($input['id_desa']); ?>;
+    window.user_role = <?php echo json_encode($validate_user['roles']); ?>;
+    window.rt_filter = <?php echo json_encode($rt_filter); ?>;
+    window.rw_filter = <?php echo json_encode($rw_filter); ?>;
     window.id_keluarga_aktif = null;
     window.tableDtsen;
     window.tableAnggotaDtsen;
@@ -300,6 +331,11 @@ foreach ($maps_all as $i => $desa) {
         jQuery('#form-keluarga')[0].reset();
         jQuery('#id_keluarga_input').val('');
         jQuery('#judulmodalTambahData').html('Tambah Data Keluarga Baru');
+        if (window.user_role === 'rt') {
+            jQuery('#rt').val(window.rt_filter).attr('readonly', true);
+            jQuery('#rw').val(window.rw_filter).attr('readonly', true);
+        }
+
         jQuery('#modalTambahData').modal('show');
     }
 
@@ -319,6 +355,15 @@ foreach ($maps_all as $i => $desa) {
                 jQuery('#no_kk').val(d.no_kk);
                 jQuery('#alamat').val(d.alamat);
                 jQuery('#judulmodalTambahData').html('Edit Data Keluarga');
+
+                if (window.user_role === 'rt') {
+                    jQuery('#rt').val(window.rt_filter).attr('readonly', true);
+                    jQuery('#rw').val(window.rw_filter).attr('readonly', true);
+                } else {
+                    jQuery('#rt').val(d.rt);
+                    jQuery('#rw').val(d.rw);
+                }
+
                 jQuery('#modalTambahData').modal('show');
             } else {
                 alert(res.data.message);
@@ -556,35 +601,24 @@ foreach ($maps_all as $i => $desa) {
                     d.action = "get_datatable_data_usulan_dtsen";
                     d.api_key = ajax.apikey;
                     d.desa = "<?php echo $get_desa_kel['nama']; ?>";
+                    // Kirim rt/rw jika user RT
+                    if (window.user_role === 'rt') {
+                        d.rt_filter = window.rt_filter;
+                        d.rw_filter = window.rw_filter;
+                    }
                 }
             },
-            "columns": [{
-                    "data": "status_data",
-                    "className": "text-center"
-                },
-                {
-                    "data": "no_kk"
-                },
-                {
-                    "data": "alamat"
-                },
-                {
-                    "data": "provinsi"
-                },
-                {
-                    "data": "kabupaten"
-                },
-                {
-                    "data": "kecamatan"
-                },
-                {
-                    "data": "kelurahan"
-                },
-                {
-                    "data": "aksi",
-                    "className": "text-center",
-                    "orderable": false
-                }
+            "columns": [
+                { "data": "status_data", "className": "text-center" },
+                { "data": "no_kk" },
+                { "data": "alamat" },
+                { "data": "provinsi" },
+                { "data": "kabupaten" },
+                { "data": "kecamatan" },
+                { "data": "kelurahan" },
+                { "data": "rt" },
+                { "data": "rw" },
+                { "data": "aksi", "className": "text-center", "orderable": false }
             ]
         });
     }

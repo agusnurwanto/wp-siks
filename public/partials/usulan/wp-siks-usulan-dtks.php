@@ -91,6 +91,8 @@ foreach ($maps_all as $i => $desa) {
                 <th class="text-center">Kabupaten / Kota</th>
                 <th class="text-center">Kecamatan</th>
                 <th class="text-center">Desa/Kelurahan</th>
+                <th class="text-center">RT</th>
+                <th class="text-center">RW</th>
                 <th class='text-center'>Atensi</th>
                 <th class='text-center'>BLT</th>
                 <th class='text-center'>BLT BBM</th>
@@ -171,11 +173,24 @@ foreach ($maps_all as $i => $desa) {
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="desaKelurahan">Desa/Kelurahan</label>
                                 <input type="text" class="form-control" id="desaKelurahan" name="desaKelurahan" value="<?php echo strtoupper($validate_user['desa']); ?>" disabled>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for='rt'>RT</label>
+                                    <input type='number' id='rt' name='rt' class='form-control' placeholder="Contoh: 1">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for='rw'>RW</label>
+                                    <input type='number' id='rw' name='rw' class='form-control' placeholder="Contoh: 2">
+                                </div>
+                            </div>
+                        </div>
+                            <div class="form-group">
                                 <label for="alamat">Alamat</label>
                                 <textarea class="form-control" id="alamat" name="alamat"></textarea>
                             </div>
@@ -510,6 +525,14 @@ foreach ($maps_all as $i => $desa) {
                         className: "text-center"
                     },
                     {
+                        "data": 'rt',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'rw',
+                        className: "text-center"
+                    },
+                    {
                         "data": 'ATENSI',
                         className: "text-center"
                     },
@@ -624,6 +647,8 @@ foreach ($maps_all as $i => $desa) {
                 jQuery('#nik').val(res.data.NIK);
                 jQuery('#noKk').val(res.data.NOKK);
                 jQuery('#firstSK').val(res.data.FIRST_SK);
+                jQuery('#rt').val(res.data.rt);
+                jQuery('#rw').val(res.data.rw);
                 jQuery('#alamat').text(res.data.Alamat);
 
                 // Reset radio buttons untuk opsi-opsi
@@ -739,6 +764,8 @@ foreach ($maps_all as $i => $desa) {
         jQuery('#noKk').val('');
         jQuery('#firstSK').val('');
         jQuery('#alamat').text('');
+        jQuery('#rt').val('');
+        jQuery('#rw').val('');
 
         jQuery('input[name="atensi"]').prop('checked', false);
         jQuery('input[name="blt"]').prop('checked', false);
@@ -882,6 +909,8 @@ foreach ($maps_all as $i => $desa) {
             'nik': 'NIK tidak boleh kosong!',
             'noKk': 'Nomor KK tidak boleh kosong!',
             'alamat': 'Alamat tidak boleh kosong!',
+            'rt': 'RT tidak boleh kosong!',
+            'rw': 'RW tidak boleh kosong!',
             'atensi': 'Atensi tidak boleh kosong!',
             'blt': 'BLT tidak boleh kosong!',
             'bltBbm': 'BLT BBM tidak boleh kosong!',

@@ -1,7 +1,13 @@
 <?php
 $input = shortcode_atts(array(
-    'id_desa' => ''
+    'id_desa' => '',
+    'rt'      => '',
+    'rw'      => '',
 ), $atts);
+
+$current_user = wp_get_current_user();
+$user_roles = $current_user->roles;
+$is_rt_role = in_array('rt', $user_roles);
 if (empty($input['id_desa'])) {
     die('id_desa kosong');
 }
@@ -14,51 +20,155 @@ if ($validate_user['status'] === 'error') {
 }
 
 global $wpdb;
-
-$center = $this->get_center();
+$center   = $this->get_center();
 $maps_all = $this->get_polygon();
 foreach ($maps_all as $i => $desa) {
-    $html = '
-        <table>
-    ';
+    $html = '<table>';
     foreach ($desa['data'] as $k => $v) {
-        $html .= '
-            <tr>
-                <td><b>' . $k . '</b></td>
-                <td>' . $v . '</td></a>
-            </tr>
-        ';
+        $html .= '<tr><td><b>' . $k . '</b></td><td>' . $v . '</td></tr>';
     }
     $html .= '</table>';
     $maps_all[$i]['html'] = $html;
 }
-$desa = $wpdb->get_row($wpdb->prepare('
-    SELECT
-        *
-    FROM data_batas_desa_siks
-    WHERE desa=%s
-      AND kecamatan=%s
-      AND active=1
-', $validate_user['desa'], $validate_user['kecamatan']), ARRAY_A);
-$default_location = $this->getSearchLocation($desa);
 
+$desa = $wpdb->get_row(
+    $wpdb->prepare('
+        SELECT * FROM data_batas_desa_siks
+        WHERE desa=%s AND kecamatan=%s AND active=1
+    ', $validate_user['desa'], $validate_user['kecamatan']),
+    ARRAY_A
+);
+$default_location = $this->getSearchLocation($desa);
 ?>
+
 <style type="text/css">
-    .wrap-table {
-        overflow: auto;
-        max-height: 100vh;
-        width: 100%;
+    .wrap-table { 
+        overflow: auto; 
+        max-height: 100vh; 
+        width: 100%; 
+    }
+
+    #modal-rt-rw-overlay-at { 
+        display:none; 
+        position:fixed; 
+        inset:0; 
+        background:rgba(0,0,0,.55); 
+        z-index:99999; 
+        align-items:center; 
+        justify-content:center; 
+    }
+    #modal-rt-rw-overlay-at.active { 
+        display:flex; 
+    }
+    #modal-rt-rw-at { 
+        background:#fff; 
+        border-radius:8px; 
+        padding:28px 32px; 
+        width:100%; 
+        max-width:640px; 
+        max-height:90vh; 
+        overflow-y:auto; 
+        box-shadow:0 8px 32px rgba(0,0,0,.22); 
+        position:relative; 
+    }
+    #modal-rt-rw-at h4 { 
+        margin:0 0 18px; 
+        font-size:18px; 
+        font-weight:700; 
+        color:#1a1a2e; 
+    }
+    #modal-rt-rw-at .modal-close { 
+        position:absolute; 
+        top:14px; 
+        right:18px; 
+        background:none; 
+        border:none; 
+        font-size:22px; 
+        cursor:pointer; 
+        color:#666; 
+    }
+    #modal-rt-rw-at .modal-close:hover { 
+        color:#c0392b; 
+    }
+    #modal-nama-list-at { 
+        max-height:180px; 
+        overflow-y:auto; 
+        border:1px solid #dee2e6; 
+        border-radius:5px; 
+        padding:8px 12px; 
+        margin-bottom:18px; 
+        background:#f8f9fa; 
+    }
+    #modal-nama-list-at p { 
+        margin:3px 0; 
+        font-size:13.5px; 
+        color:#333; 
+    }
+    #notif-rt-rw-at { 
+        display:none; 
+        background:#fff3cd; 
+        border:1px solid #ffc107; 
+        color:#856404; 
+        border-radius:5px; 
+        padding:10px 14px; 
+        margin-bottom:14px; 
+        font-size:13.5px; 
+    }
+    .form-rt-rw-at { 
+        display:flex; 
+        gap:16px; 
+        margin-bottom:20px; 
+    }
+    .form-rt-rw-at .form-group { 
+        flex:1; 
+    }
+    .form-rt-rw-at label { 
+        font-weight:600; 
+        font-size:13px; 
+        margin-bottom:4px; 
+        display:block; 
+    }
+    .form-rt-rw-at input { 
+        width:100%; 
+        padding:7px 10px; 
+        border:1px solid #ced4da; 
+        border-radius:5px; 
+        font-size:14px; 
+    }
+    .modal-actions-at { 
+        display:flex; 
+        gap:10px; 
+        justify-content:flex-end; 
+    }
+    #toolbar-rt-rw-at { 
+        margin-bottom:10px; 
+    }
+    #btn-tambah-rt-rw-at { display:none; 
     }
 </style>
+
 <h1 class="text-center">Peta Sebaran Anak Terlantar<br>DESA <?php echo strtoupper($validate_user['desa']); ?></h1>
-<div style="width: 95%; margin: 0 auto; min-height: 90vh; padding-bottom: 75px;">
-    <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
-    <div style="padding: 10px;margin:0 0 3rem 0;">
+
+<div style="width:95%; margin:0 auto; min-height:90vh; padding-bottom:75px;">
+    <div id="map-canvas-siks" style="width:100%; height:400px;"></div>
+    <div style="padding:10px; margin:0 0 3rem 0;">
         <h1 class="text-center" style="margin:3rem;">Data Anak Terlantar<br>DESA <?php echo strtoupper($validate_user['desa']); ?></h1>
+        
+        <?php if (!$is_rt_role): ?>
+        <div id="toolbar-rt-rw-wr">
+            <button id="btn-tambah-rt-rw-ls" class="btn btn-primary">
+                <i class="dashicons dashicons-edit" style="vertical-align:middle;"></i>
+                Tambah RT RW
+            </button>
+        </div>
+        <?php endif; ?>
+
         <div class="wrap-table">
-            <table id="tableAnakTerlantarPerDesa" cellpadding="2" cellspacing="0" style="font-family:\'Open Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif; border-collapse: collapse; width:100%; overflow-wrap: break-word;" class="table table-bordered">
+            <table id="tableAnakTerlantarPerDesa" cellpadding="2" cellspacing="0" class="table table-bordered"
+                   style="font-family:'Open Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; border-collapse:collapse; width:100%; overflow-wrap:break-word;">
                 <thead>
                     <tr>
+                        <th class="text-center"><input type="checkbox" id="check-all-at" title="Pilih Semua"></th>
                         <th class="text-center">Aksi</th>
                         <th class="text-center">Nama</th>
                         <th class="text-center">No KK</th>
@@ -71,125 +181,267 @@ $default_location = $this->getSearchLocation($desa);
                         <th class="text-center">Kabupaten/Kota</th>
                         <th class="text-center">Kecamatan</th>
                         <th class="text-center">Desa/Kelurahan</th>
+                        <th class="text-center">RT</th>
+                        <th class="text-center">RW</th>
                         <th class="text-center">Alamat</th>
                         <th class="text-center">Lampiran</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
     </div>
-    <script>
-        window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
-        window.maps_center_siks = <?php echo json_encode($center); ?>;
-        jQuery(document).ready(function() {
-            cari_alamat_siks('<?php echo $default_location; ?>');
-            get_data_anak_terlantar();
+</div>
+
+<div id="modal-rt-rw-overlay-at">
+    <div id="modal-rt-rw-at">
+        <button class="modal-close" id="btn-modal-close-at">&times;</button>
+        <h4>Tambah / Edit RT &amp; RW — Anak Terlantar</h4>
+        <p style="font-size:13px;color:#555;margin-bottom:8px;"><strong>Data yang dipilih:</strong></p>
+        <div id="modal-nama-list-at"></div>
+        <div id="notif-rt-rw-at">RT atau RW tidak sesuai, silahkan cek ulang!</div>
+        <div class="form-rt-rw-at">
+            <div class="form-group">
+                <label for="input-rt-at">RT</label>
+                <input type="text" id="input-rt-at" placeholder="Contoh: 1" maxlength="10">
+            </div>
+            <div class="form-group">
+                <label for="input-rw-at">RW</label>
+                <input type="text" id="input-rw-at" placeholder="Contoh: 2" maxlength="10">
+            </div>
+        </div>
+        <div class="modal-actions-at">
+            <button class="btn btn-secondary" id="btn-modal-cancel-at">Batal</button>
+            <button class="btn btn-primary" id="btn-modal-save-at">Simpan</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.maps_all_siks    = <?php echo json_encode($maps_all); ?>;
+    window.maps_center_siks = <?php echo json_encode($center); ?>;
+
+    var selectedRowsAt = [];
+
+    function updateToolbarAt() {
+        jQuery('#btn-tambah-rt-rw-at').toggle(selectedRowsAt.length > 0);
+    }
+
+    function openModalAt() {
+        var html = '';
+        selectedRowsAt.forEach(function(r) { html += '<p>&#9656; ' + r.Nama + '</p>'; });
+        jQuery('#modal-nama-list-at').html(html);
+
+        var rtValues = [...new Set(selectedRowsAt.map(function(r){ return (r.rt||'').trim(); }))];
+        var rwValues = [...new Set(selectedRowsAt.map(function(r){ return (r.rw||'').trim(); }))];
+        var allMatch = rtValues.length === 1 && rwValues.length === 1;
+
+        if (!allMatch) {
+            jQuery('#notif-rt-rw-at').show();
+            jQuery('#input-rt-at, #input-rw-at').val('').prop('disabled', true);
+            jQuery('#btn-modal-save-at').prop('disabled', true);
+        } else {
+            jQuery('#notif-rt-rw-at').hide();
+            jQuery('#input-rt-at').val(rtValues[0]).prop('disabled', false);
+            jQuery('#input-rw-at').val(rwValues[0]).prop('disabled', false);
+            jQuery('#btn-modal-save-at').prop('disabled', false);
+        }
+        jQuery('#modal-rt-rw-overlay-at').addClass('active');
+    }
+
+    function closeModalAt() {
+        jQuery('#modal-rt-rw-overlay-at').removeClass('active');
+        jQuery('#input-rt-at, #input-rw-at').val('');
+    }
+
+    jQuery(document).ready(function() {
+        cari_alamat_siks('<?php echo $default_location; ?>');
+        get_data_anak_terlantar();
+
+        jQuery('#check-all-at').on('change', function() {
+            jQuery('#tableAnakTerlantarPerDesa tbody input.row-check-at')
+                .prop('checked', jQuery(this).is(':checked')).trigger('change');
         });
 
-        function get_data_anak_terlantar() {
-            if (typeof tableAnakTerlantar === 'undefined') {
-                window.tableAnakTerlantar = jQuery('#tableAnakTerlantarPerDesa').on('preXhr.dt', function(e, settings, data) {
-                    jQuery("#wrap-loading").show();
-                }).DataTable({
-                    "processing": true,
-                    "serverSide": true,
-                    "search": {
-                        return: true
-                    },
-                    "ajax": {
-                        url: ajax.url,
-                        type: 'POST',
-                        dataType: 'json',
+        jQuery('#btn-tambah-rt-rw-at').on('click', function() {
+            if (selectedRowsAt.length > 0) openModalAt();
+        });
+
+        jQuery('#btn-modal-close-at, #btn-modal-cancel-at').on('click', closeModalAt);
+        jQuery('#modal-rt-rw-overlay-at').on('click', function(e) {
+            if (e.target === this) closeModalAt();
+        });
+
+        jQuery('#btn-modal-save-at').on('click', function() {
+            var rt = jQuery('#input-rt-at').val().trim();
+            var rw = jQuery('#input-rw-at').val().trim();
+            if (rt === '' || rw === '') { alert('RT dan RW tidak boleh kosong!'); return; }
+
+            var postData = {
+                action:  'update_rt_rw_siks',
+                api_key: ajax.apikey,
+                tipe:    'anak_terlantar',
+                rt:      rt,
+                rw:      rw
+            };
+            selectedRowsAt.forEach(function(r, i) { postData['ids[' + i + ']'] = r.id; });
+
+            jQuery.ajax({
+                url: ajax.url, type: 'POST', dataType: 'json', data: postData,
+                beforeSend: function() {
+                    jQuery('#wrap-loading').show();
+                    jQuery('#btn-modal-save-at').prop('disabled', true).text('Menyimpan…');
+                },
+                success: function(res) {
+                    jQuery('#wrap-loading').hide();
+                    if (res && res.status) {
+                        closeModalAt();
+                        selectedRowsAt = [];
+                        updateToolbarAt();
+                        jQuery('#check-all-at').prop('checked', false);
+                        window.tableAnakTerlantar.ajax.reload(null, false);
+                        alert('RT & RW berhasil diperbarui!');
+                    } else {
+                        alert('Gagal: ' + (res.message || 'Terjadi kesalahan'));
+                    }
+                },
+                error: function() { jQuery('#wrap-loading').hide(); alert('Terjadi kesalahan koneksi.'); },
+                complete: function() { jQuery('#btn-modal-save-at').prop('disabled', false).text('Simpan'); }
+            });
+        });
+    });
+
+    function get_data_anak_terlantar() {
+        if (typeof tableAnakTerlantar === 'undefined') {
+            window.tableAnakTerlantar = jQuery('#tableAnakTerlantarPerDesa')
+                .on('preXhr.dt', function() { jQuery('#wrap-loading').show(); })
+                .DataTable({
+                    processing: true, serverSide: true,
+                    search: { return: true },
+                    ajax: {
+                        url: ajax.url, type: 'POST', dataType: 'json',
                         data: {
-                            'action': 'get_datatable_anak_terlantar',
-                            'api_key': ajax.apikey,
-                            'desa_kelurahan': '<?php echo $validate_user['desa'] ?>',
-                            'kecamatan': '<?php echo $validate_user['kecamatan']; ?>'
+                            action: 'get_datatable_anak_terlantar',
+                            api_key: ajax.apikey,
+                            rt: '<?php echo esc_js($input['rt']); ?>',
+                            rw: '<?php echo esc_js($input['rw']); ?>',
+                            desa_kelurahan: '<?php echo $validate_user['desa']; ?>',
+                            kecamatan: '<?php echo $validate_user['kecamatan']; ?>'
                         }
                     },
-                    lengthMenu: [
-                        [20, 50, 100, -1],
-                        [20, 50, 100, "All"]
-                    ],
-                    order: [
-                        [0, 'asc']
-                    ],
-                    "drawCallback": function(settings) {
+                    lengthMenu: [[20, 50, 100, -1], [20, 50, 100, 'All']],
+                    order: [[1, 'asc']],
+                    drawCallback: function(settings) {
                         var api = this.api();
-                        api.rows({
-                            page: 'current'
-                        }).data().map(function(b, i) {
+                        api.rows({ page: 'current' }).data().map(function(b) {
                             if (b.lat && b.lng) {
                                 var data = b.aksi.split(", true, '")[1].split("')")[0];
                                 setCenterSiks(b.lat, b.lng, true, data, true);
                             }
                         });
-                        jQuery("#wrap-loading").hide();
-                    },
-                    "columns": [{
-                            "data": 'aksi',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'nama',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'kk',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'nik',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'jenis_kelamin',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'tanggal_lahir',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'usia',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'pendidikan',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'provinsi',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'kabkot',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'kecamatan',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'desa_kelurahan',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'alamat',
-                            className: "text-center"
-                        },
-                        {
-                            "data": 'file_lampiran',
-                            className: "text-center"
-                        }
+                        jQuery('#wrap-loading').hide();
 
+                        jQuery('#tableAnakTerlantarPerDesa tbody')
+                            .off('change', 'input.row-check-at')
+                            .on('change', 'input.row-check-at', function() {
+                                var cb   = jQuery(this);
+                                var id   = String(cb.data('id'));
+                                var nama = cb.data('nama');
+                                var rt   = String(cb.data('rt') || '');
+                                var rw   = String(cb.data('rw') || '');
+                                if (cb.is(':checked')) {
+                                    if (!selectedRowsAt.find(function(r){ return r.id === id; })) {
+                                        selectedRowsAt.push({ id: id, Nama: nama, rt: rt, rw: rw });
+                                    }
+                                } else {
+                                    selectedRowsAt = selectedRowsAt.filter(function(r){ return r.id !== id; });
+                                    jQuery('#check-all-at').prop('checked', false);
+                                }
+                                updateToolbarAt();
+                            });
+                    },
+                    columns: [
+                        {
+                            data: 'id', orderable: false, searchable: false,
+                            render: function(data, type, row) {
+                                var id   = String(data || '');
+                                var nama = (row.nama || '').replace(/"/g, '&quot;');
+                                var rt   = (row.rt   || '').replace(/"/g, '&quot;');
+                                var rw   = (row.rw   || '').replace(/"/g, '&quot;');
+                                return '<input type="checkbox" class="row-check-at"' +
+                                       ' data-id="' + id + '" data-nama="' + nama + '"' +
+                                       ' data-rt="'  + rt  + '" data-rw="'  + rw  + '">';
+                            }
+                        },
+                        { 
+                            data: 'aksi',          
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'nama',          
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'kk',            
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'nik',           
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'jenis_kelamin', 
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'tanggal_lahir', 
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'usia',          
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'pendidikan',    
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'provinsi',      
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'kabkot',        
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'kecamatan',     
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'desa_kelurahan',
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'rt',            
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'rw',            
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'alamat',        
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'file_lampiran', 
+                            className: 'text-center' 
+                        }
                     ]
                 });
-            } else {
-                tableAnakTerlantar.draw();
-            }
+        } else {
+            window.tableAnakTerlantar.draw();
         }
-    </script>
-    <script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>
+    }
+</script>
+<script async defer src="<?php echo $this->get_siks_map_url(); ?>"></script>

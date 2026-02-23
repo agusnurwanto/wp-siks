@@ -93,6 +93,8 @@ foreach ($maps_all as $i => $desa) {
                 <th class="text-center">Kabupaten/Kota</th>
                 <th class="text-center">Kecamatan</th>
                 <th class="text-center">Desa/Kelurahan</th>
+                <th class="text-center">RT</th>
+                <th class="text-center">RW</th>
                 <th class="text-center">Alamat</th>
                 <th class="text-center">Lampiran</th>
                 <th class="text-center">Tahun Anggaran</th>
@@ -255,6 +257,21 @@ foreach ($maps_all as $i => $desa) {
                                     <div class="form-group">
                                         <label>Desa/Kelurahan</label>
                                         <input type="text" class="form-control" id="desaKelurahan" name="desaKelurahan" value="<?php echo strtoupper($validate_user['desa']); ?>" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for='rt'>RT</label>
+                                        <input type='number' id='rt' name='rt' class='form-control' placeholder="Contoh: 01">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for='rw'>RW</label>
+                                        <input type='number' id='rw' name='rw' class='form-control' placeholder="Contoh: 02">
                                     </div>
                                 </div>
                             </div>
@@ -437,6 +454,14 @@ foreach ($maps_all as $i => $desa) {
                         className: "text-center"
                     },
                     {
+                        "data": 'rt',
+                        className: "text-left"
+                    },
+                    {
+                        "data": 'rw',
+                        className: "text-left"
+                    },
+                    {
                         "data": 'alamat',
                         className: "text-left"
                     },
@@ -556,6 +581,8 @@ foreach ($maps_all as $i => $desa) {
                     jQuery('#usia').val(res.data.usia);
                     jQuery('#pendidikan').val(res.data.pendidikan);
                     jQuery('#alamat').val(res.data.alamat);
+                    jQuery('#rt').val(res.data.rt);
+                    jQuery('#rw').val(res.data.rw);
                     jQuery('input[name="statusLembaga"]').prop('checked', false);
                     if (res.data.kelembagaan === '1') {
                         jQuery('#dalam_lembaga').prop('checked', true);
@@ -614,6 +641,8 @@ foreach ($maps_all as $i => $desa) {
         jQuery('#usia').val('');
         jQuery('input[name="statusLembaga"]').prop('checked', false);
         jQuery('#alamat').val('');
+        jQuery('#rt').val('');
+        jQuery('#rw').val('');
         jQuery('#lampiran').val('');
 
         jQuery('#file_lampiran_existing').hide();
@@ -757,6 +786,8 @@ foreach ($maps_all as $i => $desa) {
             'usia': 'Usia tidak boleh kosong!',
             'pendidikan': 'Pendidikan tidak boleh kosong!',
             'alamat': 'Alamat tidak boleh kosong!',
+            'rt': 'RT tidak boleh kosong!',
+            'rw': 'RW tidak boleh kosong!',
             'latitude': 'Koordinat Latitude tidak boleh kosong!',
             'longitude': 'Koordinat Longitude tidak boleh kosong!',
             'statusLembaga': 'Status Lembaga harus dipilih!'

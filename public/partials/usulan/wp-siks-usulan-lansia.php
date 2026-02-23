@@ -88,6 +88,8 @@ foreach ($maps_all as $i => $desa) {
                 <th class="text-center">Kabupaten / Kota</th>
                 <th class="text-center">Kecamatan</th>
                 <th class="text-center">Desa</th>
+                <th class="text-center">RT</th>
+                <th class="text-center">RW</th>
                 <th class="text-center">Alamat</th>
                 <th class="text-center">Tanggal Lahir</th>
                 <th class="text-center">Usia</th>
@@ -179,27 +181,43 @@ foreach ($maps_all as $i => $desa) {
                     </div>
                     <div class="card-body">
                         <div class="form-row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="provinsi">Provinsi</label>
                                 <input type="text" class="form-control" id="provinsi" value="<?php echo $provinsi; ?>" disabled>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="kecamatan">Kecamatan</label>
                                 <input type="text" class="form-control" id="kecamatan" value="<?php echo strtoupper($validate_user['kecamatan']); ?>" disabled>
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="kabkot">Kabupaten / Kota</label>
                                 <input type="text" class="form-control" id="kabkot" value="<?php echo $kabkot; ?>" disabled>
                             </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="desa">Desa</label>
                                 <input type="text" class="form-control" id="desa" value="<?php echo strtoupper($validate_user['desa']); ?>" disabled>
                             </div>
-                            <div class="form-group col-md-4">
-                                <label for="alamat">Alamat</label>
-                                <textarea class="form-control" id="alamat" name="alamat"></textarea>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for='rt'>RT</label>
+                                    <input type='number' id='rt' name='rt' class='form-control' placeholder="Contoh: 01">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for='rw'>RW</label>
+                                    <input type='number' id='rw' name='rw' class='form-control' placeholder="Contoh: 02">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="alamat">Alamat</label>
+                                    <textarea class="form-control" id="alamat" name="alamat"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -430,6 +448,14 @@ foreach ($maps_all as $i => $desa) {
                         className: "text-center"
                     },
                     {
+                        "data": 'rt',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'rw',
+                        className: "text-center"
+                    },
+                    {
                         "data": 'alamat',
                         className: "text-center"
                     },
@@ -580,6 +606,8 @@ foreach ($maps_all as $i => $desa) {
                 jQuery('#tanggalLahir').val(res.data.tanggal_lahir);
                 jQuery('#usia').val(res.data.usia);
                 jQuery('#alamat').text(res.data.alamat);
+                jQuery('#rt').text(res.data.rt);
+                jQuery('#rw').text(res.data.rw);
                 jQuery('#dokumenKependudukan').val(res.data.dokumen_kependudukan);
                 jQuery('#statusTempatTinggal').val(res.data.status_tempat_tinggal);
                 jQuery('#statusPemenuhanKebutuhan').val(res.data.status_pemenuhan_kebutuhan);
@@ -638,6 +666,8 @@ foreach ($maps_all as $i => $desa) {
         jQuery('#tanggalLahir').val('');
         jQuery('#usia').val('');
         jQuery('#alamat').text('');
+        jQuery('#rt').val('');
+        jQuery('#rw').val('');
         jQuery('#dokumenKependudukan').val('');
         jQuery('#statusTempatTinggal').val('');
         jQuery('#statusPemenuhanKebutuhan').val('');
@@ -788,6 +818,8 @@ foreach ($maps_all as $i => $desa) {
             'tanggalLahir': 'Tanggal Lahir tidak boleh kosong!',
             'usia': 'Usia tidak boleh kosong!',
             'alamat': 'Alamat tidak boleh kosong!',
+            'rt': 'RT tidak boleh kosong!',
+            'rw': 'RW tidak boleh kosong!',
             'dokumenKependudukan': 'Dokumen Kependudukan tidak boleh kosong!',
             'statusTempatTinggal': 'Status Tempat Tinggal tidak boleh kosong!',
             'statusPemenuhanKebutuhan': 'Status Pemenuhan Kebutuhan tidak boleh kosong!',

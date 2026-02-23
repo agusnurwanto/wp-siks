@@ -89,6 +89,8 @@ foreach ($maps_all as $i => $desa) {
                 <th class="text-center">Kota / Kabupaten</th>
                 <th class="text-center">Kecamatan</th>
                 <th class="text-center">Desa / Kelurahan</th>
+                <th class="text-center">RT</th>
+                <th class="text-center">RW</th>
                 <th class="text-center">Alamat</th>
                 <th class="text-center">Status DTKS</th>
                 <th class="text-center">Status Pernikahan</th>
@@ -211,25 +213,39 @@ foreach ($maps_all as $i => $desa) {
                     <div class="card-header">Alamat</div>
                     <div class="card-body">
                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="kabKot">Kota / Kabupaten</label>
-                                <input type="text" name="kabKot" class="form-control" id="kabKot" value="<?php echo $kabkot; ?>" disabled>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="kecamatan">Kecamatan</label>
-                                <input type="text" name="kecamatan" class="form-control" id="kecamatan" value="<?php echo strtoupper($validate_user['kecamatan']); ?>" disabled>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="desaKel">Desa / Kelurahan</label>
-                                <input type="text" name="desaKel" class="form-control" id="desaKel" value="<?php echo strtoupper($validate_user['desa']); ?>" disabled>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="provinsi">Provinsi</label>
                                 <input type="text" name="provinsi" class="form-control" id="provinsi" value="<?php echo $provinsi; ?>" disabled>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
+                                <label for="kabKot">Kota / Kabupaten</label>
+                                <input type="text" name="kabKot" class="form-control" id="kabKot" value="<?php echo $kabkot; ?>" disabled>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="kecamatan">Kecamatan</label>
+                                <input type="text" name="kecamatan" class="form-control" id="kecamatan" value="<?php echo strtoupper($validate_user['kecamatan']); ?>" disabled>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="desaKel">Desa / Kelurahan</label>
+                                <input type="text" name="desaKel" class="form-control" id="desaKel" value="<?php echo strtoupper($validate_user['desa']); ?>" disabled>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for='rt'>RT</label>
+                                    <input type='number' id='rt' name='rt' class='form-control' placeholder="Contoh: 01">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for='rw'>RW</label>
+                                    <input type='number' id='rw' name='rw' class='form-control' placeholder="Contoh: 02">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
                                 <label for="alamat">Alamat</label>
                                 <textarea name="alamat" class="form-control" id="alamat" placeholder="Masukkan Alamat"></textarea>
                             </div>
@@ -374,6 +390,14 @@ foreach ($maps_all as $i => $desa) {
                         className: "text-center"
                     },
                     {
+                        "data": 'rt',
+                        className: "text-center"
+                    },
+                    {
+                        "data": 'rw',
+                        className: "text-center"
+                    },
+                    {
                         "data": 'alamat',
                         className: "text-left"
                     },
@@ -499,6 +523,8 @@ foreach ($maps_all as $i => $desa) {
                 jQuery('#nama').val(res.data.nama);
                 jQuery('#usia').val(res.data.usia);
                 jQuery('#alamat').text(res.data.alamat);
+                jQuery('#rt').val(res.data.rt);
+                jQuery('#rw').val(res.data.rw);
                 jQuery('#latitude').val(res.data.lat);
                 jQuery('#longitude').val(res.data.lng);
 
@@ -580,6 +606,8 @@ foreach ($maps_all as $i => $desa) {
         jQuery('#nama').val('');
         jQuery('#usia').val('');
         jQuery('#alamat').text('');
+        jQuery('#rt').val('');
+        jQuery('#rw').val('');
         jQuery('input[name="statusDtks"]').prop('checked', false);
         jQuery('input[name="statusPernikahan"]').prop('checked', false);
         jQuery('input[name="statusUsaha"]').prop('checked', false);
@@ -711,6 +739,8 @@ foreach ($maps_all as $i => $desa) {
             'nama': 'Data Nama tidak boleh kosong!',
             'usia': 'Data Usia tidak boleh kosong!',
             'alamat': 'Data Alamat tidak boleh kosong!',
+            'rt': 'Data RT tidak boleh kosong!',
+            'rw': 'Data RW tidak boleh kosong!',
             'tahunAnggaran': 'Data Tahun Anggaran tidak boleh kosong!',
             'statusDtks': 'Pilih Status DTKS!',
             'statusPernikahan': 'Pilih Status Pernikahan!',

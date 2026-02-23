@@ -360,6 +360,7 @@ class Wp_Siks {
 		$this->loader->add_action('wp_ajax_submit_user_rt_rw', $plugin_public, 'submit_user_rt_rw');
 		$this->loader->add_action('wp_ajax_get_data_user_rt_rw_by_id', $plugin_public, 'get_data_user_rt_rw_by_id');
 		$this->loader->add_action('wp_ajax_delete_user_rt_rw', $plugin_public, 'delete_user_rt_rw');
+		$this->loader->add_action('wp_ajax_update_rt_rw_siks', $plugin_public, 'update_rt_rw_siks');
 
 		add_shortcode('cek_bansos', array($plugin_public, 'cek_bansos'));
 		add_shortcode('cek_nik_siks', array($plugin_public, 'cek_nik_siks'));

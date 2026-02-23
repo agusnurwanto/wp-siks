@@ -1750,115 +1750,120 @@ class Wp_Siks_Admin
 
 	function get_data_dtks_siks()
 	{
-		global $wpdb;
+	    global $wpdb;
 
-		try {
-			if (!empty($_POST)) {
-				if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
+	    try {
+	        if (!empty($_POST)) {
+	            if (!empty($_POST['api_key']) && $_POST['api_key'] == get_option(SIKS_APIKEY)) {
 
-					$params = $columns = $totalRecords = $data = array();
-					$params = $_REQUEST;
-					$columns = array(
-						0 => 'Nama',
-						1 => 'NIK',
-						2 => 'NOKK',
-						3 => 'Alamat',
-						4 => 'provinsi',
-						5 => 'kabupaten',
-						6 => 'kecamatan',
-						7 => 'desa_kelurahan',
-						8 => 'ATENSI',
-						9 => 'BLT',
-						10 => 'BLT_BBM',
-						11 => 'BNPT_PPKM',
-						12 => 'BPNT',
-						13 => 'BST',
-						14 => 'FIRST_SK',
-						15 => 'PBI',
-						16 => 'PENA',
-						17 => 'PERMAKANAN',
-						18 => 'RUTILAHU',
-						19 => 'SEMBAKO_ADAPTIF',
-						20 => 'YAPI',
-						21 => 'PKH',
-						22 => 'update_at',
-					);
-					$where = $sqlTot = $sqlRec = "";
+	                $params       = $_REQUEST;
+	                $totalRecords = 0;
+	                $columns = array(
+	                    0  => 'Nama',
+	                    1  => 'NIK',
+	                    2  => 'NOKK',
+	                    3  => 'Alamat',
+	                    4  => 'provinsi',
+	                    5  => 'kabupaten',
+	                    6  => 'kecamatan',
+	                    7  => 'desa_kelurahan',
+	                    8  => 'rt',
+	                    9  => 'rw',
+	                    10 => 'ATENSI',
+	                    11 => 'BLT',
+	                    12 => 'BLT_BBM',
+	                    13 => 'BNPT_PPKM',
+	                    14 => 'BPNT',
+	                    15 => 'BST',
+	                    16 => 'FIRST_SK',
+	                    17 => 'PBI',
+	                    18 => 'PENA',
+	                    19 => 'PERMAKANAN',
+	                    20 => 'RUTILAHU',
+	                    21 => 'SEMBAKO_ADAPTIF',
+	                    22 => 'YAPI',
+	                    23 => 'PKH',
+	                    24 => 'update_at',
+	                );
 
-					if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
-						$where .= $wpdb->prepare(' AND desa_kelurahan=%s', $_POST['desa']);
-						$where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
+	                $where = '';
+
+	                if (!empty($_POST['desa']) && !empty($_POST['kecamatan'])) {
+	                    $where .= $wpdb->prepare(' AND desa_kelurahan=%s', $_POST['desa']);
+	                    $where .= $wpdb->prepare(' AND kecamatan=%s', $_POST['kecamatan']);
+	                }
+	                
+			        if (!empty($_POST['rt']) && !empty($_POST['rw'])) {
+					    $where .= $wpdb->prepare(' AND rt=%s', $_POST['rt']);
+					    $where .= $wpdb->prepare(' AND rw=%s', $_POST['rw']);
 					}
 
-					if (!empty($params['search']['value'])) {
-						$where .= " AND (";
-						$where .= " NIK LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-						$where .= " OR Nama LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-						$where .= " OR Alamat LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-						$where .= " OR NOKK LIKE " . $wpdb->prepare('%s', "%" . $params['search']['value'] . "%");
-						$where .= ")";
-					}
+	                if (!empty($params['search']['value'])) {
+	                    $sv = $params['search']['value'];
+	                    $where .= " AND (";
+	                    $where .= " NIK  LIKE " . $wpdb->prepare('%s', "%{$sv}%");
+	                    $where .= " OR Nama   LIKE " . $wpdb->prepare('%s', "%{$sv}%");
+	                    $where .= " OR Alamat LIKE " . $wpdb->prepare('%s', "%{$sv}%");
+	                    $where .= " OR NOKK   LIKE " . $wpdb->prepare('%s', "%{$sv}%");
+	                    $where .= ")";
+	                }
 
-					if (!empty($params['columns'][1]['search']['value']) && $params['columns'][1]['search']['value'] == 'kk_kosong') {
-						$where .= " AND NOKK = '' ";
-					}
+	                // Filter kriteria
+	                if (!empty($params['columns'][1]['search']['value']) && $params['columns'][1]['search']['value'] === 'kk_kosong') {
+	                    $where .= " AND NOKK = '' ";
+	                }
+	                if (!empty($params['columns'][1]['search']['value']) && $params['columns'][1]['search']['value'] === 'nik_atau_kk_kosong') {
+	                    $where .= " AND ( NIK = '' OR NOKK = '' )";
+	                }
+	                if (!empty($params['columns'][2]['search']['value']) && $params['columns'][2]['search']['value'] === 'nik_kosong') {
+	                    $where .= " AND NIK = '' ";
+	                }
+	                if (!empty($params['columns'][7]['search']['value'])) {
+	                    $where .= " AND kecamatan LIKE '" . esc_sql($params['columns'][7]['search']['value']) . "%' ";
+	                }
+	                if (!empty($params['columns'][8]['search']['value'])) {
+	                    $where .= " AND desa_kelurahan LIKE '" . esc_sql($params['columns'][8]['search']['value']) . "%' ";
+	                }
 
-					if (!empty($params['columns'][1]['search']['value']) && $params['columns'][1]['search']['value'] == 'nik_atau_kk_kosong') {
-						$where .= " AND ( NIK = '' OR NOKK = '' )";
-					}
+	                $select_cols   = 'id, ' . implode(', ', $columns);
+	                $where_first   = " WHERE 1=1 AND is_nonaktif = 1";
 
-					if (!empty($params['columns'][2]['search']['value']) && $params['columns'][2]['search']['value'] == 'nik_kosong') {
-						$where .= " AND NIK = '' ";
-					}
+	                $sqlTot = "SELECT count(id) as jml FROM `data_dtks`"       . $where_first . $where;
+	                $sqlRec = "SELECT {$select_cols} FROM `data_dtks`" . $where_first . $where;
 
-					if (!empty($params['columns'][7]['search']['value'])) {
-						$where .= " AND kecamatan LIKE '" . $params['columns'][7]['search']['value'] . "%' ";
-					}
+	                $order_col_idx = isset($params['order'][0]['column']) ? (int)$params['order'][0]['column'] : 2;
+	                $col_map_idx   = $order_col_idx - 2;
+	                $order_col     = isset($columns[$col_map_idx]) ? $columns[$col_map_idx] : 'Nama';
+	                $order_dir     = (isset($params['order'][0]['dir']) && strtolower($params['order'][0]['dir']) === 'desc') ? 'DESC' : 'ASC';
 
-					if (!empty($params['columns'][8]['search']['value'])) {
-						$where .= " AND desa_kelurahan LIKE '" . $params['columns'][8]['search']['value'] . "%' ";
-					}
+	                $limit = '';
+	                if ($params['length'] != -1) {
+	                    $limit = " LIMIT " . intval($params['start']) . ", " . intval($params['length']);
+	                }
+	                $sqlRec .= " ORDER BY {$order_col} {$order_dir}" . $limit;
 
-					$sql_tot = "SELECT count(id) as jml FROM `data_dtks`";
-					$sql = "SELECT " . implode(', ', $columns) . " FROM `data_dtks`";
-					$where_first = " WHERE 1=1 AND is_nonaktif = 1";
-					$sqlTot .= $sql_tot . $where_first;
-					$sqlRec .= $sql . $where_first;
-					if (isset($where) && $where != '') {
-						$sqlTot .= $where;
-						$sqlRec .= $where;
-					}
+	                $queryTot     = $wpdb->get_results($sqlTot, ARRAY_A);
+	                $totalRecords = $queryTot[0]['jml'];
+	                $queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
 
-					$limit = '';
-					if ($params['length'] != -1) {
-						$limit = "  LIMIT " . $wpdb->prepare('%d', $params['start']) . " ," . $wpdb->prepare('%d', $params['length']);
-					}
-					$sqlRec .=  " ORDER BY " . $columns[$params['order'][0]['column']] . "   " . $params['order'][0]['dir'] . $limit;
+	                exit(json_encode(array(
+	                    'draw'            => intval($params['draw']),
+	                    'recordsTotal'    => intval($totalRecords),
+	                    'recordsFiltered' => intval($totalRecords),
+	                    'data'            => $queryRecords,
+	                    'sql'             => $sqlRec,
+	                )));
 
-					$queryTot = $wpdb->get_results($sqlTot, ARRAY_A);
-					$totalRecords = $queryTot[0]['jml'];
-					$queryRecords = $wpdb->get_results($sqlRec, ARRAY_A);
-
-					exit(json_encode(array(
-						"draw"            => intval($params['draw']),
-						"recordsTotal"    => intval($totalRecords),
-						"recordsFiltered" => intval($totalRecords),
-						"data"            => $queryRecords,
-						"sql"             => $sqlRec
-					)));
-				} else {
-					throw new Exception('Api key tidak sesuai');
-				}
-			} else {
-				throw new Exception('Format tidak sesuai');
-			}
-		} catch (Exception $e) {
-			echo json_encode([
-				'status' => false,
-				'message' => $e->getMessage()
-			]);
-			exit;
-		}
+	            } else {
+	                throw new Exception('Api key tidak sesuai');
+	            }
+	        } else {
+	            throw new Exception('Format tidak sesuai');
+	        }
+	    } catch (Exception $e) {
+	        echo json_encode(['status' => false, 'message' => $e->getMessage()]);
+	        exit;
+	    }
 	}
 
 	function export_excel_data_dtks_siks()

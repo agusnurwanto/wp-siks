@@ -1,7 +1,13 @@
 <?php
 $input = shortcode_atts(array(
-    'id_desa' => ''
+    'id_desa' => '',
+    'rt'      => '',
+    'rw'      => '',
 ), $atts);
+
+$current_user = wp_get_current_user();
+$user_roles = $current_user->roles;
+$is_rt_role = in_array('rt', $user_roles);
 if (empty($input['id_desa'])) {
     die('id_desa kosong');
 }
@@ -17,16 +23,9 @@ global $wpdb;
 $center = $this->get_center();
 $maps_all = $this->get_polygon();
 foreach ($maps_all as $i => $desa) {
-    $html = '
-        <table>
-    ';
+    $html = '<table>';
     foreach ($desa['data'] as $k => $v) {
-        $html .= '
-            <tr>
-                <td><b>' . $k . '</b></td>
-                <td>' . $v . '</td></a>
-            </tr>
-        ';
+        $html .= '<tr><td><b>' . $k . '</b></td><td>' . $v . '</td></tr>';
     }
     $html .= '</table>';
     $maps_all[$i]['html'] = $html;
@@ -34,32 +33,173 @@ foreach ($maps_all as $i => $desa) {
 
 $desa = $wpdb->get_row(
     $wpdb->prepare('
-        SELECT
-            *
+        SELECT * 
         FROM data_batas_desa_siks
-        WHERE desa=%s
-          AND kecamatan=%s
-          AND active=1
+        WHERE desa=%s 
+            AND kecamatan=%s 
+            AND active=1
     ', $validate_user['desa'], $validate_user['kecamatan']),
     ARRAY_A
 );
 $default_location = $this->getSearchLocation($desa);
 ?>
+
 <style>
     .wrap-table {
         overflow: auto;
         max-height: 100vh;
         width: 100%;
     }
+
+    /* ── Modal Overlay ── */
+    #modal-rt-rw-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.55);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+    }
+    #modal-rt-rw-overlay.active {
+        display: flex;
+    }
+    #modal-rt-rw {
+        background: #fff;
+        border-radius: 8px;
+        padding: 28px 32px;
+        width: 100%;
+        max-width: 640px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 8px 32px rgba(0,0,0,.22);
+        position: relative;
+    }
+    #modal-rt-rw h4 {
+        margin: 0 0 18px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1a2e;
+    }
+    #modal-rt-rw .modal-close {
+        position: absolute;
+        top: 14px; right: 18px;
+        background: none; border: none;
+        font-size: 22px; cursor: pointer;
+        color: #666; line-height: 1;
+    }
+    #modal-rt-rw .modal-close:hover { color: #c0392b; }
+
+    /* Selected names list */
+    #modal-nama-list {
+        max-height: 180px;
+        overflow-y: auto;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 8px 12px;
+        margin-bottom: 18px;
+        background: #f8f9fa;
+    }
+    #modal-nama-list p {
+        margin: 3px 0;
+        font-size: 13.5px;
+        color: #333;
+    }
+
+    /* Notif */
+    #notif-rt-rw {
+        display: none;
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        color: #856404;
+        border-radius: 5px;
+        padding: 10px 14px;
+        margin-bottom: 14px;
+        font-size: 13.5px;
+    }
+
+    /* Form row */
+    .form-rt-rw {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+    .form-rt-rw .form-group {
+        flex: 1;
+    }
+    .form-rt-rw label {
+        font-weight: 600;
+        font-size: 13px;
+        margin-bottom: 4px;
+        display: block;
+    }
+    .form-rt-rw input {
+        width: 100%;
+        padding: 7px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    /* Action buttons */
+    .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    /* Toolbar area */
+    #toolbar-rt-rw {
+        margin-bottom: 10px;
+    }
+    #btn-tambah-rt-rw {
+        display: none; /* shown when ≥1 checkbox checked */
+    }
+
+    /* Checkbox column */
+    #tableData th:first-child,
+    #tableData td:first-child {
+        width: 36px;
+        text-align: center;
+    }
+    #tableData th:nth-child(2),
+    #tableData td:nth-child(2) {
+        width: 48px;
+        text-align: center;
+    }
 </style>
-<h1 class="text-center">Peta Sebaran DTKS<br>( Data Terpadu Kesejahteraan Sosial )<br>DESA <?php echo strtoupper($validate_user['desa']); ?></h1>
-<div style="padding: 10px;margin:0 0 3rem 0;">
-    <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
-    <h1 class="text-center" style="margin:3rem;">Data DTKS<br>DESA <?php echo strtoupper($validate_user['desa']); ?></h1>
+
+<h1 class="text-center">
+    Peta Sebaran DTKS<br>
+    ( Data Terpadu Kesejahteraan Sosial )<br>
+    DESA <?php echo strtoupper($validate_user['desa']); ?>
+</h1>
+
+<div style="padding:10px;margin:0 0 3rem 0;">
+    <div id="map-canvas-siks" style="width:100%;height:400px;"></div>
+
+    <h1 class="text-center" style="margin:3rem;">
+        Data DTKS<br>DESA <?php echo strtoupper($validate_user['desa']); ?>
+    </h1>
+
+    <?php if (!$is_rt_role): ?>
+        <div id="toolbar-rt-rw-wr">
+            <button id="btn-tambah-rt-rw-ls" class="btn btn-primary">
+                <i class="dashicons dashicons-edit" style="vertical-align:middle;"></i>
+                Tambah RT RW
+            </button>
+        </div>
+    <?php endif; ?>
+
     <div class="wrap-table">
         <table id="tableData" class="table table-bordered">
             <thead>
                 <tr>
+                    <!-- col 0: checkbox -->
+                    <th class="text-center">
+                        <input type="checkbox" id="check-all" title="Pilih Semua">
+                    </th>
+                    <!-- col 1: nomor -->
                     <th class="text-center">No.</th>
                     <th class="text-center">Nama</th>
                     <th class="text-center">NIK</th>
@@ -69,6 +209,9 @@ $default_location = $this->getSearchLocation($desa);
                     <th class="text-center">Kabupaten / Kota</th>
                     <th class="text-center">Kecamatan</th>
                     <th class="text-center">Desa/Kelurahan</th>
+                    <!-- ★ RT & RW setelah Desa ★ -->
+                    <th class="text-center">RT</th>
+                    <th class="text-center">RW</th>
                     <th class='text-center'>Atensi</th>
                     <th class='text-center'>BLT</th>
                     <th class='text-center'>BLT BBM</th>
@@ -86,250 +229,407 @@ $default_location = $this->getSearchLocation($desa);
                     <th class='text-center'>UPDATE TERAKHIR</th>
                 </tr>
             </thead>
-            <tbody>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 </div>
+
+<div id="modal-rt-rw-overlay">
+    <div id="modal-rt-rw">
+        <button class="modal-close" id="btn-modal-close">&times;</button>
+        <h4>Tambah / Edit RT &amp; RW</h4>
+
+        <p style="font-size:13px;color:#555;margin-bottom:8px;">
+            <strong>Data yang dipilih:</strong>
+        </p>
+        <div id="modal-nama-list"></div>
+
+        <!-- Notifikasi tidak sesuai -->
+        <div id="notif-rt-rw">
+            RT atau RW tidak sesuai, silahkan cek ulang!
+        </div>
+
+        <div class="form-rt-rw">
+            <div class="form-group">
+                <label for="input-rt">RT</label>
+                <input type="text" id="input-rt" placeholder="Contoh: 01" maxlength="10">
+            </div>
+            <div class="form-group">
+                <label for="input-rw">RW</label>
+                <input type="text" id="input-rw" placeholder="Contoh: 02" maxlength="10">
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn btn-secondary" id="btn-modal-cancel">Batal</button>
+            <button class="btn btn-primary" id="btn-modal-save">Simpan</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
+    window.maps_all_siks   = <?php echo json_encode($maps_all); ?>;
     window.maps_center_siks = <?php echo json_encode($center); ?>;
+
+    var dataDtks;
+    var selectedRows = []; 
+    function updateToolbar() {
+        if (selectedRows.length > 0) {
+            jQuery('#btn-tambah-rt-rw').show();
+        } else {
+            jQuery('#btn-tambah-rt-rw').hide();
+        }
+    }
+
+    function openModal() {
+        var html = '';
+        selectedRows.forEach(function(r) {
+            html += '<p>&#9656; ' + r.Nama + '</p>';
+        });
+        jQuery('#modal-nama-list').html(html);
+
+        var rtValues  = [...new Set(selectedRows.map(r => (r.rt  || '').trim()))];
+        var rwValues  = [...new Set(selectedRows.map(r => (r.rw  || '').trim()))];
+        var rtMatch   = rtValues.length === 1;
+        var rwMatch   = rwValues.length === 1;
+        var allMatch  = rtMatch && rwMatch;
+
+        if (!allMatch) {
+            jQuery('#notif-rt-rw').show();
+            jQuery('#input-rt').val('').prop('disabled', true);
+            jQuery('#input-rw').val('').prop('disabled', true);
+            jQuery('#btn-modal-save').prop('disabled', true);
+        } else {
+            jQuery('#notif-rt-rw').hide();
+            jQuery('#input-rt').val(rtValues[0]).prop('disabled', false);
+            jQuery('#input-rw').val(rwValues[0]).prop('disabled', false);
+            jQuery('#btn-modal-save').prop('disabled', false);
+        }
+
+        jQuery('#modal-rt-rw-overlay').addClass('active');
+    }
+
+    function closeModal() {
+        jQuery('#modal-rt-rw-overlay').removeClass('active');
+        jQuery('#input-rt').val('');
+        jQuery('#input-rw').val('');
+    }
+
     jQuery(document).ready(function() {
         getDataTable().then(function() {
             jQuery("#search_filter_action").select2();
         });
         cari_alamat_siks('<?php echo $default_location; ?>');
+
+        jQuery('#check-all').on('change', function() {
+            var checked = jQuery(this).is(':checked');
+            jQuery('#tableData tbody input.row-check').each(function() {
+                jQuery(this).prop('checked', checked).trigger('change');
+            });
+        });
+
+        jQuery('#btn-tambah-rt-rw').on('click', function() {
+            if (selectedRows.length === 0) return;
+            openModal();
+        });
+
+        jQuery('#btn-modal-close, #btn-modal-cancel').on('click', closeModal);
+        jQuery('#modal-rt-rw-overlay').on('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        jQuery('#btn-modal-save').on('click', function() {
+            var rt = jQuery('#input-rt').val().trim();
+            var rw = jQuery('#input-rw').val().trim();
+
+            if (rt === '' || rw === '') {
+                alert('RT dan RW tidak boleh kosong!');
+                return;
+            }
+
+            var ids = selectedRows.map(r => r.id);
+
+            jQuery.ajax({
+                url:      ajax.url,
+                type:     'POST',
+                dataType: 'json',
+                data: {
+                    action:  'update_rt_rw_siks',
+                    api_key: ajax.apikey,
+                    tipe: 'dtks',
+                    ids:     ids,
+                    rt:      rt,
+                    rw:      rw
+                },
+                beforeSend: function() {
+                    jQuery("#wrap-loading").show();
+                    jQuery('#btn-modal-save').prop('disabled', true).text('Menyimpan…');
+                },
+                success: function(res) {
+                    jQuery("#wrap-loading").hide();
+                    if (res && res.status) {
+                        closeModal();
+                        selectedRows = [];
+                        updateToolbar();
+                        jQuery('#check-all').prop('checked', false);
+                        dataDtks.ajax.reload(null, false);
+                        alert('RT & RW berhasil diperbarui!');
+                    } else {
+                        alert('Gagal menyimpan: ' + (res.message || 'Terjadi kesalahan'));
+                    }
+                },
+                error: function() {
+                    jQuery("#wrap-loading").hide();
+                    alert('Terjadi kesalahan koneksi.');
+                },
+                complete: function() {
+                    jQuery('#btn-modal-save').prop('disabled', false).text('Simpan');
+                }
+            });
+        });
     });
 
     function getDataTable() {
         jQuery("#wrap-loading").show();
         return new Promise(function(resolve, reject) {
             dataDtks = jQuery('#tableData').DataTable({
-                "searchDelay": 500,
-                "processing": true,
-                "serverSide": true,
-                "stateSave": false,
-                "ajax": {
-                    url: ajax.url,
-                    type: 'post',
+                searchDelay: 500,
+                processing:  true,
+                serverSide:  true,
+                stateSave:   false,
+                ajax: {
+                    url:      ajax.url,
+                    type:     'post',
                     dataType: 'json',
                     data: {
-                        'action': 'get_data_dtks_siks',
-                        'api_key': ajax.apikey,
-                        'desa': '<?php echo $validate_user['desa']; ?>',
-                        'kecamatan': '<?php echo $validate_user['kecamatan']; ?>',
+                        action:    'get_data_dtks_siks',
+                        api_key:   ajax.apikey,
+                        rt: '<?php echo esc_js($input['rt']); ?>',
+                        rw: '<?php echo esc_js($input['rw']); ?>',
+                        desa:      '<?php echo $validate_user['desa']; ?>',
+                        kecamatan: '<?php echo $validate_user['kecamatan']; ?>',
                     }
                 },
                 dom: 'Blfrtip',
                 buttons: [{
-                    "extend": 'excel',
-                    "titleAttr": 'Excel',
-                    "text": 'Download Excel',
-                    "className": "btn btn-success",
-                    "action": function(e, dt, button, config) {
-
-                        let data = {};
-
-                        data.action = 'export_excel_data_dtks_siks';
-
-                        data.api_key = ajax.apikey;
-
-                        if (
-                            jQuery("#search_filter_action").val() != '' &&
-                            jQuery("#search_filter_action").val() != '-') {
+                    extend:    'excel',
+                    titleAttr: 'Excel',
+                    text:      'Download Excel',
+                    className: 'btn btn-success',
+                    action: function(e, dt, button, config) {
+                        var data = {
+                            action:  'export_excel_data_dtks_siks',
+                            api_key: ajax.apikey
+                        };
+                        if (jQuery("#search_filter_action").val() !== '' && jQuery("#search_filter_action").val() !== '-') {
                             data.filter_kriteria = jQuery("#search_filter_action").val();
                         }
-
-                        if (dataDtks.search() != '') {
+                        if (dataDtks.search() !== '') {
                             data.search_value = dataDtks.search();
                         }
-
                         jQuery.ajax({
-                            method: 'post',
-                            url: ajax.url,
-                            cache: false,
-                            xhrFields: {
-                                responseType: 'blob'
-                            },
-                            data: data,
-                            beforeSend: function() {
-                                jQuery("#wrap-loading").show();
-                            },
+                            method:    'post',
+                            url:       ajax.url,
+                            cache:     false,
+                            xhrFields: { responseType: 'blob' },
+                            data:      data,
+                            beforeSend: function() { jQuery("#wrap-loading").show(); },
                             success: function(response) {
-
                                 jQuery("#wrap-loading").hide();
-                                let link = document.createElement('a');
+                                var link = document.createElement('a');
                                 link.href = window.URL.createObjectURL(response);
-                                link.download = `Export Data DTKS`;
+                                link.download = 'Export Data DTKS';
                                 link.click();
                             }
-                        })
-                    },
+                        });
+                    }
                 }],
                 initComplete: function(settings, json) {
-
                     jQuery("#wrap-loading").hide();
 
-                    let html_filter = "" +
+                    var html_filter =
                         "<div class='row col-lg-12'>" +
                         "<div class='col-lg-12'>" +
-                        "<select name='filter_status' class='ml-3 bulk-action' id='search_filter_action' style='width: 20%'>" +
+                        "<select name='filter_status' class='ml-3 bulk-action' id='search_filter_action' style='width:20%'>" +
                         "<option value='-'>Pilih Kriteria</option>" +
                         "</select>&nbsp;" +
-                        "</div>" +
-                        "</div>";
-
+                        "</div></div>";
                     jQuery("#tableData").before(html_filter);
 
-                    kriteria = [{
-                            'kk_kosong': 'KK Kosong'
-                        },
-                        {
-                            'nik_kosong': 'NIK Kosong'
-                        },
-                        {
-                            'nik_atau_kk_kosong': 'NIK atau KK Kosong'
-                        }
+                    var kriteria = [
+                        { kk_kosong:         'KK Kosong' },
+                        { nik_kosong:        'NIK Kosong' },
+                        { nik_atau_kk_kosong:'NIK atau KK Kosong' }
                     ];
-
-                    for (var key in kriteria) {
-                        var obj = kriteria[key];
+                    kriteria.forEach(function(obj) {
                         for (var prop in obj) {
-                            if (obj.hasOwnProperty(prop)) {
-                                jQuery('#search_filter_action').append('<option value="' + prop + '">' + obj[prop] + '</option>');
-                            }
+                            jQuery('#search_filter_action').append('<option value="' + prop + '">' + obj[prop] + '</option>');
                         }
-                    }
+                    });
 
                     jQuery('#search_filter_action').on('change', function() {
                         var option = jQuery(this).val();
                         switch (option) {
                             case 'kk_kosong':
                             case 'nik_atau_kk_kosong':
-                                dataDtks.column(2).search('');
-                                dataDtks.column(1).search(option).draw();
-                                break;
-
-                            case 'nik_kosong':
-                                dataDtks.column(1).search('');
+                                dataDtks.column(3).search('');
                                 dataDtks.column(2).search(option).draw();
+                                break;
+                            case 'nik_kosong':
+                                dataDtks.column(2).search('');
+                                dataDtks.column(3).search(option).draw();
                                 break;
                         }
                     });
                 },
-
-                lengthMenu: [
-                    [20, 50, 100, -1],
-                    [20, 50, 100, "All"]
+                lengthMenu: [[20, 50, 100, -1], [20, 50, 100, 'All']],
+                order: [[2, 'asc']],
+                columns: [
+                    {
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row) {
+                            var id   = row.id   || '';
+                            var nama = (row.Nama || '').replace(/'/g, "\\'");
+                            var rt   = (row.rt   || '').replace(/'/g, "\\'");
+                            var rw   = (row.rw   || '').replace(/'/g, "\\'");
+                            return '<input type="checkbox" class="row-check"' +
+                                   ' data-id="'   + id   + '"' +
+                                   ' data-nama="' + nama + '"' +
+                                   ' data-rt="'   + rt   + '"' +
+                                   ' data-rw="'   + rw   + '">';
+                        }
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1 + '.';
+                        }
+                    },
+                    { 
+                        data: 'Nama',            
+                        className: 'text-left' 
+                    },
+                    { 
+                        data: 'NIK',             
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'NOKK',            
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'Alamat',          
+                        className: 'text-left' 
+                    },
+                    { 
+                        data: 'provinsi',        
+                        className: 'text-left' 
+                    },
+                    { 
+                        data: 'kabupaten',       
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'kecamatan',       
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'desa_kelurahan',  
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'rt',              
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'rw',              
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'ATENSI',          
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'BLT',             
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'BLT_BBM',         
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'BNPT_PPKM',       
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'BPNT',            
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'BST',             
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'FIRST_SK',        
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'PBI',             
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'PENA',            
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'PERMAKANAN',      
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'RUTILAHU',        
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'SEMBAKO_ADAPTIF', 
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'YAPI',            
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'PKH',             
+                        className: 'text-center' 
+                    },
+                    { 
+                        data: 'update_at',       
+                        className: 'text-center' 
+                    },
                 ],
-                order: [
-                    [1, 'asc']
-                ],
-                "columns": [{
-                        "data": null
-                    },
-                    {
-                        "data": 'Nama',
-                        className: "text-left"
-                    },
-                    {
-                        "data": 'NIK',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'NOKK',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'Alamat',
-                        className: "text-left"
-                    },
-                    {
-                        "data": 'provinsi',
-                        className: "text-left"
-                    },
-                    {
-                        "data": 'kabupaten',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'kecamatan',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'desa_kelurahan',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'ATENSI',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'BLT',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'BLT_BBM',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'BNPT_PPKM',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'BPNT',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'BST',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'FIRST_SK',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'PBI',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'PENA',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'PERMAKANAN',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'RUTILAHU',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'SEMBAKO_ADAPTIF',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'YAPI',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'PKH',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'update_at',
-                        className: "text-center"
-                    },
-                ],
-                "columnDefs": [{
-                    targets: 0,
-                    orderable: false,
-                    render: function(data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1 + ".";
-                    }
-                }],
-                "drawCallback": function() {
+                drawCallback: function() {
                     resolve();
+
+                    jQuery('#tableData tbody').off('change', 'input.row-check')
+                        .on('change', 'input.row-check', function() {
+                            var cb   = jQuery(this);
+                            var id   = cb.data('id');
+                            var nama = cb.data('nama');
+                            var rt   = cb.data('rt');
+                            var rw   = cb.data('rw');
+
+                            if (cb.is(':checked')) {
+                                if (!selectedRows.find(r => r.id === id)) {
+                                    selectedRows.push({ id: id, Nama: nama, rt: rt, rw: rw });
+                                }
+                            } else {
+                                selectedRows = selectedRows.filter(r => r.id !== id);
+                                jQuery('#check-all').prop('checked', false);
+                            }
+                            updateToolbar();
+                        });
                 }
             });
         });

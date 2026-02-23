@@ -1,7 +1,13 @@
 <?php
 $input = shortcode_atts(array(
-    'id_desa' => ''
+    'id_desa' => '',
+    'rt'      => '',
+    'rw'      => '',
 ), $atts);
+
+$current_user = wp_get_current_user();
+$user_roles = $current_user->roles;
+$is_rt_role = in_array('rt', $user_roles);
 if (empty($input['id_desa'])) {
     die('id_desa kosong');
 }
@@ -14,173 +20,419 @@ if ($validate_user['status'] === 'error') {
 }
 
 global $wpdb;
-$center = $this->get_center();
+$center   = $this->get_center();
 $maps_all = $this->get_polygon();
 foreach ($maps_all as $i => $desa) {
-    $html = '
-        <table>
-    ';
+    $html = '<table>';
     foreach ($desa['data'] as $k => $v) {
-        $html .= '
-            <tr>
-                <td><b>' . $k . '</b></td>
-                <td>' . $v . '</td></a>
-            </tr>
-        ';
+        $html .= '<tr><td><b>' . $k . '</b></td><td>' . $v . '</td></tr>';
     }
     $html .= '</table>';
     $maps_all[$i]['html'] = $html;
 }
+
 $desa = $wpdb->get_row(
     $wpdb->prepare('
-        SELECT
-            *
-        FROM data_batas_desa_siks
-        WHERE desa=%s
-          AND kecamatan=%s
-          AND active=1
+        SELECT * FROM data_batas_desa_siks
+        WHERE desa=%s 
+            AND kecamatan=%s 
+            AND active=1
     ', $validate_user['desa'], $validate_user['kecamatan']),
     ARRAY_A
 );
 $default_location = $this->getSearchLocation($desa);
 ?>
+
+<style type="text/css">
+    #modal-rt-rw-overlay-hb { 
+        display:none; 
+        position:fixed; 
+        inset:0; 
+        background:rgba(0,0,0,.55); 
+        z-index:99999; 
+        align-items:center; 
+        justify-content:center; 
+    }
+    #modal-rt-rw-overlay-hb.active { 
+        display:flex; 
+    }
+    #modal-rt-rw-hb { 
+        background:#fff; 
+        border-radius:8px; 
+        padding:28px 32px; 
+        width:100%; 
+        max-width:640px; 
+        max-height:90vh; 
+        overflow-y:auto; 
+        box-shadow:0 8px 32px rgba(0,0,0,.22); 
+        position:relative; 
+    }
+    #modal-rt-rw-hb h4 { 
+        margin:0 0 18px; 
+        font-size:18px; 
+        font-weight:700; 
+        color:#1a1a2e; 
+    }
+    #modal-rt-rw-hb .modal-close { 
+        position:absolute; 
+        top:14px; 
+        right:18px; 
+        background:none; 
+        border:none; 
+        font-size:22px; 
+        cursor:pointer; 
+        color:#666; 
+    }
+    #modal-rt-rw-hb .modal-close:hover { 
+        color:#c0392b; 
+    }
+    #modal-nama-list-hb { 
+        max-height:180px; 
+        overflow-y:auto; 
+        border:1px solid #dee2e6; 
+        border-radius:5px; 
+        padding:8px 12px; 
+        margin-bottom:18px; 
+        background:#f8f9fa; 
+    }
+    #modal-nama-list-hb p { 
+        margin:3px 0; 
+        font-size:13.5px; 
+        color:#333; 
+    }
+    #notif-rt-rw-hb { 
+        display:none; 
+        background:#fff3cd; 
+        border:1px solid #ffc107; 
+        color:#856404; 
+        border-radius:5px; 
+        padding:10px 14px; 
+        margin-bottom:14px; 
+        font-size:13.5px; 
+    }
+    .form-rt-rw-hb { 
+        display:flex; 
+        gap:16px; 
+        margin-bottom:20px; 
+    }
+    .form-rt-rw-hb .form-group { 
+        flex:1; 
+    }
+    .form-rt-rw-hb label { 
+        font-weight:600; 
+        font-size:13px; 
+        margin-bottom:4px; 
+        display:block; 
+    }
+    .form-rt-rw-hb input { 
+        width:100%; 
+        padding:7px 10px; 
+        border:1px solid #ced4da; 
+        border-radius:5px; 
+        font-size:14px; 
+    }
+    .modal-actions-hb { 
+        display:flex; 
+        gap:10px; 
+        justify-content:flex-end; 
+    }
+    #toolbar-rt-rw-hb { 
+        margin-bottom:10px; 
+    }
+    #btn-tambah-rt-rw-hb { 
+        display:none; 
+    }
+</style>
+
 <h1 class="text-center">Peta Sebaran Penerima Hibah<br>DESA <?php echo strtoupper($validate_user['desa']); ?></h1>
 
-<div style="padding: 10px;margin:0 0 3rem 0;">
-    <div id="map-canvas-siks" style="width: 100%; height: 400px;"></div>
+<div style="padding:10px; margin:0 0 3rem 0;">
+    <div id="map-canvas-siks" style="width:100%; height:400px;"></div>
     <h1 class="text-center" style="margin:3rem;">Data Penerima Hibah<br>DESA <?php echo strtoupper($validate_user['desa']); ?></h1>
+    
+    <?php if (!$is_rt_role): ?>
+        <div id="toolbar-rt-rw-wr">
+            <button id="btn-tambah-rt-rw-ls" class="btn btn-primary">
+                <i class="dashicons dashicons-edit" style="vertical-align:middle;"></i>
+                Tambah RT RW
+            </button>
+        </div>
+    <?php endif; ?>
+
     <table id="tableData" class="table table-bordered">
         <thead>
             <tr>
-                <th class="text-center" style="width: 6%;">Aksi</th>
-                <th class="text-center" style="width: 6%;">Kode</th>
-                <th class="text-center" style="width: 12%;">Penerima</th>
-                <th class="text-center" style="width: 12%;">Nama dan NIK Ketua</th>
-                <th class="text-center" style="width: 8%;">Provinsi</th>
-                <th class="text-center" style="width: 8%;">Kabupaten/Kota</th>
-                <th class="text-center" style="width: 8%;">Kecamatan</th>
-                <th class="text-center" style="width: 8%;">Desa/Kelurahan</th>
-                <th class="text-center" style="width: 12%;">Alamat</th>
-                <th class="text-center" style="width: 8%;">Anggaran</th>
-                <th class="text-center" style="width: 6%;">Status Realisasi</th>
-                <th class="text-center" style="width: 10%;">Peruntukan</th>
-                <th class="text-center" style="width: 10%;">Keterangan</th>
-                <th class="text-center" style="width: 6%;">Tahun Anggaran</th>
+                <th class="text-center"><input type="checkbox" id="check-all-hb" title="Pilih Semua"></th>
+                <th class="text-center" style="width:6%;">Aksi</th>
+                <th class="text-center" style="width:6%;">Kode</th>
+                <th class="text-center" style="width:12%;">Penerima</th>
+                <th class="text-center" style="width:12%;">Nama dan NIK Ketua</th>
+                <th class="text-center" style="width:8%;">Provinsi</th>
+                <th class="text-center" style="width:8%;">Kabupaten/Kota</th>
+                <th class="text-center" style="width:8%;">Kecamatan</th>
+                <th class="text-center" style="width:8%;">Desa/Kelurahan</th>
+                <th class="text-center">RT</th>
+                <th class="text-center">RW</th>
+                <th class="text-center" style="width:12%;">Alamat</th>
+                <th class="text-center" style="width:8%;">Anggaran</th>
+                <th class="text-center" style="width:6%;">Status Realisasi</th>
+                <th class="text-center" style="width:10%;">Peruntukan</th>
+                <th class="text-center" style="width:10%;">Keterangan</th>
+                <th class="text-center" style="width:6%;">Tahun Anggaran</th>
             </tr>
         </thead>
-        <tbody>
-        </tbody>
+        <tbody></tbody>
     </table>
 </div>
+
+<div id="modal-rt-rw-overlay-hb">
+    <div id="modal-rt-rw-hb">
+        <button class="modal-close" id="btn-modal-close-hb">&times;</button>
+        <h4>Tambah / Edit RT &amp; RW — Hibah</h4>
+        <p style="font-size:13px;color:#555;margin-bottom:8px;"><strong>Data yang dipilih:</strong></p>
+        <div id="modal-nama-list-hb"></div>
+        <div id="notif-rt-rw-hb">RT atau RW tidak sesuai, silahkan cek ulang!</div>
+        <div class="form-rt-rw-hb">
+            <div class="form-group">
+                <label for="input-rt-hb">RT</label>
+                <input type="text" id="input-rt-hb" placeholder="Contoh: 01" maxlength="10">
+            </div>
+            <div class="form-group">
+                <label for="input-rw-hb">RW</label>
+                <input type="text" id="input-rw-hb" placeholder="Contoh: 02" maxlength="10">
+            </div>
+        </div>
+        <div class="modal-actions-hb">
+            <button class="btn btn-secondary" id="btn-modal-cancel-hb">Batal</button>
+            <button class="btn btn-primary" id="btn-modal-save-hb">Simpan</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    window.maps_all_siks = <?php echo json_encode($maps_all); ?>;
+    window.maps_all_siks    = <?php echo json_encode($maps_all); ?>;
     window.maps_center_siks = <?php echo json_encode($center); ?>;
+
+    var selectedRowsHb = [];
+
+    function updateToolbarHb() {
+        jQuery('#btn-tambah-rt-rw-hb').toggle(selectedRowsHb.length > 0);
+    }
+
+    function openModalHb() {
+        var html = '';
+        selectedRowsHb.forEach(function(r) { html += '<p>&#9656; ' + r.Nama + '</p>'; });
+        jQuery('#modal-nama-list-hb').html(html);
+
+        var rtValues = [...new Set(selectedRowsHb.map(function(r){ return (r.rt||'').trim(); }))];
+        var rwValues = [...new Set(selectedRowsHb.map(function(r){ return (r.rw||'').trim(); }))];
+        var allMatch = rtValues.length === 1 && rwValues.length === 1;
+
+        if (!allMatch) {
+            jQuery('#notif-rt-rw-hb').show();
+            jQuery('#input-rt-hb, #input-rw-hb').val('').prop('disabled', true);
+            jQuery('#btn-modal-save-hb').prop('disabled', true);
+        } else {
+            jQuery('#notif-rt-rw-hb').hide();
+            jQuery('#input-rt-hb').val(rtValues[0]).prop('disabled', false);
+            jQuery('#input-rw-hb').val(rwValues[0]).prop('disabled', false);
+            jQuery('#btn-modal-save-hb').prop('disabled', false);
+        }
+        jQuery('#modal-rt-rw-overlay-hb').addClass('active');
+    }
+
+    function closeModalHb() {
+        jQuery('#modal-rt-rw-overlay-hb').removeClass('active');
+        jQuery('#input-rt-hb, #input-rw-hb').val('');
+    }
+
     jQuery(document).ready(function() {
         getDataTable();
         cari_alamat_siks('<?php echo $default_location; ?>');
+
+        jQuery('#check-all-hb').on('change', function() {
+            jQuery('#tableData tbody input.row-check-hb')
+                .prop('checked', jQuery(this).is(':checked')).trigger('change');
+        });
+
+        jQuery('#btn-tambah-rt-rw-hb').on('click', function() {
+            if (selectedRowsHb.length > 0) openModalHb();
+        });
+
+        jQuery('#btn-modal-close-hb, #btn-modal-cancel-hb').on('click', closeModalHb);
+        jQuery('#modal-rt-rw-overlay-hb').on('click', function(e) {
+            if (e.target === this) closeModalHb();
+        });
+
+        jQuery('#btn-modal-save-hb').on('click', function() {
+            var rt = jQuery('#input-rt-hb').val().trim();
+            var rw = jQuery('#input-rw-hb').val().trim();
+            if (rt === '' || rw === '') { alert('RT dan RW tidak boleh kosong!'); return; }
+
+            var postData = {
+                action:  'update_rt_rw_siks_universal',
+                api_key: ajax.apikey,
+                tipe:    'hibah',
+                rt:      rt,
+                rw:      rw
+            };
+            selectedRowsHb.forEach(function(r, i) { postData['ids[' + i + ']'] = r.id; });
+
+            jQuery.ajax({
+                url: ajax.url, type: 'POST', dataType: 'json', data: postData,
+                beforeSend: function() {
+                    jQuery('#wrap-loading').show();
+                    jQuery('#btn-modal-save-hb').prop('disabled', true).text('Menyimpan…');
+                },
+                success: function(res) {
+                    jQuery('#wrap-loading').hide();
+                    if (res && res.status) {
+                        closeModalHb();
+                        selectedRowsHb = [];
+                        updateToolbarHb();
+                        jQuery('#check-all-hb').prop('checked', false);
+                        window.tableHibah.ajax.reload(null, false);
+                        alert('RT & RW berhasil diperbarui!');
+                    } else {
+                        alert('Gagal: ' + (res.message || 'Terjadi kesalahan'));
+                    }
+                },
+                error: function() { jQuery('#wrap-loading').hide(); alert('Terjadi kesalahan koneksi.'); },
+                complete: function() { jQuery('#btn-modal-save-hb').prop('disabled', false).text('Simpan'); }
+            });
+        });
     });
 
     function getDataTable() {
         if (typeof tableHibah === 'undefined') {
-            window.tableHibah = jQuery('#tableData').on('preXhr.dt', function(e, settings, data) {
-                jQuery("#wrap-loading").show();
-            }).DataTable({
-                "processing": true,
-                "serverSide": true,
-                "scrollX": true, // Enables horizontal scrolling
-                "scrollY": '600px', // Enables vertical scrolling
-                "scrollCollapse": true,
-                "search": {
-                    return: true
-                },
-                "ajax": {
-                    url: ajax.url,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        'action': 'get_datatable_data_hibah',
-                        'api_key': ajax.apikey,
-                        'desa': '<?php echo $validate_user['desa']; ?>',
-                        'kecamatan': '<?php echo $validate_user['kecamatan']; ?>',
-                    }
-                },
-                lengthMenu: [
-                    [20, 50, 100, -1],
-                    [20, 50, 100, "All"]
-                ],
-                order: [],
-                "drawCallback": function(settings) {
-                    var api = this.api();
-                    api.rows({
-                        page: 'current'
-                    }).data().map(function(b, i) {
-                        if (b.lat && b.lng) {
-                            var data = b.aksi.split(", true, '")[1].split("')")[0];
-                            setCenterSiks(b.lat, b.lng, true, data, true);
+            window.tableHibah = jQuery('#tableData')
+                .on('preXhr.dt', function() { jQuery('#wrap-loading').show(); })
+                .DataTable({
+                    processing: true, serverSide: true,
+                    scrollX: true, scrollY: '600px', scrollCollapse: true,
+                    search: { return: true },
+                    ajax: {
+                        url: ajax.url, type: 'POST', dataType: 'json',
+                        data: {
+                            action:    'get_datatable_data_hibah',
+                            api_key:   ajax.apikey,
+                            rt: '<?php echo esc_js($input['rt']); ?>',
+                            rw: '<?php echo esc_js($input['rw']); ?>',
+                            desa:      '<?php echo $validate_user['desa']; ?>',
+                            kecamatan: '<?php echo $validate_user['kecamatan']; ?>',
                         }
-                    });
-                    jQuery("#wrap-loading").hide();
-                },
-                "columns": [{
-                        "data": 'aksi',
-                        className: "text-center"
                     },
-                    {
-                        "data": 'kode',
-                        className: "text-center"
+                    lengthMenu: [[20, 50, 100, -1], [20, 50, 100, 'All']],
+                    order: [],
+                    drawCallback: function(settings) {
+                        var api = this.api();
+                        api.rows({ page: 'current' }).data().map(function(b) {
+                            if (b.lat && b.lng) {
+                                var data = b.aksi.split(", true, '")[1].split("')")[0];
+                                setCenterSiks(b.lat, b.lng, true, data, true);
+                            }
+                        });
+                        jQuery('#wrap-loading').hide();
+                        jQuery('#tableData tbody')
+                            .off('change', 'input.row-check-hb')
+                            .on('change', 'input.row-check-hb', function() {
+                                var cb   = jQuery(this);
+                                var id   = String(cb.data('id'));
+                                var nama = cb.data('nama');
+                                var rt   = String(cb.data('rt') || '');
+                                var rw   = String(cb.data('rw') || '');
+                                if (cb.is(':checked')) {
+                                    if (!selectedRowsHb.find(function(r){ return r.id === id; })) {
+                                        selectedRowsHb.push({ id: id, Nama: nama, rt: rt, rw: rw });
+                                    }
+                                } else {
+                                    selectedRowsHb = selectedRowsHb.filter(function(r){ return r.id !== id; });
+                                    jQuery('#check-all-hb').prop('checked', false);
+                                }
+                                updateToolbarHb();
+                            });
                     },
-                    {
-                        "data": 'penerima',
-                        className: "text-left"
-                    },
-                    {
-                        "data": 'nama_nik_ketua',
-                        className: "text-left"
-                    },
-                    {
-                        "data": 'provinsi',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'kabkot',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'kecamatan',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'desa_kelurahan',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'alamat',
-                        className: "text-left"
-                    },
-                    {
-                        "data": 'anggaran',
-                        className: "text-right"
-                    },
-                    {
-                        "data": 'status_realisasi',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'peruntukan',
-                        className: "text-left"
-                    },
-                    {
-                        "data": 'keterangan',
-                        className: "text-center"
-                    },
-                    {
-                        "data": 'tahun_anggaran',
-                        className: "text-left"
-                    }
-                ]
-            });
+                    columns: [
+                        {
+                            data: 'id', orderable: false, searchable: false,
+                            render: function(data, type, row) {
+                                var id   = String(data || '');
+                                var nama = (row.penerima || '').replace(/"/g, '&quot;');
+                                var rt   = (row.rt || '').replace(/"/g, '&quot;');
+                                var rw   = (row.rw || '').replace(/"/g, '&quot;');
+                                return '<input type="checkbox" class="row-check-hb"' +
+                                       ' data-id="' + id + '" data-nama="' + nama + '"' +
+                                       ' data-rt="'  + rt  + '" data-rw="'  + rw  + '">';
+                            }
+                        },
+                        { 
+                            data: 'aksi',            
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'kode',            
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'penerima',        
+                            className: 'text-left' 
+                        },
+                        { 
+                            data: 'nama_nik_ketua',  
+                            className: 'text-left' 
+                        },
+                        { 
+                            data: 'provinsi',        
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'kabkot',          
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'kecamatan',       
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'desa_kelurahan',  
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'rt',              
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'rw',              
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'alamat',          
+                            className: 'text-left' 
+                        },
+                        { 
+                            data: 'anggaran',        
+                            className: 'text-right' 
+                        },
+                        { 
+                            data: 'status_realisasi',
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'peruntukan',      
+                            className: 'text-left' 
+                        },
+                        { 
+                            data: 'keterangan',      
+                            className: 'text-center' 
+                        },
+                        { 
+                            data: 'tahun_anggaran',  
+                            className: 'text-left' 
+                        }
+                    ]
+                });
         } else {
-            tableHibah.draw();
+            window.tableHibah.draw();
         }
     }
 </script>

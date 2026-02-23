@@ -89,6 +89,8 @@ foreach ($maps_all as $i => $desa) {
                 <th class="text-center">Kabupaten/Kota</th>
                 <th class="text-center">Kecamatan</th>
                 <th class="text-center">Desa/Kelurahan</th>
+                <th class="text-center">RT</th>
+                <th class="text-center">RW</th>
                 <th class="text-center">Alamat</th>
                 <th class="text-center">Anggaran</th>
                 <th class="text-center">Status Realisasi</th>
@@ -152,9 +154,13 @@ foreach ($maps_all as $i => $desa) {
                                 <label for="penerima">Penerima</label>
                                 <input type="text" name="penerima" class="form-control" id="penerima" placeholder="Masukkan Penerima">
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-3">
                                 <label for="provinsi">Provinsi</label>
                                 <input type="text" name="provinsi" class="form-control" id="provinsi" value="<?php echo $provinsi; ?>" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="kecamatan">Kecamatan</label>
+                                <input type="text" name="kecamatan" class="form-control" id="kecamatan" value="<?php echo strtoupper($validate_user['kecamatan']); ?>" disabled>
                             </div>
                         </div>
                         <div class="form-row">
@@ -163,12 +169,12 @@ foreach ($maps_all as $i => $desa) {
                                 <input type="text" name="alamat" class="form-control" id="alamat" placeholder="Masukkan Alamat">
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="kecamatan">Kecamatan</label>
-                                <input type="text" name="kecamatan" class="form-control" id="kecamatan" value="<?php echo strtoupper($validate_user['kecamatan']); ?>" disabled>
-                            </div>
-                            <div class="form-group col-md-3">
                                 <label for="desaKel">Desa / Kelurahan</label>
                                 <input type="text" name="desaKel" class="form-control" id="desaKel" value="<?php echo strtoupper($validate_user['desa']); ?>" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="kabKot">Kota / Kabupaten</label>
+                                <input type="text" name="kabKot" class="form-control" id="kabKot" value="<?php echo $kabkot; ?>" disabled>
                             </div>
                         </div>
                         <div class="form-row">
@@ -176,10 +182,17 @@ foreach ($maps_all as $i => $desa) {
                                 <label for="nama_nik_ketua">Nama dan NIK Ketua</label>
                                 <input type="text" name="nama_nik_ketua" class="form-control" id="nama_nik_ketua" placeholder="Masukkan Nama dan NIK Ketua">
                             </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="kabKot">Kota / Kabupaten</label>
-                                <input type="text" name="kabKot" class="form-control" id="kabKot" value="<?php echo $kabkot; ?>" disabled>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for='rt'>RT</label>
+                                    <input type='number' id='rt' name='rt' class='form-control' placeholder="Contoh: 01">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for='rw'>RW</label>
+                                    <input type='number' id='rw' name='rw' class='form-control' placeholder="Contoh: 02">
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -383,6 +396,14 @@ foreach ($maps_all as $i => $desa) {
                         className: "text-center"
                     },
                     {
+                        "data": 'rt',
+                        className: "text-left"
+                    },
+                    {
+                        "data": 'rw',
+                        className: "text-left"
+                    },
+                    {
                         "data": 'alamat',
                         className: "text-left"
                     },
@@ -521,6 +542,8 @@ foreach ($maps_all as $i => $desa) {
                 jQuery('#penerima').val(res.data.penerima);
                 jQuery('#nama_nik_ketua').val(res.data.nama_nik_ketua);
                 jQuery('#alamat').val(res.data.alamat);
+                jQuery('#rt').val(res.data.rt);
+                jQuery('#rw').val(res.data.rw);
                 jQuery('#nphd').val(res.data.no_nphd);
                 jQuery('#spm').val(res.data.no_spm);
                 jQuery('#sp2d').val(res.data.no_sp2d);
@@ -574,6 +597,8 @@ foreach ($maps_all as $i => $desa) {
         jQuery('#penerima').val('');
         jQuery('#nama_nik_ketua').val('');
         jQuery('#alamat').val('');
+        jQuery('#rt').val('');
+        jQuery('#rw').val('');
         jQuery('#nphd').val('');
         jQuery('#spm').val('');
         jQuery('#sp2d').val('');
@@ -714,6 +739,8 @@ foreach ($maps_all as $i => $desa) {
             'penerima': 'Data Penerima tidak boleh kosong!',
             'nama_nik_ketua': 'Nama dan NIK Ketua tidak boleh kosong!',
             'alamat': 'Data Alamat tidak boleh kosong!',
+            'rt': 'Data RT tidak boleh kosong!',
+            'rw': 'Data RW tidak boleh kosong!',
             'nphd': 'No NPHD tidak boleh kosong!',
             'spm': 'No SPM tidak boleh kosong!',
             'sp2d': 'No SP2D tidak boleh kosong!',
