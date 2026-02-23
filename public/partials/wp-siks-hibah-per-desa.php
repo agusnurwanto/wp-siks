@@ -191,7 +191,6 @@ $default_location = $this->getSearchLocation($desa);
         <h4>Tambah / Edit RT &amp; RW — Hibah</h4>
         <p style="font-size:13px;color:#555;margin-bottom:8px;"><strong>Data yang dipilih:</strong></p>
         <div id="modal-nama-list-hb"></div>
-        <div id="notif-rt-rw-hb">RT atau RW tidak sesuai, silahkan cek ulang!</div>
         <div class="form-rt-rw-hb">
             <div class="form-group">
                 <label for="input-rt-hb">RT</label>
@@ -226,18 +225,6 @@ $default_location = $this->getSearchLocation($desa);
 
         var rtValues = [...new Set(selectedRowsHb.map(function(r){ return (r.rt||'').trim(); }))];
         var rwValues = [...new Set(selectedRowsHb.map(function(r){ return (r.rw||'').trim(); }))];
-        var allMatch = rtValues.length === 1 && rwValues.length === 1;
-
-        if (!allMatch) {
-            jQuery('#notif-rt-rw-hb').show();
-            jQuery('#input-rt-hb, #input-rw-hb').val('').prop('disabled', true);
-            jQuery('#btn-modal-save-hb').prop('disabled', true);
-        } else {
-            jQuery('#notif-rt-rw-hb').hide();
-            jQuery('#input-rt-hb').val(rtValues[0]).prop('disabled', false);
-            jQuery('#input-rw-hb').val(rwValues[0]).prop('disabled', false);
-            jQuery('#btn-modal-save-hb').prop('disabled', false);
-        }
         jQuery('#modal-rt-rw-overlay-hb').addClass('active');
     }
 

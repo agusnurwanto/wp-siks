@@ -51,7 +51,6 @@ $default_location = $this->getSearchLocation($desa);
         width: 100%;
     }
 
-    /* ── Modal Overlay ── */
     #modal-rt-rw-overlay {
         display: none;
         position: fixed;
@@ -90,7 +89,6 @@ $default_location = $this->getSearchLocation($desa);
     }
     #modal-rt-rw .modal-close:hover { color: #c0392b; }
 
-    /* Selected names list */
     #modal-nama-list {
         max-height: 180px;
         overflow-y: auto;
@@ -106,7 +104,6 @@ $default_location = $this->getSearchLocation($desa);
         color: #333;
     }
 
-    /* Notif */
     #notif-rt-rw {
         display: none;
         background: #fff3cd;
@@ -118,7 +115,6 @@ $default_location = $this->getSearchLocation($desa);
         font-size: 13.5px;
     }
 
-    /* Form row */
     .form-rt-rw {
         display: flex;
         gap: 16px;
@@ -141,22 +137,19 @@ $default_location = $this->getSearchLocation($desa);
         font-size: 14px;
     }
 
-    /* Action buttons */
     .modal-actions {
         display: flex;
         gap: 10px;
         justify-content: flex-end;
     }
 
-    /* Toolbar area */
     #toolbar-rt-rw {
         margin-bottom: 10px;
     }
     #btn-tambah-rt-rw {
-        display: none; /* shown when ≥1 checkbox checked */
+        display: none;
     }
 
-    /* Checkbox column */
     #tableData th:first-child,
     #tableData td:first-child {
         width: 36px;
@@ -195,11 +188,9 @@ $default_location = $this->getSearchLocation($desa);
         <table id="tableData" class="table table-bordered">
             <thead>
                 <tr>
-                    <!-- col 0: checkbox -->
                     <th class="text-center">
                         <input type="checkbox" id="check-all" title="Pilih Semua">
                     </th>
-                    <!-- col 1: nomor -->
                     <th class="text-center">No.</th>
                     <th class="text-center">Nama</th>
                     <th class="text-center">NIK</th>
@@ -209,7 +200,6 @@ $default_location = $this->getSearchLocation($desa);
                     <th class="text-center">Kabupaten / Kota</th>
                     <th class="text-center">Kecamatan</th>
                     <th class="text-center">Desa/Kelurahan</th>
-                    <!-- ★ RT & RW setelah Desa ★ -->
                     <th class="text-center">RT</th>
                     <th class="text-center">RW</th>
                     <th class='text-center'>Atensi</th>
@@ -243,11 +233,6 @@ $default_location = $this->getSearchLocation($desa);
             <strong>Data yang dipilih:</strong>
         </p>
         <div id="modal-nama-list"></div>
-
-        <!-- Notifikasi tidak sesuai -->
-        <div id="notif-rt-rw">
-            RT atau RW tidak sesuai, silahkan cek ulang!
-        </div>
 
         <div class="form-rt-rw">
             <div class="form-group">
@@ -290,22 +275,6 @@ $default_location = $this->getSearchLocation($desa);
 
         var rtValues  = [...new Set(selectedRows.map(r => (r.rt  || '').trim()))];
         var rwValues  = [...new Set(selectedRows.map(r => (r.rw  || '').trim()))];
-        var rtMatch   = rtValues.length === 1;
-        var rwMatch   = rwValues.length === 1;
-        var allMatch  = rtMatch && rwMatch;
-
-        if (!allMatch) {
-            jQuery('#notif-rt-rw').show();
-            jQuery('#input-rt').val('').prop('disabled', true);
-            jQuery('#input-rw').val('').prop('disabled', true);
-            jQuery('#btn-modal-save').prop('disabled', true);
-        } else {
-            jQuery('#notif-rt-rw').hide();
-            jQuery('#input-rt').val(rtValues[0]).prop('disabled', false);
-            jQuery('#input-rw').val(rwValues[0]).prop('disabled', false);
-            jQuery('#btn-modal-save').prop('disabled', false);
-        }
-
         jQuery('#modal-rt-rw-overlay').addClass('active');
     }
 

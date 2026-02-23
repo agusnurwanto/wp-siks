@@ -190,7 +190,6 @@ $default_location = $this->getSearchLocation($desa);
         <h4>Tambah / Edit RT &amp; RW — WRSE</h4>
         <p style="font-size:13px;color:#555;margin-bottom:8px;"><strong>Data yang dipilih:</strong></p>
         <div id="modal-nama-list-wr"></div>
-        <div id="notif-rt-rw-wr">RT atau RW tidak sesuai, silahkan cek ulang!</div>
         <div class="form-rt-rw-wr">
             <div class="form-group">
                 <label for="input-rt-wr">RT</label>
@@ -225,18 +224,6 @@ $default_location = $this->getSearchLocation($desa);
 
         var rtValues = [...new Set(selectedRowsWr.map(function(r){ return (r.rt||'').trim(); }))];
         var rwValues = [...new Set(selectedRowsWr.map(function(r){ return (r.rw||'').trim(); }))];
-        var allMatch = rtValues.length === 1 && rwValues.length === 1;
-
-        if (!allMatch) {
-            jQuery('#notif-rt-rw-wr').show();
-            jQuery('#input-rt-wr, #input-rw-wr').val('').prop('disabled', true);
-            jQuery('#btn-modal-save-wr').prop('disabled', true);
-        } else {
-            jQuery('#notif-rt-rw-wr').hide();
-            jQuery('#input-rt-wr').val(rtValues[0]).prop('disabled', false);
-            jQuery('#input-rw-wr').val(rwValues[0]).prop('disabled', false);
-            jQuery('#btn-modal-save-wr').prop('disabled', false);
-        }
         jQuery('#modal-rt-rw-overlay-wr').addClass('active');
     }
 
