@@ -33,8 +33,12 @@ foreach ($maps_all as $i => $desa) {
 
 $desa = $wpdb->get_row(
     $wpdb->prepare('
-        SELECT * FROM data_batas_desa_siks
-        WHERE desa=%s AND kecamatan=%s AND active=1
+        SELECT 
+            * 
+        FROM data_batas_desa_siks
+        WHERE desa=%s 
+            AND kecamatan=%s 
+            AND active=1
     ', $validate_user['desa'], $validate_user['kecamatan']),
     ARRAY_A
 );
@@ -157,12 +161,12 @@ $default_location = $this->getSearchLocation($desa);
     <div id="map-canvas-siks" style="width:100%; height:400px;"></div>
     <h1 class="text-center" style="margin:3rem;">
         Data DTSEN (Data Tunggal Sosial dan Ekonomi Nasional)<br>
-        DESA <?php echo strtoupper($validate_user['desa']); ?>
+        DESA <?php echo strtoupper($validate_user['desa']); ?> <?php if ($is_rt_role): ?>RT <?php echo $input['rt']; ?> RW <?php echo $input['rw']; ?><?php endif; ?>
     </h1>
 
     <?php if (!$is_rt_role): ?>
         <div id="toolbar-rt-rw-wr">
-            <button id="btn-tambah-rt-rw-ls" class="btn btn-primary">
+            <button id="btn-tambah-rt-rw-ds" class="btn btn-primary">
                 <i class="dashicons dashicons-edit" style="vertical-align:middle;"></i>
                 Tambah RT RW
             </button>
@@ -237,8 +241,12 @@ $default_location = $this->getSearchLocation($desa);
         selectedRowsDs.forEach(function(r) { html += '<p>&#9656; ' + r.Nama + '</p>'; });
         jQuery('#modal-nama-list-ds').html(html);
 
-        var rtValues = [...new Set(selectedRowsDs.map(function(r){ return (r.rt || '').trim(); }))];
-        var rwValues = [...new Set(selectedRowsDs.map(function(r){ return (r.rw || '').trim(); }))];
+        var rtValues = [...new Set(selectedRowsDs.map(function(r){ 
+            return (r.rt || '').trim(); 
+        }))];
+        var rwValues = [...new Set(selectedRowsDs.map(function(r){ 
+            return (r.rw || '').trim(); 
+        }))];
         jQuery('#modal-rt-rw-overlay-ds').addClass('active');
     }
 
@@ -264,11 +272,18 @@ $default_location = $this->getSearchLocation($desa);
                 var rw   = String(cb.data('rw')  || '');
 
                 if (cb.is(':checked')) {
-                    if (!selectedRowsDs.find(function(r){ return r.id === id; })) {
-                        selectedRowsDs.push({ id: id, Nama: nama, rt: rt, rw: rw });
+                    if (!selectedRowsDs.find(function(r){ 
+                        return r.id === id; })) {
+                        selectedRowsDs.push({ 
+                            id: id, 
+                            Nama: nama, 
+                            rt: rt, 
+                            rw: rw 
+                        });
                     }
                 } else {
-                    selectedRowsDs = selectedRowsDs.filter(function(r){ return r.id !== id; });
+                    selectedRowsDs = selectedRowsDs.filter(function(r){ 
+                        return r.id !== id; });
                     jQuery('#check-all-ds').prop('checked', false);
                 }
                 updateToolbarDs();
@@ -291,7 +306,9 @@ $default_location = $this->getSearchLocation($desa);
         jQuery('#btn-modal-save-ds').on('click', function() {
             var rt = jQuery('#input-rt-ds').val().trim();
             var rw = jQuery('#input-rw-ds').val().trim();
-            if (rt === '' || rw === '') { alert('RT dan RW tidak boleh kosong!'); return; }
+            if (rt === '' || rw === '') { 
+                alert('RT dan RW tidak boleh kosong!'); return; 
+            }
 
             var postData = {
                 action:  'update_rt_rw_siks',
@@ -300,10 +317,15 @@ $default_location = $this->getSearchLocation($desa);
                 rt:      rt,
                 rw:      rw
             };
-            selectedRowsDs.forEach(function(r, i) { postData['ids[' + i + ']'] = r.id; });
+            selectedRowsDs.forEach(function(r, i) { 
+                postData['ids[' + i + ']'] = r.id; 
+            });
 
             jQuery.ajax({
-                url: ajax.url, type: 'POST', dataType: 'json', data: postData,
+                url: ajax.url, 
+                type: 'POST', 
+                dataType: 'json', 
+                data: postData,
                 beforeSend: function() {
                     jQuery('#wrap-loading').show();
                     jQuery('#btn-modal-save-ds').prop('disabled', true).text('Menyimpan…');
@@ -321,8 +343,13 @@ $default_location = $this->getSearchLocation($desa);
                         alert('Gagal: ' + (res.message || 'Terjadi kesalahan'));
                     }
                 },
-                error: function() { jQuery('#wrap-loading').hide(); alert('Terjadi kesalahan koneksi.'); },
-                complete: function() { jQuery('#btn-modal-save-ds').prop('disabled', false).text('Simpan'); }
+                error: function() { 
+                    jQuery('#wrap-loading').hide(); 
+                    alert('Terjadi kesalahan koneksi.'); 
+                },
+                complete: function() { 
+                    jQuery('#btn-modal-save-ds').prop('disabled', false).text('Simpan'); 
+                }
             });
         });
     });
@@ -365,30 +392,43 @@ $default_location = $this->getSearchLocation($desa);
                     var rt   = (data.rt   || '').replace(/"/g, '&quot;');
                     var rw   = (data.rw   || '').replace(/"/g, '&quot;');
 
-                    var checkbox = '<input type="checkbox" class="row-check-ds"' +
-                                   ' data-id="'   + id   + '"' +
-                                   ' data-nama="' + nama + '"' +
-                                   ' data-rt="'   + rt   + '"' +
-                                   ' data-rw="'   + rw   + '">';
+                    var checkbox = '<input type="checkbox" class="row-check-ds"' + ' data-id="'   + id   + '"' + ' data-nama="' + nama + '"' + ' data-rt="'   + rt   + '"' + ' data-rw="'   + rw   + '">';
 
                     tbody += '<tr>' +
-                        '<td class="text-center">'  + checkbox                    + '</td>' +
-                        '<td class="text-center">'  + (no++)                      + '</td>' +
-                        '<td class="text-center">'  + (data.desil_nasional || '') + '</td>' +
-                        '<td class="text-left">'    + (data.disabilitas    || '') + '</td>' +
-                        '<td class="text-left">'    + (data.lansia         || '') + '</td>' +
-                        '<td class="text-left">'    + (data.no_kk          || '') + '</td>' +
-                        '<td class="text-left">'    + (data.hub_kepala_keluarga || '') + '</td>' +
-                        '<td class="text-left">'    + (data.alamat         || '') + '</td>' +
-                        '<td class="text-left">'    + (data.nama           || '') + '</td>' +
-                        '<td class="text-left">'    + (data.nik            || '') + '</td>' +
-                        '<td class="text-left">'    + (data.pekerjaan_utama || '') + '</td>' +
-                        '<td class="text-left">'    + (data.provinsi       || '') + '</td>' +
-                        '<td class="text-left">'    + (data.kabupaten      || '') + '</td>' +
-                        '<td class="text-left">'    + (data.kecamatan      || '') + '</td>' +
-                        '<td class="text-left">'    + (data.kelurahan      || '') + '</td>' +
-                        '<td class="text-center">'  + (data.rt             || '') + '</td>' +
-                        '<td class="text-center">'  + (data.rw             || '') + '</td>' +
+                        '<td class="text-center">'  + checkbox + 
+                        '</td>' +
+                        '<td class="text-center">'  + (no++) + 
+                        '</td>' +
+                        '<td class="text-center">'  + (data.desil_nasional || '') + 
+                        '</td>' +
+                        '<td class="text-left">'    + (data.disabilitas || '') + 
+                        '</td>' +
+                        '<td class="text-left">'    + (data.lansia || '') + 
+                        '</td>' +
+                        '<td class="text-left">'    + (data.no_kk || '') + 
+                        '</td>' +
+                        '<td class="text-left">'    + (data.hub_kepala_keluarga || '') + 
+                        '</td>' +
+                        '<td class="text-left">'    + (data.alamat || '') + 
+                        '</td>' +
+                        '<td class="text-left">'    + (data.nama || '') + 
+                        '</td>' +
+                        '<td class="text-left">'    + (data.nik || '') + 
+                        '</td>' +
+                        '<td class="text-left">'    + (data.pekerjaan_utama || '') + 
+                        '</td>' +
+                        '<td class="text-left">'    + (data.provinsi || '') + 
+                        '</td>' +
+                        '<td class="text-left">'    + (data.kabupaten || '') + 
+                        '</td>' +
+                        '<td class="text-left">'    + (data.kecamatan || '') + 
+                        '</td>' +
+                        '<td class="text-left">'    + (data.kelurahan || '') + 
+                        '</td>' +
+                        '<td class="text-center">'  + (data.rt || '') + 
+                        '</td>' +
+                        '<td class="text-center">'  + (data.rw || '') + 
+                        '</td>' +
                     '</tr>';
                 });
 

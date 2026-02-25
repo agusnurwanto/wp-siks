@@ -33,7 +33,9 @@ foreach ($maps_all as $i => $desa) {
 
 $desa = $wpdb->get_row(
     $wpdb->prepare('
-        SELECT * FROM data_batas_desa_siks
+        SELECT 
+            * 
+        FROM data_batas_desa_siks
         WHERE desa=%s 
             AND kecamatan=%s 
             AND active=1
@@ -148,11 +150,11 @@ $default_location = $this->getSearchLocation($desa);
 
 <div style="padding:10px; margin:0 0 3rem 0;">
     <div id="map-canvas-siks" style="width:100%; height:400px;"></div>
-    <h1 class="text-center" style="margin:3rem;">Data Penerima Hibah<br>DESA <?php echo strtoupper($validate_user['desa']); ?></h1>
+    <h1 class="text-center" style="margin:3rem;">Data Penerima Hibah<br>DESA <?php echo strtoupper($validate_user['desa']); ?> <?php if ($is_rt_role): ?>RT <?php echo $input['rt']; ?> RW <?php echo $input['rw']; ?><?php endif; ?></h1>
     
     <?php if (!$is_rt_role): ?>
         <div id="toolbar-rt-rw-wr">
-            <button id="btn-tambah-rt-rw-ls" class="btn btn-primary">
+            <button id="btn-tambah-rt-rw-hb" class="btn btn-primary">
                 <i class="dashicons dashicons-edit" style="vertical-align:middle;"></i>
                 Tambah RT RW
             </button>
@@ -220,11 +222,17 @@ $default_location = $this->getSearchLocation($desa);
 
     function openModalHb() {
         var html = '';
-        selectedRowsHb.forEach(function(r) { html += '<p>&#9656; ' + r.Nama + '</p>'; });
+        selectedRowsHb.forEach(function(r) { 
+            html += '<p>&#9656; ' + r.Nama + '</p>'; 
+        });
         jQuery('#modal-nama-list-hb').html(html);
 
-        var rtValues = [...new Set(selectedRowsHb.map(function(r){ return (r.rt||'').trim(); }))];
-        var rwValues = [...new Set(selectedRowsHb.map(function(r){ return (r.rw||'').trim(); }))];
+        var rtValues = [...new Set(selectedRowsHb.map(function(r){ 
+            return (r.rt||'').trim(); 
+        }))];
+        var rwValues = [...new Set(selectedRowsHb.map(function(r){ 
+            return (r.rw||'').trim(); 
+        }))];
         jQuery('#modal-rt-rw-overlay-hb').addClass('active');
     }
 
@@ -254,19 +262,27 @@ $default_location = $this->getSearchLocation($desa);
         jQuery('#btn-modal-save-hb').on('click', function() {
             var rt = jQuery('#input-rt-hb').val().trim();
             var rw = jQuery('#input-rw-hb').val().trim();
-            if (rt === '' || rw === '') { alert('RT dan RW tidak boleh kosong!'); return; }
+            if (rt === '' || rw === '') { 
+                alert('RT dan RW tidak boleh kosong!'); 
+                return; 
+            }
 
             var postData = {
-                action:  'update_rt_rw_siks_universal',
+                action:  'update_rt_rw_siks',
                 api_key: ajax.apikey,
                 tipe:    'hibah',
                 rt:      rt,
                 rw:      rw
             };
-            selectedRowsHb.forEach(function(r, i) { postData['ids[' + i + ']'] = r.id; });
+            selectedRowsHb.forEach(function(r, i) { 
+                postData['ids[' + i + ']'] = r.id; 
+            });
 
             jQuery.ajax({
-                url: ajax.url, type: 'POST', dataType: 'json', data: postData,
+                url: ajax.url, 
+                type: 'POST', 
+                dataType: 'json', 
+                data: postData,
                 beforeSend: function() {
                     jQuery('#wrap-loading').show();
                     jQuery('#btn-modal-save-hb').prop('disabled', true).text('Menyimpan…');
@@ -293,13 +309,22 @@ $default_location = $this->getSearchLocation($desa);
     function getDataTable() {
         if (typeof tableHibah === 'undefined') {
             window.tableHibah = jQuery('#tableData')
-                .on('preXhr.dt', function() { jQuery('#wrap-loading').show(); })
+                .on('preXhr.dt', function() { 
+                    jQuery('#wrap-loading').show(); 
+                })
                 .DataTable({
-                    processing: true, serverSide: true,
-                    scrollX: true, scrollY: '600px', scrollCollapse: true,
-                    search: { return: true },
+                    processing: true, 
+                    serverSide: true,
+                    scrollX: true, 
+                    scrollY: '600px', 
+                    scrollCollapse: true,
+                    search: { 
+                        return: true 
+                    },
                     ajax: {
-                        url: ajax.url, type: 'POST', dataType: 'json',
+                        url: ajax.url, 
+                        type: 'POST', 
+                        dataType: 'json',
                         data: {
                             action:    'get_datatable_data_hibah',
                             api_key:   ajax.apikey,
@@ -313,10 +338,16 @@ $default_location = $this->getSearchLocation($desa);
                     order: [],
                     drawCallback: function(settings) {
                         var api = this.api();
-                        api.rows({ page: 'current' }).data().map(function(b) {
+                        api.rows({ 
+                            page: 'current' 
+                        }).data().map(function(b) {
                             if (b.lat && b.lng) {
                                 var data = b.aksi.split(", true, '")[1].split("')")[0];
-                                setCenterSiks(b.lat, b.lng, true, data, true);
+                                setCenterSiks(
+                                    b.lat, 
+                                    b.lng, true, 
+                                    data, true
+                                );
                             }
                         });
                         jQuery('#wrap-loading').hide();
@@ -329,11 +360,20 @@ $default_location = $this->getSearchLocation($desa);
                                 var rt   = String(cb.data('rt') || '');
                                 var rw   = String(cb.data('rw') || '');
                                 if (cb.is(':checked')) {
-                                    if (!selectedRowsHb.find(function(r){ return r.id === id; })) {
-                                        selectedRowsHb.push({ id: id, Nama: nama, rt: rt, rw: rw });
+                                    if (!selectedRowsHb.find(function(r){ 
+                                        return r.id === id; 
+                                    })) {
+                                        selectedRowsHb.push({ 
+                                            id: id, 
+                                            Nama: nama, 
+                                            rt: rt, 
+                                            rw: rw 
+                                        });
                                     }
                                 } else {
-                                    selectedRowsHb = selectedRowsHb.filter(function(r){ return r.id !== id; });
+                                    selectedRowsHb = selectedRowsHb.filter(function(r){ 
+                                        return r.id !== id; 
+                                    });
                                     jQuery('#check-all-hb').prop('checked', false);
                                 }
                                 updateToolbarHb();
@@ -341,15 +381,15 @@ $default_location = $this->getSearchLocation($desa);
                     },
                     columns: [
                         {
-                            data: 'id', orderable: false, searchable: false,
+                            data: 'id', 
+                            orderable: false, 
+                            searchable: false,
                             render: function(data, type, row) {
                                 var id   = String(data || '');
                                 var nama = (row.penerima || '').replace(/"/g, '&quot;');
                                 var rt   = (row.rt || '').replace(/"/g, '&quot;');
                                 var rw   = (row.rw || '').replace(/"/g, '&quot;');
-                                return '<input type="checkbox" class="row-check-hb"' +
-                                       ' data-id="' + id + '" data-nama="' + nama + '"' +
-                                       ' data-rt="'  + rt  + '" data-rw="'  + rw  + '">';
+                                return '<input type="checkbox" class="row-check-hb"' + ' data-id="' + id + '" data-nama="' + nama + '"' + ' data-rt="'  + rt  + '" data-rw="'  + rw  + '">';
                             }
                         },
                         { 

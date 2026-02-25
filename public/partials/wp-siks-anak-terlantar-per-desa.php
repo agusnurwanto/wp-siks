@@ -33,8 +33,12 @@ foreach ($maps_all as $i => $desa) {
 
 $desa = $wpdb->get_row(
     $wpdb->prepare('
-        SELECT * FROM data_batas_desa_siks
-        WHERE desa=%s AND kecamatan=%s AND active=1
+        SELECT 
+            * 
+        FROM data_batas_desa_siks
+        WHERE desa=%s 
+            AND kecamatan=%s 
+            AND active=1
     ', $validate_user['desa'], $validate_user['kecamatan']),
     ARRAY_A
 );
@@ -143,7 +147,8 @@ $default_location = $this->getSearchLocation($desa);
     #toolbar-rt-rw-at { 
         margin-bottom:10px; 
     }
-    #btn-tambah-rt-rw-at { display:none; 
+    #btn-tambah-rt-rw-at { 
+        display:none; 
     }
 </style>
 
@@ -152,11 +157,11 @@ $default_location = $this->getSearchLocation($desa);
 <div style="width:95%; margin:0 auto; min-height:90vh; padding-bottom:75px;">
     <div id="map-canvas-siks" style="width:100%; height:400px;"></div>
     <div style="padding:10px; margin:0 0 3rem 0;">
-        <h1 class="text-center" style="margin:3rem;">Data Anak Terlantar<br>DESA <?php echo strtoupper($validate_user['desa']); ?></h1>
+        <h1 class="text-center" style="margin:3rem;">Data Anak Terlantar<br>DESA <?php echo strtoupper($validate_user['desa']); ?> <?php if ($is_rt_role): ?>RT <?php echo $input['rt']; ?> RW <?php echo $input['rw']; ?><?php endif; ?></h1>
         
         <?php if (!$is_rt_role): ?>
         <div id="toolbar-rt-rw-wr">
-            <button id="btn-tambah-rt-rw-ls" class="btn btn-primary">
+            <button id="btn-tambah-rt-rw-at" class="btn btn-primary">
                 <i class="dashicons dashicons-edit" style="vertical-align:middle;"></i>
                 Tambah RT RW
             </button>
@@ -202,11 +207,11 @@ $default_location = $this->getSearchLocation($desa);
         <div class="form-rt-rw-at">
             <div class="form-group">
                 <label for="input-rt-at">RT</label>
-                <input type="text" id="input-rt-at" placeholder="Contoh: 1" maxlength="10">
+                <input type="text" id="input-rt-at" placeholder="Contoh: 01" maxlength="10">
             </div>
             <div class="form-group">
                 <label for="input-rw-at">RW</label>
-                <input type="text" id="input-rw-at" placeholder="Contoh: 2" maxlength="10">
+                <input type="text" id="input-rw-at" placeholder="Contoh: 02" maxlength="10">
             </div>
         </div>
         <div class="modal-actions-at">
@@ -228,11 +233,17 @@ $default_location = $this->getSearchLocation($desa);
 
     function openModalAt() {
         var html = '';
-        selectedRowsAt.forEach(function(r) { html += '<p>&#9656; ' + r.Nama + '</p>'; });
+        selectedRowsAt.forEach(function(r) { 
+            html += '<p>&#9656; ' + r.Nama + '</p>'; 
+        });
         jQuery('#modal-nama-list-at').html(html);
 
-        var rtValues = [...new Set(selectedRowsAt.map(function(r){ return (r.rt||'').trim(); }))];
-        var rwValues = [...new Set(selectedRowsAt.map(function(r){ return (r.rw||'').trim(); }))];
+        var rtValues = [...new Set(selectedRowsAt.map(function(r){ 
+            return (r.rt||'').trim(); 
+        }))];
+        var rwValues = [...new Set(selectedRowsAt.map(function(r){ 
+            return (r.rw||'').trim(); 
+        }))];
         jQuery('#modal-rt-rw-overlay-at').addClass('active');
     }
 
@@ -262,7 +273,9 @@ $default_location = $this->getSearchLocation($desa);
         jQuery('#btn-modal-save-at').on('click', function() {
             var rt = jQuery('#input-rt-at').val().trim();
             var rw = jQuery('#input-rw-at').val().trim();
-            if (rt === '' || rw === '') { alert('RT dan RW tidak boleh kosong!'); return; }
+            if (rt === '' || rw === '') { 
+                alert('RT dan RW tidak boleh kosong!'); return; 
+            }
 
             var postData = {
                 action:  'update_rt_rw_siks',
@@ -271,10 +284,15 @@ $default_location = $this->getSearchLocation($desa);
                 rt:      rt,
                 rw:      rw
             };
-            selectedRowsAt.forEach(function(r, i) { postData['ids[' + i + ']'] = r.id; });
+            selectedRowsAt.forEach(function(r, i) { 
+                postData['ids[' + i + ']'] = r.id; 
+            });
 
             jQuery.ajax({
-                url: ajax.url, type: 'POST', dataType: 'json', data: postData,
+                url: ajax.url, 
+                type: 'POST', 
+                dataType: 'json', 
+                data: postData,
                 beforeSend: function() {
                     jQuery('#wrap-loading').show();
                     jQuery('#btn-modal-save-at').prop('disabled', true).text('Menyimpan…');
@@ -292,8 +310,13 @@ $default_location = $this->getSearchLocation($desa);
                         alert('Gagal: ' + (res.message || 'Terjadi kesalahan'));
                     }
                 },
-                error: function() { jQuery('#wrap-loading').hide(); alert('Terjadi kesalahan koneksi.'); },
-                complete: function() { jQuery('#btn-modal-save-at').prop('disabled', false).text('Simpan'); }
+                error: function() { 
+                    jQuery('#wrap-loading').hide(); 
+                    alert('Terjadi kesalahan koneksi.'); 
+                },
+                complete: function() { 
+                    jQuery('#btn-modal-save-at').prop('disabled', false).text('Simpan'); 
+                }
             });
         });
     });
@@ -301,12 +324,19 @@ $default_location = $this->getSearchLocation($desa);
     function get_data_anak_terlantar() {
         if (typeof tableAnakTerlantar === 'undefined') {
             window.tableAnakTerlantar = jQuery('#tableAnakTerlantarPerDesa')
-                .on('preXhr.dt', function() { jQuery('#wrap-loading').show(); })
+                .on('preXhr.dt', function() { 
+                    jQuery('#wrap-loading').show(); 
+                })
                 .DataTable({
-                    processing: true, serverSide: true,
-                    search: { return: true },
+                    processing: true, 
+                    serverSide: true,
+                    search: { 
+                        return: true 
+                    },
                     ajax: {
-                        url: ajax.url, type: 'POST', dataType: 'json',
+                        url: ajax.url, 
+                        type: 'POST', 
+                        dataType: 'json',
                         data: {
                             action: 'get_datatable_anak_terlantar',
                             api_key: ajax.apikey,
@@ -320,10 +350,16 @@ $default_location = $this->getSearchLocation($desa);
                     order: [[1, 'asc']],
                     drawCallback: function(settings) {
                         var api = this.api();
-                        api.rows({ page: 'current' }).data().map(function(b) {
+                        api.rows({ 
+                            page: 'current' 
+                        }).data().map(function(b) {
                             if (b.lat && b.lng) {
                                 var data = b.aksi.split(", true, '")[1].split("')")[0];
-                                setCenterSiks(b.lat, b.lng, true, data, true);
+                                setCenterSiks(
+                                    b.lat, 
+                                    b.lng, true, 
+                                    data, true
+                                );
                             }
                         });
                         jQuery('#wrap-loading').hide();
@@ -337,11 +373,20 @@ $default_location = $this->getSearchLocation($desa);
                                 var rt   = String(cb.data('rt') || '');
                                 var rw   = String(cb.data('rw') || '');
                                 if (cb.is(':checked')) {
-                                    if (!selectedRowsAt.find(function(r){ return r.id === id; })) {
-                                        selectedRowsAt.push({ id: id, Nama: nama, rt: rt, rw: rw });
+                                    if (!selectedRowsAt.find(function(r){ 
+                                        return r.id === id; 
+                                    })) {
+                                        selectedRowsAt.push({ 
+                                            id: id, 
+                                            Nama: nama, 
+                                            rt: rt, 
+                                            rw: rw 
+                                        });
                                     }
                                 } else {
-                                    selectedRowsAt = selectedRowsAt.filter(function(r){ return r.id !== id; });
+                                    selectedRowsAt = selectedRowsAt.filter(function(r){ 
+                                        return r.id !== id; 
+                                    });
                                     jQuery('#check-all-at').prop('checked', false);
                                 }
                                 updateToolbarAt();
@@ -349,15 +394,15 @@ $default_location = $this->getSearchLocation($desa);
                     },
                     columns: [
                         {
-                            data: 'id', orderable: false, searchable: false,
+                            data: 'id', 
+                            orderable: false, 
+                            searchable: false,
                             render: function(data, type, row) {
                                 var id   = String(data || '');
                                 var nama = (row.nama || '').replace(/"/g, '&quot;');
                                 var rt   = (row.rt   || '').replace(/"/g, '&quot;');
                                 var rw   = (row.rw   || '').replace(/"/g, '&quot;');
-                                return '<input type="checkbox" class="row-check-at"' +
-                                       ' data-id="' + id + '" data-nama="' + nama + '"' +
-                                       ' data-rt="'  + rt  + '" data-rw="'  + rw  + '">';
+                                return '<input type="checkbox" class="row-check-at"' + ' data-id="' + id + '" data-nama="' + nama + '"' + ' data-rt="'  + rt  + '" data-rw="'  + rw  + '">';
                             }
                         },
                         { 

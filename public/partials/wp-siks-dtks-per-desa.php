@@ -33,7 +33,8 @@ foreach ($maps_all as $i => $desa) {
 
 $desa = $wpdb->get_row(
     $wpdb->prepare('
-        SELECT * 
+        SELECT 
+            * 
         FROM data_batas_desa_siks
         WHERE desa=%s 
             AND kecamatan=%s 
@@ -172,12 +173,12 @@ $default_location = $this->getSearchLocation($desa);
     <div id="map-canvas-siks" style="width:100%;height:400px;"></div>
 
     <h1 class="text-center" style="margin:3rem;">
-        Data DTKS<br>DESA <?php echo strtoupper($validate_user['desa']); ?>
+        Data DTKS<br>DESA <?php echo strtoupper($validate_user['desa']); ?> <?php if ($is_rt_role): ?>RT <?php echo $input['rt']; ?> RW <?php echo $input['rw']; ?><?php endif; ?>
     </h1>
 
     <?php if (!$is_rt_role): ?>
-        <div id="toolbar-rt-rw-wr">
-            <button id="btn-tambah-rt-rw-ls" class="btn btn-primary">
+        <div id="toolbar-rt-rw">
+            <button id="btn-tambah-rt-rw" class="btn btn-primary">
                 <i class="dashicons dashicons-edit" style="vertical-align:middle;"></i>
                 Tambah RT RW
             </button>
@@ -397,11 +398,13 @@ $default_location = $this->getSearchLocation($desa);
                             data.search_value = dataDtks.search();
                         }
                         jQuery.ajax({
-                            method:    'post',
-                            url:       ajax.url,
-                            cache:     false,
-                            xhrFields: { responseType: 'blob' },
-                            data:      data,
+                            method:'post',
+                            url: ajax.url,
+                            cache: false,
+                            xhrFields: { 
+                                responseType: 'blob' 
+                            },
+                            data: data,
                             beforeSend: function() { jQuery("#wrap-loading").show(); },
                             success: function(response) {
                                 jQuery("#wrap-loading").hide();
@@ -426,9 +429,15 @@ $default_location = $this->getSearchLocation($desa);
                     jQuery("#tableData").before(html_filter);
 
                     var kriteria = [
-                        { kk_kosong:         'KK Kosong' },
-                        { nik_kosong:        'NIK Kosong' },
-                        { nik_atau_kk_kosong:'NIK atau KK Kosong' }
+                        { 
+                            kk_kosong: 'KK Kosong' 
+                        },
+                        { 
+                            nik_kosong: 'NIK Kosong' 
+                        },
+                        { 
+                            nik_atau_kk_kosong:'NIK atau KK Kosong' 
+                        }
                     ];
                     kriteria.forEach(function(obj) {
                         for (var prop in obj) {
@@ -463,11 +472,7 @@ $default_location = $this->getSearchLocation($desa);
                             var nama = (row.Nama || '').replace(/'/g, "\\'");
                             var rt   = (row.rt   || '').replace(/'/g, "\\'");
                             var rw   = (row.rw   || '').replace(/'/g, "\\'");
-                            return '<input type="checkbox" class="row-check"' +
-                                   ' data-id="'   + id   + '"' +
-                                   ' data-nama="' + nama + '"' +
-                                   ' data-rt="'   + rt   + '"' +
-                                   ' data-rw="'   + rw   + '">';
+                            return '<input type="checkbox" class="row-check"' + ' data-id="'   + id   + '"' + ' data-nama="' + nama + '"' + ' data-rt="'   + rt   + '"' + ' data-rw="'   + rw   + '">';
                         }
                     },
                     {
@@ -591,7 +596,12 @@ $default_location = $this->getSearchLocation($desa);
 
                             if (cb.is(':checked')) {
                                 if (!selectedRows.find(r => r.id === id)) {
-                                    selectedRows.push({ id: id, Nama: nama, rt: rt, rw: rw });
+                                    selectedRows.push({ 
+                                        id: id, 
+                                        Nama: nama, 
+                                        rt: rt, 
+                                        rw: rw 
+                                    });
                                 }
                             } else {
                                 selectedRows = selectedRows.filter(r => r.id !== id);
