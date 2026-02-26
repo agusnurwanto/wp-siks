@@ -265,8 +265,8 @@ $default_location = $this->getSearchLocation($desa);
         <p style="font-size:13px;color:#555;margin-bottom:8px;"><strong>Data yang dipilih:</strong></p>
         <div id="modal-nama-list-db"></div>
         <div class="form-rt-rw-db">
-            <div class="form-group"><label for="input-rt-db">RT</label><input type="text" id="input-rt-db" placeholder="Contoh: 001" maxlength="10"></div>
-            <div class="form-group"><label for="input-rw-db">RW</label><input type="text" id="input-rw-db" placeholder="Contoh: 002" maxlength="10"></div>
+            <div class="form-group"><label for="input-rt-db">RT</label><input type="number" id="input-rt-db" placeholder="Contoh: 01" maxlength="10"></div>
+            <div class="form-group"><label for="input-rw-db">RW</label><input type="number" id="input-rw-db" placeholder="Contoh: 02" maxlength="10"></div>
         </div>
         <div class="modal-actions-db">
             <button class="btn btn-secondary" id="btn-modal-cancel-db">Batal</button>
@@ -295,6 +295,19 @@ $default_location = $this->getSearchLocation($desa);
         var rwVals = [...new Set(selectedRowsDb.map(function(r){ 
             return (r.rw||'').trim(); 
         }))];
+        var rtMatch   = rtVals.length === 1;
+        var rwMatch   = rwVals.length === 1;
+        var allMatch  = rtMatch && rwMatch;
+
+        if (!allMatch) {
+            jQuery('#input-rt').val('');
+            jQuery('#input-rw').val('');
+            jQuery('#btn-modal-save');
+        } else {
+            jQuery('#input-rt').val(rtVals[0]);
+            jQuery('#input-rw').val(rwVals[0]);
+            jQuery('#btn-modal-save');
+        }
         jQuery('#modal-rt-rw-overlay-db').addClass('active');
     }
 

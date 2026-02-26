@@ -205,11 +205,11 @@ $default_location = $this->getSearchLocation($desa);
         <div class="form-rt-rw-bk">
             <div class="form-group">
                 <label for="input-rt-bk">RT</label>
-                <input type="text" id="input-rt-bk" placeholder="Contoh: 001" maxlength="10">
+                <input type="number" id="input-rt-bk" placeholder="Contoh: 01" maxlength="10">
             </div>
             <div class="form-group">
                 <label for="input-rw-bk">RW</label>
-                <input type="text" id="input-rw-bk" placeholder="Contoh: 002" maxlength="10">
+                <input type="number" id="input-rw-bk" placeholder="Contoh: 02" maxlength="10">
             </div>
         </div>
         <div class="modal-actions-bk">
@@ -245,8 +245,17 @@ $default_location = $this->getSearchLocation($desa);
         var rtRwVals = [...new Set(selectedRowsBk.map(function(r){ 
             return (r.rt_rw||'').trim(); 
         }))];
-        jQuery('#input-rt-bk, #input-rw-bk').val('');
-        jQuery('#modal-rt-rw-overlay-bk').addClass('active');
+        var ok = rtRwVals.length === 1;
+        jQuery('#input-rt-bk, #input-rw-bk');
+        jQuery('#btn-modal-save-bk');
+
+        if (ok) {
+            var parsed = parseRtRwBk(rtRwVals[0]);
+            jQuery('#input-rt-bk').val(parsed.rt);
+            jQuery('#input-rw-bk').val(parsed.rw);
+        } else {
+            jQuery('#input-rt-bk, #input-rw-bk').val('');
+        }
     }
 
     function closeModalBk() {

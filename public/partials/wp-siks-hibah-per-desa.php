@@ -196,11 +196,11 @@ $default_location = $this->getSearchLocation($desa);
         <div class="form-rt-rw-hb">
             <div class="form-group">
                 <label for="input-rt-hb">RT</label>
-                <input type="text" id="input-rt-hb" placeholder="Contoh: 01" maxlength="10">
+                <input type="number" id="input-rt-hb" placeholder="Contoh: 01" maxlength="10">
             </div>
             <div class="form-group">
                 <label for="input-rw-hb">RW</label>
-                <input type="text" id="input-rw-hb" placeholder="Contoh: 02" maxlength="10">
+                <input type="number" id="input-rw-hb" placeholder="Contoh: 02" maxlength="10">
             </div>
         </div>
         <div class="modal-actions-hb">
@@ -233,6 +233,19 @@ $default_location = $this->getSearchLocation($desa);
         var rwValues = [...new Set(selectedRowsHb.map(function(r){ 
             return (r.rw||'').trim(); 
         }))];
+        var rtMatch   = rtValues.length === 1;
+        var rwMatch   = rwValues.length === 1;
+        var allMatch  = rtMatch && rwMatch;
+
+        if (!allMatch) {
+            jQuery('#input-rt').val('');
+            jQuery('#input-rw').val('');
+            jQuery('#btn-modal-save');
+        } else {
+            jQuery('#input-rt').val(rtValues[0]);
+            jQuery('#input-rw').val(rwValues[0]);
+            jQuery('#btn-modal-save');
+        }
         jQuery('#modal-rt-rw-overlay-hb').addClass('active');
     }
 
