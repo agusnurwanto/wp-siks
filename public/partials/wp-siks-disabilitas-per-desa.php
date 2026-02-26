@@ -287,7 +287,9 @@ $default_location = $this->getSearchLocation($desa);
 
     function openModalDb() {
         var html = '';
-        selectedRowsDb.forEach(function(r) { html += '<p>&#9656; ' + r.Nama + '</p>'; });
+        selectedRowsDb.forEach(function(r) { 
+            html += '<p>&#9656; ' + r.Nama + '</p>'; 
+        });
         jQuery('#modal-nama-list-db').html(html);
         var rtVals = [...new Set(selectedRowsDb.map(function(r){ 
             return (r.rt||'').trim(); 
@@ -295,18 +297,12 @@ $default_location = $this->getSearchLocation($desa);
         var rwVals = [...new Set(selectedRowsDb.map(function(r){ 
             return (r.rw||'').trim(); 
         }))];
-        var rtMatch   = rtVals.length === 1;
-        var rwMatch   = rwVals.length === 1;
-        var allMatch  = rtMatch && rwMatch;
-
-        if (!allMatch) {
-            jQuery('#input-rt').val('');
-            jQuery('#input-rw').val('');
-            jQuery('#btn-modal-save');
-        } else {
-            jQuery('#input-rt').val(rtVals[0]);
-            jQuery('#input-rw').val(rwVals[0]);
-            jQuery('#btn-modal-save');
+        var ok = rtVals.length === 1 && rwVals.length === 1;
+        jQuery('#input-rt-db, #input-rw-db');
+        jQuery('#btn-modal-save-db');
+        if (ok) { 
+            jQuery('#input-rt-db').val(rtVals[0]); 
+            jQuery('#input-rw-db').val(rwVals[0]); 
         }
         jQuery('#modal-rt-rw-overlay-db').addClass('active');
     }

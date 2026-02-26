@@ -229,18 +229,12 @@ $default_location = $this->getSearchLocation($desa);
         var rwVals = [...new Set(selectedRowsOg.map(function(r){ 
             return (r.rw||'').trim(); 
         }))];
-        var rtMatch   = rtVals.length === 1;
-        var rwMatch   = rwVals.length === 1;
-        var allMatch  = rtMatch && rwMatch;
-
-        if (!allMatch) {
-            jQuery('#input-rt').val('');
-            jQuery('#input-rw').val('');
-            jQuery('#btn-modal-save');
-        } else {
-            jQuery('#input-rt').val(rtVals[0]);
-            jQuery('#input-rw').val(rwVals[0]);
-            jQuery('#btn-modal-save');
+        var ok = rtVals.length === 1 && rwVals.length === 1;
+        jQuery('#input-rt-og, #input-rw-og');
+        jQuery('#btn-modal-save-og');
+        if (ok) { 
+            jQuery('#input-rt-og').val(rtVals[0]); 
+            jQuery('#input-rw-og').val(rwVals[0]); 
         }
         jQuery('#modal-rt-rw-overlay-og').addClass('active');
     }

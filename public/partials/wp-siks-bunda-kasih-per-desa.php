@@ -225,7 +225,9 @@ $default_location = $this->getSearchLocation($desa);
 
     var selectedRowsBk = [];
 
-    function updateToolbarBk() { jQuery('#btn-tambah-rt-rw-bk').toggle(selectedRowsBk.length > 0); }
+    function updateToolbarBk() { 
+        jQuery('#btn-tambah-rt-rw-bk').toggle(selectedRowsBk.length > 0); 
+    }
 
     function parseRtRwBk(rt_rw) {
         var parts = (rt_rw || '').split('/');
@@ -246,6 +248,7 @@ $default_location = $this->getSearchLocation($desa);
             return (r.rt_rw||'').trim(); 
         }))];
         var ok = rtRwVals.length === 1;
+
         jQuery('#input-rt-bk, #input-rw-bk');
         jQuery('#btn-modal-save-bk');
 
@@ -256,6 +259,7 @@ $default_location = $this->getSearchLocation($desa);
         } else {
             jQuery('#input-rt-bk, #input-rw-bk').val('');
         }
+        jQuery('#modal-rt-rw-overlay-bk').addClass('active');
     }
 
     function closeModalBk() {
